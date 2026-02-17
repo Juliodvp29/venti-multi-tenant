@@ -1,5 +1,5 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import {Tenant, TenantMember } from '@core/models';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { Tenant, TenantMember } from '@core/models';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
 import { TenantRole } from '@core/enums';
@@ -10,6 +10,8 @@ interface TenantState {
   memberInfo: Nullable<TenantMember>;
   tenants: Tenant[];
   loading: boolean;
+  error: Nullable<string>;
+  initialized: boolean;
 }
 
 @Injectable({
@@ -17,7 +19,7 @@ interface TenantState {
 })
 
 export class TenantService {
-   private readonly supabase = inject(Supabase);
+  private readonly supabase = inject(Supabase);
   private readonly authService = inject(AuthService);
 
   private readonly _state = signal<TenantState>({
@@ -25,14 +27,21 @@ export class TenantService {
     memberInfo: null,
     tenants: [],
     loading: false,
+    error: null,
+    initialized: false,
   });
 
   // ── Computed ─────────────────────────────────────────────
   readonly currentTenant = computed(() => this._state().currentTenant);
+  readonly tenant = computed(() => this._state().currentTenant); // Alias for Settings
   readonly tenants = computed(() => this._state().tenants);
   readonly isLoading = computed(() => this._state().loading);
+  readonly loading = computed(() => this._state().loading); // Alias for Settings
+  readonly error = computed(() => this._state().error);
+  readonly initialized = computed(() => this._state().initialized);
   readonly memberRole = computed(() => this._state().memberInfo?.role ?? null);
   readonly tenantId = computed(() => this._state().currentTenant?.id ?? null);
+  readonly businessName = computed(() => this._state().currentTenant?.business_name ?? null);
 
   readonly isOwner = computed(
     () => this._state().memberInfo?.role === TenantRole.Owner
@@ -48,35 +57,71 @@ export class TenantService {
     )
   );
 
+  readonly branding = computed(() => {
+    const t = this._state().currentTenant;
+    if (!t) return null;
+    return {
+      logo_url: t.logo_url,
+      favicon_url: t.favicon_url,
+      primary_color: t.primary_color,
+      secondary_color: t.secondary_color,
+      accent_color: t.accent_color,
+    };
+  });
+
+  constructor() {
+    // Effect: Load tenant when user is authenticated
+    effect(() => {
+      const userId = this.authService.userId();
+      const isAuth = this.authService.isAuthenticated();
+      const isAuthInit = this.authService.isInitialized();
+
+      if (isAuthInit && isAuth && userId && !this.initialized()) {
+        this.loadUserTenants();
+      } else if (isAuthInit && !isAuth) {
+        // Clear tenant when logged out
+        this.clearTenant();
+      }
+    });
+  }
+
   // ── Methods ──────────────────────────────────────────────
 
   async loadUserTenants(): Promise<void> {
     const userId = this.authService.userId();
     if (!userId) return;
 
-    this._state.update((s) => ({ ...s, loading: true }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
-    const { data, error } = await this.supabase.client
-      .from('tenants')
-      .select('*')
-      .eq('owner_id', userId)
-      .is('deleted_at', null);
+    try {
+      const { data, error } = await this.supabase.client
+        .from('tenants')
+        .select('*')
+        .eq('owner_id', userId)
+        .is('deleted_at', null);
 
-    if (error) {
-      this._state.update((s) => ({ ...s, loading: false }));
-      throw error;
-    }
+      if (error) throw error;
 
-    this._state.update((s) => ({
-      ...s,
-      tenants: data ?? [],
-      // Auto-select first tenant
-      currentTenant: data?.[0] ?? null,
-      loading: false,
-    }));
+      this._state.update((s) => ({
+        ...s,
+        tenants: data ?? [],
+        // Auto-select first tenant
+        currentTenant: data?.[0] ?? null,
+        loading: false,
+        initialized: true,
+      }));
 
-    if (data?.[0]) {
-      await this.loadMemberInfo(data[0].id);
+      if (data?.[0]) {
+        await this.loadMemberInfo(data[0].id);
+      }
+    } catch (error) {
+      console.error('Error loading tenants:', error);
+      this._state.update((s) => ({
+        ...s,
+        error: 'Failed to load tenant information',
+        loading: false,
+        initialized: true,
+      }));
     }
   }
 
@@ -105,7 +150,10 @@ export class TenantService {
   async updateTenant(tenantId: string, updates: Partial<Tenant>): Promise<Tenant> {
     const { data, error } = await this.supabase.client
       .from('tenants')
-      .update(updates)
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', tenantId)
       .select()
       .single();
@@ -121,7 +169,119 @@ export class TenantService {
     return data;
   }
 
+  /**
+   * Update business information
+   */
+  async updateBusinessInfo(info: {
+    business_name?: string;
+    contact_email?: string;
+    contact_phone?: string | null;
+  }): Promise<{ success: boolean; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) {
+      return { success: false, error: 'No tenant found' };
+    }
+
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
+
+    try {
+      await this.updateTenant(tenantId, info as any);
+      this._state.update((s) => ({ ...s, loading: false }));
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating business info:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update business info';
+      this._state.update((s) => ({
+        ...s,
+        error: errorMessage,
+        loading: false,
+      }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Update branding colors and logos
+   */
+  async updateBranding(branding: {
+    primary_color?: string;
+    secondary_color?: string;
+    accent_color?: string;
+    logo_url?: string | null;
+    favicon_url?: string | null;
+  }): Promise<{ success: boolean; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) {
+      return { success: false, error: 'No tenant found' };
+    }
+
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
+
+    try {
+      await this.updateTenant(tenantId, branding as any);
+      this._state.update((s) => ({ ...s, loading: false }));
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating branding:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update branding';
+      this._state.update((s) => ({
+        ...s,
+        error: errorMessage,
+        loading: false,
+      }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Update business address
+   */
+  async updateAddress(address: {
+    address_line1?: string | null;
+    address_line2?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postal_code?: string | null;
+    country?: string | null;
+  }): Promise<{ success: boolean; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) {
+      return { success: false, error: 'No tenant found' };
+    }
+
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
+
+    try {
+      await this.updateTenant(tenantId, address as any);
+      this._state.update((s) => ({ ...s, loading: false }));
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating address:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update address';
+      this._state.update((s) => ({
+        ...s,
+        error: errorMessage,
+        loading: false,
+      }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Refresh tenant data
+   */
+  async refreshTenant(): Promise<void> {
+    await this.loadUserTenants();
+  }
+
   clearTenant(): void {
-    this._state.set({ currentTenant: null, memberInfo: null, tenants: [], loading: false });
+    this._state.set({
+      currentTenant: null,
+      memberInfo: null,
+      tenants: [],
+      loading: false,
+      error: null,
+      initialized: false,
+    });
   }
 }

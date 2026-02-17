@@ -5,16 +5,35 @@ import { environment } from '@env/environment';
 
 export type StorageBucket = keyof typeof environment.storage.buckets;
 
+export interface ImageOptimizationOptions {
+  convertToWebP?: boolean;
+  maxWidth?: number;
+  maxHeight?: number;
+  quality?: number;
+  generateThumbnail?: boolean;
+  thumbnailSize?: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
-   private readonly supabase = inject(Supabase);
+  private readonly supabase = inject(Supabase);
 
   readonly uploadProgress = signal<UploadProgress>({
     status: 'idle',
     progress: 0,
   });
+
+  // Default optimization settings
+  private readonly defaultOptimization: ImageOptimizationOptions = {
+    convertToWebP: true,
+    maxWidth: 2048,
+    maxHeight: 2048,
+    quality: 0.85,
+    generateThumbnail: false,
+    thumbnailSize: 300,
+  };
 
   // ── Bucket helpers ───────────────────────────────────────
 
@@ -38,6 +57,198 @@ export class StorageService {
       return `El archivo supera el límite de ${maxFileSizeMb}MB`;
     }
     return null;
+  }
+
+  // ── Image Optimization ───────────────────────────────────
+
+  /**
+   * Convert image to WebP format
+   */
+  private async convertToWebP(file: File, quality = 0.85): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'));
+        return;
+      }
+
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('WebP conversion failed'));
+            }
+          },
+          'image/webp',
+          quality
+        );
+
+        URL.revokeObjectURL(img.src);
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(img.src);
+        reject(new Error('Failed to load image'));
+      };
+
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  /**
+   * Resize image if it exceeds max dimensions
+   */
+  private async resizeImage(
+    file: File | Blob,
+    maxWidth: number,
+    maxHeight: number,
+    quality = 0.85
+  ): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'));
+        return;
+      }
+
+      img.onload = () => {
+        let { width, height } = img;
+
+        // Calculate new dimensions maintaining aspect ratio
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('Image resize failed'));
+            }
+          },
+          'image/webp',
+          quality
+        );
+
+        URL.revokeObjectURL(img.src);
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(img.src);
+        reject(new Error('Failed to load image'));
+      };
+
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  /**
+   * Generate thumbnail from image
+   */
+  private async generateThumbnail(
+    file: File | Blob,
+    size: number,
+    quality = 0.8
+  ): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'));
+        return;
+      }
+
+      img.onload = () => {
+        const { width, height } = img;
+        const ratio = Math.min(size / width, size / height);
+        const newWidth = Math.round(width * ratio);
+        const newHeight = Math.round(height * ratio);
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('Thumbnail generation failed'));
+            }
+          },
+          'image/webp',
+          quality
+        );
+
+        URL.revokeObjectURL(img.src);
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(img.src);
+        reject(new Error('Failed to load image'));
+      };
+
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  /**
+   * Optimize image with all configured options
+   */
+  private async optimizeImage(
+    file: File,
+    options: ImageOptimizationOptions = {}
+  ): Promise<{ optimized: Blob; thumbnail?: Blob }> {
+    const opts = { ...this.defaultOptimization, ...options };
+    let processedImage: Blob = file;
+
+    // Step 1: Convert to WebP if enabled
+    if (opts.convertToWebP && file.type !== 'image/webp') {
+      processedImage = await this.convertToWebP(file, opts.quality);
+    }
+
+    // Step 2: Resize if needed
+    if (opts.maxWidth && opts.maxHeight) {
+      processedImage = await this.resizeImage(
+        processedImage,
+        opts.maxWidth,
+        opts.maxHeight,
+        opts.quality
+      );
+    }
+
+    // Step 3: Generate thumbnail if needed
+    let thumbnail: Blob | undefined;
+    if (opts.generateThumbnail && opts.thumbnailSize) {
+      thumbnail = await this.generateThumbnail(
+        processedImage,
+        opts.thumbnailSize,
+        0.8
+      );
+    }
+
+    return { optimized: processedImage, thumbnail };
   }
 
   // ── Upload ───────────────────────────────────────────────
@@ -77,19 +288,52 @@ export class StorageService {
   async uploadImage(
     bucket: StorageBucket,
     file: File,
-    folder: string
-  ): Promise<UploadResult> {
+    folder: string,
+    optimizationOptions?: ImageOptimizationOptions
+  ): Promise<UploadResult & { thumbnailUrl?: string }> {
     const validationError = this.validateImage(file);
     if (validationError) throw new Error(validationError);
-    return this.uploadFile(bucket, file, folder);
+
+    this.uploadProgress.set({ status: 'uploading', progress: 10 });
+
+    // Optimize image
+    const { optimized, thumbnail } = await this.optimizeImage(file, optimizationOptions);
+
+    this.uploadProgress.set({ status: 'uploading', progress: 50 });
+
+    // Create File from Blob with WebP extension
+    const fileName = file.name.replace(/\.[^/.]+$/, '.webp');
+    const optimizedFile = new File([optimized], fileName, { type: 'image/webp' });
+
+    // Upload main image
+    const result = await this.uploadFile(bucket, optimizedFile, folder, {
+      contentType: 'image/webp',
+    });
+
+    // Upload thumbnail if generated
+    let thumbnailUrl: string | undefined;
+    if (thumbnail) {
+      const thumbFileName = `thumb_${fileName}`;
+      const thumbFile = new File([thumbnail], thumbFileName, { type: 'image/webp' });
+      const thumbPath = `${folder}/thumbnails`;
+      const thumbResult = await this.uploadFile(bucket, thumbFile, thumbPath, {
+        contentType: 'image/webp',
+      });
+      thumbnailUrl = thumbResult.url;
+    }
+
+    return { ...result, thumbnailUrl };
   }
 
   async uploadMultiple(
     bucket: StorageBucket,
     files: File[],
-    folder: string
-  ): Promise<UploadResult[]> {
-    const uploads = files.map((file) => this.uploadImage(bucket, file, folder));
+    folder: string,
+    optimizationOptions?: ImageOptimizationOptions
+  ): Promise<(UploadResult & { thumbnailUrl?: string })[]> {
+    const uploads = files.map((file) =>
+      this.uploadImage(bucket, file, folder, optimizationOptions)
+    );
     return Promise.all(uploads);
   }
 

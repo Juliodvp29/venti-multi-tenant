@@ -1,1 +1,325 @@
-<p>settings works!</p>
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Configuración</h1>
+        <p class="text-gray-600 dark:text-gray-400">Gestiona la configuración de tu negocio</p>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading() && !tenant()) {
+    <div class="flex items-center justify-center py-12">
+        <svg class="animate-spin h-8 w-8 text-sky-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+        </svg>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+        <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span class="text-red-700 dark:text-red-400">{{ error() }}</span>
+        </div>
+    </div>
+    }
+
+    <!-- Content -->
+    @if (tenant()) {
+    <div
+        class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <!-- Tabs -->
+        <div class="border-b border-gray-200 dark:border-gray-700">
+            <nav class="flex -mb-px">
+                <button (click)="setActiveTab('general')" [class.border-sky-500]="activeTab() === 'general'"
+                    [class.text-sky-600]="activeTab() === 'general'"
+                    [class.dark:text-sky-400]="activeTab() === 'general'"
+                    [class.border-transparent]="activeTab() !== 'general'"
+                    [class.text-gray-500]="activeTab() !== 'general'"
+                    [class.hover:text-gray-700]="activeTab() !== 'general'"
+                    [class.hover:border-gray-300]="activeTab() !== 'general'"
+                    class="flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors dark:text-gray-400 dark:hover:text-gray-200">
+                    <div class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>General</span>
+                    </div>
+                </button>
+
+                <button (click)="setActiveTab('branding')" [class.border-sky-500]="activeTab() === 'branding'"
+                    [class.text-sky-600]="activeTab() === 'branding'"
+                    [class.dark:text-sky-400]="activeTab() === 'branding'"
+                    [class.border-transparent]="activeTab() !== 'branding'"
+                    [class.text-gray-500]="activeTab() !== 'branding'"
+                    [class.hover:text-gray-700]="activeTab() !== 'branding'"
+                    [class.hover:border-gray-300]="activeTab() !== 'branding'"
+                    class="flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors dark:text-gray-400 dark:hover:text-gray-200">
+                    <div class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                        </svg>
+                        <span>Branding</span>
+                    </div>
+                </button>
+
+                <button (click)="setActiveTab('address')" [class.border-sky-500]="activeTab() === 'address'"
+                    [class.text-sky-600]="activeTab() === 'address'"
+                    [class.dark:text-sky-400]="activeTab() === 'address'"
+                    [class.border-transparent]="activeTab() !== 'address'"
+                    [class.text-gray-500]="activeTab() !== 'address'"
+                    [class.hover:text-gray-700]="activeTab() !== 'address'"
+                    [class.hover:border-gray-300]="activeTab() !== 'address'"
+                    class="flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors dark:text-gray-400 dark:hover:text-gray-200">
+                    <div class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>Dirección</span>
+                    </div>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="p-6 sm:p-8">
+            <!-- General Tab -->
+            @if (activeTab() === 'general') {
+            <form [formGroup]="generalForm" class="space-y-6">
+                <div>
+                    <label for="business_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Nombre del Negocio *
+                    </label>
+                    <input id="business_name" type="text" formControlName="business_name"
+                        class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                        placeholder="Mi Negocio" />
+                    @if (generalForm.controls.business_name.touched && generalForm.controls.business_name.errors) {
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre del negocio es requerido</p>
+                    }
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="contact_email"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Email de Contacto *
+                        </label>
+                        <input id="contact_email" type="email" formControlName="contact_email"
+                            class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                            placeholder="contacto@minegocio.com" />
+                        @if (generalForm.controls.contact_email.touched && generalForm.controls.contact_email.errors) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Email inválido</p>
+                        }
+                    </div>
+
+                    <div>
+                        <label for="contact_phone"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Teléfono de Contacto
+                        </label>
+                        <input id="contact_phone" type="tel" formControlName="contact_phone"
+                            class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                            placeholder="+1 (555) 123-4567" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Slug
+                        </label>
+                        <input id="slug" type="text" formControlName="slug"
+                            class="w-full px-4 py-3 text-base text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg cursor-not-allowed"
+                            readonly />
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Este campo no se puede modificar</p>
+                    </div>
+
+                    <div>
+                        <label for="subdomain" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Subdominio
+                        </label>
+                        <input id="subdomain" type="text" formControlName="subdomain"
+                            class="w-full px-4 py-3 text-base text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg cursor-not-allowed"
+                            readonly />
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Este campo no se puede modificar</p>
+                    </div>
+                </div>
+            </form>
+            }
+
+            <!-- Branding Tab -->
+            @if (activeTab() === 'branding') {
+            <form [formGroup]="brandingForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="primary_color"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Color Primario
+                        </label>
+                        <div class="flex gap-3">
+                            <input id="primary_color" type="color" formControlName="primary_color"
+                                class="h-12 w-16 rounded-lg border-2 border-gray-300 dark:border-gray-700 cursor-pointer" />
+                            <input type="text" formControlName="primary_color"
+                                class="flex-1 px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 font-mono"
+                                placeholder="#000000" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="secondary_color"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Color Secundario
+                        </label>
+                        <div class="flex gap-3">
+                            <input id="secondary_color" type="color" formControlName="secondary_color"
+                                class="h-12 w-16 rounded-lg border-2 border-gray-300 dark:border-gray-700 cursor-pointer" />
+                            <input type="text" formControlName="secondary_color"
+                                class="flex-1 px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 font-mono"
+                                placeholder="#ffffff" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="accent_color"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Color de Acento
+                        </label>
+                        <div class="flex gap-3">
+                            <input id="accent_color" type="color" formControlName="accent_color"
+                                class="h-12 w-16 rounded-lg border-2 border-gray-300 dark:border-gray-700 cursor-pointer" />
+                            <input type="text" formControlName="accent_color"
+                                class="flex-1 px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 font-mono"
+                                placeholder="#3b82f6" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Vista Previa de Colores:</p>
+                    <div class="flex gap-4">
+                        <div class="flex-1 text-center">
+                            <div class="h-16 rounded-lg mb-2 border border-gray-300 dark:border-gray-600"
+                                [style.background-color]="brandingForm.controls.primary_color.value"></div>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Primario</p>
+                        </div>
+                        <div class="flex-1 text-center">
+                            <div class="h-16 rounded-lg mb-2 border border-gray-300 dark:border-gray-600"
+                                [style.background-color]="brandingForm.controls.secondary_color.value"></div>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Secundario</p>
+                        </div>
+                        <div class="flex-1 text-center">
+                            <div class="h-16 rounded-lg mb-2 border border-gray-300 dark:border-gray-600"
+                                [style.background-color]="brandingForm.controls.accent_color.value"></div>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Acento</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            }
+
+            <!-- Address Tab -->
+            @if (activeTab() === 'address') {
+            <form [formGroup]="addressForm" class="space-y-6">
+                <div>
+                    <label for="address_line1" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Dirección Línea 1
+                    </label>
+                    <input id="address_line1" type="text" formControlName="address_line1"
+                        class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                        placeholder="Calle Principal 123" />
+                </div>
+
+                <div>
+                    <label for="address_line2" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Dirección Línea 2
+                    </label>
+                    <input id="address_line2" type="text" formControlName="address_line2"
+                        class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                        placeholder="Apartamento, suite, etc. (opcional)" />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Ciudad
+                        </label>
+                        <input id="city" type="text" formControlName="city"
+                            class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                            placeholder="Ciudad" />
+                    </div>
+
+                    <div>
+                        <label for="state" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Estado/Provincia
+                        </label>
+                        <input id="state" type="text" formControlName="state"
+                            class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                            placeholder="Estado" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="postal_code"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Código Postal
+                        </label>
+                        <input id="postal_code" type="text" formControlName="postal_code"
+                            class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                            placeholder="12345" />
+                    </div>
+
+                    <div>
+                        <label for="country" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            País
+                        </label>
+                        <input id="country" type="text" formControlName="country"
+                            class="w-full px-4 py-3 text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg transition-all outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10"
+                            placeholder="US" maxlength="2" />
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Código ISO de 2 letras (ej: US, MX, ES)
+                        </p>
+                    </div>
+                </div>
+            </form>
+            }
+        </div>
+
+        <!-- Actions -->
+        <div
+            class="border-t border-gray-200 dark:border-gray-700 px-6 sm:px-8 py-4 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-3">
+            <button type="button" (click)="cancelChanges()" [disabled]="!hasUnsavedChanges() || isSaving()"
+                class="px-6 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Cancelar
+            </button>
+            <button type="button" (click)="saveChanges()"
+                [disabled]="!hasUnsavedChanges() || !isFormValid() || isSaving()"
+                class="px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-700 hover:to-sky-800 rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                @if (isSaving()) {
+                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                <span>Guardando...</span>
+                } @else {
+                <span>Guardar Cambios</span>
+                }
+            </button>
+        </div>
+    </div>
+    }
+</div>

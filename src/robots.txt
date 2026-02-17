@@ -1,0 +1,16 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin and auth pages from indexing
+Disallow: /admin/
+Disallow: /auth/login
+Disallow: /auth/signup
+Disallow: /auth/reset-password
+Disallow: /auth/forgot-password
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://venti.app/sitemap.xml
