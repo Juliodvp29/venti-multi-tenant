@@ -1,0 +1,202 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="space-y-8">
+    <!-- Brand Logo -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-1">
+            <label class="block text-sm font-semibold text-gray-900 dark:text-white">
+                Brand Logo
+            </label>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                This logo will affect the emails sent to your customers and your checkout page.
+            </p>
+        </div>
+        <div class="md:col-span-2 space-y-4">
+            <div class="flex items-center gap-x-8">
+                @if (form.controls.logo_url.value) {
+                <img [src]="form.controls.logo_url.value" alt="Logo"
+                    class="h-24 w-24 flex-none rounded-lg bg-gray-50 object-contain border border-gray-200 dark:border-gray-700">
+                } @else {
+                <span
+                    class="inline-block h-24 w-24 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                    <svg class="h-full w-full text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </span>
+                }
+                <div class="flex flex-col gap-2">
+                    <button type="button" (click)="logoInput.click()"
+                        class="rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        Change
+                    </button>
+                    <p class="text-xs leading-5 text-gray-500 dark:text-gray-400">JPG, GIF or PNG. 2MB max.</p>
+                </div>
+                <input #logoInput type="file" (change)="onFileSelected($event, 'logo')" accept="image/*" class="hidden">
+            </div>
+
+            @if (form.controls.logo_url.value) {
+            <div class="flex justify-start">
+                <button type="button" (click)="form.controls.logo_url.setValue('')"
+                    class="text-xs text-red-500 hover:text-red-700">Remove Logo</button>
+            </div>
+            }
+        </div>
+    </div>
+
+    <hr class="border-gray-100 dark:border-gray-800" />
+
+    <!-- Favicon -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-1">
+            <label class="block text-sm font-semibold text-gray-900 dark:text-white">
+                Favicon
+            </label>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                This icon will be displayed in the browser tab.
+            </p>
+        </div>
+        <div class="md:col-span-2">
+            <div
+                class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-600 px-6 py-10 drag-area hover:border-gray-400 dark:hover:border-gray-500 transition-colors bg-white dark:bg-gray-800/50">
+                <div class="text-center">
+                    @if (form.controls.favicon_url.value) {
+                    <img [src]="form.controls.favicon_url.value" alt="Favicon" class="mx-auto h-12 w-12 object-contain">
+                    } @else {
+                    <svg class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" viewBox="0 0 24 24"
+                        fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                            d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    }
+                    <div class="mt-4 flex flex-col items-center justify-center gap-2 text-sm leading-6 text-gray-600">
+                        <div class="flex items-center gap-2">
+                            <button type="button" (click)="faviconInput.click()"
+                                class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors">
+                                Replace
+                            </button>
+                            @if (form.controls.favicon_url.value) {
+                            <button type="button" (click)="form.controls.favicon_url.setValue('')"
+                                class="text-sm text-red-600 hover:text-red-700 text-left px-1">
+                                Remove
+                            </button>
+                            }
+                        </div>
+                        <input #faviconInput type="file" (change)="onFileSelected($event, 'favicon')" accept="image/*"
+                            class="hidden">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">PNG, ICO up to 2MB</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="border-gray-100 dark:border-gray-800" />
+
+    <!-- Theme Colors -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-1">
+            <label class="block text-sm font-semibold text-gray-900 dark:text-white">
+                Theme Colors
+            </label>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Customize the look and feel of your store.
+            </p>
+        </div>
+        <div class="md:col-span-2 space-y-6">
+            <!-- Primary Color -->
+            <div class="flex items-start gap-4">
+                <div class="flex-none">
+                    <input type="color" formControlName="primary_color"
+                        class="h-10 w-10 rounded cursor-pointer border-0 p-0 ring-1 ring-gray-200 dark:ring-gray-700">
+                </div>
+                <div class="flex-grow">
+                    <label for="primary_color"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Primary Color</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input type="text" formControlName="primary_color" id="primary_color"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700 uppercase"
+                            placeholder="#000000">
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Main buttons, headers, links</p>
+                </div>
+            </div>
+
+            <!-- Secondary Color -->
+            <div class="flex items-start gap-4">
+                <div class="flex-none">
+                    <input type="color" formControlName="secondary_color"
+                        class="h-10 w-10 rounded cursor-pointer border-0 p-0 ring-1 ring-gray-200 dark:ring-gray-700">
+                </div>
+                <div class="flex-grow">
+                    <label for="secondary_color"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Secondary Color</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input type="text" formControlName="secondary_color" id="secondary_color"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700 uppercase"
+                            placeholder="#FFFFFF">
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Backgrounds, cards, secondary actions</p>
+                </div>
+            </div>
+
+            <!-- Accent Color -->
+            <div class="flex items-start gap-4">
+                <div class="flex-none">
+                    <input type="color" formControlName="accent_color"
+                        class="h-10 w-10 rounded cursor-pointer border-0 p-0 ring-1 ring-gray-200 dark:ring-gray-700">
+                </div>
+                <div class="flex-grow">
+                    <label for="accent_color" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Accent
+                        Color</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input type="text" formControlName="accent_color" id="accent_color"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700 uppercase"
+                            placeholder="#3B82F6">
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Highlights, badges, special elements</p>
+                </div>
+            </div>
+
+            <!-- Live Preview -->
+            <div class="mt-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Live Preview</h4>
+                <div class="flex items-center gap-4">
+                    <button type="button" [style.backgroundColor]="form.controls.primary_color.value"
+                        [style.color]="'#fff'" class="px-4 py-2 rounded-md font-medium text-sm shadow-sm">
+                        Primary Button
+                    </button>
+                    <button type="button" class="px-4 py-2 rounded-md font-medium text-sm shadow-sm border"
+                        [style.backgroundColor]="form.controls.secondary_color.value"
+                        [style.color]="form.controls.primary_color.value"
+                        [style.borderColor]="form.controls.primary_color.value">
+                        Secondary
+                    </button>
+                    <span [style.color]="form.controls.accent_color.value" class="text-sm font-medium">Accent
+                        Link</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-3 pt-6">
+        <button type="button" (click)="cancel()" [disabled]="!form.dirty || isSaving()"
+            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            Discard
+        </button>
+        <button type="submit" [disabled]="!form.dirty || form.invalid || isSaving()"
+            class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+            @if (isSaving()) {
+            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+            <span>Saving...</span>
+            } @else {
+            <span>Save Changes</span>
+            }
+        </button>
+    </div>
+</form>

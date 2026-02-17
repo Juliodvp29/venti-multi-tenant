@@ -274,6 +274,85 @@ export class TenantService {
     await this.loadUserTenants();
   }
 
+  /**
+   * Delete tenant
+   */
+  async deleteTenant(tenantId: string): Promise<{ success: boolean; error?: string }> {
+    if (!tenantId) return { success: false, error: 'Tenant ID required' };
+
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
+
+    try {
+      // Soft delete by setting deleted_at
+      const { error } = await this.supabase.client
+        .from('tenants')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', tenantId);
+
+      if (error) throw error;
+
+      // Remove from local state
+      this._state.update((s) => ({
+        ...s,
+        tenants: s.tenants.filter((t) => t.id !== tenantId),
+        currentTenant: null, // Clear current tenant as it's deleted
+        memberInfo: null,
+        loading: false,
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting tenant:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete tenant';
+      this._state.update((s) => ({
+        ...s,
+        error: errorMessage,
+        loading: false,
+      }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Upload branding asset (logo or favicon)
+   */
+  async uploadBrandingAsset(
+    file: File,
+    type: 'logo' | 'favicon'
+  ): Promise<{ success: boolean; url?: string; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return { success: false, error: 'No tenant found' };
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${tenantId}/${type}-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await this.supabase.storage
+        .from('branding')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = this.supabase.storage.from('branding').getPublicUrl(filePath);
+
+      // Update tenant with new URL
+      const updateData = type === 'logo' ? { logo_url: data.publicUrl } : { favicon_url: data.publicUrl };
+      await this.updateTenant(tenantId, updateData);
+
+      return { success: true, url: data.publicUrl };
+    } catch (error) {
+      console.error(`Error uploading ${type}:`, error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : `Failed to upload ${type}`
+      };
+    }
+  }
+
   clearTenant(): void {
     this._state.set({
       currentTenant: null,
