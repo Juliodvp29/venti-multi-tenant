@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { Supabase } from './supabase';
 import { Router } from '@angular/router';
 import { Nullable } from '@core/types';
@@ -15,7 +15,7 @@ export interface AuthState {
   providedIn: 'root',
 })
 export class AuthService {
-   private readonly supabase = inject(Supabase);
+  private readonly supabase = inject(Supabase);
   private readonly router = inject(Router);
 
   // ── State ────────────────────────────────────────────────
@@ -41,6 +41,26 @@ export class AuthService {
 
   constructor() {
     this.initAuth();
+
+    // Effect: Handle navigation based on auth state
+    effect(() => {
+      const isAuth = this.isAuthenticated();
+      const isInit = this.isInitialized();
+
+      if (!isInit) return;
+
+      const currentUrl = this.router.url;
+      const isAuthPage = currentUrl.startsWith('/auth');
+
+      // If authenticated and on auth pages, redirect to dashboard
+      if (isAuth && isAuthPage) {
+        this.router.navigate(['/dashboard']);
+      }
+      // If not authenticated and not on auth pages, redirect to login
+      else if (!isAuth && !isAuthPage) {
+        this.router.navigate(['/auth/login']);
+      }
+    });
   }
 
   // ── Init ─────────────────────────────────────────────────
@@ -63,10 +83,6 @@ export class AuthService {
         session,
         loading: false,
       }));
-
-      if (event === 'SIGNED_OUT') {
-        this.router.navigate(['/auth/login']);
-      }
     });
   }
 

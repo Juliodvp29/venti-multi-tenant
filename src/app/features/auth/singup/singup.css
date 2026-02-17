@@ -1,0 +1,20 @@
+/* Importar animaciones base */
+@import '../login/login.css';
+
+/* Password strength indicator - específico de signup */
+.password-strength-bar {
+    height: 4px;
+    background-color: rgb(229 231 235);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.dark .password-strength-bar {
+    background-color: rgb(55 65 81);
+}
+
+.password-strength-fill {
+    height: 100%;
+    transition: width 200ms, background-color 200ms;
+    border-radius: 9999px;
+}

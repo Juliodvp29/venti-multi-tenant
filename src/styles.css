@@ -1,3 +1,278 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "tailwindcss";
+
+:root {
+    /* ═══════════════════════════════════════════════════════════
+     COLOR SYSTEM
+     ═══════════════════════════════════════════════════════════ */
+
+    /* Primary Colors */
+    --color-primary-50: #f0f9ff;
+    --color-primary-100: #e0f2fe;
+    --color-primary-200: #bae6fd;
+    --color-primary-300: #7dd3fc;
+    --color-primary-400: #38bdf8;
+    --color-primary-500: #0ea5e9;
+    --color-primary-600: #0284c7;
+    --color-primary-700: #0369a1;
+    --color-primary-800: #075985;
+    --color-primary-900: #0c4a6e;
+    --color-primary-950: #082f49;
+
+    /* Secondary Colors */
+    --color-secondary-50: #faf5ff;
+    --color-secondary-100: #f3e8ff;
+    --color-secondary-200: #e9d5ff;
+    --color-secondary-300: #d8b4fe;
+    --color-secondary-400: #c084fc;
+    --color-secondary-500: #a855f7;
+    --color-secondary-600: #9333ea;
+    --color-secondary-700: #7e22ce;
+    --color-secondary-800: #6b21a8;
+    --color-secondary-900: #581c87;
+
+    /* Accent Colors */
+    --color-accent-50: #fdf4ff;
+    --color-accent-100: #fae8ff;
+    --color-accent-200: #f5d0fe;
+    --color-accent-300: #f0abfc;
+    --color-accent-400: #e879f9;
+    --color-accent-500: #d946ef;
+    --color-accent-600: #c026d3;
+    --color-accent-700: #a21caf;
+    --color-accent-800: #86198f;
+    --color-accent-900: #701a75;
+
+    /* Success Colors */
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-200: #bbf7d0;
+    --color-success-300: #86efac;
+    --color-success-400: #4ade80;
+    --color-success-500: #22c55e;
+    --color-success-600: #16a34a;
+    --color-success-700: #15803d;
+    --color-success-800: #166534;
+    --color-success-900: #14532d;
+
+    /* Error Colors */
+    --color-error-50: #fef2f2;
+    --color-error-100: #fee2e2;
+    --color-error-200: #fecaca;
+    --color-error-300: #fca5a5;
+    --color-error-400: #f87171;
+    --color-error-500: #ef4444;
+    --color-error-600: #dc2626;
+    --color-error-700: #b91c1c;
+    --color-error-800: #991b1b;
+    --color-error-900: #7f1d1d;
+
+    /* Warning Colors */
+    --color-warning-50: #fffbeb;
+    --color-warning-100: #fef3c7;
+    --color-warning-200: #fde68a;
+    --color-warning-300: #fcd34d;
+    --color-warning-400: #fbbf24;
+    --color-warning-500: #f59e0b;
+    --color-warning-600: #d97706;
+    --color-warning-700: #b45309;
+    --color-warning-800: #92400e;
+    --color-warning-900: #78350f;
+
+    /* Neutral Colors */
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+    --color-gray-950: #030712;
+
+    /* ═══════════════════════════════════════════════════════════
+     TYPOGRAPHY
+     ═══════════════════════════════════════════════════════════ */
+
+    --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-family-mono: 'Fira Code', 'Courier New', monospace;
+
+    /* Font Sizes */
+    --font-size-xs: 0.75rem;
+    /* 12px */
+    --font-size-sm: 0.875rem;
+    /* 14px */
+    --font-size-base: 1rem;
+    /* 16px */
+    --font-size-lg: 1.125rem;
+    /* 18px */
+    --font-size-xl: 1.25rem;
+    /* 20px */
+    --font-size-2xl: 1.5rem;
+    /* 24px */
+    --font-size-3xl: 1.875rem;
+    /* 30px */
+    --font-size-4xl: 2.25rem;
+    /* 36px */
+    --font-size-5xl: 3rem;
+    /* 48px */
+
+    /* Font Weights */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+
+    /* Line Heights */
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+
+    /* ═══════════════════════════════════════════════════════════
+     SPACING
+     ═══════════════════════════════════════════════════════════ */
+
+    --spacing-0: 0;
+    --spacing-1: 0.25rem;
+    /* 4px */
+    --spacing-2: 0.5rem;
+    /* 8px */
+    --spacing-3: 0.75rem;
+    /* 12px */
+    --spacing-4: 1rem;
+    /* 16px */
+    --spacing-5: 1.25rem;
+    /* 20px */
+    --spacing-6: 1.5rem;
+    /* 24px */
+    --spacing-8: 2rem;
+    /* 32px */
+    --spacing-10: 2.5rem;
+    /* 40px */
+    --spacing-12: 3rem;
+    /* 48px */
+    --spacing-16: 4rem;
+    /* 64px */
+    --spacing-20: 5rem;
+    /* 80px */
+
+    /* ═══════════════════════════════════════════════════════════
+     EFFECTS
+     ═══════════════════════════════════════════════════════════ */
+
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    /* 4px */
+    --radius-md: 0.375rem;
+    /* 6px */
+    --radius-lg: 0.5rem;
+    /* 8px */
+    --radius-xl: 0.75rem;
+    /* 12px */
+    --radius-2xl: 1rem;
+    /* 16px */
+    --radius-3xl: 1.5rem;
+    /* 24px */
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ═══════════════════════════════════════════════════════════
+     COMPONENT SPECIFIC
+     ═══════════════════════════════════════════════════════════ */
+
+    /* Form Inputs */
+    --input-bg: white;
+    --input-border: var(--color-gray-300);
+    --input-border-focus: var(--color-primary-500);
+    --input-text: var(--color-gray-900);
+    --input-placeholder: var(--color-gray-400);
+    --input-disabled-bg: var(--color-gray-100);
+    --input-disabled-text: var(--color-gray-500);
+
+    /* Buttons */
+    --button-primary-bg: var(--color-primary-600);
+    --button-primary-hover: var(--color-primary-700);
+    --button-primary-text: white;
+    --button-secondary-bg: var(--color-gray-200);
+    --button-secondary-hover: var(--color-gray-300);
+    --button-secondary-text: var(--color-gray-900);
+
+    /* Cards */
+    --card-bg: white;
+    --card-border: var(--color-gray-200);
+    --card-shadow: var(--shadow-md);
+
+    /* Auth Specific */
+    --auth-bg: var(--color-gray-50);
+    --auth-card-bg: white;
+    --auth-gradient-from: var(--color-primary-500);
+    --auth-gradient-to: var(--color-secondary-500);
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Form Inputs - Dark Mode */
+        --input-bg: var(--color-gray-800);
+        --input-border: var(--color-gray-700);
+        --input-border-focus: var(--color-primary-400);
+        --input-text: var(--color-gray-100);
+        --input-placeholder: var(--color-gray-500);
+        --input-disabled-bg: var(--color-gray-900);
+        --input-disabled-text: var(--color-gray-600);
+
+        /* Buttons - Dark Mode */
+        --button-primary-bg: var(--color-primary-500);
+        --button-primary-hover: var(--color-primary-600);
+        --button-secondary-bg: var(--color-gray-700);
+        --button-secondary-hover: var(--color-gray-600);
+        --button-secondary-text: var(--color-gray-100);
+
+        /* Cards - Dark Mode */
+        --card-bg: var(--color-gray-800);
+        --card-border: var(--color-gray-700);
+        --card-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+
+        /* Auth Specific - Dark Mode */
+        --auth-bg: var(--color-gray-950);
+        --auth-card-bg: var(--color-gray-900);
+    }
+}
+
+html,
+body {
+    height: 100%;
+    font-family: var(--font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth Scrolling */
+* {
+    scroll-behavior: smooth;
+}
+
+/* Focus Styles */
+*:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
