@@ -56,58 +56,7 @@ export interface AuthSession {
 // TENANT
 // ============================================================
 
-export interface Tenant extends BaseModel {
-  business_name: string;
-  slug: string;
-  subdomain: string;
-  custom_domain?: string;
-  owner_id: string;
-  contact_email: string;
-  contact_phone?: string;
-  plan: SubscriptionPlan;
-  plan_status: SubscriptionStatus;
-  trial_ends_at?: string;
-  subscription_ends_at?: string;
-  status: TenantStatus;
-  is_verified: boolean;
-  logo_url?: string;
-  favicon_url?: string;
-  primary_color: string;
-  secondary_color: string;
-  accent_color: string;
-  address_line1?: string;
-  address_line2?: string;
-  city?: string;
-  state?: string;
-  postal_code?: string;
-  country?: string;
-  settings: Record<string, unknown>;
-  deleted_at?: string;
-}
-
-export interface TenantMember extends BaseModel {
-  tenant_id: string;
-  user_id: string;
-  role: TenantRole;
-  permissions: string[];
-  is_active: boolean;
-  invited_by?: string;
-  invited_at: string;
-  joined_at?: string;
-}
-
-export interface SubscriptionHistory extends BaseModel {
-  tenant_id: string;
-  plan: SubscriptionPlan;
-  status: SubscriptionStatus;
-  amount?: number;
-  currency: string;
-  billing_period_start?: string;
-  billing_period_end?: string;
-  payment_method?: string;
-  payment_id?: string;
-  metadata: Record<string, unknown>;
-}
+export * from './tenant.model';
 
 export interface TenantSettings {
   id: string;
@@ -123,101 +72,13 @@ export interface TenantSettings {
 // CATEGORIES
 // ============================================================
 
-export interface Category extends BaseModel {
-  tenant_id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  parent_id?: string;
-  sort_order: number;
-  image_url?: string;
-  meta_title?: string;
-  meta_description?: string;
-  is_active: boolean;
-  children?: Category[];
-}
+export * from './category.model';
 
 // ============================================================
 // PRODUCTS
 // ============================================================
 
-export interface ProductImage {
-  id: string;
-  product_id: string;
-  tenant_id: string;
-  url: string;
-  alt_text?: string;
-  sort_order: number;
-  is_primary: boolean;
-  width?: number;
-  height?: number;
-  size_bytes?: number;
-  created_at: string;
-}
-
-export interface ProductVariant extends BaseModel {
-  product_id: string;
-  tenant_id: string;
-  name: string;
-  sku?: string;
-  price?: number;
-  compare_at_price?: number;
-  cost_price?: number;
-  stock_quantity: number;
-  options: Record<string, string>; // e.g. { color: 'Red', size: 'L' }
-  image_url?: string;
-  is_active: boolean;
-}
-
-export interface ProductTag {
-  id: string;
-  tenant_id: string;
-  name: string;
-  slug: string;
-  created_at: string;
-}
-
-export interface ProductDimensions {
-  length: number;
-  width: number;
-  height: number;
-  unit: string;
-}
-
-export interface Product extends BaseModel {
-  tenant_id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  short_description?: string;
-  sku?: string;
-  price: number;
-  compare_at_price?: number;
-  cost_price?: number;
-  track_inventory: boolean;
-  stock_quantity: number;
-  low_stock_threshold: number;
-  allow_backorder: boolean;
-  weight?: number;
-  weight_unit: WeightUnit;
-  dimensions?: ProductDimensions;
-  status: ProductStatus;
-  is_featured: boolean;
-  published_at?: string;
-  meta_title?: string;
-  meta_description?: string;
-  meta_keywords?: string[];
-  deleted_at?: string;
-  // Relations (from vw_products_complete)
-  images?: ProductImage[];
-  primary_image_url?: string;
-  categories?: Pick<Category, 'id' | 'name' | 'slug'>[];
-  tags?: Pick<ProductTag, 'id' | 'name' | 'slug'>[];
-  variants?: ProductVariant[];
-  review_count?: number;
-  average_rating?: number;
-  stock_status?: StockStatus;
-}
+export * from './product.model';
 
 // ============================================================
 // CUSTOMERS

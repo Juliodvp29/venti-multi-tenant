@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem } from '@core/models';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
 import { TenantRole } from '@core/enums';
@@ -12,6 +12,7 @@ interface TenantState {
   loading: boolean;
   error: Nullable<string>;
   initialized: boolean;
+  settings: TenantSettingItem[];
 }
 
 @Injectable({
@@ -29,6 +30,7 @@ export class TenantService {
     loading: false,
     error: null,
     initialized: false,
+    settings: [],
   });
 
   // ── Computed ─────────────────────────────────────────────
@@ -42,6 +44,7 @@ export class TenantService {
   readonly memberRole = computed(() => this._state().memberInfo?.role ?? null);
   readonly tenantId = computed(() => this._state().currentTenant?.id ?? null);
   readonly businessName = computed(() => this._state().currentTenant?.business_name ?? null);
+  readonly settings = computed(() => this._state().settings);
 
   readonly isOwner = computed(
     () => this._state().memberInfo?.role === TenantRole.Owner
@@ -113,6 +116,7 @@ export class TenantService {
 
       if (data?.[0]) {
         await this.loadMemberInfo(data[0].id);
+        await this.loadTenantSettings(data[0].id);
       }
     } catch (error) {
       console.error('Error loading tenants:', error);
@@ -129,7 +133,9 @@ export class TenantService {
     const tenant = this._state().tenants.find((t) => t.id === tenantId);
     if (!tenant) return;
     this._state.update((s) => ({ ...s, currentTenant: tenant }));
+    this._state.update((s) => ({ ...s, currentTenant: tenant }));
     await this.loadMemberInfo(tenantId);
+    await this.loadTenantSettings(tenantId);
   }
 
   private async loadMemberInfo(tenantId: string): Promise<void> {
@@ -145,6 +151,52 @@ export class TenantService {
       .single();
 
     this._state.update((s) => ({ ...s, memberInfo: data }));
+  }
+
+  async loadTenantSettings(tenantId: string): Promise<void> {
+    const { data, error } = await this.supabase.client
+      .from('tenant_settings')
+      .select('*')
+      .eq('tenant_id', tenantId);
+
+    if (error) {
+      console.error('Error loading settings:', error);
+      return;
+    }
+
+    this._state.update((s) => ({ ...s, settings: data as TenantSettingItem[] }));
+  }
+
+  async updateSetting(key: string, value: unknown, type: 'string' | 'number' | 'boolean' | 'json' = 'string'): Promise<void> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return;
+
+    const { data, error } = await this.supabase.client
+      .from('tenant_settings')
+      .upsert({
+        tenant_id: tenantId,
+        setting_key: key,
+        setting_value: value,
+        setting_type: type,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'tenant_id,setting_key' })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    this._state.update((s) => ({
+      ...s,
+      settings: [
+        ...s.settings.filter(item => item.setting_key !== key),
+        data as TenantSettingItem
+      ]
+    }));
+  }
+
+  async getSetting<T = unknown>(key: string): Promise<T | null> {
+    const setting = this._state().settings.find(s => s.setting_key === key);
+    return setting ? (setting.setting_value as T) : null;
   }
 
   async updateTenant(tenantId: string, updates: Partial<Tenant>): Promise<Tenant> {
@@ -361,6 +413,7 @@ export class TenantService {
       loading: false,
       error: null,
       initialized: false,
+      settings: [],
     });
   }
 }

@@ -19,6 +19,30 @@ export interface TenantSettings {
     [key: string]: unknown;
 }
 
+export interface TenantSettingItem {
+    id: string;
+    tenant_id: string;
+    setting_key: string;
+    setting_value: unknown;
+    setting_type: 'string' | 'number' | 'boolean' | 'json';
+    created_at: string;
+    updated_at: string;
+}
+
+export interface TenantMember {
+    id: string;
+    tenant_id: string;
+    user_id: string;
+    role: 'owner' | 'admin' | 'editor' | 'viewer'; // Using string union for now or import enum if available
+    permissions: string[];
+    is_active: boolean;
+    invited_by?: string;
+    invited_at: string;
+    joined_at?: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export type SubscriptionPlan = 'free' | 'basic' | 'professional' | 'enterprise';
 export type SubscriptionStatus = 'active' | 'cancelled' | 'suspended' | 'expired' | 'trial';
 export type TenantStatus = 'active' | 'suspended' | 'pending' | 'cancelled';
