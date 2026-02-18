@@ -1,0 +1,227 @@
+<div
+    class="px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900/50 py-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300">
+    <!-- Header Area -->
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <h1 class="text-2xl font-bold leading-6 text-gray-900 dark:text-white">{{ title() }}</h1>
+            <p class="mt-2 text-sm text-gray-700 dark:text-gray-400">{{ description() }}</p>
+        </div>
+        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none flex gap-3">
+            @if (allowImport()) {
+            <input type="file" #fileInput class="hidden" accept=".csv" (change)="onFileSelected($event)">
+            <button type="button" (click)="triggerImport()"
+                class="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+                Import
+            </button>
+            }
+            <button type="button" (click)="exportToCsv()"
+                class="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Export
+            </button>
+            <ng-content select="[actions]"></ng-content>
+        </div>
+    </div>
+
+    <!-- Filters & Search Area -->
+    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        <div class="relative flex-grow">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                        clip-rule="evenodd" />
+                </svg>
+            </div>
+            <input type="text" [value]="searchQuery()" (input)="onSearch($event)"
+                class="block w-full rounded-xl border-0 py-2.5 pl-10 pr-3 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:bg-gray-800/50 sm:text-sm sm:leading-6 transition-all"
+                [placeholder]="searchPlaceholder()">
+        </div>
+        <div class="flex gap-2">
+            <ng-content select="[filters]"></ng-content>
+        </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="mt-8 flow-root">
+        <div
+            class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
+            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                <div
+                    class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-xl border border-gray-100 dark:border-gray-800">
+                    <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-800">
+                        <thead class="bg-gray-50 dark:bg-gray-900">
+                            <tr>
+                                @for (col of columns(); track col.key) {
+                                <th scope="col" (click)="col.sortable && onSort(col.key)"
+                                    class="py-4 pl-4 pr-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 sm:pl-6"
+                                    [class.cursor-pointer]="col.sortable" [class.hover:text-gray-700]="col.sortable">
+                                    <div class="flex items-center gap-2">
+                                        {{ col.label }}
+                                        @if (col.sortable) {
+                                        <div class="flex flex-col">
+                                            @if (sortState()?.key === col.key && sortState()?.direction === 'asc') {
+                                            <svg class="h-3 w-3 text-indigo-500" fill="currentColor"
+                                                viewBox="0 0 20 20">
+                                                <path d="M10 3l-7 7h14l-7-7z" />
+                                            </svg>
+                                            } @else if (sortState()?.key === col.key && sortState()?.direction ===
+                                            'desc') {
+                                            <svg class="h-3 w-3 text-indigo-500" fill="currentColor"
+                                                viewBox="0 0 20 20">
+                                                <path d="M10 17l7-7H3l7 7z" />
+                                            </svg>
+                                            } @else {
+                                            <svg class="h-3 w-3 text-gray-300 dark:text-gray-600" fill="currentColor"
+                                                viewBox="0 0 20 20">
+                                                <path d="M10 3l-7 7h14l-7-7zM10 17l7-7H3l7 7z" />
+                                            </svg>
+                                            }
+                                        </div>
+                                        }
+                                    </div>
+                                </th>
+                                }
+                                @if (actions().length > 0) {
+                                <th scope="col" class="relative py-4 pl-3 pr-4 sm:pr-6">
+                                    <span class="sr-only">Actions</span>
+                                </th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800 bg-white dark:bg-transparent">
+                            @for (item of paginatedData(); track item['id']) {
+                            <tr (click)="rowClick.emit(item)"
+                                class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group">
+                                @for (col of columns(); track col.key) {
+                                <td class="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-6">
+                                    <div class="flex items-center">
+                                        @if (col.type === 'image') {
+                                        <div class="h-11 w-11 flex-shrink-0">
+                                            <img class="h-11 w-11 rounded-xl object-cover ring-1 ring-gray-200 dark:ring-gray-700"
+                                                [src]="item[col.key]" alt="">
+                                        </div>
+                                        } @else if (col.type === 'status') {
+                                        <span
+                                            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                            [ngClass]="{
+                                                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': item[col.key] === 'active' || item[col.key] === 'In Stock',
+                                                    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': item[col.key] === 'inactive' || item[col.key] === 'Out of Stock',
+                                                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400': item[col.key] === 'Low Stock',
+                                                    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300': !['active', 'inactive', 'In Stock', 'Out of Stock', 'Low Stock'].includes(item[col.key])
+                                                }">
+                                            {{ item[col.key] }}
+                                        </span>
+                                        } @else if (col.template) {
+                                        <ng-container [ngTemplateOutlet]="col.template"
+                                            [ngTemplateOutletContext]="{ $implicit: item[col.key], item: item }"></ng-container>
+                                        } @else {
+                                        <span class="font-medium text-gray-900 dark:text-gray-300">{{ formatValue(col,
+                                            item) }}</span>
+                                        }
+                                    </div>
+                                </td>
+                                }
+                                @if (actions().length > 0) {
+                                <td
+                                    class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                    <div
+                                        class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        @for (action of actions(); track action['id']) {
+                                        @if (!action.show || action.show(item)) {
+                                        <button type="button" (click)="$event.stopPropagation(); action.callback(item)"
+                                            [class]="'text-gray-400 hover:text-gray-900 dark:hover:text-white ' + (action.className || '')">
+                                            @if (action.icon) {
+                                            <!-- Placeholder for icon from string if needed, or just label -->
+                                            {{ action.label }}
+                                            } @else {
+                                            {{ action.label }}
+                                            }
+                                        </button>
+                                        }
+                                        }
+                                    </div>
+                                </td>
+                                }
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td [attr.colspan]="columns().length + (actions().length > 0 ? 1 : 0)"
+                                    class="py-12 text-center">
+                                    <svg class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25-2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-semibold text-gray-900 dark:text-white">No data found
+                                    </h3>
+                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Try adjusting your search
+                                        or filters.</p>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-8 flex items-center justify-between border-t border-gray-100 dark:border-gray-800 pt-6">
+        <div class="flex flex-1 justify-between sm:hidden">
+            <button (click)="prevPage()" [disabled]="currentPage() === 1"
+                class="relative inline-flex items-center rounded-xl bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                Previous
+            </button>
+            <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+                class="relative ml-3 inline-flex items-center rounded-xl bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                Next
+            </button>
+        </div>
+        <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm text-gray-700 dark:text-gray-400">
+                    Showing <span class="font-semibold text-gray-900 dark:text-white">{{ startIndex() }}</span> to
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ endIndex() }}</span> of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ totalItems() }}</span> results
+                </p>
+            </div>
+            <div>
+                <nav class="isolate inline-flex -space-x-px rounded-xl shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700"
+                    aria-label="Pagination">
+                    <button (click)="prevPage()" [disabled]="currentPage() === 1"
+                        class="relative inline-flex items-center rounded-l-xl px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0 disabled:opacity-50">
+                        <span class="sr-only">Previous</span>
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <!-- Simple page indicator for now -->
+                    <span
+                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700">
+                        Page {{ currentPage() }} of {{ totalPages() || 1 }}
+                    </span>
+                    <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+                        class="relative inline-flex items-center rounded-r-xl px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0 disabled:opacity-50">
+                        <span class="sr-only">Next</span>
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
