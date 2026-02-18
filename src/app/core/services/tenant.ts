@@ -69,6 +69,7 @@ export class TenantService {
       primary_color: t.primary_color,
       secondary_color: t.secondary_color,
       accent_color: t.accent_color,
+      font_family: t.font_family,
     };
   });
 
@@ -261,6 +262,8 @@ export class TenantService {
     accent_color?: string;
     logo_url?: string | null;
     favicon_url?: string | null;
+    font_family?: string;
+    layout?: 'modern' | 'classic' | 'minimal';
   }): Promise<{ success: boolean; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) {

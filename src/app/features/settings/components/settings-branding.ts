@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-settings-branding',
-    imports: [ReactiveFormsModule],
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './settings-branding.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -17,16 +19,34 @@ export class SettingsBranding {
 
     readonly isSaving = signal(false);
     readonly tenant = this.tenantService.tenant;
+    readonly brandingChange = output<any>();
+
+    readonly fonts = [
+        { name: 'Inter', value: '"Inter", sans-serif' },
+        { name: 'Roboto', value: '"Roboto", sans-serif' },
+        { name: 'Outfit', value: '"Outfit", sans-serif' },
+        { name: 'Playfair Display', value: '"Playfair Display", serif' },
+        { name: 'Poppins', value: '"Poppins", sans-serif' },
+    ];
+
+    readonly layouts = [
+        { id: 'modern', name: 'Modern Header', icon: 'M4 6h16M4 12h16M4 18h7' },
+        { id: 'classic', name: 'Classic Centered', icon: 'M4 6h16M7 12h10M9 18h6' },
+        { id: 'minimal', name: 'Minimalist Side', icon: 'M4 6h16M4 10h16M4 14h16M4 18h16' },
+    ];
 
     readonly form = this.fb.nonNullable.group({
         primary_color: ['#000000', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
         secondary_color: ['#ffffff', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
         accent_color: ['#3b82f6', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
+        font_family: ['"Inter", sans-serif', [Validators.required]],
+        layout: ['modern', [Validators.required]],
         logo_url: [''],
         favicon_url: [''],
     });
 
     constructor() {
+        // Handle initial values
         effect(() => {
             const tenant = this.tenant();
             if (tenant) {
@@ -34,12 +54,25 @@ export class SettingsBranding {
                     primary_color: tenant.primary_color,
                     secondary_color: tenant.secondary_color,
                     accent_color: tenant.accent_color,
+                    font_family: tenant.font_family || '"Inter", sans-serif',
+                    layout: tenant.layout || 'modern',
                     logo_url: tenant.logo_url || '',
                     favicon_url: tenant.favicon_url || '',
-                });
+                }, { emitEvent: false });
                 this.form.markAsPristine();
+                this.emitBranding();
             }
         });
+
+        // Watch for changes and emit to preview
+        this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+            this.emitBranding();
+        });
+    }
+
+    private emitBranding() {
+        const values = this.form.getRawValue();
+        this.brandingChange.emit(values);
     }
 
     async onFileSelected(event: Event, type: 'logo' | 'favicon') {
@@ -92,7 +125,7 @@ export class SettingsBranding {
         this.isSaving.set(true);
 
         try {
-            const brandingData = this.form.getRawValue();
+            const brandingData: any = this.form.getRawValue();
             const result = await this.tenantService.updateBranding({
                 ...brandingData,
                 logo_url: brandingData.logo_url || null,

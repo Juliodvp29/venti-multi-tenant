@@ -1,1 +1,39 @@
-<p>products-catalog works!</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+
+    <!-- Header -->
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+                Catálogo de Productos
+            </h1>
+            <p class="mt-1 text-base text-gray-500 dark:text-gray-400">
+                Administra tus productos y organízalos en categorías.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="border-b border-gray-200 dark:border-gray-700 mb-8">
+        <nav class="-mb-px flex space-x-1" aria-label="Catalog Tabs">
+            @for (tab of tabs; track tab.id) {
+            <button (click)="setTab(tab.id)" class="catalog-tab" [class.active]="activeTab() === tab.id">
+                <span [innerHTML]="tab.icon"></span>
+                {{ tab.label }}
+            </button>
+            }
+        </nav>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content-enter">
+        @switch (activeTab()) {
+        @case ('products') {
+        <app-products-list />
+        }
+        @case ('categories') {
+        <app-categories-list />
+        }
+        }
+    </div>
+
+</div>

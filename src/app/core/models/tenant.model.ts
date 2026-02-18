@@ -4,6 +4,8 @@ export interface TenantBranding {
     primary_color: string;
     secondary_color: string;
     accent_color: string;
+    font_family: string;
+    layout: 'modern' | 'classic' | 'minimal';
 }
 
 export interface TenantAddress {
@@ -77,6 +79,8 @@ export interface Tenant {
     primary_color: string;
     secondary_color: string;
     accent_color: string;
+    font_family: string;
+    layout: 'modern' | 'classic' | 'minimal';
 
     // Business Address
     address_line1: string | null;
@@ -104,6 +108,8 @@ export interface UpdateTenantDto {
     primary_color?: string;
     secondary_color?: string;
     accent_color?: string;
+    font_family?: string;
+    layout?: 'modern' | 'classic' | 'minimal';
     address_line1?: string | null;
     address_line2?: string | null;
     city?: string | null;

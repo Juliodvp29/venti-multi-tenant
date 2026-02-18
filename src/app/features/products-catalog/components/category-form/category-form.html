@@ -1,0 +1,156 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col h-full overflow-hidden">
+
+    <!-- Form Header -->
+    <div class="flex-shrink-0 px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div class="flex items-center gap-3">
+            <div
+                class="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                </svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+                    {{ isEditMode() ? 'Editar' : 'Nueva' }} Categoría
+                </p>
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+                    {{ isEditMode() ? 'Actualizar categoría' : 'Crear nueva categoría' }}
+                </h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Organiza tu catálogo con jerarquías claras.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Body — scrollable -->
+    <div class="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-900">
+
+        <!-- Name + Slug -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                    Nombre de la Categoría <span class="text-red-500">*</span>
+                </label>
+                <input type="text" formControlName="name" (input)="onNameInput($event)"
+                    placeholder="ej. Electrónica de Verano"
+                    class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    [class.border-red-500]="hasError('name')">
+                @if (hasError('name')) {
+                <p class="mt-1.5 text-xs text-red-500">El nombre es requerido (mínimo 2 caracteres).</p>
+                }
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Slug <span class="text-red-500">*</span>
+                    </label>
+                    <button type="button" (click)="autoGenerateSlug()"
+                        class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                            stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        AUTO-GENERAR
+                    </button>
+                </div>
+                <input type="text" formControlName="slug" (input)="onSlugInput()" placeholder="electronica-verano"
+                    class="block w-full rounded-xl border px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    [class.border-red-500]="hasError('slug')">
+                @if (hasError('slug')) {
+                <p class="mt-1.5 text-xs text-red-500">Slug inválido. Solo letras, números y guiones.</p>
+                }
+            </div>
+        </div>
+
+        <!-- Parent Category -->
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                Categoría Padre <span class="text-gray-400 dark:text-gray-500 font-normal">(Opcional)</span>
+            </label>
+            <div class="relative">
+                <select formControlName="parent_id"
+                    class="block w-full appearance-none rounded-xl border px-3.5 py-2.5 pr-10 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                    <option value="" class="bg-white dark:bg-gray-800">Ninguna (Nivel Superior)</option>
+                    @for (cat of parentCategories; track cat.id) {
+                    <option [value]="cat.id" class="bg-white dark:bg-gray-800">{{ cat.name }}</option>
+                    }
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Descripción</label>
+            <textarea formControlName="description" rows="3"
+                placeholder="Describe brevemente el contenido de esta categoría para SEO y uso interno..."
+                class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none">
+            </textarea>
+        </div>
+
+        <!-- Active Toggle -->
+        <div
+            class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <div>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">Estado activo</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Las categorías inactivas no se muestran en la
+                    tienda.</p>
+            </div>
+            <button type="button" (click)="form.patchValue({ is_active: !form.getRawValue().is_active })"
+                class="toggle-btn" [class.active]="form.getRawValue().is_active" role="switch"
+                [attr.aria-checked]="form.getRawValue().is_active">
+                <span class="toggle-thumb"></span>
+            </button>
+        </div>
+
+        <!-- Pro Tip -->
+        <div
+            class="flex gap-3 p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800">
+            <div
+                class="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                </svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-indigo-700 dark:text-indigo-300">Pro Tip</p>
+                <p class="text-xs text-indigo-600 dark:text-indigo-400 mt-0.5">
+                    Usa nombres descriptivos y slugs únicos para mejorar el SEO de tu tienda hasta un 35%.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Form Footer -->
+    <div
+        class="flex-shrink-0 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center justify-end gap-3">
+        <button type="button" (click)="cancel()"
+            class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
+            Cancelar
+        </button>
+        <button type="submit" [disabled]="isSaving()"
+            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl transition-all duration-200 shadow-sm">
+            @if (isSaving()) {
+            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            Guardando...
+            } @else {
+            {{ isEditMode() ? 'Actualizar Categoría' : 'Crear Categoría' }} →
+            }
+        </button>
+    </div>
+
+</form>
