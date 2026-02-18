@@ -93,7 +93,12 @@ export class TenantService {
 
   async loadUserTenants(): Promise<void> {
     const userId = this.authService.userId();
-    if (!userId) return;
+
+    // If no user, we are initialized but with no tenants
+    if (!userId) {
+      this._state.update(s => ({ ...s, initialized: true, loading: false }));
+      return;
+    }
 
     this._state.update((s) => ({ ...s, loading: true, error: null }));
 
@@ -111,8 +116,6 @@ export class TenantService {
         tenants: data ?? [],
         // Auto-select first tenant
         currentTenant: data?.[0] ?? null,
-        loading: false,
-        initialized: true,
       }));
 
       if (data?.[0]) {
@@ -124,6 +127,11 @@ export class TenantService {
       this._state.update((s) => ({
         ...s,
         error: 'Failed to load tenant information',
+      }));
+    } finally {
+      // ALWAYS ensure initialized is set to true, regardless of success or failure
+      this._state.update((s) => ({
+        ...s,
         loading: false,
         initialized: true,
       }));
@@ -133,7 +141,6 @@ export class TenantService {
   async setCurrentTenant(tenantId: string): Promise<void> {
     const tenant = this._state().tenants.find((t) => t.id === tenantId);
     if (!tenant) return;
-    this._state.update((s) => ({ ...s, currentTenant: tenant }));
     this._state.update((s) => ({ ...s, currentTenant: tenant }));
     await this.loadMemberInfo(tenantId);
     await this.loadTenantSettings(tenantId);

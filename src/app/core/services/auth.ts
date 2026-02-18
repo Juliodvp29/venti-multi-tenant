@@ -43,24 +43,7 @@ export class AuthService {
     this.initAuth();
 
     // Effect: Handle navigation based on auth state
-    effect(() => {
-      const isAuth = this.isAuthenticated();
-      const isInit = this.isInitialized();
-
-      if (!isInit) return;
-
-      const currentUrl = this.router.url;
-      const isAuthPage = currentUrl.startsWith('/auth');
-
-      // If authenticated and on auth pages, redirect to dashboard
-      if (isAuth && isAuthPage) {
-        this.router.navigate(['/dashboard']);
-      }
-      // If not authenticated and not on auth pages, redirect to login
-      else if (!isAuth && !isAuthPage) {
-        this.router.navigate(['/auth/login']);
-      }
-    });
+    // Navigation logic removed. It should be handled by Route Guards or specific components.
   }
 
   // ── Init ─────────────────────────────────────────────────
