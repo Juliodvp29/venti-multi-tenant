@@ -165,7 +165,12 @@ export class ProductsList implements OnInit {
     }
 
     async deleteProduct(product: Product) {
-        if (!confirm(`¿Eliminar el producto "${product.name}"? Esta acción no se puede deshacer.`)) return;
+        const confirmed = await this.toast.confirm(
+            `¿Eliminar el producto "${product.name}"? Esta acción no se puede deshacer.`,
+            'Eliminar Producto'
+        );
+
+        if (!confirmed) return;
 
         try {
             await this.productsService.deleteProduct(product.id);

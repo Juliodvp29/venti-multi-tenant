@@ -140,7 +140,12 @@ export class CategoriesList implements OnInit {
     }
 
     async deleteCategory(category: Category) {
-        if (!confirm(`¿Eliminar la categoría "${category.name}"? Esta acción no se puede deshacer.`)) return;
+        const confirmed = await this.toast.confirm(
+            `¿Eliminar la categoría "${category.name}"? Esta acción no se puede deshacer.`,
+            'Eliminar Categoría'
+        );
+
+        if (!confirmed) return;
 
         this.deletingId.set(category.id);
         try {

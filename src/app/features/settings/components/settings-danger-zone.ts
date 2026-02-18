@@ -14,7 +14,12 @@ export class SettingsDangerZone {
     readonly isDeleting = signal(false);
 
     async deleteStore() {
-        if (!confirm('¿Estás seguro de que deseas eliminar esta tienda? Esta acción no se puede deshacer.')) {
+        const confirmed = await this.toastService.confirm(
+            '¿Estás seguro de que deseas eliminar esta tienda? Esta acción no se puede deshacer.',
+            'Eliminar Tienda'
+        );
+
+        if (!confirmed) {
             return;
         }
 

@@ -91,7 +91,7 @@ export interface NavItem {
 // NOTIFICATION TYPES
 // ============================================================
 
-export type ToastType = 'success' | 'error' | 'warning' | 'info';
+export type ToastType = 'success' | 'error' | 'warning' | 'info' | 'confirm';
 
 export interface Toast {
   id: string;
@@ -99,6 +99,8 @@ export interface Toast {
   message: string;
   title?: string;
   duration?: number;
+  onConfirm?: () => void;
+  onCancel?: () => void;
 }
 
 // ============================================================
