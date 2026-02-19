@@ -1,6 +1,6 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
-import { CreateProductDto, Product, UpdateProductDto } from '@core/models/product';
+import { CreateProductDto, Product, ProductImage, UpdateProductDto } from '@core/models/product';
 import { Nullable, PaginatedState } from '@core/types';
 import { TenantService } from './tenant';
 import { StorageService } from './storage';
@@ -110,8 +110,6 @@ export class ProductsService {
      * Deletes existing rows in product_categories then inserts new ones.
      */
     async setProductCategories(productId: string, categoryIds: string[]): Promise<void> {
-        const tenantId = this.tenantService.tenantId();
-        if (!tenantId) throw new Error('Tenant not selected');
 
         // Delete existing associations
         const { error: deleteError } = await this.supabase.client
@@ -127,7 +125,6 @@ export class ProductsService {
         const rows = categoryIds.map(categoryId => ({
             product_id: productId,
             category_id: categoryId,
-            tenant_id: tenantId,
         }));
 
         const { error: insertError } = await this.supabase.client
@@ -137,31 +134,67 @@ export class ProductsService {
         if (insertError) throw insertError;
     }
 
-    async uploadImage(file: File, productId: string, isPrimary: boolean = false): Promise<string> {
+    async setPrimaryImage(productId: string, imageId: string): Promise<void> {
+        // Reset all images for this product
+        await this.supabase.client
+            .from('product_images')
+            .update({ is_primary: false })
+            .eq('product_id', productId);
+
+        // Set the selected image as primary
+        const { error } = await this.supabase.client
+            .from('product_images')
+            .update({ is_primary: true })
+            .eq('id', imageId);
+
+        if (error) throw error;
+    }
+
+    async uploadImage(
+        file: File,
+        productId: string,
+        isPrimary: boolean = false,
+        altText?: string,
+        sortOrder: number = 0
+    ): Promise<ProductImage> {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');
 
-        // Use StorageService to handle validation, optimization and upload
         const folder = `${tenantId}/products/${productId}`;
-
-        // We can use the 'products' bucket if it exists, or a general 'media' bucket
-        // Assuming 'products' is a valid bucket key in environment
         const result = await this.storageService.uploadImage('products', file, folder);
 
-        // Save metadata to product_images table
-        const { error: dbError } = await this.supabase.client
+        const { data, error: dbError } = await this.supabase.client
             .from('product_images')
             .insert({
                 product_id: productId,
                 tenant_id: tenantId,
                 url: result.url,
                 is_primary: isPrimary,
-                // We could also save width, height, size if StorageService returned them
-                // or if we processed them here.
-            });
+                alt_text: altText ?? null,
+                sort_order: sortOrder,
+            })
+            .select()
+            .single();
 
         if (dbError) throw dbError;
+        return data as ProductImage;
+    }
 
-        return result.url;
+    async deleteProductImage(imageId: string, imageUrl: string): Promise<void> {
+        // Delete DB row
+        const { error } = await this.supabase.client
+            .from('product_images')
+            .delete()
+            .eq('id', imageId);
+
+        if (error) throw error;
+
+        // Delete storage file (best effort - don't fail if file not found)
+        try {
+            const storagePath = this.storageService.extractPathFromUrl(imageUrl);
+            await this.storageService.deleteFile('products', storagePath);
+        } catch (e) {
+            console.warn('[ProductsService] Could not delete storage file:', e);
+        }
     }
 }

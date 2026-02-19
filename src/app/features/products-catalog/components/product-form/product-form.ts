@@ -4,9 +4,9 @@ import {
     effect,
     inject,
     input,
-    OnInit,
     output,
     signal,
+    ViewChild,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -15,16 +15,19 @@ import { Category } from '@core/models/category';
 import { ProductsService } from '@core/services/products';
 import { ToastService } from '@core/services/toast';
 import { ProductStatus } from '@core/enums';
+import { ProductImageUploader } from '../product-image-uploader/product-image-uploader';
 
 @Component({
     selector: 'app-product-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, ProductImageUploader],
     templateUrl: './product-form.html',
     styleUrl: './product-form.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductForm {
+    @ViewChild(ProductImageUploader) imageUploader?: ProductImageUploader;
+
     private readonly fb = inject(FormBuilder);
     private readonly productsService = inject(ProductsService);
     private readonly toast = inject(ToastService);
@@ -164,6 +167,10 @@ export class ProductForm {
                 this.toast.success(`Producto "${result.name}" actualizado correctamente.`);
             } else {
                 result = await this.productsService.createProduct(dto);
+                // Upload any pending images for the newly created product
+                if (this.imageUploader) {
+                    await this.imageUploader.uploadAllPending(result.id);
+                }
                 this.toast.success(`Producto "${result.name}" creado correctamente.`);
             }
 

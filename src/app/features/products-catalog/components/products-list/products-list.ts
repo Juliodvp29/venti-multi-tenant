@@ -2,6 +2,7 @@ import {
     ChangeDetectionStrategy,
     Component,
     computed,
+    effect,
     inject,
     OnInit,
     signal,
@@ -11,6 +12,7 @@ import { Product } from '@core/models/product';
 import { Category } from '@core/models/category';
 import { ProductsService } from '@core/services/products';
 import { CategoriesService } from '@core/services/categories';
+import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { ColumnDef, TableAction } from '@core/types/table';
@@ -29,8 +31,23 @@ import { ProductStatus } from '@core/enums';
 export class ProductsList implements OnInit {
     private readonly productsService = inject(ProductsService);
     private readonly categoriesService = inject(CategoriesService);
+    private readonly tenantService = inject(TenantService);
     private readonly toast = inject(ToastService);
     private readonly currencyPipe = inject(CurrencyPipe);
+
+    private initialized = false;
+
+    constructor() {
+        // Load data as soon as the tenant becomes available
+        effect(() => {
+            const tenantId = this.tenantService.tenantId();
+            if (tenantId && !this.initialized) {
+                this.initialized = true;
+                this.loadProducts();
+                this.loadCategories();
+            }
+        });
+    }
 
     readonly isLoading = signal(false);
     readonly products = signal<Product[]>([]);
@@ -124,8 +141,8 @@ export class ProductsList implements OnInit {
         },
     ];
 
-    async ngOnInit() {
-        await Promise.all([this.loadProducts(), this.loadCategories()]);
+    ngOnInit() {
+        // Data loading is handled by the constructor effect once tenant is ready
     }
 
     async loadProducts() {
@@ -144,7 +161,7 @@ export class ProductsList implements OnInit {
         try {
             const data = await this.categoriesService.getCategories(false);
             this.categories.set(data);
-        } catch (err) {
+        } catch (err: any) {
             console.error('[ProductsList] Error loading categories:', err);
         }
     }
@@ -243,8 +260,7 @@ export class ProductsList implements OnInit {
                     const name = String(row['name'] ?? '').trim();
                     if (!name) throw new Error('Campo "name" vacío');
 
-                    const price = Number(row['price']);
-                    if (isNaN(price)) throw new Error(`"${name}": precio inválido ("${row['price']}")`);
+                    const price = Number(row['price'] ?? 0);
 
                     const slug = String(row['slug'] ?? '').trim()
                         ? toSlug(String(row['slug']))
@@ -253,7 +269,7 @@ export class ProductsList implements OnInit {
                     const product = await this.productsService.createProduct({
                         name,
                         slug,
-                        price,
+                        price: isNaN(price) ? 0 : price,
                         sku: String(row['sku'] ?? '').trim() || undefined,
                         description: String(row['description'] ?? '').trim() || undefined,
                         status: (row['status'] as any) || ProductStatus.Draft,
