@@ -168,4 +168,74 @@ export class CategoriesList implements OnInit {
         }
         this.closeDrawer();
     }
+
+    async onImportData(rows: Record<string, any>[]) {
+        if (!rows.length) return;
+
+        const BATCH_SIZE = 5;
+        const total = rows.length;
+        let created = 0;
+        let failed = 0;
+        const errors: string[] = [];
+
+        const toSlug = (str: string) => str
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+
+        // Split into batches
+        const batches: Record<string, any>[][] = [];
+        for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+            batches.push(rows.slice(i, i + BATCH_SIZE));
+        }
+
+        this.toast.info(`Importando ${total} categoría${total > 1 ? 's' : ''}...`);
+
+        for (const batch of batches) {
+            const results = await Promise.allSettled(
+                batch.map(async (row) => {
+                    const name = String(row['name'] ?? '').trim();
+                    if (!name) throw new Error('Campo "name" vacío');
+
+                    const slug = String(row['slug'] ?? '').trim()
+                        ? toSlug(String(row['slug']))
+                        : toSlug(name);
+
+                    return this.categoriesService.createCategory({
+                        name,
+                        slug,
+                        description: String(row['description'] ?? '').trim() || undefined,
+                        parent_id: String(row['parent_id'] ?? '').trim() || undefined,
+                        is_active: String(row['is_active'] ?? 'true').toLowerCase() !== 'false',
+                        sort_order: row['sort_order'] ? Number(row['sort_order']) : 0,
+                    });
+                })
+            );
+
+            for (const result of results) {
+                if (result.status === 'fulfilled') {
+                    this.categories.update(cats => [...cats, result.value]);
+                    created++;
+                } else {
+                    failed++;
+                    errors.push((result.reason as Error)?.message ?? 'Error desconocido');
+                }
+            }
+
+            // Yield between batches to keep UI responsive
+            await new Promise(r => setTimeout(r, 50));
+        }
+
+        if (created > 0 && failed === 0) {
+            this.toast.success(`✅ ${created} categoría${created > 1 ? 's' : ''} importada${created > 1 ? 's' : ''} correctamente.`);
+        } else if (created > 0 && failed > 0) {
+            this.toast.warning(`⚠️ ${created} importadas, ${failed} con error. Revisa la consola.`);
+            console.warn('[Import] Errores:', errors);
+        } else {
+            this.toast.error(`❌ Ninguna categoría pudo importarse. Verifica el archivo.`);
+            console.error('[Import] Errores:', errors);
+        }
+    }
 }

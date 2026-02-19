@@ -38,6 +38,7 @@ export class ProductForm {
     readonly isSaving = signal(false);
     readonly isEditMode = signal(false);
     readonly slugManuallyEdited = signal(false);
+    readonly selectedCategoryIds = signal<Set<string>>(new Set());
 
     readonly statusOptions: { value: ProductStatus; label: string }[] = [
         { value: ProductStatus.Draft, label: 'Borrador' },
@@ -78,12 +79,27 @@ export class ProductForm {
                     stock_quantity: p.stock_quantity,
                     is_featured: p.is_featured,
                 });
+                // Populate selected categories from product relation
+                const catIds = (p.categories ?? []).map((c: any) =>
+                    c?.category?.id ?? c?.id ?? c
+                ).filter(Boolean);
+                this.selectedCategoryIds.set(new Set(catIds));
                 this.form.markAsPristine();
             } else {
                 this.isEditMode.set(false);
                 this.form.reset({ status: ProductStatus.Draft, track_inventory: false, stock_quantity: 0, price: 0 });
                 this.slugManuallyEdited.set(false);
+                this.selectedCategoryIds.set(new Set());
             }
+        });
+    }
+
+    toggleCategory(id: string) {
+        this.selectedCategoryIds.update(set => {
+            const next = new Set(set);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
         });
     }
 
@@ -151,9 +167,14 @@ export class ProductForm {
                 this.toast.success(`Producto "${result.name}" creado correctamente.`);
             }
 
+            // Save category associations
+            const catIds = [...this.selectedCategoryIds()];
+            await this.productsService.setProductCategories(result.id, catIds);
+
             this.saved.emit(result);
             this.form.reset({ status: ProductStatus.Draft, track_inventory: false, stock_quantity: 0, price: 0 });
             this.slugManuallyEdited.set(false);
+            this.selectedCategoryIds.set(new Set());
         } catch (error: any) {
             console.error('Error saving product:', error);
             this.toast.error(error?.message ?? 'Error al guardar el producto.');

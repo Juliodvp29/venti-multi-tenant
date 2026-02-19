@@ -86,7 +86,8 @@
 
     <!-- Dynamic Table -->
     <app-dynamic-table [data]="filteredProducts()" [columns]="columns" [actions]="actions" title="Productos"
-        description="Gestiona tu catálogo completo de productos." searchPlaceholder="Buscar por nombre, SKU...">
+        description="Gestiona tu catálogo completo de productos." searchPlaceholder="Buscar por nombre, SKU..."
+        [allowImport]="true" (importData)="onImportData($event)">
 
         <!-- Actions Slot -->
         <div actions>

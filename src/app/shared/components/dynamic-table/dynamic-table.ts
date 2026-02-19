@@ -7,7 +7,8 @@ import {
   signal,
   inject,
   viewChild,
-  ElementRef
+  ElementRef,
+  HostListener
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -45,12 +46,21 @@ export class DynamicTable<T extends Record<string, any>> {
   // Outputs
   actionClick = output<{ actionId: string; item: T }>();
   rowClick = output<T>();
-  importData = output<T[]>();
+  importData = output<Record<string, any>[]>();
 
   // Reactive State
   searchQuery = signal('');
   sortState = signal<TableSort | null>(null);
   currentPage = signal(1);
+  openMenuId = signal<string | null>(null);
+  openMenuItem = signal<T | null>(null);
+  menuPosition = signal<{ top: number; left: number } | null>(null);
+
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.openMenuId.set(null);
+    this.menuPosition.set(null);
+  }
 
   // Computed: Filtered and Sorted Data
   filteredData = computed(() => {
@@ -124,6 +134,35 @@ export class DynamicTable<T extends Record<string, any>> {
     }
   }
 
+  toggleMenu(event: Event, item: T) {
+    event.stopPropagation();
+    const itemId = item['id'];
+    if (this.openMenuId() === itemId) {
+      this.openMenuId.set(null);
+      this.openMenuItem.set(null);
+      this.menuPosition.set(null);
+      return;
+    }
+    const btn = event.currentTarget as HTMLElement;
+    const rect = btn.getBoundingClientRect();
+    this.menuPosition.set({
+      top: rect.bottom + 6,
+      left: rect.right - 192
+    });
+    this.openMenuId.set(itemId);
+    this.openMenuItem.set(item);
+  }
+
+  closeMenu() {
+    this.openMenuId.set(null);
+    this.openMenuItem.set(null);
+    this.menuPosition.set(null);
+  }
+
+  getItemById(id: string): T | undefined {
+    return this.paginatedData().find(item => item['id'] === id);
+  }
+
   prevPage() {
     if (this.currentPage() > 1) {
       this.currentPage.update(p => p - 1);
@@ -170,26 +209,19 @@ export class DynamicTable<T extends Record<string, any>> {
     if (!input.files?.length) return;
 
     const file = input.files[0];
-    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
-      this.toast.error('Por favor, selecciona un archivo CSV');
-      return;
-    }
-
     try {
-      const text = await file.text();
-      const data = this.fileProcessor.parseCsv<T>(text);
-
+      const data = await this.fileProcessor.parseFile(file);
       if (data.length > 0) {
         this.importData.emit(data);
-        this.toast.success(`${data.length} registros listos para procesar`);
+        this.toast.info(`${data.length} registros leídos. Iniciando importación...`);
       } else {
-        this.toast.error('El archivo está vacío o tiene un formato inválido');
+        this.toast.error('El archivo está vacío o tiene un formato inválido.');
       }
-    } catch (error) {
-      console.error('Error parsing CSV:', error);
-      this.toast.error('Error al procesar el archivo');
+    } catch (error: any) {
+      console.error('Error al leer archivo:', error);
+      this.toast.error(error?.message ?? 'Error al procesar el archivo.');
     } finally {
-      input.value = ''; // Reset for same file re-selection
+      input.value = '';
     }
   }
 

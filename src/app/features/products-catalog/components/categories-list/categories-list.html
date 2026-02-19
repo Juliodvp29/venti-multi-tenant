@@ -71,7 +71,7 @@
     <!-- Dynamic Table -->
     <app-dynamic-table [data]="flatCategories()" [columns]="columns" [actions]="actions" title="Categorías"
         description="Organiza tus productos en jerarquías significativas."
-        searchPlaceholder="Buscar por nombre o slug...">
+        searchPlaceholder="Buscar por nombre o slug..." [allowImport]="true" (importData)="onImportData($event)">
 
         <!-- Actions Slot -->
         <div actions>

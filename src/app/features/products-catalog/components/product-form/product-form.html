@@ -109,6 +109,44 @@
                     </div>
                 </div>
 
+                <!-- Categories -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Categorías
+                        @if (selectedCategoryIds().size > 0) {
+                        <span class="ml-1.5 text-xs font-normal text-indigo-600">({{ selectedCategoryIds().size }}
+                            seleccionada{{ selectedCategoryIds().size !== 1 ? 's' : '' }})</span>
+                        }
+                    </label>
+                    @if (categories().length === 0) {
+                    <p class="text-xs text-gray-400 dark:text-gray-500 italic">No hay categorías disponibles. Crea
+                        categorías primero.</p>
+                    } @else {
+                    <div class="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
+                        @for (cat of categories(); track cat.id) {
+                        <button type="button" (click)="toggleCategory(cat.id)"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150"
+                            [class.bg-indigo-600]="selectedCategoryIds().has(cat.id)"
+                            [class.text-white]="selectedCategoryIds().has(cat.id)"
+                            [class.border-indigo-600]="selectedCategoryIds().has(cat.id)"
+                            [class.bg-white]="!selectedCategoryIds().has(cat.id)"
+                            [class.dark:bg-gray-800]="!selectedCategoryIds().has(cat.id)"
+                            [class.text-gray-700]="!selectedCategoryIds().has(cat.id)"
+                            [class.dark:text-gray-300]="!selectedCategoryIds().has(cat.id)"
+                            [class.border-gray-300]="!selectedCategoryIds().has(cat.id)"
+                            [class.dark:border-gray-600]="!selectedCategoryIds().has(cat.id)">
+                            @if (selectedCategoryIds().has(cat.id)) {
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                            </svg>
+                            }
+                            {{ cat.name }}
+                        </button>
+                        }
+                    </div>
+                    }
+                </div>
+
             </div>
         </div>
 

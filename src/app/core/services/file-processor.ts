@@ -1,14 +1,32 @@
 import { Injectable } from '@angular/core';
+import * as XLSX from 'xlsx';
 
 @Injectable({
     providedIn: 'root'
 })
 export class FileProcessorService {
+
+    /**
+     * Reads a File (CSV or Excel) and returns an array of plain objects.
+     * The first row is always used as column headers.
+     */
+    async parseFile(file: File): Promise<Record<string, any>[]> {
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        if (ext === 'csv') {
+            const text = await file.text();
+            return this.parseCsv(text);
+        }
+        if (ext === 'xlsx' || ext === 'xls') {
+            return this.parseExcel(file);
+        }
+        throw new Error(`Formato no soportado: .${ext}. Usa .csv, .xlsx o .xls`);
+    }
+
     /**
      * Parses a CSV string into an array of objects.
-     * Assumes the first row contains headers.
+     * First row contains headers.
      */
-    parseCsv<T>(csv: string): T[] {
+    parseCsv<T = Record<string, any>>(csv: string): T[] {
         const lines = csv.split(/\r?\n/);
         if (lines.length < 2) return [];
 
@@ -23,12 +41,8 @@ export class FileProcessorService {
 
             const obj: any = {};
             for (let j = 0; j < headers.length; j++) {
-                let val = currentline[j].trim().replace(/^"|"$/g, '');
-                // Basic type conversion
-                if (val.toLocaleLowerCase() === 'true') val = 'true';
-                else if (val.toLocaleLowerCase() === 'false') val = 'false';
-                else if (!isNaN(Number(val)) && val !== '') (obj as any)[headers[j]] = Number(val);
-                else obj[headers[j]] = val;
+                const val = currentline[j].trim().replace(/^"|"$/g, '');
+                obj[headers[j]] = val;
             }
             result.push(obj as T);
         }
@@ -36,7 +50,35 @@ export class FileProcessorService {
     }
 
     /**
-     * Helper to split CSV lines correctly handling quotes
+     * Parses an Excel file (.xlsx/.xls) using SheetJS.
+     * Returns first sheet rows as plain objects (all values as strings for consistency).
+     */
+    private parseExcel(file: File): Promise<Record<string, any>[]> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target!.result as ArrayBuffer);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    // defval: '' prevents undefined values; raw: false converts dates to strings
+                    const rows = XLSX.utils.sheet_to_json<Record<string, any>>(sheet, {
+                        defval: '',
+                        raw: false,
+                    });
+                    resolve(rows);
+                } catch (err) {
+                    reject(new Error('Error al leer el archivo Excel.'));
+                }
+            };
+            reader.onerror = () => reject(new Error('Error al leer el archivo.'));
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    /**
+     * Helper to split CSV lines respecting quoted fields.
      */
     private splitCsvLine(line: string): string[] {
         const result = [];

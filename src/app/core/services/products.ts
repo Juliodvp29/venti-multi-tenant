@@ -105,6 +105,38 @@ export class ProductsService {
         if (error) throw error;
     }
 
+    /**
+     * Replaces all category associations for a product.
+     * Deletes existing rows in product_categories then inserts new ones.
+     */
+    async setProductCategories(productId: string, categoryIds: string[]): Promise<void> {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) throw new Error('Tenant not selected');
+
+        // Delete existing associations
+        const { error: deleteError } = await this.supabase.client
+            .from('product_categories')
+            .delete()
+            .eq('product_id', productId);
+
+        if (deleteError) throw deleteError;
+
+        if (!categoryIds.length) return;
+
+        // Insert new associations
+        const rows = categoryIds.map(categoryId => ({
+            product_id: productId,
+            category_id: categoryId,
+            tenant_id: tenantId,
+        }));
+
+        const { error: insertError } = await this.supabase.client
+            .from('product_categories')
+            .insert(rows);
+
+        if (insertError) throw insertError;
+    }
+
     async uploadImage(file: File, productId: string, isPrimary: boolean = false): Promise<string> {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');

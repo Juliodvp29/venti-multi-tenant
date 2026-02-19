@@ -144,8 +144,8 @@ export class ProductsList implements OnInit {
         try {
             const data = await this.categoriesService.getCategories(false);
             this.categories.set(data);
-        } catch {
-            // Non-critical, categories are optional for the filter
+        } catch (err) {
+            console.error('[ProductsList] Error loading categories:', err);
         }
     }
 
@@ -198,5 +198,103 @@ export class ProductsList implements OnInit {
     onStatusFilterChange(event: Event) {
         const select = event.target as HTMLSelectElement;
         this.statusFilter.set(select.value);
+    }
+
+    async onImportData(rows: Record<string, any>[]) {
+        if (!rows.length) return;
+
+        const BATCH_SIZE = 5;
+        const total = rows.length;
+        let created = 0;
+        let failed = 0;
+        const errors: string[] = [];
+
+        const toSlug = (str: string) => str
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+
+        // Build a name→id map from loaded categories (case-insensitive)
+        const categoryMap = new Map<string, string>();
+        for (const cat of this.categories()) {
+            categoryMap.set(cat.name.toLowerCase().trim(), cat.id);
+        }
+
+        const resolveCategoryIds = (rawNames: string): string[] => {
+            if (!rawNames.trim()) return [];
+            return rawNames.split(',')
+                .map(n => n.trim().toLowerCase())
+                .map(n => categoryMap.get(n))
+                .filter((id): id is string => !!id);
+        };
+
+        const batches: Record<string, any>[][] = [];
+        for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+            batches.push(rows.slice(i, i + BATCH_SIZE));
+        }
+
+        this.toast.info(`Importando ${total} producto${total > 1 ? 's' : ''}...`);
+
+        for (const batch of batches) {
+            const results = await Promise.allSettled(
+                batch.map(async (row) => {
+                    const name = String(row['name'] ?? '').trim();
+                    if (!name) throw new Error('Campo "name" vacío');
+
+                    const price = Number(row['price']);
+                    if (isNaN(price)) throw new Error(`"${name}": precio inválido ("${row['price']}")`);
+
+                    const slug = String(row['slug'] ?? '').trim()
+                        ? toSlug(String(row['slug']))
+                        : toSlug(name);
+
+                    const product = await this.productsService.createProduct({
+                        name,
+                        slug,
+                        price,
+                        sku: String(row['sku'] ?? '').trim() || undefined,
+                        description: String(row['description'] ?? '').trim() || undefined,
+                        status: (row['status'] as any) || ProductStatus.Draft,
+                        track_inventory: String(row['track_inventory'] ?? 'false').toLowerCase() === 'true',
+                        stock_quantity: row['stock_quantity'] ? Number(row['stock_quantity']) : 0,
+                    });
+
+                    // Assign categories if column present
+                    const rawCats = String(row['category_name'] ?? '').trim();
+                    if (rawCats) {
+                        const catIds = resolveCategoryIds(rawCats);
+                        if (catIds.length) {
+                            await this.productsService.setProductCategories(product.id, catIds);
+                        }
+                    }
+
+                    return product;
+                })
+            );
+
+            for (const result of results) {
+                if (result.status === 'fulfilled') {
+                    this.products.update(ps => [result.value, ...ps]);
+                    created++;
+                } else {
+                    failed++;
+                    errors.push((result.reason as Error)?.message ?? 'Error desconocido');
+                }
+            }
+
+            await new Promise(r => setTimeout(r, 50));
+        }
+
+        if (created > 0 && failed === 0) {
+            this.toast.success(`✅ ${created} producto${created > 1 ? 's' : ''} importado${created > 1 ? 's' : ''} correctamente.`);
+        } else if (created > 0 && failed > 0) {
+            this.toast.warning(`⚠️ ${created} importados, ${failed} con error. Revisa la consola.`);
+            console.warn('[Import Products] Errores:', errors);
+        } else {
+            this.toast.error(`❌ Ningún producto pudo importarse. Verifica el archivo.`);
+            console.error('[Import Products] Errores:', errors);
+        }
     }
 }
