@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Product, CreateProductDto, UpdateProductDto } from '@core/models/product.model';
-import { Category } from '@core/models/category.model';
+import { Product, CreateProductDto, UpdateProductDto } from '@core/models/product';
+import { Category } from '@core/models/category';
 import { ProductsService } from '@core/services/products';
 import { ToastService } from '@core/services/toast';
 import { ProductStatus } from '@core/enums';

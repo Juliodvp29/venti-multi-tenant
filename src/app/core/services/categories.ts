@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
-import { Category, CreateCategoryDto, UpdateCategoryDto } from '@core/models/category.model';
+import { Category, CreateCategoryDto, UpdateCategoryDto } from '@core/models/category';
 import { TenantService } from './tenant';
 
 @Injectable({

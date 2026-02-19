@@ -9,7 +9,7 @@ import {
     viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Category } from '@core/models/category.model';
+import { Category } from '@core/models/category';
 import { CategoriesService } from '@core/services/categories';
 import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';

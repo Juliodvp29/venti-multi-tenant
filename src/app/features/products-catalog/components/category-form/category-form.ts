@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Category, CreateCategoryDto, UpdateCategoryDto } from '@core/models/category.model';
+import { Category, CreateCategoryDto, UpdateCategoryDto } from '@core/models/category';
 import { CategoriesService } from '@core/services/categories';
 import { ToastService } from '@core/services/toast';
 

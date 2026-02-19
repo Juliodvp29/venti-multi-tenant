@@ -1,89 +1,94 @@
 <div
-    class="max-w-[1600px] mx-auto min-h-screen flex flex-col lg:flex-row bg-white dark:bg-gray-950 transition-colors duration-300">
+    class="max-w-[1600px] mx-auto h-screen overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-gray-950 transition-colors duration-300">
 
-    <!-- Left Column: Settings Content -->
+    <!-- ══════════════════════════════════════════════════
+       LEFT: Settings Panel
+  ══════════════════════════════════════════════════ -->
     <div
-        class="flex-1 lg:max-w-3xl xl:max-w-4xl border-r border-gray-100 dark:border-gray-800 p-6 md:p-10 overflow-y-auto">
-        <div class="max-w-3xl">
-            <!-- Header -->
-            <div class="mb-10">
-                <nav
-                    class="flex mb-4 text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-                    <span>Settings</span>
-                    <span class="mx-2 text-gray-400">/</span>
-                    <span class="text-gray-900 dark:text-white">{{ activeTab() }}</span>
-                </nav>
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Store Customization</h1>
-                <p class="mt-2 text-gray-500 dark:text-gray-400">
-                    Define your brand identity and preview how your customers will see your shop.
-                </p>
+        class="flex-1 lg:max-w-2xl xl:max-w-3xl border-r border-gray-100 dark:border-gray-800 flex flex-col h-full overflow-hidden">
+
+        <!-- Header (Fixed at top) -->
+        <div
+            class="flex-shrink-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-6 md:px-10 pt-8 pb-0">
+            <nav class="flex mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+                <span>Settings</span>
+                <span class="mx-2 text-gray-300 dark:text-gray-700">/</span>
+                <span class="text-gray-900 dark:text-white capitalize">{{ activeTab() }}</span>
+            </nav>
+            <div class="flex items-end justify-between gap-4">
+                <div class="mb-0">
+                    <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Store Customization</h1>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Define your brand identity and preview how customers see your shop.
+                    </p>
+                </div>  
             </div>
 
             <!-- Tabs -->
-            <div class="mb-8 border-b border-gray-200 dark:border-gray-800">
-                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                    <button (click)="setActiveTab('branding')" [class.border-indigo-500]="activeTab() === 'branding'"
-                        [class.text-indigo-600]="activeTab() === 'branding'"
-                        [class.dark:text-indigo-400]="activeTab() === 'branding'"
-                        class="whitespace-nowrap border-b-2 py-4 px-1 text-sm font-semibold transition-all hover:text-indigo-500 border-transparent text-gray-500">
-                        Branding
-                    </button>
-                    <button (click)="setActiveTab('general')" [class.border-indigo-500]="activeTab() === 'general'"
-                        [class.text-indigo-600]="activeTab() === 'general'"
-                        [class.dark:text-indigo-400]="activeTab() === 'general'"
-                        class="whitespace-nowrap border-b-2 py-4 px-1 text-sm font-semibold transition-all hover:text-indigo-500 border-transparent text-gray-500">
-                        General
-                    </button>
-                    <button (click)="setActiveTab('address')" [class.border-indigo-500]="activeTab() === 'address'"
-                        [class.text-indigo-600]="activeTab() === 'address'"
-                        [class.dark:text-indigo-400]="activeTab() === 'address'"
-                        class="whitespace-nowrap border-b-2 py-4 px-1 text-sm font-semibold transition-all hover:text-indigo-500 border-transparent text-gray-500">
-                        Address
-                    </button>
-                </nav>
-            </div>
+            <nav class="-mb-px flex space-x-1 mt-6" aria-label="Tabs">
+                @for (tab of tabs; track tab.id) {
+                <button (click)="setActiveTab(tab.id)"
+                    class="inline-flex items-center gap-1.5 whitespace-nowrap border-b-2 py-3.5 px-1 mr-6 text-sm font-semibold transition-all"
+                    [class.border-indigo-500]="activeTab() === tab.id" [class.text-indigo-600]="activeTab() === tab.id"
+                    [class.dark:text-indigo-400]="activeTab() === tab.id"
+                    [class.border-transparent]="activeTab() !== tab.id" [class.text-gray-500]="activeTab() !== tab.id"
+                    [class.hover:text-gray-700]="activeTab() !== tab.id"
+                    [class.dark:hover:text-gray-300]="activeTab() !== tab.id">
+                    <span [innerHTML]="tab.icon"></span>
+                    {{ tab.label }}
+                </button>
+                }
+            </nav>
+        </div>
 
-            <!-- Forms Content -->
-            <div class="animate-fade-in-up">
+        <!-- Scrollable content -->
+        <div class="flex-1 overflow-y-auto px-6 md:px-10 py-8">
+            <div class="max-w-2xl pb-20">
                 @switch (activeTab()) {
-                @case ('branding') {
-                <app-settings-branding (brandingChange)="updatePreview($event)" />
+                @case ('branding') { <app-settings-branding (brandingChange)="updatePreview($event)" /> }
+                @case ('general') { <app-settings-general /> }
+                @case ('address') { <app-settings-address /> }
                 }
-                @case ('general') {
-                <app-settings-general />
-                }
-                @case ('address') {
-                <app-settings-address />
-                }
-                }
-            </div>
 
-            <!-- Danger Zone (Optional or simplified) -->
-            <div class="mt-20 pt-10 border-t border-gray-100 dark:border-gray-800">
-                <app-settings-danger-zone />
+                <!-- Danger Zone -->
+                <div class="mt-16 pt-10 border-t border-red-100 dark:border-red-900/30">
+                    <app-settings-danger-zone />
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Right Column: Live Preview -->
+    <!-- ══════════════════════════════════════════════════
+       RIGHT: Live Preview Panel
+  ══════════════════════════════════════════════════ -->
     <div
-        class="hidden lg:flex flex-1 flex-col bg-gray-50 dark:bg-gray-900/50 min-h-screen sticky top-0 overflow-hidden">
-        <div
-            class="flex items-center justify-between px-8 py-6 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-950/50 backdrop-blur-sm">
-            <h2 class="text-sm font-bold uppercase tracking-widest text-gray-500">Live Preview</h2>
+        class="hidden lg:flex flex-col flex-1 bg-slate-50 dark:bg-gray-900/50 min-h-screen sticky top-0 max-h-screen overflow-hidden min-w-0">
 
-            <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
-                <button (click)="setViewMode('desktop')" [class.bg-white]="viewMode() === 'desktop'"
-                    [class.dark:bg-gray-700]="viewMode() === 'desktop'" [class.shadow-sm]="viewMode() === 'desktop'"
-                    class="p-2 rounded-md transition-all text-gray-600 dark:text-gray-300">
+        <!-- Preview Toolbar -->
+        <div
+            class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white/60 dark:bg-gray-950/60 backdrop-blur-sm">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Live
+                    Preview</span>
+            </div>
+
+            <!-- Viewport toggle -->
+            <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg gap-0.5">
+                <button (click)="setViewMode('desktop')"
+                    class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
+                    [class.bg-white]="viewMode() === 'desktop'" [class.dark:bg-gray-700]="viewMode() === 'desktop'"
+                    [class.shadow-sm]="viewMode() === 'desktop'" [class.text-gray-900]="viewMode() === 'desktop'"
+                    [class.dark:text-white]="viewMode() === 'desktop'">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                 </button>
-                <button (click)="setViewMode('mobile')" [class.bg-white]="viewMode() === 'mobile'"
-                    [class.dark:bg-gray-700]="viewMode() === 'mobile'" [class.shadow-sm]="viewMode() === 'mobile'"
-                    class="p-2 rounded-md transition-all text-gray-600 dark:text-gray-300">
+                <button (click)="setViewMode('mobile')"
+                    class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
+                    [class.bg-white]="viewMode() === 'mobile'" [class.dark:bg-gray-700]="viewMode() === 'mobile'"
+                    [class.shadow-sm]="viewMode() === 'mobile'" [class.text-gray-900]="viewMode() === 'mobile'"
+                    [class.dark:text-white]="viewMode() === 'mobile'">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -91,15 +96,18 @@
                 </button>
             </div>
 
+            <!-- Syncing indicator -->
             <div
-                class="flex items-center space-x-2 text-[10px] font-medium text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-1 rounded-full">
+                class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 rounded-full">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Syncing changes...</span>
+                Syncing
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto">
+        <!-- Preview Area -->
+        <div class="flex-1 overflow-hidden">
             <app-store-preview [data]="fullPreviewData()" />
         </div>
     </div>
+
 </div>

@@ -7,8 +7,8 @@ import {
     signal,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Product } from '@core/models/product.model';
-import { Category } from '@core/models/category.model';
+import { Product } from '@core/models/product';
+import { Category } from '@core/models/category';
 import { ProductsService } from '@core/services/products';
 import { CategoriesService } from '@core/services/categories';
 import { ToastService } from '@core/services/toast';

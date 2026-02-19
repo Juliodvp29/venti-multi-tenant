@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Supabase } from './supabase';
-import { CreateProductDto, Product, UpdateProductDto } from '@core/models/product.model';
+import { CreateProductDto, Product, UpdateProductDto } from '@core/models/product';
 import { Nullable, PaginatedState } from '@core/types';
 import { TenantService } from './tenant';
 import { StorageService } from './storage';

@@ -30,10 +30,14 @@ export class SettingsBranding {
     ];
 
     readonly layouts = [
-        { id: 'modern', name: 'Modern Header', icon: 'M4 6h16M4 12h16M4 18h7' },
-        { id: 'classic', name: 'Classic Centered', icon: 'M4 6h16M7 12h10M9 18h6' },
-        { id: 'minimal', name: 'Minimalist Side', icon: 'M4 6h16M4 10h16M4 14h16M4 18h16' },
+        { id: 'modern', name: 'Modern', icon: 'M4 6h16M4 12h16M4 18h7' },
+        { id: 'classic', name: 'Classic', icon: 'M4 6h16M7 12h10M9 18h6' },
+        { id: 'minimal', name: 'Minimal', icon: 'M4 6h16M4 10h16M4 14h16M4 18h16' },
     ];
+
+    // Quick-pick color swatches
+    readonly primarySwatches = ['#000000', '#18181b', '#1e3a5f', '#7c3aed', '#dc2626', '#059669'];
+    readonly accentSwatches = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#ef4444'];
 
     readonly form = this.fb.nonNullable.group({
         primary_color: ['#000000', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
@@ -46,7 +50,7 @@ export class SettingsBranding {
     });
 
     constructor() {
-        // Handle initial values
+        // Populate from tenant
         effect(() => {
             const tenant = this.tenant();
             if (tenant) {
@@ -64,15 +68,14 @@ export class SettingsBranding {
             }
         });
 
-        // Watch for changes and emit to preview
+        // Live-preview on change
         this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
             this.emitBranding();
         });
     }
 
     private emitBranding() {
-        const values = this.form.getRawValue();
-        this.brandingChange.emit(values);
+        this.brandingChange.emit(this.form.getRawValue());
     }
 
     async onFileSelected(event: Event, type: 'logo' | 'favicon') {
@@ -80,38 +83,28 @@ export class SettingsBranding {
         if (!input.files?.length) return;
 
         const file = input.files[0];
-
-        // Validate file type
         if (!file.type.startsWith('image/')) {
             this.toastService.error('El archivo debe ser una imagen');
             return;
         }
-
-        // Validate file size (max 2MB)
         if (file.size > 2 * 1024 * 1024) {
             this.toastService.error('La imagen no debe superar los 2MB');
             return;
         }
 
         this.isSaving.set(true);
-
         try {
             const result = await this.tenantService.uploadBrandingAsset(file, type);
-
             if (result.success && result.url) {
-                this.form.patchValue({
-                    [type === 'logo' ? 'logo_url' : 'favicon_url']: result.url
-                });
+                this.form.patchValue({ [type === 'logo' ? 'logo_url' : 'favicon_url']: result.url });
                 this.toastService.success('Imagen actualizada correctamente');
             } else {
                 this.toastService.error(result.error || 'Error al subir la imagen');
             }
-        } catch (error) {
-            console.error('Error uploading file:', error);
+        } catch {
             this.toastService.error('Error al subir la imagen');
         } finally {
             this.isSaving.set(false);
-            // Reset input
             input.value = '';
         }
     }
@@ -121,25 +114,22 @@ export class SettingsBranding {
             this.toastService.error('Por favor, corrige los errores en el formulario');
             return;
         }
-
         this.isSaving.set(true);
-
         try {
-            const brandingData: any = this.form.getRawValue();
+            const data = this.form.getRawValue();
             const result = await this.tenantService.updateBranding({
-                ...brandingData,
-                logo_url: brandingData.logo_url || null,
-                favicon_url: brandingData.favicon_url || null,
+                ...data,
+                logo_url: data.logo_url || null,
+                favicon_url: data.favicon_url || null,
+                layout: data.layout as 'modern' | 'classic' | 'minimal',
             });
-
             if (result.success) {
                 this.toastService.success('Configuración guardada correctamente');
                 this.form.markAsPristine();
             } else {
-                this.toastService.error(result.error || 'Error al guardar la configuración');
+                this.toastService.error(result.error || 'Error al guardar');
             }
-        } catch (error) {
-            console.error('Error saving settings:', error);
+        } catch {
             this.toastService.error('Error al guardar la configuración');
         } finally {
             this.isSaving.set(false);

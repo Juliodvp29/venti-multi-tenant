@@ -72,302 +72,50 @@ export interface TenantSettings {
 // CATEGORIES
 // ============================================================
 
-export * from './category.model';
+export * from './category';
 
 // ============================================================
 // PRODUCTS
 // ============================================================
 
-export * from './product.model';
+export * from './product';
 
 // ============================================================
 // CUSTOMERS
 // ============================================================
 
-export interface CustomerAddress extends BaseModel {
-  customer_id: string;
-  tenant_id: string;
-  label?: string;
-  first_name: string;
-  last_name: string;
-  company?: string;
-  address_line1: string;
-  address_line2?: string;
-  city: string;
-  state?: string;
-  postal_code: string;
-  country: string;
-  phone?: string;
-  is_default: boolean;
-  is_billing_default: boolean;
-}
-
-export interface Customer extends BaseModel {
-  tenant_id: string;
-  user_id?: string;
-  email: string;
-  first_name?: string;
-  last_name?: string;
-  phone?: string;
-  accepts_marketing: boolean;
-  total_orders: number;
-  total_spent: number;
-  addresses?: CustomerAddress[];
-  // From vw_customer_analytics
-  lifetime_orders?: number;
-  lifetime_value?: number;
-  average_order_value?: number;
-  first_order_date?: string;
-  last_order_date?: string;
-  days_since_last_order?: number;
-  customer_segment?: string;
-  reviews_count?: number;
-}
+export * from './customer';
 
 // ============================================================
 // ORDERS
 // ============================================================
 
-export interface OrderItem {
-  id: string;
-  order_id: string;
-  tenant_id: string;
-  product_id?: string;
-  variant_id?: string;
-  product_name: string;
-  product_sku?: string;
-  variant_name?: string;
-  quantity: number;
-  unit_price: number;
-  discount_amount: number;
-  tax_amount: number;
-  total_amount: number;
-  product_snapshot?: Record<string, unknown>;
-  created_at: string;
-}
-
-export interface OrderStatusHistory {
-  id: string;
-  order_id: string;
-  tenant_id: string;
-  old_status?: OrderStatus;
-  new_status: OrderStatus;
-  changed_by?: string;
-  note?: string;
-  customer_notified: boolean;
-  created_at: string;
-}
-
-export interface Order extends BaseModel {
-  tenant_id: string;
-  customer_id: string;
-  order_number: string;
-  status: OrderStatus;
-  payment_status: PaymentStatus;
-  subtotal: number;
-  discount_amount: number;
-  tax_amount: number;
-  shipping_amount: number;
-  total_amount: number;
-  currency: string;
-  customer_email: string;
-  customer_first_name?: string;
-  customer_last_name?: string;
-  customer_phone?: string;
-  // Shipping snapshot
-  shipping_first_name?: string;
-  shipping_last_name?: string;
-  shipping_company?: string;
-  shipping_address_line1?: string;
-  shipping_address_line2?: string;
-  shipping_city?: string;
-  shipping_state?: string;
-  shipping_postal_code?: string;
-  shipping_country?: string;
-  shipping_phone?: string;
-  // Billing snapshot
-  billing_first_name?: string;
-  billing_last_name?: string;
-  billing_address_line1?: string;
-  billing_city?: string;
-  billing_state?: string;
-  billing_postal_code?: string;
-  billing_country?: string;
-  // Shipping details
-  shipping_method?: string;
-  tracking_number?: string;
-  tracking_url?: string;
-  shipped_at?: string;
-  delivered_at?: string;
-  customer_note?: string;
-  internal_note?: string;
-  ip_address?: string;
-  cancelled_at?: string;
-  cancelled_reason?: string;
-  // Relations
-  items?: OrderItem[];
-  status_history?: OrderStatusHistory[];
-  payment_info?: Partial<Payment>;
-  item_count?: number;
-  total_items?: number;
-}
+export * from './order';
 
 // ============================================================
 // PAYMENTS
 // ============================================================
 
-export interface Payment extends BaseModel {
-  tenant_id: string;
-  order_id: string;
-  payment_method: PaymentMethod;
-  amount: number;
-  currency: string;
-  status: PaymentStatus;
-  gateway?: string;
-  gateway_transaction_id?: string;
-  gateway_response?: Record<string, unknown>;
-  payment_details?: Record<string, unknown>;
-  processed_at?: string;
-}
-
-export interface Refund extends BaseModel {
-  tenant_id: string;
-  order_id: string;
-  payment_id?: string;
-  amount: number;
-  reason?: string;
-  status: PaymentStatus;
-  gateway_refund_id?: string;
-  processed_by?: string;
-  processed_at?: string;
-}
+export * from './payment';
 
 // ============================================================
 // DISCOUNTS
 // ============================================================
 
-export interface DiscountCode extends BaseModel {
-  tenant_id: string;
-  code: string;
-  description?: string;
-  type: DiscountType;
-  value: number;
-  usage_limit?: number;
-  usage_count: number;
-  per_customer_limit?: number;
-  minimum_purchase_amount?: number;
-  applies_to_products?: string[];
-  applies_to_categories?: string[];
-  starts_at?: string;
-  ends_at?: string;
-  is_active: boolean;
-  // From vw_active_discounts
-  times_used?: number;
-  unique_customers?: number;
-  total_discount_given?: number;
-  remaining_uses?: number;
-  discount_status?: 'active' | 'expired' | 'scheduled' | 'used_up' | 'inactive';
-}
-
-export interface DiscountUsage {
-  id: string;
-  discount_code_id: string;
-  order_id: string;
-  customer_id: string;
-  tenant_id: string;
-  discount_amount: number;
-  created_at: string;
-}
+export * from './discount.';
 
 // ============================================================
 // REVIEWS
 // ============================================================
 
-export interface ProductReview extends BaseModel {
-  tenant_id: string;
-  product_id: string;
-  customer_id: string;
-  order_id?: string;
-  rating: 1 | 2 | 3 | 4 | 5;
-  title?: string;
-  review?: string;
-  is_verified_purchase: boolean;
-  is_approved: boolean;
-  approved_by?: string;
-  approved_at?: string;
-}
+export * from './review';
 
 // ============================================================
 // ANALYTICS
 // ============================================================
 
-export interface AnalyticsEvent {
-  id: string;
-  tenant_id: string;
-  event_type: string;
-  event_data?: Record<string, unknown>;
-  customer_id?: string;
-  session_id?: string;
-  ip_address?: string;
-  user_agent?: string;
-  referrer?: string;
-  page_url?: string;
-  product_id?: string;
-  category_id?: string;
-  created_at: string;
-}
+export * from './analytics';
 
-export interface DailySalesSummary extends BaseModel {
-  tenant_id: string;
-  date: string;
-  total_orders: number;
-  total_revenue: number;
-  total_items_sold: number;
-  average_order_value: number;
-  new_customers: number;
-  returning_customers: number;
-}
-
-export interface DailyDashboard {
-  tenant_id: string;
-  today_revenue: number;
-  today_orders: number;
-  yesterday_revenue: number;
-  yesterday_orders: number;
-  week_revenue: number;
-  week_orders: number;
-  month_revenue: number;
-  month_orders: number;
-  last_month_revenue: number;
-  last_month_orders: number;
-  avg_order_value_30d: number;
-}
-
-export interface ProductPerformance extends BaseModel {
-  tenant_id: string;
-  product_id: string;
-  period_start: string;
-  period_end: string;
-  views: number;
-  add_to_cart: number;
-  purchases: number;
-  revenue: number;
-  units_sold: number;
-  conversion_rate?: number;
-}
-
-export interface LowStockAlert {
-  id: string;
-  tenant_id: string;
-  name: string;
-  sku?: string;
-  stock_quantity: number;
-  low_stock_threshold: number;
-  days_of_stock_remaining: number;
-  sales_last_30_days: number;
-  average_daily_sales: number;
-  image_url?: string;
-}
 
 // ============================================================
 // MEDIA

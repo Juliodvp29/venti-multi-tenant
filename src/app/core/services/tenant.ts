@@ -415,6 +415,81 @@ export class TenantService {
     }
   }
 
+  /**
+   * Get all members of the current tenant
+   */
+  async getMembers(): Promise<TenantMember[]> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return [];
+
+    const { data, error } = await this.supabase.client
+      .from('tenant_members')
+      .select('*')
+      .eq('tenant_id', tenantId);
+
+    if (error) throw error;
+    return data as TenantMember[];
+  }
+
+  /**
+   * Invite a new member to the tenant
+   */
+  async inviteMember(email: string, role: TenantRole): Promise<void> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return;
+
+    // First check if user exists in auth.users by email
+    // Note: In a real app, you might use a signup or invitation flow
+    // For now, we'll assume we invite by email and the system handles the rest
+    const { data: userData, error: userError } = await this.supabase.client
+      .from('profiles') // Assuming profiles table linked to auth.users
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if (userError) throw new Error('User not found. They must have an account first.');
+
+    const { error } = await this.supabase.client
+      .from('tenant_members')
+      .insert({
+        tenant_id: tenantId,
+        user_id: userData.id,
+        role: role,
+        invited_by: this.authService.userId(),
+        invited_at: new Date().toISOString(),
+        is_active: true,
+      });
+
+    if (error) throw error;
+  }
+
+  /**
+   * Update a member's role
+   */
+  async updateMemberRole(memberId: string, role: TenantRole): Promise<void> {
+    const { error } = await this.supabase.client
+      .from('tenant_members')
+      .update({
+        role: role,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', memberId);
+
+    if (error) throw error;
+  }
+
+  /**
+   * Remove a member from the tenant
+   */
+  async removeMember(memberId: string): Promise<void> {
+    const { error } = await this.supabase.client
+      .from('tenant_members')
+      .delete()
+      .eq('id', memberId);
+
+    if (error) throw error;
+  }
+
   clearTenant(): void {
     this._state.set({
       currentTenant: null,
