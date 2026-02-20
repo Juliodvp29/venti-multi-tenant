@@ -19,6 +19,8 @@ import { ColumnDef, TableAction } from '@core/types/table';
 import { ProductForm } from '../product-form/product-form';
 import { ProductStatus } from '@core/enums';
 
+const PAGE_SIZE = 20;
+
 @Component({
     selector: 'app-products-list',
     standalone: true,
@@ -56,15 +58,20 @@ export class ProductsList implements OnInit {
     readonly editingProduct = signal<Product | null>(null);
     readonly statusFilter = signal<string>('');
 
+    // Server-side pagination
+    readonly currentPage = signal(1);
+    readonly totalCount = signal(0);
+    readonly PAGE_SIZE = PAGE_SIZE;
+
     // Stats
-    readonly totalProducts = computed(() => this.products().length);
+    readonly totalProducts = computed(() => this.totalCount());
     readonly activeProducts = computed(() => this.products().filter(p => p.status === ProductStatus.Active).length);
     readonly draftProducts = computed(() => this.products().filter(p => p.status === ProductStatus.Draft).length);
     readonly lowStockProducts = computed(() =>
         this.products().filter(p => p.track_inventory && p.stock_quantity <= p.low_stock_threshold).length
     );
 
-    // Filtered products for the table
+    // Filtered products for the table (status filter applied client-side on the current page)
     readonly filteredProducts = computed(() => {
         const filter = this.statusFilter();
         if (!filter) return this.products();
@@ -145,11 +152,13 @@ export class ProductsList implements OnInit {
         // Data loading is handled by the constructor effect once tenant is ready
     }
 
-    async loadProducts() {
+    async loadProducts(page: number = 1) {
         this.isLoading.set(true);
         try {
-            const { data } = await this.productsService.getProducts(1, 100);
+            const { data, count } = await this.productsService.getProducts(page, PAGE_SIZE);
             this.products.set(data);
+            this.totalCount.set(count);
+            this.currentPage.set(page);
         } catch (error: any) {
             this.toast.error(error?.message ?? 'Error al cargar los productos.');
         } finally {
@@ -203,7 +212,7 @@ export class ProductsList implements OnInit {
         if (exists) {
             this.products.update(ps => ps.map(p => p.id === product.id ? product : p));
         } else {
-            this.products.update(ps => [product, ...ps]);
+            this.loadProducts(1);
         }
         this.closeDrawer();
     }
@@ -292,7 +301,6 @@ export class ProductsList implements OnInit {
 
             for (const result of results) {
                 if (result.status === 'fulfilled') {
-                    this.products.update(ps => [result.value, ...ps]);
                     created++;
                 } else {
                     failed++;
@@ -311,6 +319,11 @@ export class ProductsList implements OnInit {
         } else {
             this.toast.error(`❌ Ningún producto pudo importarse. Verifica el archivo.`);
             console.error('[Import Products] Errores:', errors);
+        }
+
+        // Reload to reflect newly imported products
+        if (created > 0) {
+            await this.loadProducts(1);
         }
     }
 }

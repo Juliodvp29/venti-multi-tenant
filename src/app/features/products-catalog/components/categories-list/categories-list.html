@@ -54,8 +54,8 @@
         </div>
     </div>
 
-    <!-- Loading State -->
-    @if (isLoading()) {
+    <!-- Loading State (initial load only, no data yet) -->
+    @if (isLoading() && categories().length === 0) {
     <div class="flex items-center justify-center py-20">
         <div class="flex flex-col items-center gap-3">
             <svg class="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -66,26 +66,30 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">Cargando categorías...</p>
         </div>
     </div>
-    } @else {
+    }
 
-    <!-- Dynamic Table -->
-    <app-dynamic-table [data]="flatCategories()" [columns]="columns" [actions]="actions" title="Categorías"
-        description="Organiza tus productos en jerarquías significativas."
-        searchPlaceholder="Buscar por nombre o slug..." [allowImport]="true" (importData)="onImportData($event)">
+    <!-- Dynamic Table — kept visible during reloads, dims instead of disappearing -->
+    @if (categories().length > 0 || !isLoading()) {
+    <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
+        [class.pointer-events-none]="isLoading()">
+        <app-dynamic-table [data]="flatCategories()" [columns]="columns" [actions]="actions" title="Categorías"
+            description="Organiza tus productos en jerarquías significativas."
+            searchPlaceholder="Buscar por nombre o slug..." [allowImport]="true" (importData)="onImportData($event)">
 
-        <!-- Actions Slot -->
-        <div actions>
-            <button type="button" (click)="openCreate()"
-                class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-indigo-200 dark:hover:shadow-indigo-900">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Nueva Categoría
-            </button>
-        </div>
+            <!-- Actions Slot -->
+            <div actions>
+                <button type="button" (click)="openCreate()"
+                    class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-indigo-200 dark:hover:shadow-indigo-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Nueva Categoría
+                </button>
+            </div>
 
-    </app-dynamic-table>
+        </app-dynamic-table>
+    </div>
     }
 
 </div>

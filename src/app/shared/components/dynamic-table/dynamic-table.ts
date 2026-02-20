@@ -42,11 +42,16 @@ export class DynamicTable<T extends Record<string, any>> {
   pageSize = input<number>(10);
   searchPlaceholder = input<string>('Search...');
   allowImport = input<boolean>(false);
+  /** When provided, enables server-side pagination mode.
+   *  The parent is responsible for fetching the correct page;
+   *  the table emits pageChange instead of slicing data locally. */
+  totalItemsOverride = input<number | null>(null);
 
   // Outputs
   actionClick = output<{ actionId: string; item: T }>();
   rowClick = output<T>();
   importData = output<Record<string, any>[]>();
+  pageChange = output<number>();
 
   // Reactive State
   searchQuery = signal('');
@@ -64,6 +69,9 @@ export class DynamicTable<T extends Record<string, any>> {
 
   // Computed: Filtered and Sorted Data
   filteredData = computed(() => {
+    // In server-side mode skip local filtering/sorting (data is already the correct page)
+    if (this.totalItemsOverride() !== null) return [...this.data()];
+
     let result = [...this.data()];
     const query = this.searchQuery().toLowerCase().trim();
 
@@ -96,14 +104,16 @@ export class DynamicTable<T extends Record<string, any>> {
 
   // Computed: Paginated Data
   paginatedData = computed(() => {
+    // Server-side: data is already the right page
+    if (this.totalItemsOverride() !== null) return this.filteredData();
     const start = (this.currentPage() - 1) * this.pageSize();
     const end = start + this.pageSize();
     return this.filteredData().slice(start, end);
   });
 
   // Computed: Summary
-  totalItems = computed(() => this.filteredData().length);
-  totalPages = computed(() => Math.ceil(this.totalItems() / this.pageSize()));
+  totalItems = computed(() => this.totalItemsOverride() ?? this.filteredData().length);
+  totalPages = computed(() => Math.max(1, Math.ceil(this.totalItems() / this.pageSize())));
   startIndex = computed(() => (this.currentPage() - 1) * this.pageSize() + 1);
   endIndex = computed(() => Math.min(this.currentPage() * this.pageSize(), this.totalItems()));
 
@@ -130,7 +140,9 @@ export class DynamicTable<T extends Record<string, any>> {
 
   nextPage() {
     if (this.currentPage() < this.totalPages()) {
+      const next = this.currentPage() + 1;
       this.currentPage.update(p => p + 1);
+      if (this.totalItemsOverride() !== null) this.pageChange.emit(next);
     }
   }
 
@@ -165,7 +177,9 @@ export class DynamicTable<T extends Record<string, any>> {
 
   prevPage() {
     if (this.currentPage() > 1) {
+      const prev = this.currentPage() - 1;
       this.currentPage.update(p => p - 1);
+      if (this.totalItemsOverride() !== null) this.pageChange.emit(prev);
     }
   }
 
