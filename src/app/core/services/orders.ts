@@ -117,14 +117,14 @@ export class OrdersService {
                 .select('total_amount')
                 .eq('tenant_id', tenantId)
                 .gte('created_at', startOfToday)
-                .not('status', 'in', '(cancelled,refunded)'),
+                .not('status', 'in', ['cancelled', 'refunded']),
             this.supabase.client
                 .from('orders')
                 .select('total_amount')
                 .eq('tenant_id', tenantId)
                 .gte('created_at', startOfYesterday)
                 .lt('created_at', startOfToday)
-                .not('status', 'in', '(cancelled,refunded)'),
+                .not('status', 'in', ['cancelled', 'refunded']),
         ]);
 
         const revenueToday = (todayRes.data ?? []).reduce((s: number, o: any) => s + (o.total_amount ?? 0), 0);
