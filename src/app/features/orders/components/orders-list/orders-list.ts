@@ -15,6 +15,7 @@ import { OrdersService, OrderFilters, OrderStats } from '@core/services/orders';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
+import { DateRangePicker, DateRange } from '@shared/components/date-range-picker/date-range-picker';
 import { ColumnDef } from '@core/types/table';
 
 const PAGE_SIZE = 20;
@@ -22,7 +23,7 @@ const PAGE_SIZE = 20;
 @Component({
     selector: 'app-orders-list',
     standalone: true,
-    imports: [CommonModule, DynamicTable],
+    imports: [CommonModule, DynamicTable, DateRangePicker],
     templateUrl: './orders-list.html',
     styleUrl: './orders-list.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,6 +61,8 @@ export class OrdersList {
     // Filters
     readonly statusFilter = signal<OrderStatus | ''>('');
     readonly dateFilter = signal<'7d' | '30d' | '90d' | 'all'>('30d');
+    readonly searchQuery = signal('');
+    readonly dateRange = signal<DateRange>({ start: null, end: null });
     readonly PAGE_SIZE = PAGE_SIZE;
 
     // Status options for filter
@@ -135,12 +138,19 @@ export class OrdersList {
     private buildFilters(): OrderFilters {
         const filters: OrderFilters = {};
         if (this.statusFilter()) filters.status = this.statusFilter() as OrderStatus;
-        const d = this.dateFilter();
-        if (d !== 'all') {
-            const days = d === '7d' ? 7 : d === '30d' ? 30 : 90;
-            const from = new Date();
-            from.setDate(from.getDate() - days);
-            filters.startDate = from.toISOString();
+        if (this.searchQuery().trim()) filters.search = this.searchQuery().trim();
+        const range = this.dateRange();
+        if (range.start) {
+            filters.startDate = range.start + 'T00:00:00.000Z';
+            if (range.end) filters.endDate = range.end + 'T23:59:59.999Z';
+        } else {
+            const d = this.dateFilter();
+            if (d !== 'all') {
+                const days = d === '7d' ? 7 : d === '30d' ? 30 : 90;
+                const from = new Date();
+                from.setDate(from.getDate() - days);
+                filters.startDate = from.toISOString();
+            }
         }
         return filters;
     }
@@ -180,6 +190,18 @@ export class OrdersList {
         const val = (event.target as HTMLSelectElement).value as '7d' | '30d' | '90d' | 'all';
         this.dateFilter.set(val);
         this.loadOrders(1);
+    }
+
+    onDateRangeChange(range: DateRange) {
+        this.dateRange.set(range);
+        this.loadOrders(1);
+    }
+
+    private searchTimer: any;
+    onSearchChange(query: string) {
+        this.searchQuery.set(query);
+        clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(() => this.loadOrders(1), 400);
     }
 
     onRowClick(order: Order) {

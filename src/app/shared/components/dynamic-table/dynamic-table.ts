@@ -52,6 +52,7 @@ export class DynamicTable<T extends Record<string, any>> {
   rowClick = output<T>();
   importData = output<Record<string, any>[]>();
   pageChange = output<number>();
+  searchChange = output<string>();
 
   // Reactive State
   searchQuery = signal('');
@@ -75,13 +76,19 @@ export class DynamicTable<T extends Record<string, any>> {
     let result = [...this.data()];
     const query = this.searchQuery().toLowerCase().trim();
 
-    // 1. Filter
+    // 1. Filter — match raw value OR formatter output
     if (query) {
       result = result.filter((item) => {
         return this.columns().some((col) => {
-          const value = item[col.key];
-          if (value == null) return false;
-          return String(value).toLowerCase().includes(query);
+          const rawValue = item[col.key];
+          // Check raw value
+          if (rawValue != null && String(rawValue).toLowerCase().includes(query)) return true;
+          // Also check formatted/display value
+          if (col.formatter) {
+            const formatted = col.formatter(rawValue, item);
+            if (formatted != null && String(formatted).toLowerCase().includes(query)) return true;
+          }
+          return false;
         });
       });
     }
@@ -136,6 +143,10 @@ export class DynamicTable<T extends Record<string, any>> {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
     this.currentPage.set(1);
+    // In server-side mode emit so parent can re-fetch
+    if (this.totalItemsOverride() !== null) {
+      this.searchChange.emit(value);
+    }
   }
 
   nextPage() {

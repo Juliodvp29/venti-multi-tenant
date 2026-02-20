@@ -29,7 +29,8 @@ export class ProductsService {
             .range((page - 1) * pageSize, page * pageSize - 1);
 
         if (filters?.['search']) {
-            query = query.ilike('name', `%${filters['search']}%`);
+            const term = filters['search'];
+            query = query.or(`name.ilike.%${term}%,sku.ilike.%${term}%`);
         }
 
         if (filters?.['status']) {

@@ -114,40 +114,28 @@
         <app-dynamic-table [data]="orders()" [columns]="columns" title="Pedidos"
             description="Haz clic en un pedido para ver los detalles completos."
             searchPlaceholder="Buscar por #orden o email..." [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE"
-            (pageChange)="loadOrders($event)" (rowClick)="onRowClick($event)">
+            (pageChange)="loadOrders($event)" (rowClick)="onRowClick($event)" (searchChange)="onSearchChange($event)">
 
             <!-- Filters Slot -->
-            <div filters>
+            <div filters class="flex items-center gap-2">
                 <!-- Status filter -->
                 <div class="relative">
                     <select [value]="statusFilter()" (change)="onStatusFilterChange($event)"
-                        class="appearance-none block w-full rounded-xl border-0 py-2.5 pl-3 pr-10 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 dark:bg-gray-800/50 focus:ring-2 focus:ring-indigo-600 sm:text-sm transition-all">
+                        class="appearance-none w-40 rounded-xl border-0 py-2.5 pl-3 pr-8 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 dark:bg-gray-800/50 focus:ring-2 focus:ring-indigo-600 sm:text-sm transition-all">
                         @for (opt of statusOptions; track opt.value) {
                         <option [value]="opt.value">{{ opt.label }}</option>
                         }
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                         </svg>
                     </div>
                 </div>
-                <!-- Date filter -->
-                <div class="relative">
-                    <select [value]="dateFilter()" (change)="onDateFilterChange($event)"
-                        class="appearance-none block w-full rounded-xl border-0 py-2.5 pl-3 pr-10 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 dark:bg-gray-800/50 focus:ring-2 focus:ring-indigo-600 sm:text-sm transition-all">
-                        @for (opt of dateOptions; track opt.value) {
-                        <option [value]="opt.value">{{ opt.label }}</option>
-                        }
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
-                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </div>
-                </div>
+                <!-- Date range picker -->
+                <app-date-range-picker [(value)]="dateRange" placeholder="Rango de fechas"
+                    (rangeChange)="onDateRangeChange($event)" />
             </div>
 
         </app-dynamic-table>

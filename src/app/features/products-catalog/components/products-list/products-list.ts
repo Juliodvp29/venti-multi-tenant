@@ -15,6 +15,7 @@ import { CategoriesService } from '@core/services/categories';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
+import { DateRangePicker, DateRange } from '@shared/components/date-range-picker/date-range-picker';
 import { ColumnDef, TableAction } from '@core/types/table';
 import { ProductForm } from '../product-form/product-form';
 import { ProductStatus } from '@core/enums';
@@ -24,7 +25,7 @@ const PAGE_SIZE = 20;
 @Component({
     selector: 'app-products-list',
     standalone: true,
-    imports: [CommonModule, DynamicTable, ProductForm],
+    imports: [CommonModule, DynamicTable, ProductForm, DateRangePicker],
     templateUrl: './products-list.html',
     styleUrl: './products-list.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,6 +58,8 @@ export class ProductsList implements OnInit {
     readonly showDrawer = signal(false);
     readonly editingProduct = signal<Product | null>(null);
     readonly statusFilter = signal<string>('');
+    readonly dateRange = signal<DateRange>({ start: null, end: null });
+    readonly searchQuery = signal('');
 
     // Server-side pagination
     readonly currentPage = signal(1);
@@ -155,7 +158,10 @@ export class ProductsList implements OnInit {
     async loadProducts(page: number = 1) {
         this.isLoading.set(true);
         try {
-            const { data, count } = await this.productsService.getProducts(page, PAGE_SIZE);
+            const filters: Record<string, any> = {};
+            if (this.searchQuery().trim()) filters['search'] = this.searchQuery().trim();
+            if (this.statusFilter()) filters['status'] = this.statusFilter();
+            const { data, count } = await this.productsService.getProducts(page, PAGE_SIZE, filters);
             this.products.set(data);
             this.totalCount.set(count);
             this.currentPage.set(page);
@@ -224,6 +230,14 @@ export class ProductsList implements OnInit {
     onStatusFilterChange(event: Event) {
         const select = event.target as HTMLSelectElement;
         this.statusFilter.set(select.value);
+        this.loadProducts(1);
+    }
+
+    private searchTimer: any;
+    onSearchChange(query: string) {
+        this.searchQuery.set(query);
+        clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(() => this.loadProducts(1), 400);
     }
 
     async onImportData(rows: Record<string, any>[]) {
@@ -325,5 +339,9 @@ export class ProductsList implements OnInit {
         if (created > 0) {
             await this.loadProducts(1);
         }
+    }
+
+    onDateRangeChange(range: DateRange) {
+        this.dateRange.set(range);
     }
 }
