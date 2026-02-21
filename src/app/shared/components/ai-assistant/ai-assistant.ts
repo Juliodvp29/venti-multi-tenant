@@ -2,11 +2,12 @@ import { Component, ElementRef, inject, ViewChild, AfterViewChecked } from '@ang
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AiAssistantService } from '@core/services/ai-assistant';
+import { MarkdownPipe } from '../../pipes/markdown.pipe';
 
 @Component({
     selector: 'app-ai-assistant',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, MarkdownPipe],
     templateUrl: './ai-assistant.html',
     styleUrl: './ai-assistant.css',
 })

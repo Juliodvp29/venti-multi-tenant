@@ -53,7 +53,7 @@
                 [class.dark:text-slate-100]="msg.role === 'model'" [class.rounded-bl-none]="msg.role === 'model'"
                 [class.border]="msg.role === 'model'" [class.border-slate-100]="msg.role === 'model'"
                 [class.dark:border-slate-700]="msg.role === 'model'">
-                {{ msg.content }}
+                <div class="markdown-body" [innerHTML]="msg.content | markdown | async"></div>
             </div>
             }
 

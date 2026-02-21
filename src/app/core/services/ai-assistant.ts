@@ -149,14 +149,53 @@ export class AiAssistantService {
         ]
     });
 
-    messages = signal<Message[]>([
-        {
+    private readonly STORAGE_KEY = 'venti_ai_chat_history';
+    private readonly HISTORY_EXPIRATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+    messages = signal<Message[]>(this.loadMessages());
+    isLoading = signal<boolean>(false);
+
+    private loadMessages(): Message[] {
+        const defaultMessage: Message = {
             role: 'model',
             content: '¡Hola! Soy tu asistente de Venti. Puedo ayudarte con información sobre tus ventas, órdenes y productos. ¿En qué puedo ayudarte hoy?',
             timestamp: new Date()
+        };
+
+        try {
+            const stored = localStorage.getItem(this.STORAGE_KEY);
+            if (!stored) return [defaultMessage];
+
+            const parsed = JSON.parse(stored);
+            const messages: Message[] = parsed.messages.map((m: any) => ({
+                ...m,
+                timestamp: new Date(m.timestamp)
+            }));
+
+            // Check expiration (24h)
+            if (Date.now() - parsed.timestamp > this.HISTORY_EXPIRATION_MS) {
+                localStorage.removeItem(this.STORAGE_KEY);
+                return [defaultMessage];
+            }
+
+            return messages;
+        } catch (e) {
+            console.error('Error loading chat history:', e);
+            return [defaultMessage];
         }
-    ]);
-    isLoading = signal<boolean>(false);
+    }
+
+    private saveMessages(messages: Message[]) {
+        try {
+            const data = {
+                timestamp: Date.now(),
+                messages
+            };
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.error('Error saving chat history:', e);
+        }
+    }
 
     async sendMessage(text: string) {
         const tenantId = this.tenantService.tenantId();
@@ -164,7 +203,11 @@ export class AiAssistantService {
 
         // Update UI state
         const newMessage: Message = { role: 'user', content: text, timestamp: new Date() };
-        this.messages.update(msgs => [...msgs, newMessage]);
+        this.messages.update(msgs => {
+            const updated = [...msgs, newMessage];
+            this.saveMessages(updated);
+            return updated;
+        });
         this.isLoading.set(true);
 
         try {
@@ -187,13 +230,12 @@ export class AiAssistantService {
             let result = await chat.sendMessage(text);
             let response = result.response;
 
-            // Handle tool calls
-            const calls = response.candidates?.[0]?.content?.parts?.filter(p => p.functionCall);
-
-            if (calls && calls.length > 0) {
+            // Handle tool calls recursively
+            let toolCalls = response.candidates?.[0]?.content?.parts?.filter(p => p.functionCall);
+            while (toolCalls && toolCalls.length > 0) {
                 const toolResults: Part[] = [];
 
-                for (const call of calls) {
+                for (const call of toolCalls) {
                     if (call.functionCall) {
                         const { name, args } = call.functionCall;
                         const data = await this.executeTool(name, args as any);
@@ -206,25 +248,37 @@ export class AiAssistantService {
                     }
                 }
 
-                // Send tool results back to the model
                 const nextResult = await chat.sendMessage(toolResults);
                 response = nextResult.response;
+                toolCalls = response.candidates?.[0]?.content?.parts?.filter(p => p.functionCall);
             }
 
-            const modelText = response.text();
-            this.messages.update(msgs => [...msgs, {
-                role: 'model',
-                content: modelText,
-                timestamp: new Date()
-            }]);
+            // Final text extraction
+            const modelText = response.candidates?.[0]?.content?.parts
+                ?.map(p => p.text || '')
+                .join('') || 'Lo siento, no pude generar una respuesta de texto.';
+
+            this.messages.update(msgs => {
+                const updated = [...msgs, {
+                    role: 'model' as const,
+                    content: modelText,
+                    timestamp: new Date()
+                }];
+                this.saveMessages(updated);
+                return updated;
+            });
 
         } catch (error) {
             console.error('AI Assistant Error:', error);
-            this.messages.update(msgs => [...msgs, {
-                role: 'model',
-                content: 'Lo siento, ocurrió un error al procesar tu solicitud. ¿Podrías intentar de nuevo?',
-                timestamp: new Date()
-            }]);
+            this.messages.update(msgs => {
+                const updated = [...msgs, {
+                    role: 'model' as const,
+                    content: 'Lo siento, ocurrió un error al procesar tu solicitud. ¿Podrías intentar de nuevo?',
+                    timestamp: new Date()
+                }];
+                this.saveMessages(updated);
+                return updated;
+            });
         } finally {
             this.isLoading.set(false);
         }
@@ -278,11 +332,11 @@ export class AiAssistantService {
     private async handleGetInventoryAlerts(tenantId: string, args: any) {
         let query = this.supabase.client
             .from('products')
-            .select('name, sku, stock')
+            .select('name, sku, stock_quantity')
             .eq('tenant_id', tenantId);
 
-        if (args.onlyOutOfStock) query = query.eq('stock', 0);
-        else query = query.lt('stock', 10);
+        if (args.onlyOutOfStock) query = query.eq('stock_quantity', 0);
+        else query = query.lt('stock_quantity', 10);
 
         const { data, error } = await query;
         if (error) return { error: error.message };
@@ -342,6 +396,7 @@ export class AiAssistantService {
             .limit(10);
 
         if (args.status) query = query.eq('status', args.status);
+        if (args.startDate) query = query.gte('created_at', args.startDate);
         if (args.customerName) {
             query = query.or(`customer_first_name.ilike.%${args.customerName}%,customer_last_name.ilike.%${args.customerName}%`);
         }
@@ -355,12 +410,12 @@ export class AiAssistantService {
     private async handleGetProducts(tenantId: string, args: any) {
         let query = this.supabase.client
             .from('products')
-            .select('name, sku, price, stock, status')
+            .select('name, sku, price, stock_quantity, status')
             .eq('tenant_id', tenantId)
             .is('deleted_at', null);
 
         if (args.search) query = query.ilike('name', `%${args.search}%`);
-        if (args.lowStock) query = query.lt('stock', 10);
+        if (args.lowStock) query = query.lt('stock_quantity', 10);
 
         const { data, error } = await query;
         if (error) return { error: error.message };
