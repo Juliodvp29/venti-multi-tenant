@@ -1,0 +1,121 @@
+<div class="fixed bottom-8 right-8 z-[1000] flex flex-col items-end font-sans">
+    <!-- Chat Window -->
+    @if (isOpen) {
+    <div class="mb-6 flex h-[550px] w-[340px] md:w-[380px] flex-col overflow-hidden rounded-[24px] border border-black/5 dark:border-white/10 bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-300"
+        [@animate.enter]="['animate-fade-slide-up']" [@animate.leave]="['animate-fade-slide-down']">
+        <!-- Header -->
+        <div class="flex items-center justify-between bg-gradient-to-br from-[#6366f1] to-[#a855f7] p-5 text-white">
+            <div class="flex items-center gap-3">
+                <div class="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-white/20 shadow-inner">
+                    <!-- SVG Mascot Core -->
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM12 20C7.589 20 4 16.411 4 12C4 7.589 7.589 4 12 4C16.411 4 20 7.589 20 12C20 16.411 16.411 20 12 20Z"
+                            fill="white" opacity="0.3" />
+                        <path
+                            d="M7 11C7 10.4477 7.44772 10 8 10H16C16.5523 10 17 10.4477 17 11V15C17 15.5523 16.5523 16 16 16H8C7.44772 16 7 15.5523 7 15V11Z"
+                            fill="white" />
+                        <circle cx="10" cy="13" r="1.5" fill="#6366f1" />
+                        <circle cx="14" cy="13" r="1.5" fill="#6366f1" />
+                        <path d="M11 6V8M13 6V8" stroke="white" stroke-width="2" stroke-linecap="round" />
+                        <rect x="9" y="5" width="6" height="2" rx="1" fill="white" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="m-0 text-lg font-bold leading-tight tracking-tight">Venti AI</h3>
+                    <div class="flex items-center gap-1.5 opacity-90">
+                        <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-[0.7rem] font-medium uppercase tracking-wider">En línea</span>
+                    </div>
+                </div>
+            </div>
+            <button
+                class="group flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white transition-all hover:bg-white/20 active:scale-90"
+                (click)="toggleChat()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="group-hover:rotate-90 transition-transform duration-300">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 p-6 flex flex-col gap-4 scroll-smooth"
+            #scrollContainer>
+            @for (msg of messages(); track msg.timestamp) {
+            <div class="max-w-[85%] px-4 py-3 rounded-[20px] text-[0.92rem] leading-relaxed relative break-words shadow-sm"
+                [class.self-end]="msg.role === 'user'" [class.bg-[#6366f1]]="msg.role === 'user'"
+                [class.text-white]="msg.role === 'user'" [class.rounded-br-none]="msg.role === 'user'"
+                [class.self-start]="msg.role === 'model'" [class.bg-white]="msg.role === 'model'"
+                [class.dark:bg-slate-800]="msg.role === 'model'" [class.text-slate-800]="msg.role === 'model'"
+                [class.dark:text-slate-100]="msg.role === 'model'" [class.rounded-bl-none]="msg.role === 'model'"
+                [class.border]="msg.role === 'model'" [class.border-slate-100]="msg.role === 'model'"
+                [class.dark:border-slate-700]="msg.role === 'model'">
+                {{ msg.content }}
+            </div>
+            }
+
+            @if (isLoading()) {
+            <div
+                class="self-start max-w-[85%] px-5 py-4 rounded-[20px] rounded-bl-none bg-white dark:bg-slate-800 text-slate-400 border border-slate-100 dark:border-slate-700 shadow-sm">
+                <div class="flex gap-1.5 items-center">
+                    <span
+                        class="h-2 w-2 animate-bounce rounded-full bg-slate-300 dark:bg-slate-500 [animation-delay:-0.3s]"></span>
+                    <span
+                        class="h-2 w-2 animate-bounce rounded-full bg-slate-300 dark:bg-slate-500 [animation-delay:-0.15s]"></span>
+                    <span class="h-2 w-2 animate-bounce rounded-full bg-slate-300 dark:bg-slate-500"></span>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Input Area -->
+        <div class="flex gap-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+            <input type="text" [(ngModel)]="userInput" (keyup.enter)="sendMessage()" placeholder="Escribe un mensaje..."
+                class="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-[0.92rem] text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 dark:focus:border-[#6366f1]"
+                [disabled]="isLoading()" />
+            <button
+                class="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-[#6366f1] text-white shadow-lg shadow-[#6366f1]/30 transition-all hover:bg-[#4f46e5] hover:-translate-y-0.5 active:scale-90 disabled:cursor-not-allowed disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:shadow-none disabled:translate-y-0"
+                (click)="sendMessage()" [disabled]="isLoading() || !userInput.trim()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- Toggle Bubble -->
+    <button (click)="toggleChat()"
+        class="group relative flex h-[70px] w-[70px] items-center justify-center rounded-[24px] bg-gradient-to-br from-[#6366f1] to-[#a855f7] text-white shadow-[0_15px_30px_-10px_rgba(99,102,241,0.6)] transition-all duration-500 hover:scale-110 active:scale-95 hover:rotate-2"
+        [title]="isOpen ? 'Cerrar chat' : 'Hablar con el asistente'">
+
+        <div class="absolute inset-0 rounded-[24px] bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+
+        @if (isOpen) {
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" class="animate-in fade-in zoom-in duration-300">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        } @else {
+        <!-- Large SVG Mascot in Bubble -->
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+            class="animate-in fade-in zoom-in duration-300 group-hover:scale-110 transition-transform">
+            <path
+                d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2Z"
+                fill="white" fill-opacity="0.1" />
+            <path
+                d="M5 11C5 9.34315 6.34315 8 8 8H16C17.6569 8 19 9.34315 19 11V14C19 15.6569 17.6569 17 16 17H8C6.34315 17 5 15.6569 5 14V11Z"
+                fill="white" />
+            <circle cx="9" cy="12.5" r="1.5" fill="#6366f1" />
+            <circle cx="15" cy="12.5" r="1.5" fill="#6366f1" />
+            <path d="M10 4V6M14 4V6" stroke="white" stroke-width="2" stroke-linecap="round" />
+            <rect x="8" y="3" width="8" height="2" rx="1" fill="white" />
+        </svg>
+        }
+    </button>
+</div>
