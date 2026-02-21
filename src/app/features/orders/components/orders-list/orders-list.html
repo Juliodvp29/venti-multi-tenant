@@ -1,4 +1,12 @@
 <div class="space-y-6">
+    <!-- Status Templates -->
+    <ng-template #statusTemplate let-status>
+        <app-order-status-badge [status]="status" variant="order" />
+    </ng-template>
+
+    <ng-template #paymentTemplate let-payment>
+        <app-order-status-badge [status]="payment" variant="payment" />
+    </ng-template>
 
     <!-- Header -->
     <div class="flex items-center justify-between">
@@ -111,7 +119,7 @@
     @if (orders().length > 0 || !isLoading()) {
     <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
         [class.pointer-events-none]="isLoading()">
-        <app-dynamic-table [data]="orders()" [columns]="columns" title="Pedidos"
+        <app-dynamic-table [data]="orders()" [columns]="columns()" title="Pedidos"
             description="Haz clic en un pedido para ver los detalles completos."
             searchPlaceholder="Buscar por #orden o email..." [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE"
             (pageChange)="loadOrders($event)" (rowClick)="onRowClick($event)" (searchChange)="onSearchChange($event)">

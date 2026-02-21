@@ -16,20 +16,22 @@ import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { DateRangePicker, DateRange } from '@shared/components/date-range-picker/date-range-picker';
+import { OrderStatusBadge } from '@shared/components/order-status-badge/order-status-badge';
 import { ColumnDef } from '@core/types/table';
+import { TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
 
 const PAGE_SIZE = 20;
 
 @Component({
     selector: 'app-orders-list',
     standalone: true,
-    imports: [CommonModule, DynamicTable, DateRangePicker],
+    imports: [CommonModule, DynamicTable, DateRangePicker, OrderStatusBadge],
     templateUrl: './orders-list.html',
     styleUrl: './orders-list.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [CurrencyPipe, DatePipe],
 })
-export class OrdersList {
+export class OrdersList implements OnInit, AfterViewInit {
     private readonly ordersService = inject(OrdersService);
     private readonly tenantService = inject(TenantService);
     private readonly toast = inject(ToastService);
@@ -57,6 +59,10 @@ export class OrdersList {
     readonly totalCount = signal(0);
     readonly currentPage = signal(1);
     readonly stats = signal<OrderStats | null>(null);
+    readonly columns = signal<ColumnDef<Order>[]>([]);
+
+    @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
+    @ViewChild('paymentTemplate') paymentTemplate!: TemplateRef<any>;
 
     // Filters
     readonly statusFilter = signal<OrderStatus | ''>('');
@@ -91,49 +97,61 @@ export class OrdersList {
         return ((s.revenueToday - s.revenuePrevDay) / s.revenuePrevDay) * 100;
     });
 
-    readonly columns: ColumnDef<Order>[] = [
-        {
-            key: 'order_number',
-            label: 'Pedido',
-            sortable: true,
-            type: 'text',
-            formatter: (val) => `#${val}`,
-        },
-        {
-            key: 'customer_email',
-            label: 'Cliente',
-            type: 'text',
-            sortable: true,
-        },
-        {
-            key: 'status',
-            label: 'Estado',
-            type: 'status',
-            sortable: true,
-            formatter: (val) => val,
-        },
-        {
-            key: 'payment_status',
-            label: 'Pago',
-            type: 'status',
-            sortable: true,
-            formatter: (val) => val,
-        },
-        {
-            key: 'created_at',
-            label: 'Fecha',
-            type: 'text',
-            sortable: true,
-            formatter: (val) => this.datePipe.transform(val, 'dd MMM yyyy') ?? val,
-        },
-        {
-            key: 'total_amount',
-            label: 'Total',
-            type: 'text',
-            sortable: true,
-            formatter: (val) => this.currencyPipe.transform(val, 'USD') ?? val,
-        },
-    ];
+    ngOnInit() {
+        // Initial columns without templates to avoid empty headers
+        this.updateColumns();
+    }
+
+    ngAfterViewInit() {
+        // Update columns again once templates are available
+        this.updateColumns();
+    }
+
+    private updateColumns() {
+        this.columns.set([
+            {
+                key: 'order_number',
+                label: 'Pedido',
+                sortable: true,
+                type: 'text',
+                formatter: (val) => `#${val}`,
+            },
+            {
+                key: 'customer_email',
+                label: 'Cliente',
+                type: 'text',
+                sortable: true,
+            },
+            {
+                key: 'status',
+                label: 'Estado',
+                type: 'custom',
+                sortable: true,
+                template: this.statusTemplate,
+            },
+            {
+                key: 'payment_status',
+                label: 'Pago',
+                type: 'custom',
+                sortable: true,
+                template: this.paymentTemplate,
+            },
+            {
+                key: 'created_at',
+                label: 'Fecha',
+                type: 'text',
+                sortable: true,
+                formatter: (val) => this.datePipe.transform(val, 'dd MMM yyyy') ?? val,
+            },
+            {
+                key: 'total_amount',
+                label: 'Total',
+                type: 'text',
+                sortable: true,
+                formatter: (val) => this.currencyPipe.transform(val, 'USD') ?? val,
+            },
+        ]);
+    }
 
     private buildFilters(): OrderFilters {
         const filters: OrderFilters = {};

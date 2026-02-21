@@ -1,4 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { Subject } from 'rxjs';
 import { GoogleGenerativeAI, Part, SchemaType } from '@google/generative-ai';
 import { environment } from '@env/environment';
 import { Supabase } from './supabase';
@@ -143,6 +144,31 @@ export class AiAssistantService {
                                 limit: { type: SchemaType.NUMBER, description: 'Número de registros a traer' }
                             }
                         } as any
+                    },
+                    {
+                        name: 'get_app_guide',
+                        description: 'Consulta el manual de usuario y guía de navegación del sistema. Útil para responder "¿Cómo hago X?", "¿Dónde encuentro Y?" o "¿Para qué sirve esta pantalla?".',
+                        parameters: {
+                            type: SchemaType.OBJECT,
+                            properties: {
+                                topic: { type: SchemaType.STRING, description: 'El tema o funcionalidad sobre la que el usuario tiene dudas (ej: "historial de estados", "branding", "ventas")' }
+                            }
+                        }
+                    },
+                    {
+                        name: 'navigate_to',
+                        description: 'Redirige automáticamente al usuario a una sección específica del sistema. Útil cuando el usuario dice "llévame a...", "quiero ver...", o cuando el asistente sugiere ir a una pantalla para realizar una acción.',
+                        parameters: {
+                            type: SchemaType.OBJECT,
+                            properties: {
+                                page: {
+                                    type: SchemaType.STRING,
+                                    enum: ['dashboard', 'products', 'orders', 'customers', 'members', 'settings'],
+                                    description: 'La página a la que se desea navegar'
+                                }
+                            },
+                            required: ['page']
+                        } as any
                     }
                 ]
             }
@@ -151,6 +177,8 @@ export class AiAssistantService {
 
     private readonly STORAGE_KEY = 'venti_ai_chat_history';
     private readonly HISTORY_EXPIRATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+    readonly navigationRequest$ = new Subject<string>();
 
     messages = signal<Message[]>(this.loadMessages());
     isLoading = signal<boolean>(false);
@@ -308,6 +336,10 @@ export class AiAssistantService {
                 return this.handleGetActivePromotions(tenantId!, args);
             case 'get_recent_audit_logs':
                 return this.handleGetRecentAuditLogs(tenantId!, args);
+            case 'get_app_guide':
+                return this.handleGetAppGuide(args);
+            case 'navigate_to':
+                return this.handleNavigateTo(args);
             default:
                 return { error: 'Unknown tool' };
         }
@@ -421,5 +453,38 @@ export class AiAssistantService {
         if (error) return { error: error.message };
 
         return data;
+    }
+
+    private async handleGetAppGuide(args: any) {
+        const guides: Record<string, string> = {
+            'dashboard': 'El Dashboard principal muestra un resumen de ventas mensuales, estados de órdenes y acceso rápido a funciones clave.',
+            'products': 'En el Catálogo de Productos puedes crear, editar y gestionar el stock de tus artículos. Se encuentra en el menú lateral.',
+            'orders': 'La sección de Órdenes muestra todos los pedidos realizados. Aquí puedes filtrar por estado, cliente o fecha.',
+            'order-history': 'Para ver el historial de estados de una orden: 1. Ve a "Ordenes". 2. Haz clic en la orden que deseas consultar. 3. Desliza hacia abajo hasta encontrar la sección "Historial de Estados".',
+            'branding': 'Puedes personalizar el logo y colores de tu tienda en Configuración -> Marca.',
+            'settings': 'En Configuración puedes gestionar ajustes de la tienda, marca, impuestos y métodos de envío.'
+        };
+
+        const topic = args.topic?.toLowerCase() || '';
+        const guide = guides[topic] || Object.values(guides).join('\n\n');
+        return { guide };
+    }
+
+    private async handleNavigateTo(args: any) {
+        const pages: Record<string, string> = {
+            'dashboard': '/dashboard',
+            'products': '/products',
+            'orders': '/orders',
+            'customers': '/customers',
+            'members': '/members',
+            'settings': '/settings'
+        };
+
+        const path = pages[args.page];
+        if (path) {
+            this.navigationRequest$.next(path);
+            return { success: true, message: `Navegando a la sección de ${args.page}...` };
+        }
+        return { success: false, error: 'Página no válida' };
     }
 }
