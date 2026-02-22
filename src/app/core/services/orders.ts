@@ -32,7 +32,7 @@ export class OrdersService {
         filters?: OrderFilters
     ): Promise<{ data: Order[]; count: number }> {
         const tenantId = this.tenantService.tenantId();
-        if (!tenantId) throw new Error('Tenant not selected');
+        if (!tenantId) return { data: [], count: 0 };
 
         let query = this.supabase.client
             .from('orders')
@@ -94,7 +94,7 @@ export class OrdersService {
 
     async getOrderStats(): Promise<OrderStats> {
         const tenantId = this.tenantService.tenantId();
-        if (!tenantId) throw new Error('Tenant not selected');
+        if (!tenantId) return { totalThisMonth: 0, pendingFulfillment: 0, revenueToday: 0, revenuePrevDay: 0 };
 
         const now = new Date();
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
@@ -117,14 +117,16 @@ export class OrdersService {
                 .select('total_amount')
                 .eq('tenant_id', tenantId)
                 .gte('created_at', startOfToday)
-                .not('status', 'in', ['cancelled', 'refunded']),
+                .neq('status', 'cancelled')
+                .neq('status', 'refunded'),
             this.supabase.client
                 .from('orders')
                 .select('total_amount')
                 .eq('tenant_id', tenantId)
                 .gte('created_at', startOfYesterday)
                 .lt('created_at', startOfToday)
-                .not('status', 'in', ['cancelled', 'refunded']),
+                .neq('status', 'cancelled')
+                .neq('status', 'refunded'),
         ]);
 
         const revenueToday = (todayRes.data ?? []).reduce((s: number, o: any) => s + (o.total_amount ?? 0), 0);

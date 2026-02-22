@@ -100,7 +100,11 @@ export class TenantService {
       return;
     }
 
-    this._state.update((s) => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({
+      ...s,
+      loading: true,
+      error: null
+    }));
 
     try {
       const { data, error } = await this.supabase.client
@@ -156,7 +160,7 @@ export class TenantService {
       .eq('tenant_id', tenantId)
       .eq('user_id', userId)
       .eq('is_active', true)
-      .single();
+      .maybeSingle();
 
     this._state.update((s) => ({ ...s, memberInfo: data }));
   }
