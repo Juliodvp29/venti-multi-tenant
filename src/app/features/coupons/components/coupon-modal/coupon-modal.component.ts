@@ -8,7 +8,6 @@ import { DatePicker } from '@shared/components/date-picker/date-picker';
 
 @Component({
     selector: 'app-coupon-modal',
-    standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, FormsModule, ReactiveFormsModule, DatePicker],
     template: `
@@ -169,7 +168,7 @@ import { DatePicker } from '@shared/components/date-picker/date-picker';
         </form>
 
         <!-- Footer -->
-        <div class="p-6 border-t border-gray-200 dark:border-gray-800 flex gap-3 pb-32 sm:pb-12 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md sticky bottom-0">
+        <div class="p-6 border-t border-gray-200 dark:border-gray-800 flex gap-3 pb-32 sm:pb-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md sticky bottom-0">
           <button 
             type="button"
             (click)="close.emit()"

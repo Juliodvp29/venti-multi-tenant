@@ -116,16 +116,40 @@ export class TenantService {
 
       if (error) throw error;
 
+      const tenants = data ?? [];
+
+      // Prioritize "real" tenants over seed data
+      const sortedTenants = [...tenants].sort((a, b) => {
+        const aIsSeed = (a.business_name || '').toLowerCase().includes('seed');
+        const bIsSeed = (b.business_name || '').toLowerCase().includes('seed');
+        if (aIsSeed && !bIsSeed) return 1;
+        if (!aIsSeed && bIsSeed) return -1;
+        return 0;
+      });
+
+      const savedId = localStorage.getItem('last_tenant_id');
+      let selected = tenants.find(t => t.id === savedId);
+
+      // If we have a saved seed store but there is a real store available, switch to the real one
+      const firstReal = sortedTenants.find(t => !(t.business_name || '').toLowerCase().includes('seed'));
+      if (selected && (selected.business_name || '').toLowerCase().includes('seed') && firstReal) {
+        selected = firstReal;
+      }
+
+      const selectedTenant = selected || sortedTenants[0] || null;
+
       this._state.update((s) => ({
         ...s,
-        tenants: data ?? [],
-        // Auto-select first tenant
-        currentTenant: data?.[0] ?? null,
+        tenants: sortedTenants, // Use sorted list for better UX if we ever show it again
+        currentTenant: selectedTenant,
       }));
 
-      if (data?.[0]) {
-        await this.loadMemberInfo(data[0].id);
-        await this.loadTenantSettings(data[0].id);
+      if (selectedTenant) {
+        if (selectedTenant.id !== savedId) {
+          localStorage.setItem('last_tenant_id', selectedTenant.id);
+        }
+        await this.loadMemberInfo(selectedTenant.id);
+        await this.loadTenantSettings(selectedTenant.id);
       }
     } catch (error) {
       console.error('Error loading tenants:', error);
@@ -181,6 +205,7 @@ export class TenantService {
     const tenant = this._state().tenants.find((t) => t.id === tenantId);
     if (!tenant) return;
     this._state.update((s) => ({ ...s, currentTenant: tenant }));
+    localStorage.setItem('last_tenant_id', tenantId);
     await this.loadMemberInfo(tenantId);
     await this.loadTenantSettings(tenantId);
   }

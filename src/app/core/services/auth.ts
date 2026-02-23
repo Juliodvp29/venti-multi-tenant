@@ -130,13 +130,36 @@ export class AuthService {
 
     const { data: existing, error: fetchError } = await this.supabase.client
       .from('customers')
-      .select('id')
+      .select('id, user_id')
       .eq('tenant_id', tenantId)
       .eq('email', user.email)
       .maybeSingle();
 
     if (fetchError) throw fetchError;
-    if (existing) return existing;
+
+    const metadata = user.user_metadata || {};
+    const firstName = metadata['first_name'] || metadata['full_name']?.split(' ')[0] || '';
+    const lastName = metadata['last_name'] || metadata['full_name']?.split(' ').slice(1).join(' ') || '';
+
+    if (existing) {
+      // If found but not linked to this user, link it now
+      if (!existing.user_id || existing.user_id !== user.id) {
+        const { data: updated, error: updateError } = await this.supabase.client
+          .from('customers')
+          .update({
+            user_id: user.id,
+            first_name: firstName || undefined,
+            last_name: lastName || undefined,
+          })
+          .eq('id', existing.id)
+          .select('id')
+          .single();
+
+        if (updateError) throw updateError;
+        return updated;
+      }
+      return existing;
+    }
 
     // Create new customer linked to this user
     const { data: created, error: createError } = await this.supabase.client
@@ -145,8 +168,8 @@ export class AuthService {
         tenant_id: tenantId,
         user_id: user.id,
         email: user.email,
-        first_name: user.user_metadata?.['first_name'] || null,
-        last_name: user.user_metadata?.['last_name'] || null,
+        first_name: firstName || null,
+        last_name: lastName || null,
       })
       .select('id')
       .single();

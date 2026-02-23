@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-    selector: 'app-header',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
+  selector: 'app-header',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
     <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
       <!-- Mobile menu button -->
       <button 
@@ -34,5 +34,5 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
   `
 })
 export class HeaderComponent {
-    @Output() toggleSidebar = new EventEmitter<void>();
+  @Output() toggleSidebar = new EventEmitter<void>();
 }

@@ -48,6 +48,10 @@ export const routes: Routes = [
         path: 'customers',
         loadChildren: () => import('@features/customers/customers.routes').then((m) => m.customersRoutes),
       },
+      {
+        path: 'reviews',
+        loadChildren: () => import('@features/reviews/reviews.routes').then((m) => m.REVIEWS_ROUTES),
+      },
     ],
   },
   {
