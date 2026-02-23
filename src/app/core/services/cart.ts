@@ -1,6 +1,6 @@
 import { Injectable, computed, signal, inject } from '@angular/core';
 import { CartItem } from '@core/models/cart';
-import { Product } from '@core/models/product';
+import { Product, ProductVariant } from '@core/models/product';
 import { DiscountCode } from '@core/models/discount.model';
 import { DiscountsService } from './discounts';
 import { ToastService } from './toast';
@@ -70,25 +70,29 @@ export class CartService {
         this.toast.info('Cupón removido');
     }
 
-    addToCart(product: Product, quantity: number = 1): void {
+    addToCart(product: Product, quantity: number = 1, variant?: ProductVariant): void {
         this._items.update(items => {
-            const existingItem = items.find(i => i.productId === product.id);
+            const variantId = variant?.id;
+            const itemId = variantId ? `${product.id}_${variantId}` : product.id;
+
+            const existingItem = items.find(i => i.id === itemId);
 
             if (existingItem) {
                 return items.map(item =>
-                    item.productId === product.id
+                    item.id === itemId
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             }
 
             const newItem: CartItem = {
-                id: product.id,
+                id: itemId,
                 productId: product.id,
-                name: product.name,
-                price: product.price,
+                variantId: variantId,
+                name: variant ? `${product.name} - ${variant.name}` : product.name,
+                price: variant?.price ?? product.price,
                 quantity: quantity,
-                imageUrl: product.primary_image_url || null,
+                imageUrl: variant?.image_url || product.primary_image_url || null,
                 product: product
             };
 
@@ -97,20 +101,20 @@ export class CartService {
         this.saveCart();
     }
 
-    removeFromCart(productId: string): void {
-        this._items.update(items => items.filter(i => i.productId !== productId));
+    removeFromCart(itemId: string): void {
+        this._items.update(items => items.filter(i => i.id !== itemId));
         this.saveCart();
     }
 
-    updateQuantity(productId: string, quantity: number): void {
+    updateQuantity(itemId: string, quantity: number): void {
         if (quantity <= 0) {
-            this.removeFromCart(productId);
+            this.removeFromCart(itemId);
             return;
         }
 
         this._items.update(items =>
             items.map(item =>
-                item.productId === productId ? { ...item, quantity } : item
+                item.id === itemId ? { ...item, quantity } : item
             )
         );
         this.saveCart();

@@ -249,6 +249,154 @@
             </div>
         </div>
 
+        <!-- Divider -->
+        <div class="border-t border-gray-100 dark:border-gray-800"></div>
+
+        <!-- Section: Variantes -->
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Variantes
+                    (Tallas, Colores, etc.)</h3>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-medium text-gray-500">{{ hasVariants() ? 'Activado' : 'Desactivado'
+                        }}</span>
+                    <button type="button" (click)="hasVariants.set(!hasVariants())" class="toggle-btn scale-90"
+                        [class.active]="hasVariants()">
+                        <span class="toggle-thumb"></span>
+                    </button>
+                </div>
+            </div>
+
+            @if (hasVariants()) {
+            <div class="space-y-6 animate-in slide-in-from-top-2 duration-300">
+
+                <!-- Options Editor -->
+                <div
+                    class="space-y-4 p-4 rounded-2xl bg-indigo-50/30 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30">
+                    <div class="flex items-center justify-between">
+                        <p class="text-sm font-bold text-indigo-900 dark:text-indigo-300">Configurar Opciones</p>
+                        <button type="button" (click)="addOption()"
+                            class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 transition-colors flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M12 4v16m8-8H4" />
+                            </svg>
+                            AÑADIR OPCIÓN
+                        </button>
+                    </div>
+
+                    @for (opt of optionDefinitions(); track $index) {
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700">
+                        <div class="sm:col-span-4">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nombre</label>
+                            <input type="text" [value]="opt.name" (input)="updateOptionName($index, nameInput.value)"
+                                #nameInput placeholder="ej. Talla"
+                                class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500/20">
+                        </div>
+                        <div class="sm:col-span-7">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Valores (separados
+                                por coma)</label>
+                            <input type="text" [value]="opt.values.join(', ')"
+                                (change)="updateOptionValues($index, valInput.value)" #valInput
+                                placeholder="ej. S, M, L"
+                                class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500/20">
+                        </div>
+                        <div class="sm:col-span-1 flex justify-center">
+                            <button type="button" (click)="removeOption($index)"
+                                class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    } @empty {
+                    <div
+                        class="text-center py-6 border-2 border-dashed border-indigo-200 dark:border-indigo-900/50 rounded-xl">
+                        <p class="text-xs text-indigo-900/40 dark:text-indigo-300/40 font-medium">Haz clic en "Añadir
+                            Opción" para empezar.</p>
+                    </div>
+                    }
+                </div>
+
+                <!-- Variants Grid -->
+                @if (variants.length > 0) {
+                <div class="space-y-4">
+                    <p class="text-sm font-bold text-gray-900 dark:text-white">Vista Previa de Variantes ({{
+                        variants.length }})</p>
+                    <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-xl">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                <tr>
+                                    <th
+                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                        Variante</th>
+                                    <th
+                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                        SKU</th>
+                                    <th
+                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                        Precio</th>
+                                    <th
+                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest w-24">
+                                        Stock</th>
+                                    <th class="px-4 py-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
+                                <ng-container formArrayName="variants">
+                                    @for (v of variants.controls; track $index) {
+                                    <tr [formGroupName]="$index"
+                                        class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                                            {{ v.getRawValue().name }}
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            <input type="text" formControlName="sku"
+                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm font-mono placeholder-gray-300">
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-gray-400 text-xs">$</span>
+                                                <input type="number" formControlName="price"
+                                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm">
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            <input type="number" formControlName="stock_quantity"
+                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm text-center">
+                                        </td>
+                                        <td class="px-4 py-3 text-right">
+                                            <button type="button"
+                                                (click)="v.patchValue({ is_active: !v.getRawValue().is_active })"
+                                                class="text-[10px] font-bold px-2 py-1 rounded-full transition-colors"
+                                                [class.bg-green-100]="v.getRawValue().is_active"
+                                                [class.text-green-700]="v.getRawValue().is_active"
+                                                [class.bg-gray-100]="!v.getRawValue().is_active"
+                                                [class.text-gray-500]="!v.getRawValue().is_active">
+                                                {{ v.getRawValue().is_active ? 'ON' : 'OFF' }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    }
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-[10px] text-gray-400 italic">Los cambios en el generador sobrescribirán los campos
+                        arriba si la combinación de opciones cambia.</p>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="p-6 text-center border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl">
+                <p class="text-sm text-gray-400 font-medium">Este producto no tiene variantes configuradas.</p>
+            </div>
+            }
+        </div>
+
     </div>
 
     <!-- Divider -->

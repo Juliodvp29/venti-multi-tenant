@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
-import { CreateProductDto, Product, ProductImage, UpdateProductDto } from '@core/models/product';
+import { CreateProductDto, Product, ProductImage, ProductVariant, UpdateProductDto } from '@core/models/product';
 import { Nullable, PaginatedState } from '@core/types';
 import { TenantService } from './tenant';
 import { StorageService } from './storage';
@@ -21,12 +21,20 @@ export class ProductsService {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');
 
+        const columns = filters?.['categoryId']
+            ? '*, images:product_images(*), product_categories!inner(category_id), variants:product_variants(id)'
+            : '*, images:product_images(*), variants:product_variants(id)';
+
         let query = this.supabase.client
             .from('products')
-            .select('*, images:product_images(*)', { count: 'exact' })
+            .select(columns, { count: 'exact' })
             .eq('tenant_id', tenantId)
             .is('deleted_at', null)
             .range((page - 1) * pageSize, page * pageSize - 1);
+
+        if (filters?.['categoryId']) {
+            query = query.eq('product_categories.category_id', filters['categoryId']);
+        }
 
         // Sorting Logic
         const sortBy = filters?.['sortBy'] || 'newest';
@@ -59,6 +67,7 @@ export class ProductsService {
         if (filters?.['status']) {
             query = query.eq('status', filters['status']);
         }
+
 
         const { data, error, count } = await query;
 
@@ -214,6 +223,52 @@ export class ProductsService {
             await this.storageService.deleteFile('products', storagePath);
         } catch (e) {
             console.warn('[ProductsService] Could not delete storage file:', e);
+        }
+    }
+
+    async syncProductVariants(productId: string, variants: Partial<ProductVariant>[]): Promise<void> {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) throw new Error('Tenant not selected');
+
+        // 1. Get existing variants
+        const { data: existingVariants, error: fetchError } = await this.supabase.client
+            .from('product_variants')
+            .select('id')
+            .eq('product_id', productId);
+
+        if (fetchError) throw fetchError;
+
+        const currentIds = (existingVariants || []).map(v => v.id);
+        const newIds = variants.map(v => v.id).filter(Boolean) as string[];
+
+        // 2. Identify variants to delete
+        const idsToDelete = currentIds.filter(id => !newIds.includes(id));
+        if (idsToDelete.length > 0) {
+            const { error: deleteError } = await this.supabase.client
+                .from('product_variants')
+                .delete()
+                .in('id', idsToDelete);
+            if (deleteError) throw deleteError;
+        }
+
+        // 3. Identify variants to upsert (insert or update)
+        const entries = variants.map(v => {
+            const entry: any = {
+                ...v,
+                product_id: productId,
+                tenant_id: tenantId,
+                updated_at: new Date().toISOString()
+            };
+            if (!entry.id) delete entry.id; // Allow DB to generate UUID for new records
+            if (entry.sku === '') entry.sku = null; // Prevent unique constraint violation on empty string
+            return entry;
+        });
+
+        if (entries.length > 0) {
+            const { error: upsertError } = await this.supabase.client
+                .from('product_variants')
+                .upsert(entries);
+            if (upsertError) throw upsertError;
         }
     }
 

@@ -37,6 +37,10 @@ export const routes: Routes = [
         loadComponent: () => import('@features/members/members').then((m) => m.Members),
       },
       {
+        path: 'coupons',
+        loadComponent: () => import('@features/coupons/coupons').then((m) => m.Coupons),
+      },
+      {
         path: 'orders',
         loadChildren: () => import('@features/orders/orders.routes').then((m) => m.ordersRoutes),
       },

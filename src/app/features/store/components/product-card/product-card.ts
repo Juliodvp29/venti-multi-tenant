@@ -7,7 +7,7 @@ import { AnalyticsService } from '@core/services/analytics';
 
 @Component({
     selector: 'app-product-card',
-     changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, RouterLink],
     template: `
     <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500 group flex flex-col h-full">
@@ -27,23 +27,34 @@ import { AnalyticsService } from '@core/services/analytics';
 
             <!-- Quick Action Overlay -->
             <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <button 
-                    (click)="addToCart($event)" 
-                    class="w-full py-3 rounded-2xl font-bold shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
-                    [class]="added() ? 'bg-green-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-900 hover:bg-white'">
-                    
-                    @if (added()) {
-                        <svg class="w-5 h-5 animate-in zoom-in duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                        </svg>
-                        ¡Añadido!
-                    } @else {
+                @if (!product.variants?.length) {
+                    <button 
+                        (click)="addToCart($event)" 
+                        class="w-full py-3 rounded-2xl font-bold shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                        [class]="added() ? 'bg-green-500 text-white' : 'bg-white/90 backdrop-blur-sm text-slate-900 hover:bg-white'">
+                        
+                        @if (added()) {
+                            <svg class="w-5 h-5 animate-in zoom-in duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                            ¡Añadido!
+                        } @else {
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Añadir al Carrito
+                        }
+                    </button>
+                } @else {
+                    <a [routerLink]="['/store/product', product.id]"
+                       class="w-full py-3 rounded-2xl font-bold shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer bg-slate-900 text-white hover:bg-slate-800">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
-                        Añadir al Carrito
-                    }
-                </button>
+                        Ver Opciones
+                    </a>
+                }
             </div>
         </div>
 

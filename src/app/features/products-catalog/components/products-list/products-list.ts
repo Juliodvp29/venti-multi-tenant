@@ -57,6 +57,7 @@ export class ProductsList implements OnInit {
     readonly showDrawer = signal(false);
     readonly editingProduct = signal<Product | null>(null);
     readonly statusFilter = signal<string>('');
+    readonly categoryFilter = signal<string>('');
     readonly dateRange = signal<DateRange>({ start: null, end: null });
     readonly searchQuery = signal('');
 
@@ -160,6 +161,7 @@ export class ProductsList implements OnInit {
             const filters: Record<string, any> = {};
             if (this.searchQuery().trim()) filters['search'] = this.searchQuery().trim();
             if (this.statusFilter()) filters['status'] = this.statusFilter();
+            if (this.categoryFilter()) filters['categoryId'] = this.categoryFilter();
             const { data, count } = await this.productsService.getProducts(page, PAGE_SIZE, filters);
             this.products.set(data);
             this.totalCount.set(count);
@@ -185,9 +187,17 @@ export class ProductsList implements OnInit {
         this.showDrawer.set(true);
     }
 
-    openEdit(product: Product) {
-        this.editingProduct.set(product);
-        this.showDrawer.set(true);
+    async openEdit(product: Product) {
+        this.isLoading.set(true);
+        try {
+            const fullProduct = await this.productsService.getProduct(product.id);
+            this.editingProduct.set(fullProduct);
+            this.showDrawer.set(true);
+        } catch (error: any) {
+            this.toast.error('No se pudieron cargar los detalles completos del producto.');
+        } finally {
+            this.isLoading.set(false);
+        }
     }
 
     closeDrawer() {
@@ -229,6 +239,12 @@ export class ProductsList implements OnInit {
     onStatusFilterChange(event: Event) {
         const select = event.target as HTMLSelectElement;
         this.statusFilter.set(select.value);
+        this.loadProducts(1);
+    }
+
+    onCategoryFilterChange(event: Event) {
+        const select = event.target as HTMLSelectElement;
+        this.categoryFilter.set(select.value);
         this.loadProducts(1);
     }
 

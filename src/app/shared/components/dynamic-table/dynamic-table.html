@@ -143,6 +143,9 @@
                         <ng-container [ngTemplateOutlet]="col.template"
                             [ngTemplateOutletContext]="{ $implicit: item[col.key], item: item }"></ng-container>
 
+                        } @else if (col.formatter) {
+                        <span class="text-gray-700 dark:text-slate-200 font-medium"
+                            [innerHTML]="formatValue(col, item)"></span>
                         } @else {
                         <span class="text-gray-700 dark:text-slate-200 font-medium">{{ formatValue(col, item) }}</span>
                         }

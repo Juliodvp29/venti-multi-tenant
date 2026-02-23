@@ -1,15 +1,16 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy, computed, effect } from '@angular/core';
 import { CommonModule, DecimalPipe, CurrencyPipe } from '@angular/common';
 import { DiscountsService } from '@core/services/discounts';
 import { DiscountCode } from '@core/models/discount.model';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { ColumnDef, TableAction } from '@core/types/table';
 import { ToastService } from '@core/services/toast';
+import { TenantService } from '@core/services/tenant';
 import { CouponModalComponent } from './components/coupon-modal/coupon-modal.component';
 
 @Component({
-   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-coupons',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, DynamicTable, CouponModalComponent, DecimalPipe, CurrencyPipe],
   templateUrl: './coupons.html',
   styleUrl: './coupons.css',
@@ -17,6 +18,15 @@ import { CouponModalComponent } from './components/coupon-modal/coupon-modal.com
 export class Coupons implements OnInit {
   private readonly discountsService = inject(DiscountsService);
   private readonly toast = inject(ToastService);
+  private readonly tenantService = inject(TenantService);
+
+  constructor() {
+    effect(() => {
+      if (this.tenantService.tenantId()) {
+        this.loadCoupons();
+      }
+    });
+  }
 
   coupons = signal<DiscountCode[]>([]);
   isLoading = signal(false);
@@ -24,10 +34,10 @@ export class Coupons implements OnInit {
   isModalOpen = signal(false);
   selectedCoupon = signal<DiscountCode | null>(null);
 
-  // Stats
-  activeCount = signal(24); // Placeholder for now or calculate from data
-  totalRedemptions = signal(1402);
-  totalDiscounted = signal(12450);
+  // Stats - Dynamically calculated from data
+  activeCount = computed(() => this.coupons().filter(c => c.is_active).length);
+  totalRedemptions = computed(() => this.coupons().reduce((acc, c) => acc + (c.usage_count || 0), 0));
+  totalDiscounted = computed(() => 12450); // This would ideally come from a real aggregated metric
 
   columns: ColumnDef<DiscountCode>[] = [
     {
@@ -65,15 +75,16 @@ export class Coupons implements OnInit {
   }
 
   async loadCoupons() {
-    this.isLoading.set(true);
     try {
+      this.isLoading.set(true);
       const { data } = await this.discountsService.getDiscountCodes();
-      this.coupons.set(data);
-      // Update stats based on loaded data
-      this.activeCount.set(data.filter(c => c.is_active).length);
-      // Other stats would ideally come from a separate aggregate query or be calculated
+      this.coupons.set(data || []);
     } catch (error) {
-      this.toast.error('Error al cargar cupones');
+      console.error('Error loading coupons:', error);
+      // Fail silently if it's just a missing tenant during init
+      if (!(error instanceof Error && error.message.includes('Tenant'))) {
+        this.toast.error('Error al cargar cupones');
+      }
     } finally {
       this.isLoading.set(false);
     }

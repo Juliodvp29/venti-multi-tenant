@@ -8,14 +8,14 @@ import {
     signal,
     ViewChild,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { Product, CreateProductDto, UpdateProductDto } from '@core/models/product';
+import { Product, CreateProductDto, UpdateProductDto, ProductVariant, ProductOption } from '@core/models/product';
 import { Category } from '@core/models/category';
 import { ProductsService } from '@core/services/products';
 import { ToastService } from '@core/services/toast';
 import { ProductStatus } from '@core/enums';
 import { ProductImageUploader } from '../product-image-uploader/product-image-uploader';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-product-form',
@@ -42,6 +42,10 @@ export class ProductForm {
     readonly slugManuallyEdited = signal(false);
     readonly selectedCategoryIds = signal<Set<string>>(new Set());
 
+    // Variants & Options State
+    readonly hasVariants = signal(false);
+    readonly optionDefinitions = signal<ProductOption[]>([]); // UI state for the generator
+
     readonly statusOptions: { value: ProductStatus; label: string }[] = [
         { value: ProductStatus.Draft, label: 'Borrador' },
         { value: ProductStatus.Active, label: 'Activo' },
@@ -61,6 +65,7 @@ export class ProductForm {
         track_inventory: [false],
         stock_quantity: [0, [Validators.min(0)]],
         is_featured: [false],
+        variants: this.fb.array([]), // FormArray for variants
     });
 
     constructor() {
@@ -81,6 +86,18 @@ export class ProductForm {
                     stock_quantity: p.stock_quantity,
                     is_featured: p.is_featured,
                 });
+
+                // Load Variants if they exist
+                if (p.variants && p.variants.length > 0) {
+                    this.hasVariants.set(true);
+                    this.setVariants(p.variants);
+                    this.inferOptionsFromVariants(p.variants);
+                } else {
+                    this.hasVariants.set(false);
+                    this.variants.clear();
+                    this.optionDefinitions.set([]);
+                }
+
                 // Populate selected categories from product relation
                 const catIds = (p.categories ?? []).map((c: any) =>
                     c?.category?.id ?? c?.id ?? c
@@ -93,6 +110,129 @@ export class ProductForm {
                 this.slugManuallyEdited.set(false);
                 this.selectedCategoryIds.set(new Set());
             }
+        });
+    }
+
+    get variants() {
+        return this.form.get('variants') as FormArray;
+    }
+
+    private setVariants(variants: ProductVariant[]) {
+        this.variants.clear();
+        variants.forEach(v => {
+            this.variants.push(this.fb.group({
+                id: [v.id],
+                name: [v.name, Validators.required],
+                sku: [v.sku],
+                price: [v.price, [Validators.min(0)]],
+                compare_at_price: [v.compare_at_price],
+                cost_price: [v.cost_price],
+                stock_quantity: [v.stock_quantity, [Validators.min(0)]],
+                options: [v.options], // Immutable metadata
+                is_active: [v.is_active]
+            }));
+        });
+    }
+
+    private inferOptionsFromVariants(variants: ProductVariant[]) {
+        const optionsMap: Record<string, Set<string>> = {};
+        variants.forEach(v => {
+            Object.entries(v.options || {}).forEach(([key, val]) => {
+                if (!optionsMap[key]) optionsMap[key] = new Set();
+                optionsMap[key].add(val);
+            });
+        });
+
+        const defs = Object.entries(optionsMap).map(([name, values]) => ({
+            name,
+            values: Array.from(values)
+        }));
+        this.optionDefinitions.set(defs);
+    }
+
+    addOption() {
+        this.optionDefinitions.update(prev => [...prev, { name: '', values: [] }]);
+    }
+
+    removeOption(index: number) {
+        this.optionDefinitions.update(prev => prev.filter((_, i) => i !== index));
+        this.generateVariantsFromOptions();
+    }
+
+    updateOptionName(index: number, name: string) {
+        this.optionDefinitions.update(prev => {
+            const next = [...prev];
+            next[index] = { ...next[index], name };
+            return next;
+        });
+        this.generateVariantsFromOptions();
+    }
+
+    updateOptionValues(index: number, valuesStr: string) {
+        const values = valuesStr.split(',').map(v => v.trim()).filter(Boolean);
+        this.optionDefinitions.update(prev => {
+            const next = [...prev];
+            next[index] = { ...next[index], values };
+            return next;
+        });
+        this.generateVariantsFromOptions();
+    }
+
+    generateVariantsFromOptions() {
+        const defs = this.optionDefinitions().filter(d => d.name && d.values.length > 0);
+        if (defs.length === 0) {
+            this.variants.clear();
+            return;
+        }
+
+        // Cartesian product
+        const generateLevel = (level: number, currentOptions: Record<string, string>, currentNames: string[]): any[] => {
+            if (level === defs.length) {
+                return [{
+                    name: currentNames.join(' / '),
+                    options: { ...currentOptions },
+                    sku: null,
+                    price: this.form.getRawValue().price,
+                    stock_quantity: 0,
+                    is_active: true
+                }];
+            }
+
+            const def = defs[level];
+            let results: any[] = [];
+            def.values.forEach(val => {
+                results = results.concat(generateLevel(
+                    level + 1,
+                    { ...currentOptions, [def.name]: val },
+                    [...currentNames, val]
+                ));
+            });
+            return results;
+        };
+
+        const newVariants = generateLevel(0, {}, []);
+
+        // Sync with FormArray, preserving data for existing matches
+        const currentVariants = this.variants.getRawValue();
+        this.variants.clear();
+
+        newVariants.forEach(nv => {
+            // Try to find existing variant with same options to preserve data
+            const existing = currentVariants.find(cv =>
+                JSON.stringify(cv.options) === JSON.stringify(nv.options)
+            );
+
+            this.variants.push(this.fb.group({
+                id: [existing?.id || null],
+                name: [nv.name, Validators.required],
+                sku: [existing?.sku ?? null],
+                price: [existing?.price || nv.price, [Validators.min(0)]],
+                compare_at_price: [existing?.compare_at_price || null],
+                cost_price: [existing?.cost_price || null],
+                stock_quantity: [existing?.stock_quantity || 0, [Validators.min(0)]],
+                options: [nv.options],
+                is_active: [existing?.is_active ?? true]
+            }));
         });
     }
 
@@ -176,6 +316,15 @@ export class ProductForm {
             // Save category associations
             const catIds = [...this.selectedCategoryIds()];
             await this.productsService.setProductCategories(result.id, catIds);
+
+            // Sync variants if enabled
+            if (this.hasVariants()) {
+                const variantsData = this.variants.getRawValue();
+                await this.productsService.syncProductVariants(result.id, variantsData);
+            } else {
+                // If variants were disabled, we should probably delete them
+                await this.productsService.syncProductVariants(result.id, []);
+            }
 
             this.saved.emit(result);
             this.form.reset({ status: ProductStatus.Draft, track_inventory: false, stock_quantity: 0, price: 0 });

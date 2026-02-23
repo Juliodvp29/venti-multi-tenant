@@ -102,7 +102,7 @@ export * from './payment';
 // DISCOUNTS
 // ============================================================
 
-export * from './discount.';
+export * from './discount.model';
 
 // ============================================================
 // REVIEWS

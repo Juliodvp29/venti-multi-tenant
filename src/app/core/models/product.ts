@@ -25,13 +25,13 @@ export interface ProductImage {
 export interface ProductVariant extends BaseModel {
     product_id: string;
     tenant_id: string;
-    name: string;
+    name: string; // e.g., "Red / Large"
     sku: string | null;
     price: number | null;
     compare_at_price: number | null;
     cost_price: number | null;
     stock_quantity: number;
-    options: Record<string, string>; // e.g. { "color": "Red", "size": "Large" }
+    options: Record<string, string>; // e.g., { "color": "Red", "size": "Large" }
     image_url: string | null;
     is_active: boolean;
 }
@@ -88,6 +88,14 @@ export interface Product extends BaseModel {
     variants?: ProductVariant[];
     categories?: any[]; // Using any[] temporarily to avoid circular dependency
     tags?: ProductTag[];
+
+    // UI Only / Inferred
+    options?: ProductOption[];
+}
+
+export interface ProductOption {
+    name: string;
+    values: string[];
 }
 
 export interface CreateProductDto {

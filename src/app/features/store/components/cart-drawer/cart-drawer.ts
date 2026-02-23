@@ -35,7 +35,7 @@ import { CartService } from '@core/services/cart';
                     <div class="flex-1 min-w-0 flex flex-col">
                         <div class="flex justify-between items-start gap-2">
                              <h4 class="font-bold text-slate-900 truncate">{{ item.name }}</h4>
-                             <button (click)="cartService.removeFromCart(item.productId)" class="text-slate-300 hover:text-red-500 transition-colors">
+                             <button (click)="cartService.removeFromCart(item.id)" class="text-slate-300 hover:text-red-500 transition-colors">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
@@ -44,9 +44,9 @@ import { CartService } from '@core/services/cart';
                         <p class="text-indigo-600 font-bold text-sm mb-2">{{ item.price | currency }}</p>
                         
                         <div class="mt-auto flex items-center border border-slate-200 rounded-lg overflow-hidden w-fit bg-white">
-                            <button (click)="cartService.updateQuantity(item.productId, item.quantity - 1)" class="px-2 py-1 hover:bg-slate-50">-</button>
+                            <button (click)="cartService.updateQuantity(item.id, item.quantity - 1)" class="px-2 py-1 hover:bg-slate-50">-</button>
                             <span class="px-3 py-1 text-sm font-bold">{{ item.quantity }}</span>
-                            <button (click)="cartService.updateQuantity(item.productId, item.quantity + 1)" class="px-2 py-1 hover:bg-slate-50">+</button>
+                            <button (click)="cartService.updateQuantity(item.id, item.quantity + 1)" class="px-2 py-1 hover:bg-slate-50">+</button>
                         </div>
                     </div>
                 </div>

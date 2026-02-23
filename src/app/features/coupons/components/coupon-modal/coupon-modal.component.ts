@@ -4,11 +4,13 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angu
 import { DiscountCode } from '@core/models/discount.model';
 import { DiscountsService } from '@core/services/discounts';
 import { ToastService } from '@core/services/toast';
+import { DatePicker } from '@shared/components/date-picker/date-picker';
 
 @Component({
     selector: 'app-coupon-modal',
+    standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, DatePicker],
     template: `
     <div class="fixed inset-0 z-[60] flex items-center justify-end bg-black/50 backdrop-blur-sm px-4 py-6 sm:p-0">
       <div class="w-full max-w-lg bg-white dark:bg-gray-900 h-full overflow-y-auto shadow-2xl flex flex-col transform transition-transform duration-300">
@@ -114,11 +116,11 @@ import { ToastService } from '@core/services/toast';
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-                <input type="date" formControlName="starts_at" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <app-date-picker formControlName="starts_at" placeholder="Select start"></app-date-picker>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Expiration Date</label>
-                <input type="date" formControlName="ends_at" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <app-date-picker formControlName="ends_at" placeholder="Select end" align="right"></app-date-picker>
               </div>
             </div>
           </section>
@@ -167,11 +169,11 @@ import { ToastService } from '@core/services/toast';
         </form>
 
         <!-- Footer -->
-        <div class="p-6 border-t border-gray-200 dark:border-gray-800 flex gap-3">
+        <div class="p-6 border-t border-gray-200 dark:border-gray-800 flex gap-3 pb-32 sm:pb-12 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md sticky bottom-0">
           <button 
             type="button"
             (click)="close.emit()"
-            class="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 transition-colors"
+            class="flex-1 px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 transition-colors"
           >
             Cancel
           </button>
@@ -179,7 +181,7 @@ import { ToastService } from '@core/services/toast';
             type="submit"
             (click)="onSubmit()"
             [disabled]="form.invalid"
-            class="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 shadow-lg shadow-indigo-200 dark:shadow-none"
           >
             <span class="flex items-center justify-center gap-2">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,6 +191,9 @@ import { ToastService } from '@core/services/toast';
             </span>
           </button>
         </div>
+        
+        <!-- Safety block for AI Bot -->
+        <div class="h-20 sm:hidden"></div>
       </div>
     </div>
   `
