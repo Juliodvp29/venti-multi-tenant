@@ -7,7 +7,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-settings-branding',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './settings-branding.html',
     changeDetection: ChangeDetectionStrategy.OnPush,

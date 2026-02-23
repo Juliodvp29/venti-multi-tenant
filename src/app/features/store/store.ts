@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { TenantService } from '@core/services/tenant';
@@ -7,7 +7,7 @@ import { CartDrawer } from './components/cart-drawer/cart-drawer';
 
 @Component({
   selector: 'app-store',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, RouterOutlet, StoreHeader, CartDrawer],
   templateUrl: './store.html',
   styleUrl: './store.css',

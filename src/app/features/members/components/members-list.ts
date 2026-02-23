@@ -6,7 +6,6 @@ import { ColumnDef, TableAction } from '@core/types/table';
 
 @Component({
     selector: 'app-members-list',
-    standalone: true,
     imports: [CommonModule, DynamicTable],
     template: `
     <app-dynamic-table

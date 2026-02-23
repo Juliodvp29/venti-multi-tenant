@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-stat-card',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-stat-card',
+  imports: [CommonModule],
+  template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
       <div class="flex items-center justify-between mb-4">
         <div 
@@ -45,11 +44,11 @@ import { CommonModule } from '@angular/common';
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatCard {
-    label = input.required<string>();
-    value = input.required<string | number | null>();
-    trend = input<{ value: number } | null>(null);
-    iconBgClass = input<string>('bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400');
+  label = input.required<string>();
+  value = input.required<string | number | null>();
+  trend = input<{ value: number } | null>(null);
+  iconBgClass = input<string>('bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400');
 }

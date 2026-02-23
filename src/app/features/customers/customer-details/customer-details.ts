@@ -10,7 +10,6 @@ import { Order } from '@core/models/order';
 
 @Component({
     selector: 'app-customer-details',
-    standalone: true,
     imports: [CommonModule, RouterLink, FormsModule],
     templateUrl: './customer-details.html',
     styleUrls: ['./customer-details.css'],

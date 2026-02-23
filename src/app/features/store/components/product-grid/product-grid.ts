@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductsService } from '@core/services/products';
 import { Product } from '@core/models/product';
@@ -6,7 +6,7 @@ import { ProductCard } from '../product-card/product-card';
 
 @Component({
     selector: 'app-product-grid',
-    standalone: true,
+     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, ProductCard],
     template: `
     <div class="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">

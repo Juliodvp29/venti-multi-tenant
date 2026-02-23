@@ -18,7 +18,6 @@ export interface DateRange {
 
 @Component({
     selector: 'app-date-range-picker',
-    standalone: true,
     imports: [CommonModule],
     templateUrl: './date-range-picker.html',
     styleUrl: './date-range-picker.css',

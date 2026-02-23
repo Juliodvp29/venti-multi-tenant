@@ -16,7 +16,6 @@ import { ToastService } from '@core/services/toast';
 
 @Component({
     selector: 'app-category-form',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './category-form.html',
     styleUrl: './category-form.css',

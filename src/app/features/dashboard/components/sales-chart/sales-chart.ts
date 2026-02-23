@@ -4,7 +4,7 @@ import { NgApexchartsModule, ChartComponent } from 'ng-apexcharts';
 
 @Component({
     selector: 'app-sales-chart',
-    standalone: true,
+    
     imports: [CommonModule, NgApexchartsModule],
     template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">

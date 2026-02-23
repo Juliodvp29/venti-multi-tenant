@@ -8,7 +8,6 @@ import { MarkdownPipe } from '../../pipes/markdown.pipe';
 
 @Component({
     selector: 'app-ai-assistant',
-    standalone: true,
     imports: [CommonModule, FormsModule, MarkdownPipe],
     templateUrl: './ai-assistant.html',
     styleUrl: './ai-assistant.css',

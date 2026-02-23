@@ -14,7 +14,6 @@ export interface PreviewData {
 
 @Component({
     selector: 'app-store-preview',
-    standalone: true,
     imports: [CommonModule],
     templateUrl: './store-preview.html',
     changeDetection: ChangeDetectionStrategy.OnPush,

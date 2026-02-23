@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
@@ -9,8 +9,8 @@ import { MembersListComponent } from './components/members-list';
 import { InviteMemberModalComponent } from './components/invite-member-modal';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-members',
-  standalone: true,
   imports: [
     CommonModule,
     MembersStatsComponent,

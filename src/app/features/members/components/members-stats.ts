@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-members-stats',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-members-stats',
+  imports: [CommonModule],
+  template: `
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
       <!-- Total Members -->
       <div class="relative overflow-hidden rounded-2xl bg-white p-5 shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
@@ -60,10 +59,10 @@ import { CommonModule } from '@angular/common';
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MembersStatsComponent {
-    total = input<number>(0);
-    admins = input<number>(0);
-    pending = input<number>(0);
+  total = input<number>(0);
+  admins = input<number>(0);
+  pending = input<number>(0);
 }

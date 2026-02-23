@@ -1,13 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { CartService } from '@core/services/cart';
 
 @Component({
-    selector: 'app-checkout',
-    standalone: true,
-    imports: [CommonModule, RouterLink],
-    template: `
+  selector: 'app-checkout',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, RouterLink],
+  template: `
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
       <!-- Form -->
       <div class="lg:col-span-12">
@@ -67,6 +67,16 @@ import { CartService } from '@core/services/cart';
               <span class="text-slate-500">Subtotal</span>
               <span class="font-medium">{{ cartService.subtotal() | currency }}</span>
             </div>
+            @if (cartService.appliedCoupon()) {
+              <div class="flex justify-between text-indigo-600 font-bold">
+                <span>Descuento ({{ cartService.appliedCoupon()?.code }})</span>
+                <span>-{{ cartService.discountAmount() | currency }}</span>
+              </div>
+            }
+            <div class="flex justify-between">
+              <span class="text-slate-500">Impuestos</span>
+              <span class="font-medium">{{ cartService.tax() | currency }}</span>
+            </div>
             <div class="flex justify-between">
               <span class="text-slate-500">Envío</span>
               <span class="font-medium">Gratis</span>
@@ -86,12 +96,12 @@ import { CartService } from '@core/services/cart';
   `,
 })
 export class Checkout {
-    readonly cartService = inject(CartService);
-    private readonly router = inject(Router);
+  readonly cartService = inject(CartService);
+  private readonly router = inject(Router);
 
-    placeOrder() {
-        // TODO: Connect to OrdersService
-        this.cartService.clearCart();
-        this.router.navigate(['/store/success']);
-    }
+  placeOrder() {
+    // TODO: Connect to OrdersService
+    this.cartService.clearCart();
+    this.router.navigate(['/store/success']);
+  }
 }

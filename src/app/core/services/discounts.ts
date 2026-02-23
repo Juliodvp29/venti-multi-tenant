@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
-import { DiscountCode, DiscountUsage } from '@core/models/discount.';
+import { DiscountCode } from '@core/models/discount.model';
 import { TenantService } from './tenant';
 
 @Injectable({
@@ -21,10 +21,22 @@ export class DiscountsService {
             .from('discount_codes')
             .select('*', { count: 'exact' })
             .eq('tenant_id', tenantId)
+            .order('created_at', { ascending: false })
             .range((page - 1) * pageSize, page * pageSize - 1);
 
         if (error) throw error;
         return { data: data as DiscountCode[], count: count ?? 0 };
+    }
+
+    async getDiscountById(id: string): Promise<DiscountCode> {
+        const { data, error } = await this.supabase.client
+            .from('discount_codes')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) throw error;
+        return data as DiscountCode;
     }
 
     async validateCode(code: string): Promise<DiscountCode | null> {
@@ -33,12 +45,21 @@ export class DiscountsService {
             .from('discount_codes')
             .select('*')
             .eq('tenant_id', tenantId)
-            .eq('code', code)
+            .eq('code', code.toUpperCase())
             .eq('is_active', true)
             .single();
 
         if (error) return null;
-        return data as DiscountCode;
+
+        const discount = data as DiscountCode;
+
+        // Basic validation (more validation in storefront logic)
+        const now = new Date();
+        if (discount.starts_at && new Date(discount.starts_at) > now) return null;
+        if (discount.ends_at && new Date(discount.ends_at) < now) return null;
+        if (discount.usage_limit && discount.usage_count >= discount.usage_limit) return null;
+
+        return discount;
     }
 
     async createDiscountCode(discount: Partial<DiscountCode>): Promise<DiscountCode> {
@@ -48,11 +69,38 @@ export class DiscountsService {
             .insert({
                 ...discount,
                 tenant_id: tenantId,
+                code: discount.code?.toUpperCase(),
+                usage_count: 0
             })
             .select()
             .single();
 
         if (error) throw error;
         return data as DiscountCode;
+    }
+
+    async updateDiscountCode(id: string, discount: Partial<DiscountCode>): Promise<DiscountCode> {
+        const { data, error } = await this.supabase.client
+            .from('discount_codes')
+            .update({
+                ...discount,
+                code: discount.code?.toUpperCase(),
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        return data as DiscountCode;
+    }
+
+    async deleteDiscountCode(id: string): Promise<void> {
+        const { error } = await this.supabase.client
+            .from('discount_codes')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
     }
 }

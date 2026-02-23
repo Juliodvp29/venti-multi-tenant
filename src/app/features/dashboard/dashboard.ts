@@ -12,7 +12,6 @@ import { RecentTransactions, DashboardTransaction } from './components/recent-tr
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     CommonModule,
     StatCard,

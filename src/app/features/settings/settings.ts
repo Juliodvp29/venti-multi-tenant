@@ -22,7 +22,6 @@ type Tab = 'general' | 'branding' | 'address';
 
 @Component({
   selector: 'app-settings',
-  standalone: true,
   imports: [CommonModule, SettingsGeneral, SettingsBranding, SettingsAddress, SettingsDangerZone, StorePreview],
   templateUrl: './settings.html',
   styleUrl: './settings.css',

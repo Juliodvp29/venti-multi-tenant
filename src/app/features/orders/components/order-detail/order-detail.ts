@@ -17,7 +17,6 @@ import { OrderStatusBadge } from '@shared/components/order-status-badge/order-st
 
 @Component({
     selector: 'app-order-detail',
-    standalone: true,
     imports: [CommonModule, FormsModule, OrderStatusBadge],
     templateUrl: './order-detail.html',
     styleUrl: './order-detail.css',

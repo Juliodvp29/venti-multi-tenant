@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { NgApexchartsModule } from 'ng-apexcharts';
 
 @Component({
-    selector: 'app-category-chart',
-    standalone: true,
-    imports: [CommonModule, NgApexchartsModule],
-    template: `
+  selector: 'app-category-chart',
+
+  imports: [CommonModule, NgApexchartsModule],
+  template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm h-full">
       <div class="mb-6">
         <h3 class="text-base font-bold text-gray-900 dark:text-white">Ventas por Categoría</h3>
@@ -40,49 +40,49 @@ import { NgApexchartsModule } from 'ng-apexcharts';
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryChart {
-    series = input.required<number[]>();
-    labels = input.required<string[]>();
+  series = input.required<number[]>();
+  labels = input.required<string[]>();
 
-    chartOptions: any = {
-        chart: {
-            type: 'donut',
-            height: 240,
-            fontFamily: 'inherit'
-        },
-        colors: ['#4f46e5', '#818cf8', '#c7d2fe'],
-        dataLabels: { enabled: false },
-        stroke: { show: false },
-        plotOptions: {
-            pie: {
-                donut: {
-                    size: '75%',
-                    labels: {
-                        show: true,
-                        name: { show: true, offsetY: 20 },
-                        value: {
-                            show: true,
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                            offsetY: -20,
-                            formatter: (val: string) => val + '%'
-                        },
-                        total: {
-                            show: true,
-                            label: 'Apparel',
-                            formatter: () => '45%'
-                        }
-                    }
-                }
+  chartOptions: any = {
+    chart: {
+      type: 'donut',
+      height: 240,
+      fontFamily: 'inherit'
+    },
+    colors: ['#4f46e5', '#818cf8', '#c7d2fe'],
+    dataLabels: { enabled: false },
+    stroke: { show: false },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '75%',
+          labels: {
+            show: true,
+            name: { show: true, offsetY: 20 },
+            value: {
+              show: true,
+              fontSize: '24px',
+              fontWeight: 'bold',
+              offsetY: -20,
+              formatter: (val: string) => val + '%'
+            },
+            total: {
+              show: true,
+              label: 'Apparel',
+              formatter: () => '45%'
             }
-        },
-        legend: { show: false },
-        tooltip: { enabled: true }
-    };
+          }
+        }
+      }
+    },
+    legend: { show: false },
+    tooltip: { enabled: true }
+  };
 
-    currencyFormat(val: number): string {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
-    }
+  currencyFormat(val: number): string {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+  }
 }

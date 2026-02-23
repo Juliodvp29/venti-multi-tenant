@@ -24,7 +24,6 @@ const PAGE_SIZE = 20;
 
 @Component({
     selector: 'app-products-list',
-    standalone: true,
     imports: [CommonModule, DynamicTable, ProductForm, DateRangePicker],
     templateUrl: './products-list.html',
     styleUrl: './products-list.css',

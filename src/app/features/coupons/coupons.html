@@ -1,1 +1,73 @@
-<p>coupons works!</p>
+<div class="p-6 space-y-8">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Discounts & Coupons</h1>
+            <p class="text-gray-500 dark:text-gray-400">Manage promotional codes, flash sales, and customer rewards.</p>
+        </div>
+        <button (click)="openCouponModal()"
+            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Create Coupon
+        </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Coupons</p>
+            <div class="mt-2 flex items-baseline gap-2">
+                <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ activeCount() }}</h3>
+                <span class="text-sm font-medium text-green-600 flex items-center">
+                    <svg class="w-4 h-4 mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    +4 since last week
+                </span>
+            </div>
+        </div>
+
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Redemptions</p>
+            <div class="mt-2 flex items-baseline gap-2">
+                <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ totalRedemptions() | number }}</h3>
+                <span class="text-sm font-medium text-green-600 flex items-center">
+                    <svg class="w-4 h-4 mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    12% conversion rate
+                </span>
+            </div>
+        </div>
+
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Discounted</p>
+            <div class="mt-2 flex items-baseline gap-2">
+                <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ totalDiscounted() | currency:'USD' }}
+                </h3>
+                <span class="text-sm font-medium text-gray-400 flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Net impact on revenue
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden text-black dark:text-white">
+        <app-dynamic-table [data]="coupons()" [columns]="columns" [actions]="actions" [pageSize]="10"
+            (actionClick)="onAction($event)" title="Coupons List"></app-dynamic-table>
+    </div>
+</div>
+
+@if (isModalOpen()) {
+<app-coupon-modal [coupon]="selectedCoupon()" (close)="onModalClose()" (saved)="loadCoupons()"></app-coupon-modal>
+}

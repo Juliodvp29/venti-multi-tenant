@@ -2,20 +2,19 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface DashboardProduct {
-    id: string;
-    name: string;
-    category: string;
-    sales: number;
-    revenue: string;
-    image?: string;
+  id: string;
+  name: string;
+  category: string;
+  sales: number;
+  revenue: string;
+  image?: string;
 }
 
 @Component({
-    selector: 'app-top-products',
-    standalone: true,
-    imports: [CommonModule],
-    host: { class: 'block h-full' },
-    template: `
+  selector: 'app-top-products',
+  imports: [CommonModule],
+  host: { class: 'block h-full' },
+  template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm h-full flex flex-col">
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-base font-bold text-gray-900 dark:text-white">Top Productos</h3>
@@ -54,8 +53,8 @@ export interface DashboardProduct {
       </button>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopProducts {
-    products = input.required<DashboardProduct[]>();
+  products = input.required<DashboardProduct[]>();
 }

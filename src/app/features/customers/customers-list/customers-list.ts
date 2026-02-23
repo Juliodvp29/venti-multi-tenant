@@ -8,7 +8,6 @@ import { ColumnDef } from '@core/types/table';
 
 @Component({
     selector: 'app-customers-list',
-    standalone: true,
     imports: [CommonModule, DynamicTable],
     templateUrl: './customers-list.html',
     styleUrls: ['./customers-list.css'],

@@ -28,7 +28,6 @@ const PAYMENT_STATUS_MAP: Record<PaymentStatus, BadgeConfig> = {
 
 @Component({
     selector: 'app-order-status-badge',
-    standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset {{ config().classes }}">

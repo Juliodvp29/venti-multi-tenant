@@ -1,24 +1,73 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, signal, inject } from '@angular/core';
 import { CartItem } from '@core/models/cart';
 import { Product } from '@core/models/product';
+import { DiscountCode } from '@core/models/discount.model';
+import { DiscountsService } from './discounts';
+import { ToastService } from './toast';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CartService {
+    private readonly discountsService = inject(DiscountsService);
+    private readonly toast = inject(ToastService);
+
     private readonly _items = signal<CartItem[]>(this.loadCart());
+    private readonly _appliedCoupon = signal<DiscountCode | null>(null);
 
     // Computed properties
     readonly items = computed(() => this._items());
     readonly count = computed(() => this._items().reduce((acc, item) => acc + item.quantity, 0));
     readonly subtotal = computed(() => this._items().reduce((acc, item) => acc + (item.price * item.quantity), 0));
-    readonly tax = computed(() => this.subtotal() * 0.15); // Example 15% tax
-    readonly total = computed(() => this.subtotal() + this.tax());
+    readonly taxRate = 0.15; // Example 15% tax
+
+    readonly discountAmount = computed(() => {
+        const coupon = this._appliedCoupon();
+        if (!coupon) return 0;
+
+        if (coupon.type === 'percentage') {
+            return this.subtotal() * (coupon.value / 100);
+        } else if (coupon.type === 'fixed_amount') {
+            return Math.min(coupon.value, this.subtotal());
+        }
+        return 0;
+    });
+
+    readonly tax = computed(() => (this.subtotal() - this.discountAmount()) * this.taxRate);
+    readonly total = computed(() => this.subtotal() - this.discountAmount() + this.tax());
+    readonly appliedCoupon = computed(() => this._appliedCoupon());
 
     constructor() {
         // Sync to localStorage whenever items change
-        // Note: effect() could be used here but signals updated from effects should be avoided.
-        // We'll manualy update localStorage in state-changing methods.
+    }
+
+    async applyCoupon(code: string): Promise<boolean> {
+        try {
+            const coupon = await this.discountsService.validateCode(code);
+
+            if (!coupon) {
+                this.toast.error('Cupón inválido o expirado');
+                return false;
+            }
+
+            if (coupon.minimum_purchase_amount && this.subtotal() < coupon.minimum_purchase_amount) {
+                this.toast.error(`El pedido mínimo para este cupón es de $${coupon.minimum_purchase_amount}`);
+                return false;
+            }
+
+            this._appliedCoupon.set(coupon);
+            this.toast.success('Cupón aplicado con éxito');
+            return true;
+        } catch (error) {
+            console.error('Error applying coupon:', error);
+            this.toast.error('Error al aplicar el cupón');
+            return false;
+        }
+    }
+
+    removeCoupon(): void {
+        this._appliedCoupon.set(null);
+        this.toast.info('Cupón removido');
     }
 
     addToCart(product: Product, quantity: number = 1): void {
@@ -69,6 +118,7 @@ export class CartService {
 
     clearCart(): void {
         this._items.set([]);
+        this._appliedCoupon.set(null);
         this.saveCart();
     }
 

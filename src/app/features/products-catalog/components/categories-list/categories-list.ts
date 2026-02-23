@@ -18,7 +18,6 @@ import { CategoryForm } from '../category-form/category-form';
 
 @Component({
     selector: 'app-categories-list',
-    standalone: true,
     imports: [CommonModule, DynamicTable, CategoryForm],
     templateUrl: './categories-list.html',
     styleUrl: './categories-list.css',

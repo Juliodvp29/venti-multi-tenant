@@ -7,7 +7,6 @@ type CatalogTab = 'products' | 'categories';
 
 @Component({
   selector: 'app-products-catalog',
-  standalone: true,
   imports: [CommonModule, ProductsList, CategoriesList],
   templateUrl: './products-catalog.html',
   styleUrl: './products-catalog.css',

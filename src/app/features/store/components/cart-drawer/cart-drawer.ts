@@ -1,16 +1,17 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CartService } from '@core/services/cart';
 
 @Component({
     selector: 'app-cart-drawer',
-    standalone: true,
-    imports: [CommonModule, RouterLink],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, RouterLink, FormsModule],
     template: `
     <!-- Backdrop -->
     <div (click)="close.emit()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 transition-opacity animate-in fade-in duration-300"></div>
-
+ 
     <!-- Drawer -->
     <div class="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
         <div class="p-6 border-b border-slate-100 flex items-center justify-between">
@@ -59,14 +60,60 @@ import { CartService } from '@core/services/cart';
             }
         </div>
 
-        <div class="p-6 border-t border-slate-100 bg-slate-50/50">
-            <div class="flex justify-between mb-2">
-                <span class="text-slate-500 font-medium">Subtotal</span>
-                <span class="font-bold">{{ cartService.subtotal() | currency }}</span>
+        <!-- Coupon Section -->
+        @if (items().length > 0) {
+            <div class="p-6 border-t border-slate-100">
+                @if (!cartService.appliedCoupon()) {
+                    <div class="flex gap-2">
+                        <input 
+                            [(ngModel)]="couponCode" 
+                            type="text" 
+                            placeholder="Código de cupón"
+                            class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all uppercase"
+                        >
+                        <button 
+                            (click)="applyCoupon()"
+                            [disabled]="!couponCode()"
+                            class="px-4 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 disabled:opacity-50 transition-all"
+                        >
+                            Aplicar
+                        </button>
+                    </div>
+                } @else {
+                    <div class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
+                        <div class="flex items-center gap-2 text-indigo-700">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 8V5a3 3 0 013-3h3c.265 0 .52.105.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-sm font-bold">{{ cartService.appliedCoupon()?.code }}</span>
+                        </div>
+                        <button (click)="cartService.removeCoupon()" class="text-slate-400 hover:text-red-500 font-bold text-sm">Remover</button>
+                    </div>
+                }
             </div>
-            <div class="flex justify-between mb-6">
-                <span class="text-slate-500 font-medium">Envío</span>
-                <span class="text-green-600 font-bold">Gratis</span>
+        }
+
+        <div class="p-6 border-t border-slate-100 bg-slate-50/50">
+            <div class="flex justify-between mb-2 text-sm text-slate-500">
+                <span>Subtotal</span>
+                <span>{{ cartService.subtotal() | currency }}</span>
+            </div>
+            
+            @if (cartService.appliedCoupon()) {
+                <div class="flex justify-between mb-2 text-sm text-indigo-600 font-bold">
+                    <span>Descuento</span>
+                    <span>-{{ cartService.discountAmount() | currency }}</span>
+                </div>
+            }
+
+            <div class="flex justify-between mb-2 text-sm text-slate-500">
+                <span>Impuestos</span>
+                <span>{{ cartService.tax() | currency }}</span>
+            </div>
+
+            <div class="flex justify-between mb-6 text-lg font-bold">
+                <span>Total</span>
+                <span class="text-slate-900 text-xl font-bold">{{ cartService.total() | currency }}</span>
             </div>
             
             <button (click)="close.emit()" routerLink="/store/checkout" [disabled]="items().length === 0" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
@@ -82,4 +129,13 @@ export class CartDrawer {
     @Output() close = new EventEmitter<void>();
 
     readonly items = this.cartService.items;
+    couponCode = signal('');
+
+    async applyCoupon() {
+        if (!this.couponCode()) return;
+        const success = await this.cartService.applyCoupon(this.couponCode());
+        if (success) {
+            this.couponCode.set('');
+        }
+    }
 }

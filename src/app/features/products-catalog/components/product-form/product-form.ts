@@ -19,7 +19,6 @@ import { ProductImageUploader } from '../product-image-uploader/product-image-up
 
 @Component({
     selector: 'app-product-form',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule, ProductImageUploader],
     templateUrl: './product-form.html',
     styleUrl: './product-form.css',

@@ -8,7 +8,6 @@ import { map } from 'rxjs';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-root',
-  standalone: true,
   imports: [RouterOutlet, Toast, AiAssistantComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'

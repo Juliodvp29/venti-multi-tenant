@@ -1,4 +1,4 @@
-import { Component, Input, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product } from '@core/models/product';
@@ -7,7 +7,7 @@ import { AnalyticsService } from '@core/services/analytics';
 
 @Component({
     selector: 'app-product-card',
-    standalone: true,
+     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, RouterLink],
     template: `
     <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500 group flex flex-col h-full">

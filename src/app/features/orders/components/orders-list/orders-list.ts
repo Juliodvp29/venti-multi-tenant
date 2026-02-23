@@ -24,7 +24,6 @@ const PAGE_SIZE = 20;
 
 @Component({
     selector: 'app-orders-list',
-    standalone: true,
     imports: [CommonModule, DynamicTable, DateRangePicker, OrderStatusBadge],
     templateUrl: './orders-list.html',
     styleUrl: './orders-list.css',

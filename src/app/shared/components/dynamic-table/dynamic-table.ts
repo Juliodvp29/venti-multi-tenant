@@ -18,7 +18,6 @@ import { FileProcessorService } from '@core/services/file-processor';
 
 @Component({
   selector: 'app-dynamic-table',
-  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './dynamic-table.html',
   styleUrl: './dynamic-table.css',

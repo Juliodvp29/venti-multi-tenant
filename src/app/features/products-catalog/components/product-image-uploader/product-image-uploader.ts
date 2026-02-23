@@ -22,7 +22,6 @@ export interface PendingImage {
 
 @Component({
     selector: 'app-product-image-uploader',
-    standalone: true,
     imports: [CommonModule],
     templateUrl: './product-image-uploader.html',
     changeDetection: ChangeDetectionStrategy.OnPush,

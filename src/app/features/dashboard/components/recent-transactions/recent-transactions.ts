@@ -2,20 +2,20 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 
 export interface DashboardTransaction {
-    id: string;
-    customerName: string;
-    customerInitial: string;
-    product: string;
-    date: string;
-    amount: number;
-    status: 'Completed' | 'Pending' | 'Cancelled';
+  id: string;
+  customerName: string;
+  customerInitial: string;
+  product: string;
+  date: string;
+  amount: number;
+  status: 'Completed' | 'Pending' | 'Cancelled';
 }
 
 @Component({
-    selector: 'app-recent-transactions',
-    standalone: true,
-    imports: [CommonModule, CurrencyPipe],
-    template: `
+  selector: 'app-recent-transactions',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, CurrencyPipe],
+  template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
       <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
         <h3 class="text-base font-bold text-gray-900 dark:text-white">Transacciones Recientes</h3>
@@ -68,8 +68,7 @@ export interface DashboardTransaction {
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecentTransactions {
-    transactions = input.required<DashboardTransaction[]>();
+  transactions = input.required<DashboardTransaction[]>();
 }

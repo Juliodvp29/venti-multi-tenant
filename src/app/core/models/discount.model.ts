@@ -1,6 +1,8 @@
 import { BaseModel } from './index';
 import { DiscountType } from '@enums/index';
 
+export type DiscountStatus = 'active' | 'expired' | 'scheduled' | 'used_up' | 'inactive';
+
 export interface DiscountCode extends BaseModel {
     tenant_id: string;
     code: string;
@@ -16,12 +18,13 @@ export interface DiscountCode extends BaseModel {
     starts_at?: string;
     ends_at?: string;
     is_active: boolean;
-    // From vw_active_discounts
+
+    // Performance metrics (optional)
     times_used?: number;
     unique_customers?: number;
     total_discount_given?: number;
     remaining_uses?: number;
-    discount_status?: 'active' | 'expired' | 'scheduled' | 'used_up' | 'inactive';
+    discount_status?: DiscountStatus;
 }
 
 export interface DiscountUsage {

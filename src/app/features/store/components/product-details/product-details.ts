@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductsService } from '@core/services/products';
@@ -9,7 +9,7 @@ import { ProductCard } from '../product-card/product-card';
 
 @Component({
     selector: 'app-product-details',
-    standalone: true,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, RouterLink, ProductCard],
     template: `
     @if (product()) {
