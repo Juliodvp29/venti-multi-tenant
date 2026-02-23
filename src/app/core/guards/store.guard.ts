@@ -15,11 +15,14 @@ export const storeGuard: CanActivateFn = async (route, state) => {
     let subdomain: string | null = null;
 
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        // For local testing, we can check if there's a param or a default fallback
-        // Or we can assume that if it's localhost/store, we might want to use a specific test slug
-        // For now, let's look for a query param 's' as a fallback for local testing
         const urlParams = new URLSearchParams(window.location.search);
-        subdomain = urlParams.get('s') || 'jstore'; // Defaulting to jstore for convenience
+        const sParam = urlParams.get('s');
+        if (sParam) {
+            // Clean up common trailing characters for convenience in testing
+            subdomain = sParam.split('=')[0].split('?')[0];
+        } else {
+            subdomain = 'jstore';
+        }
     } else {
         const parts = hostname.split('.');
         if (parts.length >= 3) {

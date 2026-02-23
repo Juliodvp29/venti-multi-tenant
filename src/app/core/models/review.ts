@@ -12,4 +12,10 @@ export interface ProductReview extends BaseModel {
     is_approved: boolean;
     approved_by?: string;
     approved_at?: string;
+
+    // Join data
+    customer?: {
+        first_name: string;
+        last_name: string | null;
+    };
 }

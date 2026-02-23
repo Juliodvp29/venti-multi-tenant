@@ -4,13 +4,19 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductsService } from '@core/services/products';
 import { CartService } from '@core/services/cart';
 import { AnalyticsService } from '@core/services/analytics';
+import { ReviewsService } from '@core/services/reviews';
+import { AuthService } from '@core/services/auth';
+import { CustomerAuthService } from '@core/services/customer-auth';
+import { ToastService } from '@core/services/toast';
 import { Product, ProductVariant } from '@core/models/product';
+import { ProductReview } from '@core/models/review';
 import { ProductCard } from '../product-card/product-card';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-details',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterLink, ProductCard],
+  imports: [CommonModule, RouterLink, ProductCard, FormsModule],
   template: `
     @if (product()) {
       <div class="space-y-24 animate-in fade-in duration-500">
@@ -126,6 +132,148 @@ import { ProductCard } from '../product-card/product-card';
             </div>
           </section>
         }
+
+        <!-- Reviews Section -->
+        <section class="pt-24 border-t border-slate-100">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
+            <!-- Sidebar: Rating Summary & Form -->
+            <div class="space-y-12">
+              <div>
+                <h2 class="text-4xl font-black text-slate-900 tracking-tight mb-4">Reseñas</h2>
+                <div class="flex items-center gap-4 mb-2">
+                  <div class="flex text-amber-400">
+                    @for (star of [1,2,3,4,5]; track star) {
+                      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    }
+                  </div>
+                  <span class="text-2xl font-bold text-slate-900">{{ reviews().length }} Reseñas</span>
+                </div>
+                <p class="text-slate-500">Comparte tu experiencia con otros clientes.</p>
+              </div>
+
+              <!-- Review Form -->
+              <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100">
+                @if (reviewStep() === 'form') {
+                  <h3 class="text-xl font-bold text-slate-900 mb-6">Deja tu opinión</h3>
+                  <div class="space-y-6">
+                    <div>
+                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-3">Tu Calificación</label>
+                      <div class="flex gap-2">
+                        @for (star of [1,2,3,4,5]; track star) {
+                          <button 
+                            (click)="setRating(star)"
+                            class="p-1 transition-all hover:scale-110 cursor-pointer"
+                            [class.text-amber-400]="reviewForm().rating >= star"
+                            [class.text-slate-300]="reviewForm().rating < star">
+                            <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                            </svg>
+                          </button>
+                        }
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Título (Opcional)</label>
+                      <input 
+                        [(ngModel)]="reviewForm().title"
+                        type="text" 
+                        placeholder="Ej: ¡Me encantó!"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Comentario (Opcional)</label>
+                      <textarea 
+                        [(ngModel)]="reviewForm().review"
+                        rows="4" 
+                        placeholder="Cuéntanos qué tal te pareció el producto..."
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"></textarea>
+                    </div>
+
+                    <button 
+                      (click)="submitReview()"
+                      [disabled]="reviewForm().rating === 0 || isSubmittingReview()"
+                      class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                      {{ isSubmittingReview() ? 'Enviando...' : 'Publicar Reseña' }}
+                    </button>
+                  </div>
+                } @else {
+                  <div class="text-center py-8 animate-in zoom-in duration-500">
+                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">¡Gracias por tu opinión!</h3>
+                    <p class="text-slate-500 mb-6">Tu reseña ha sido enviada con éxito y será visible tan pronto sea aprobada.</p>
+                    <button 
+                      (click)="reviewStep.set('form')"
+                      class="text-indigo-600 font-bold hover:underline">
+                      Enviar otra reseña
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="lg:col-span-2 space-y-8">
+              @if (reviews().length > 0) {
+                @for (review of reviews(); track review.id) {
+                  <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div class="flex justify-between items-start mb-6">
+                      <div>
+                        <div class="flex text-amber-400 mb-2">
+                          @for (star of [1,2,3,4,5]; track star) {
+                            <svg class="w-4 h-4" [class.fill-current]="review.rating >= star" [class.text-slate-200]="review.rating < star" viewBox="0 0 20 20">
+                              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                            </svg>
+                          }
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900">{{ review.title || 'Sin título' }}</h4>
+                      </div>
+                      <span class="text-sm text-slate-400 font-medium">{{ review.created_at | date:'mediumDate' }}</span>
+                    </div>
+
+                    <p class="text-slate-600 leading-relaxed mb-6">{{ review.review || 'Sin comentario.' }}</p>
+
+                    <div class="flex items-center gap-3 border-t border-slate-50 pt-6">
+                      <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400 uppercase">
+                        {{ review.customer?.first_name?.[0] || 'U' }}
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold text-slate-900">
+                          {{ review.customer ? (review.customer.first_name + ' ' + (review.customer.last_name || '')) : 'Usuario Verificado' }}
+                        </p>
+                        @if (review.is_verified_purchase) {
+                          <p class="text-[10px] text-green-600 font-black uppercase tracking-widest flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            Compra Verificada
+                          </p>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              } @else {
+                <div class="bg-slate-50 rounded-3xl p-16 text-center border border-dashed border-slate-200">
+                  <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 text-slate-300 shadow-sm">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                    </svg>
+                  </div>
+                  <h4 class="text-xl font-bold text-slate-900 mb-2">Aún no hay reseñas</h4>
+                  <p class="text-slate-500">Sé el primero en calificar este producto.</p>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
       </div>
     } @else {
       <div class="h-96 flex items-center justify-center">
@@ -137,14 +285,29 @@ import { ProductCard } from '../product-card/product-card';
 export class ProductDetails implements OnInit {
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
+  private readonly reviewsService = inject(ReviewsService);
   private readonly analytics = inject(AnalyticsService);
   private readonly route = inject(ActivatedRoute);
+  private readonly auth = inject(AuthService);
+  private readonly customerAuth = inject(CustomerAuthService);
+  protected readonly toast = inject(ToastService);
 
   readonly product = signal<Product | null>(null);
   readonly relatedProducts = signal<Product[]>([]);
+  readonly reviews = signal<ProductReview[]>([]);
+  readonly reviewsCount = signal(0);
   readonly qty = signal(1);
   readonly added = signal(false);
   readonly math = Math;
+
+  // Review Form State
+  readonly reviewForm = signal({
+    rating: 0,
+    title: '',
+    review: ''
+  });
+  readonly isSubmittingReview = signal(false);
+  readonly reviewStep = signal<'form' | 'success'>('form');
 
   // Variant Management
   readonly selectedOptions = signal<Record<string, string>>({});
@@ -215,6 +378,7 @@ export class ProductDetails implements OnInit {
         this.product.set(data);
         this.analytics.trackProductView(data.id);
         this.loadRelatedProducts(data);
+        this.loadReviews(data.id);
       }
     } catch (error) {
       console.error('Error loading product:', error);
@@ -235,6 +399,55 @@ export class ProductDetails implements OnInit {
     } catch (error) {
       console.error('Error loading related products:', error);
     }
+  }
+
+  async loadReviews(productId: string) {
+    try {
+      const { data, count } = await this.reviewsService.getReviews(productId);
+      this.reviews.set(data);
+      this.reviewsCount.set(count);
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+    }
+  }
+
+  async submitReview() {
+    const p = this.product();
+    const form = this.reviewForm();
+    if (!p || form.rating === 0 || this.isSubmittingReview()) return;
+
+    if (!this.auth.isAuthenticated()) {
+      this.toast.warning('Debes iniciar sesión para publicar una reseña.');
+      this.customerAuth.openLogin();
+      return;
+    }
+
+    this.isSubmittingReview.set(true);
+    try {
+      // Ensure customer record exists find it first
+      const customer = await this.customerAuth.ensureCustomer();
+      if (!customer) throw new Error('No se pudo identificar al cliente');
+
+      await this.reviewsService.createReview({
+        product_id: p.id,
+        customer_id: customer.id,
+        rating: form.rating as any,
+        title: form.title,
+        review: form.review,
+      });
+      this.reviewStep.set('success');
+      this.reviewForm.set({ rating: 0, title: '', review: '' });
+      this.toast.success('¡Gracias! Tu reseña ha sido enviada.');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      this.toast.error('Ocurrió un error al enviar tu reseña.');
+    } finally {
+      this.isSubmittingReview.set(false);
+    }
+  }
+
+  setRating(rating: number) {
+    this.reviewForm.update(f => ({ ...f, rating }));
   }
 
   addToCart() {

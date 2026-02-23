@@ -113,7 +113,7 @@ export class Singup {
 
     const { businessName, email, password } = this.signupForm.getRawValue();
 
-    const { error } = await this.authService.signUp(email, password, businessName);
+    const { error } = await this.authService.signUp(email, password, { business_name: businessName });
 
     this.isLoading.set(false);
 

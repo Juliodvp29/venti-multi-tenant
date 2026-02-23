@@ -20,8 +20,10 @@ export class ReviewsService {
 
         let query = this.supabase.client
             .from('product_reviews')
-            .select('*', { count: 'exact' })
+            .select('*, customer:customers(first_name, last_name)', { count: 'exact' })
             .eq('tenant_id', tenantId)
+            .eq('is_approved', true) // Only show approved reviews by default in storefront
+            .order('created_at', { ascending: false })
             .range((page - 1) * pageSize, page * pageSize - 1);
 
         if (productId) {

@@ -78,13 +78,14 @@ export class AuthService {
     return result;
   }
 
-  async signUp(email: string, password: string, businessName: string) {
+  async signUp(email: string, password: string, metadata: any = {}, redirectTo?: string) {
     this._state.update((s) => ({ ...s, loading: true }));
     const result = await this.supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { business_name: businessName },
+        data: metadata,
+        emailRedirectTo: redirectTo,
       },
     });
     this._state.update((s) => ({ ...s, loading: false }));
@@ -118,5 +119,39 @@ export class AuthService {
 
   getAccessToken(): string | null {
     return this._state().session?.access_token ?? null;
+  }
+
+  /**
+   * For the storefront: Ensures a customer record exists for the current user and tenant.
+   */
+  async getOrCreateCustomer(tenantId: string): Promise<any> {
+    const user = this.user();
+    if (!user) return null;
+
+    const { data: existing, error: fetchError } = await this.supabase.client
+      .from('customers')
+      .select('id')
+      .eq('tenant_id', tenantId)
+      .eq('email', user.email)
+      .maybeSingle();
+
+    if (fetchError) throw fetchError;
+    if (existing) return existing;
+
+    // Create new customer linked to this user
+    const { data: created, error: createError } = await this.supabase.client
+      .from('customers')
+      .insert({
+        tenant_id: tenantId,
+        user_id: user.id,
+        email: user.email,
+        first_name: user.user_metadata?.['first_name'] || null,
+        last_name: user.user_metadata?.['last_name'] || null,
+      })
+      .select('id')
+      .single();
+
+    if (createError) throw createError;
+    return created;
   }
 }
