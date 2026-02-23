@@ -17,6 +17,7 @@ export interface OrderFilters {
     search?: string;
     startDate?: string;
     endDate?: string;
+    customer_id?: string;
 }
 
 @Injectable({
@@ -57,6 +58,10 @@ export class OrdersService {
 
         if (filters?.startDate) {
             query = query.gte('created_at', filters.startDate);
+        }
+
+        if (filters?.customer_id) {
+            query = query.eq('customer_id', filters.customer_id);
         }
 
         if (filters?.endDate) {

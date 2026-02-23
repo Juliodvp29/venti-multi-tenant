@@ -1,0 +1,4 @@
+/* Custom styles for Customer details if needed */
+:host {
+    display: block;
+}

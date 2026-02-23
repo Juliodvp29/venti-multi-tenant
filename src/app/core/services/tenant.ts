@@ -70,6 +70,7 @@ export class TenantService {
       secondary_color: t.secondary_color,
       accent_color: t.accent_color,
       font_family: t.font_family,
+      business_name: t.business_name,
     };
   });
 
@@ -139,6 +140,40 @@ export class TenantService {
         loading: false,
         initialized: true,
       }));
+    }
+  }
+
+  async resolveTenantBySubdomain(subdomain: string): Promise<boolean> {
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const { data, error } = await this.supabase.client
+        .from('tenants')
+        .select('*')
+        .eq('subdomain', subdomain)
+        .is('deleted_at', null)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!data) {
+        this._state.update(s => ({ ...s, loading: false, currentTenant: null }));
+        return false;
+      }
+
+      this._state.update(s => ({
+        ...s,
+        currentTenant: data,
+        loading: false,
+        initialized: true
+      }));
+
+      await this.loadTenantSettings(data.id);
+      return true;
+    } catch (error) {
+      console.error('Error resolving tenant by subdomain:', error);
+      this._state.update(s => ({ ...s, loading: false, error: 'Store not found' }));
+      return false;
     }
   }
 

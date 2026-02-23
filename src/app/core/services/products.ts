@@ -28,6 +28,29 @@ export class ProductsService {
             .is('deleted_at', null)
             .range((page - 1) * pageSize, page * pageSize - 1);
 
+        // Sorting Logic
+        const sortBy = filters?.['sortBy'] || 'newest';
+        switch (sortBy) {
+            case 'price_asc':
+                query = query.order('price', { ascending: true });
+                break;
+            case 'price_desc':
+                query = query.order('price', { ascending: false });
+                break;
+            case 'popular':
+                // For now, combining featured and newest as fallback
+                query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false });
+                break;
+            case 'best_sellers':
+                // Fallback to newest for now, ideally join with order count
+                query = query.order('created_at', { ascending: false });
+                break;
+            case 'newest':
+            default:
+                query = query.order('created_at', { ascending: false });
+                break;
+        }
+
         if (filters?.['search']) {
             const term = filters['search'];
             query = query.or(`name.ilike.%${term}%,sku.ilike.%${term}%`);
@@ -35,11 +58,6 @@ export class ProductsService {
 
         if (filters?.['status']) {
             query = query.eq('status', filters['status']);
-        }
-
-        if (filters?.['category_id']) {
-            // Logic to filter by category relation would go here
-            // This is complex in Supabase without a view or rpc for many-to-many
         }
 
         const { data, error, count } = await query;
@@ -197,5 +215,34 @@ export class ProductsService {
         } catch (e) {
             console.warn('[ProductsService] Could not delete storage file:', e);
         }
+    }
+
+    async getRelatedProducts(productId: string, categoryIds: string[], limit: number = 4): Promise<Product[]> {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId || !categoryIds.length) return [];
+
+        const { data, error } = await this.supabase.client
+            .from('product_categories')
+            .select(`
+                product:products(
+                    *,
+                    images:product_images(*)
+                )
+            `)
+            .in('category_id', categoryIds)
+            .neq('product_id', productId)
+            .limit(limit * 2); // Fetch more to allow for filtering duplicates/status
+
+        if (error) throw error;
+
+        const products = (data?.map((item: any) => item.product).filter(Boolean) as Product[]) || [];
+
+        // Remove duplicates and ensure active
+        const seen = new Set();
+        return products.filter(p => {
+            if (seen.has(p.id)) return false;
+            seen.add(p.id);
+            return p.status === 'active' && !p.deleted_at;
+        }).slice(0, limit);
     }
 }

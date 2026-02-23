@@ -1,0 +1,21 @@
+<div [ngStyle]="dynamicStyles()" class="min-h-screen bg-slate-50 text-slate-900 font-sans">
+    <!-- Header -->
+    <app-store-header (openCart)="isCartOpen.set(true)"></app-store-header>
+
+    <!-- Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4">
+        <router-outlet></router-outlet>
+    </main>
+
+    <!-- Cart Drawer -->
+    @if (isCartOpen()) {
+    <app-cart-drawer (close)="isCartOpen.set(false)"></app-cart-drawer>
+    }
+
+    <!-- Footer Placeholder -->
+    <footer class="bg-white border-t border-slate-200 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm">© 2026 {{ branding()?.business_name }}. Potenciado por Venti.</p>
+        </div>
+    </footer>
+</div>

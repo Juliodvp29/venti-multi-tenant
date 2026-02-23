@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { guestGuard } from '@core/guards/guest.guard';
 import { authGuard } from '@core/guards/auth.guard';
 import { MainLayoutComponent } from '@core/layouts/main-layout/main-layout.component';
+import { storeGuard } from '@core/guards/store.guard';
 
 export const routes: Routes = [
   {
@@ -39,7 +40,16 @@ export const routes: Routes = [
         path: 'orders',
         loadChildren: () => import('@features/orders/orders.routes').then((m) => m.ordersRoutes),
       },
+      {
+        path: 'customers',
+        loadChildren: () => import('@features/customers/customers.routes').then((m) => m.customersRoutes),
+      },
     ],
+  },
+  {
+    path: 'store',
+    canActivate: [storeGuard],
+    loadChildren: () => import('./features/store/store.routes').then((m) => m.STORE_ROUTES),
   },
   {
     path: '**',

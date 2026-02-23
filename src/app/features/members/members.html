@@ -47,7 +47,7 @@
     </div>
 
     <!-- Modals -->
-    <app-invite-member-modal *ngIf="showInviteModal()" (close)="showInviteModal.set(false)"
-        (submit)="onInviteSubmit($event)">
-    </app-invite-member-modal>
+    @if (showInviteModal()) {
+    <app-invite-member-modal (close)="showInviteModal.set(false)" (submit)="onInviteSubmit($event)" />
+    }
 </div>

@@ -94,7 +94,9 @@ import { TenantRole } from '@core/enums';
                 <button type="submit" [disabled]="inviteForm.invalid || loading()"
                         class="px-6 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all">
                     {{ loading() ? 'Sending...' : 'Send Invitation' }}
-                    <svg *ngIf="!loading()" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                    @if (!loading()) {
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                    }
                 </button>
             </div>
         </form>

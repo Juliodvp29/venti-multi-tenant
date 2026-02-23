@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
-import { AnalyticsEvent, DailySalesSummary, ProductPerformance, DailyDashboard } from '@core/models/analytics';
 import { TenantService } from './tenant';
 
 @Injectable({
@@ -10,120 +9,136 @@ export class AnalyticsService {
     private readonly supabase = inject(Supabase);
     private readonly tenantService = inject(TenantService);
 
-    async logEvent(event: Partial<AnalyticsEvent>): Promise<void> {
+    /**
+     * Track a generic event in the analytics_events table
+     */
+    async trackEvent(type: string, data: any = {}, productId?: string, categoryId?: string) {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) return;
 
-        await this.supabase.client
-            .from('analytics_events')
-            .insert({
-                ...event,
-                tenant_id: tenantId,
-            });
-    }
+        try {
+            const { error } = await this.supabase.client
+                .from('analytics_events')
+                .insert({
+                    tenant_id: tenantId,
+                    event_type: type,
+                    event_data: data,
+                    product_id: productId,
+                    category_id: categoryId,
+                    session_id: this.getSessionId(),
+                    user_agent: window.navigator.userAgent,
+                    page_url: window.location.href,
+                });
 
-    async getDailySales(days: number = 30): Promise<DailySalesSummary[]> {
-        const tenantId = this.tenantService.tenantId();
-        if (!tenantId) return [];
-
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - days);
-
-        const { data, error } = await this.supabase.client
-            .from('daily_sales_summary')
-            .select('*')
-            .eq('tenant_id', tenantId)
-            .gte('date', startDate.toISOString().split('T')[0])
-            .order('date', { ascending: true });
-
-        if (error) {
-            console.warn('Could not fetch daily sales summary:', error);
-            return [];
+            if (error) throw error;
+        } catch (error) {
+            console.warn('[AnalyticsService] Failed to track event:', error);
         }
-        return data as DailySalesSummary[];
     }
 
-    async getDashboardStats(): Promise<DailyDashboard | null> {
+    /**
+     * Tracking helper for product views
+     */
+    async trackProductView(productId: string) {
+        return this.trackEvent('product_view', {}, productId);
+    }
+
+    /**
+     * Tracking helper for add to cart actions
+     */
+    async trackAddToCart(productId: string, quantity: number) {
+        return this.trackEvent('add_to_cart', { quantity }, productId);
+    }
+
+    /**
+     * Simple session ID management (local storage based)
+     */
+    private getSessionId(): string {
+        let sid = localStorage.getItem('venti_session_id');
+        if (!sid) {
+            sid = crypto.randomUUID();
+            localStorage.setItem('venti_session_id', sid);
+        }
+        return sid;
+    }
+
+    // ── Dashboard Methods ───────────────────────────────────────
+
+    async getDashboardStats() {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) return null;
 
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-        const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toISOString();
-        const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+        try {
+            // Fetch latest summary
+            const { data } = await this.supabase.client
+                .from('daily_sales_summary')
+                .select('*')
+                .eq('tenant_id', tenantId)
+                .order('date', { ascending: false })
+                .limit(1)
+                .maybeSingle();
 
-        // Calculate stats manually since view is missing
-        const [monthRes, todayRes, yesterdayRes, lastMonthRes] = await Promise.all([
-            this.supabase.client.from('orders').select('total_amount').eq('tenant_id', tenantId).gte('created_at', startOfMonth).neq('status', 'cancelled').neq('status', 'refunded'),
-            this.supabase.client.from('orders').select('total_amount').eq('tenant_id', tenantId).gte('created_at', startOfToday).neq('status', 'cancelled').neq('status', 'refunded'),
-            this.supabase.client.from('orders').select('total_amount').eq('tenant_id', tenantId).gte('created_at', startOfYesterday).lt('created_at', startOfToday).neq('status', 'cancelled').neq('status', 'refunded'),
-            this.supabase.client.from('orders').select('total_amount').eq('tenant_id', tenantId).gte('created_at', startOfLastMonth).lt('created_at', startOfMonth).neq('status', 'cancelled').neq('status', 'refunded')
-        ]);
+            // If no dynamic summary, fallback to some counts (highly simplified)
+            if (!data) {
+                return {
+                    today_revenue: 0,
+                    month_orders: 0,
+                    avg_order_value_30d: 0,
+                };
+            }
 
-        const monthRev = (monthRes.data ?? []).reduce((s, o) => s + (o.total_amount ?? 0), 0);
-        const todayRev = (todayRes.data ?? []).reduce((s, o) => s + (o.total_amount ?? 0), 0);
-        const yesterdayRev = (yesterdayRes.data ?? []).reduce((s, o) => s + (o.total_amount ?? 0), 0);
-        const lastMonthRev = (lastMonthRes.data ?? []).reduce((s, o) => s + (o.total_amount ?? 0), 0);
-
-        return {
-            tenant_id: tenantId,
-            today_revenue: todayRev,
-            today_orders: todayRes.data?.length ?? 0,
-            yesterday_revenue: yesterdayRev,
-            yesterday_orders: yesterdayRes.data?.length ?? 0,
-            week_revenue: 0, // Placeholder
-            week_orders: 0,
-            month_revenue: monthRev,
-            month_orders: monthRes.data?.length ?? 0,
-            last_month_revenue: lastMonthRev,
-            last_month_orders: lastMonthRes.data?.length ?? 0,
-            avg_order_value_30d: monthRes.data?.length ? monthRev / monthRes.data.length : 0
-        };
+            return {
+                today_revenue: Number(data.total_revenue),
+                month_orders: Number(data.total_orders),
+                avg_order_value_30d: Number(data.average_order_value),
+            };
+        } catch (error) {
+            console.error('Error fetching dashboard stats:', error);
+            return null;
+        }
     }
 
-    async getProductPerformance(days: number = 30): Promise<ProductPerformance[]> {
+    async getDailySales(limit: number = 30) {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) return [];
 
-        const { data, error } = await this.supabase.client
-            .from('product_performance')
-            .select('*, product:products(name)')
+        const { data } = await this.supabase.client
+            .from('daily_sales_summary')
+            .select('date, total_revenue')
             .eq('tenant_id', tenantId)
-            .order('revenue', { ascending: false })
-            .limit(10);
+            .order('date', { ascending: true })
+            .limit(limit);
 
-        if (error) throw error;
-        return data as ProductPerformance[];
+        return data || [];
     }
 
-    async getCategoryDistribution(): Promise<{ name: string; value: number }[]> {
+    async getCategoryDistribution() {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) return [];
 
-        const { data, error } = await this.supabase.client
-            .from('order_items')
-            .select(`
-                total_amount,
-                product:products(
-                    product_categories(
-                        category:categories(name)
-                    )
-                )
-            `)
+        // Highly simplified: count products per category
+        const { data } = await this.supabase.client
+            .from('categories')
+            .select('name, products:product_categories(count)')
             .eq('tenant_id', tenantId);
 
-        if (error) throw error;
+        return (data || []).map((c: any) => ({
+            name: c.name,
+            value: c.products?.[0]?.count || 0
+        }));
+    }
 
-        const distribution: Record<string, number> = {};
-        data.forEach((item: any) => {
-            const categories = item.product?.product_categories || [];
-            categories.forEach((pc: any) => {
-                const catName = pc.category?.name || 'Uncategorized';
-                distribution[catName] = (distribution[catName] || 0) + (item.total_amount || 0);
-            });
-        });
+    async getProductPerformance() {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) return [];
 
-        return Object.entries(distribution).map(([name, value]) => ({ name, value }));
+        const { data } = await this.supabase.client
+            .from('product_performance')
+            .select('*, product:products(name, image_url)')
+            .eq('tenant_id', tenantId)
+            .order('revenue', { ascending: false })
+            .limit(5);
+
+        return data || [];
     }
 }
