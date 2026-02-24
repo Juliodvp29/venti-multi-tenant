@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ProductsService } from '@core/services/products';
 import { Product } from '@core/models/product';
 import { ProductCard } from '../product-card/product-card';
+import { SeoService } from '@core/services/seo';
+import { TenantService } from '@core/services/tenant';
 
 @Component({
     selector: 'app-product-grid',
-     changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, ProductCard],
     template: `
     <div class="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -95,6 +97,8 @@ import { ProductCard } from '../product-card/product-card';
 })
 export class ProductGrid {
     private readonly productsService = inject(ProductsService);
+    private readonly seo = inject(SeoService);
+    private readonly tenantService = inject(TenantService);
 
     readonly products = signal<Product[]>([]);
     readonly isLoading = signal(true);
@@ -126,6 +130,7 @@ export class ProductGrid {
                 search: this.search()
             });
             this.products.set(data);
+            this.updateSeo();
         } catch (error) {
             console.error('Error loading products:', error);
         } finally {
@@ -143,5 +148,21 @@ export class ProductGrid {
         this.sortBy.set(value);
         this.isSortMenuOpen.set(false);
         this.loadProducts();
+    }
+
+    private updateSeo() {
+        const businessName = this.tenantService.branding()?.business_name || 'Venti Store';
+        this.seo.updateTags({
+            title: 'Productos',
+            description: `Explora nuestra colección de productos en ${businessName}. Envíos rápidos y la mejor calidad.`,
+            type: 'website',
+            siteName: businessName
+        });
+
+        // Set Organization schema on main grid
+        this.seo.setOrganizationSchema({
+            name: businessName,
+            logo: this.tenantService.branding()?.logo_url || undefined
+        });
     }
 }

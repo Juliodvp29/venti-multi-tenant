@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { TenantService } from '@core/services/tenant';
+import { SeoService } from '@core/services/seo';
 import { StoreHeader } from './components/store-header/store-header';
 import { CartDrawer } from './components/cart-drawer/cart-drawer';
 
@@ -14,9 +15,24 @@ import { CartDrawer } from './components/cart-drawer/cart-drawer';
 })
 export class StoreComponent {
   private readonly tenantService = inject(TenantService);
+  private readonly seo = inject(SeoService);
 
   readonly isCartOpen = signal(false);
   readonly branding = this.tenantService.branding;
+
+  constructor() {
+    effect(() => {
+      const branding = this.branding();
+      if (branding) {
+        this.seo.updateTags({
+          title: branding.business_name || 'Venti Store',
+          description: branding.description || 'Nuestra tienda online oficial.',
+          image: branding.logo_url || undefined,
+          siteName: branding.business_name || 'Venti'
+        });
+      }
+    });
+  }
 
   readonly dynamicStyles = computed(() => {
     const branding = this.branding();

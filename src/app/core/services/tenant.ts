@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem, TenantBranding } from '@core/models';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
 import { TenantRole } from '@core/enums';
@@ -60,17 +60,19 @@ export class TenantService {
     )
   );
 
-  readonly branding = computed(() => {
+  readonly branding = computed<Nullable<TenantBranding>>(() => {
     const t = this._state().currentTenant;
     if (!t) return null;
     return {
       logo_url: t.logo_url,
       favicon_url: t.favicon_url,
+      business_name: t.business_name,
+      description: t.description,
       primary_color: t.primary_color,
       secondary_color: t.secondary_color,
       accent_color: t.accent_color,
       font_family: t.font_family,
-      business_name: t.business_name,
+      layout: t.layout,
     };
   });
 

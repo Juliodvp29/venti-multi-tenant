@@ -16,6 +16,7 @@ import { AnalyticsService } from '@core/services/analytics';
             @if (product.images?.[0]?.url) {
                 <img [src]="product.images?.[0]?.url" 
                      [alt]="product.name" 
+                     loading="lazy"
                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
             }
             

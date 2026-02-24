@@ -1,6 +1,8 @@
 export interface TenantBranding {
     logo_url: string | null;
     favicon_url: string | null;
+    business_name: string;
+    description: string | null;
     primary_color: string;
     secondary_color: string;
     accent_color: string;
@@ -57,6 +59,7 @@ export interface Tenant {
     slug: string;
     subdomain: string;
     custom_domain: string | null;
+    description: string | null;
 
     // Owner Information
     owner_id: string;
@@ -101,6 +104,7 @@ export interface Tenant {
 
 export interface UpdateTenantDto {
     business_name?: string;
+    description?: string | null;
     contact_email?: string;
     contact_phone?: string | null;
     logo_url?: string | null;

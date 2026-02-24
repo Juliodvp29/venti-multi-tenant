@@ -12,6 +12,7 @@ import { Product, ProductVariant } from '@core/models/product';
 import { ProductReview } from '@core/models/review';
 import { ProductCard } from '../product-card/product-card';
 import { FormsModule } from '@angular/forms';
+import { SeoService } from '@core/services/seo';
 
 @Component({
   selector: 'app-product-details',
@@ -25,12 +26,12 @@ import { FormsModule } from '@angular/forms';
           <!-- Image Gallery -->
           <div class="space-y-4">
             <div class="aspect-square bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-              <img [src]="displayImage()" [alt]="product()?.name" class="w-full h-full object-cover transition-all duration-500">
+              <img [src]="displayImage()" [alt]="product()?.name" loading="lazy" class="w-full h-full object-cover transition-all duration-500">
             </div>
             <div class="grid grid-cols-4 gap-4">
               @for (img of product()?.images; track img.id) {
                 <div class="aspect-square bg-white rounded-xl border border-slate-100 overflow-hidden cursor-pointer hover:border-indigo-500 transition-all">
-                  <img [src]="img.url" class="w-full h-full object-cover">
+                  <img [src]="img.url" [alt]="product()?.name + ' view'" loading="lazy" class="w-full h-full object-cover">
                 </div>
               }
             </div>
@@ -290,6 +291,7 @@ export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly auth = inject(AuthService);
   private readonly customerAuth = inject(CustomerAuthService);
+  private readonly seo = inject(SeoService);
   protected readonly toast = inject(ToastService);
 
   readonly product = signal<Product | null>(null);
@@ -317,7 +319,7 @@ export class ProductDetails implements OnInit {
     const selected = this.selectedOptions();
     if (!p?.variants?.length || Object.keys(selected).length === 0) return null;
 
-    return p.variants.find(v => {
+    return p.variants.find((v: ProductVariant) => {
       return Object.entries(selected).every(([key, val]) => v.options[key] === val);
     }) || null;
   });
@@ -376,6 +378,7 @@ export class ProductDetails implements OnInit {
         }
 
         this.product.set(data);
+        this.updateSeo(data);
         this.analytics.trackProductView(data.id);
         this.loadRelatedProducts(data);
         this.loadReviews(data.id);
@@ -468,5 +471,25 @@ export class ProductDetails implements OnInit {
       ...opts,
       [name]: value
     }));
+  }
+
+  private updateSeo(product: Product) {
+    this.seo.updateTags({
+      title: product.name,
+      description: product.description || undefined,
+      image: product.primary_image_url || product.images?.[0]?.url || undefined,
+      type: 'product',
+      keywords: [product.name, 'ecommerce', 'venti']
+    });
+
+    this.seo.setProductSchema({
+      name: product.name,
+      description: product.description || undefined,
+      image: product.primary_image_url || product.images?.[0]?.url || undefined,
+      price: product.price,
+      currency: 'USD',
+      sku: product.sku || undefined,
+      availability: product.stock_quantity > 0 ? 'InStock' : 'OutOfStock'
+    });
   }
 }
