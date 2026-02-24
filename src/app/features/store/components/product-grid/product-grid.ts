@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductsService } from '@core/services/products';
 import { Product } from '@core/models/product';
@@ -119,7 +119,13 @@ export class ProductGrid {
     });
 
     constructor() {
-        this.loadProducts();
+        // Load products as soon as the tenant becomes available
+        effect(() => {
+            const tenantId = this.tenantService.tenantId();
+            if (tenantId) {
+                this.loadProducts();
+            }
+        });
     }
 
     async loadProducts() {
