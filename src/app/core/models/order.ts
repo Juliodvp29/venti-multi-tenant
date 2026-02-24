@@ -1,6 +1,6 @@
 import { BaseModel } from './index';
 import { OrderStatus, PaymentStatus } from '@enums/index';
-import { Payment } from './payment';
+import { Payment, Refund } from './payment';
 
 export interface OrderItem {
     id: string;
@@ -81,6 +81,7 @@ export interface Order extends BaseModel {
     // Relations
     items?: OrderItem[];
     status_history?: OrderStatusHistory[];
+    refunds?: Refund[];
     payment_info?: Partial<Payment>;
     item_count?: number;
     total_items?: number;

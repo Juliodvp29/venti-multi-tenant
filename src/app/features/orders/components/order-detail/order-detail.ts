@@ -38,6 +38,19 @@ export class OrderDetail implements OnInit {
     readonly order = signal<Order | null>(null);
     readonly internalNote = signal('');
     readonly selectedStatus = signal<OrderStatus | ''>('');
+    readonly isProcessingRefund = signal(false);
+    readonly showRefundModal = signal(false);
+    readonly refundAmount = signal(0);
+    readonly refundReason = signal('');
+    readonly refundReturnToStock = signal(true);
+
+    readonly availableRefundAmount = computed(() => {
+        const o = this.order();
+        if (!o) return 0;
+        const total = Number(o.total_amount || 0);
+        const refunded = o.refunds?.reduce((sum, r) => sum + Number(r.amount || 0), 0) || 0;
+        return Math.max(0, total - refunded);
+    });
 
     // Status options for change
     readonly statusOptions: { value: OrderStatus; label: string }[] = [
@@ -166,6 +179,45 @@ export class OrderDetail implements OnInit {
             this.toast.error(error?.message ?? 'Error al actualizar el estado.');
         } finally {
             this.isUpdatingStatus.set(false);
+        }
+    }
+
+    openRefundModal() {
+        this.refundAmount.set(this.availableRefundAmount());
+        this.refundReason.set('');
+        this.refundReturnToStock.set(true);
+        this.showRefundModal.set(true);
+    }
+
+    setFullRefund() {
+        const amount = this.availableRefundAmount();
+        this.refundAmount.set(amount);
+    }
+
+    closeRefundModal() {
+        this.showRefundModal.set(false);
+    }
+
+    async processRefund() {
+        const order = this.order();
+        const amount = this.refundAmount();
+        if (!order || amount <= 0) return;
+
+        this.isProcessingRefund.set(true);
+        try {
+            await this.ordersService.processRefund(
+                order,
+                amount,
+                this.refundReason(),
+                this.refundReturnToStock()
+            );
+            this.toast.success(`Reembolso de $${amount} procesado con éxito.`);
+            this.closeRefundModal();
+            await this.loadOrder(order.id);
+        } catch (error: any) {
+            this.toast.error(error?.message ?? 'Error al procesar el reembolso.');
+        } finally {
+            this.isProcessingRefund.set(false);
         }
     }
 

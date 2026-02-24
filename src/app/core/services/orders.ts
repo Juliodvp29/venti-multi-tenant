@@ -80,7 +80,8 @@ export class OrdersService {
             .select(`
                 *,
                 items:order_items(*),
-                status_history:order_status_history(* )
+                status_history:order_status_history(*),
+                refunds:refunds(*)
             `)
             .eq('id', id)
             .single();
@@ -209,5 +210,86 @@ export class OrdersService {
             .eq('id', id);
 
         if (error) throw error;
+    }
+
+    async processRefund(order: Order, amount: number, reason: string, returnToStock: boolean): Promise<void> {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) throw new Error('Tenant not selected');
+
+        // 1. Insert refund record
+        const { error: refundError } = await this.supabase.client
+            .from('refunds')
+            .insert({
+                tenant_id: tenantId,
+                order_id: order.id,
+                amount,
+                reason,
+                status: 'completed', // Assuming successful processing for now
+                processed_at: new Date().toISOString()
+            });
+
+        if (refundError) throw refundError;
+
+        // 2. Update order payment status
+        const totalRefundedSoFar = (order.refunds?.reduce((sum, r) => sum + r.amount, 0) || 0) + amount;
+        const newPaymentStatus = totalRefundedSoFar >= order.total_amount
+            ? PaymentStatus.Refunded
+            : PaymentStatus.PartiallyRefunded;
+
+        const { error: orderError } = await this.supabase.client
+            .from('orders')
+            .update({
+                payment_status: newPaymentStatus,
+                status: totalRefundedSoFar >= order.total_amount ? OrderStatus.Refunded : order.status,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', order.id);
+
+        if (orderError) throw orderError;
+
+        // 3. Return items to stock if requested
+        if (returnToStock && order.items && order.items.length > 0) {
+            for (const item of order.items) {
+                if (item.product_id) {
+                    // Get current product stock
+                    const { data: product, error: productError } = await this.supabase.client
+                        .from('products')
+                        .select('stock_quantity, track_inventory')
+                        .eq('id', item.product_id)
+                        .single();
+
+                    if (!productError && product && product.track_inventory) {
+                        await this.supabase.client
+                            .from('products')
+                            .update({ stock_quantity: product.stock_quantity + item.quantity })
+                            .eq('id', item.product_id);
+                    }
+                }
+
+                // If variant_id exists, also return to variant stock if tracked
+                if (item.variant_id) {
+                    const { data: variant, error: variantError } = await this.supabase.client
+                        .from('product_variants')
+                        .select('stock_quantity')
+                        .eq('id', item.variant_id)
+                        .single();
+
+                    if (!variantError && variant) {
+                        await this.supabase.client
+                            .from('product_variants')
+                            .update({ stock_quantity: variant.stock_quantity + item.quantity })
+                            .eq('id', item.variant_id);
+                    }
+                }
+            }
+        }
+
+        // 4. Add status history entry
+        await this.supabase.client.from('order_status_history').insert({
+            order_id: order.id,
+            tenant_id: tenantId,
+            new_status: totalRefundedSoFar >= order.total_amount ? OrderStatus.Refunded : order.status,
+            note: `Reembolso de $${amount} procesado por motivo: ${reason}`
+        });
     }
 }
