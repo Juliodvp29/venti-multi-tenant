@@ -1,0 +1,60 @@
+<div class="relative inline-block text-left" [class]="width()">
+    @if (label()) {
+    <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5 ml-1">
+        {{ label() }}
+    </label>
+    }
+
+    <div class="relative">
+        <button type="button" (click)="toggle()" [disabled]="disabled()"
+            class="flex items-center justify-between w-full rounded-xl border-0 py-2.5 pl-4 pr-10 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 dark:bg-gray-800/50 focus:ring-2 focus:ring-indigo-600 sm:text-sm transition-all shadow-sm hover:ring-gray-400 dark:hover:ring-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+
+            <span class="truncate" [class.text-gray-400]="!selectedOption">
+                {{ selectedOption ? selectedOption.label : placeholder() }}
+            </span>
+
+            <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transition-transform duration-200"
+                    [class.rotate-180]="isOpen()" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+            </span>
+        </button>
+
+        @if (isOpen()) {
+        <!-- Backdrop for closing -->
+        <div class="fixed inset-0 z-10" (click)="isOpen.set(false)"></div>
+
+        <!-- Menu container -->
+        <div
+            class="absolute z-20 mt-2 w-full min-w-[200px] right-0 rounded-2xl bg-white dark:bg-gray-800 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top">
+            <div class="py-1 max-h-60 overflow-y-auto custom-scrollbar">
+                @for (option of options(); track option.value) {
+                <button (click)="select(option)"
+                    class="flex items-center justify-between w-full px-4 py-2.5 text-sm transition-colors"
+                    [class.text-indigo-600]="value() === option.value"
+                    [class.dark:text-indigo-400]="value() === option.value"
+                    [class.bg-indigo-50]="value() === option.value"
+                    [class.dark:bg-indigo-900/40]="value() === option.value"
+                    [class.text-gray-700]="value() !== option.value"
+                    [class.dark:text-gray-300]="value() !== option.value"
+                    [class.hover:bg-gray-50]="value() !== option.value"
+                    [class.dark:hover:bg-gray-700/50]="value() !== option.value">
+
+                    <span class="truncate font-medium">{{ option.label }}</span>
+
+                    @if (value() === option.value) {
+                    <svg class="h-4 w-4 text-indigo-600 dark:text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    }
+                </button>
+                }
+            </div>
+        </div>
+        }
+    </div>
+</div>

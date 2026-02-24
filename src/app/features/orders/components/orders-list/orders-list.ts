@@ -17,6 +17,7 @@ import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { DateRangePicker, DateRange } from '@shared/components/date-range-picker/date-range-picker';
 import { OrderStatusBadge } from '@shared/components/order-status-badge/order-status-badge';
+import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 import { ColumnDef } from '@core/types/table';
 import { TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
 
@@ -24,7 +25,7 @@ const PAGE_SIZE = 20;
 
 @Component({
     selector: 'app-orders-list',
-    imports: [CommonModule, DynamicTable, DateRangePicker, OrderStatusBadge],
+    imports: [CommonModule, DynamicTable, DateRangePicker, OrderStatusBadge, Dropdown],
     templateUrl: './orders-list.html',
     styleUrl: './orders-list.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,6 +70,17 @@ export class OrdersList implements OnInit, AfterViewInit {
     readonly searchQuery = signal('');
     readonly dateRange = signal<DateRange>({ start: null, end: null });
     readonly PAGE_SIZE = PAGE_SIZE;
+
+    readonly statusDropdownOptions: DropdownOption[] = [
+        { label: 'Todos los estados', value: '' },
+        { label: 'Pendiente', value: OrderStatus.Pending },
+        { label: 'Procesando', value: OrderStatus.Processing },
+        { label: 'Pagado', value: OrderStatus.Paid },
+        { label: 'Enviado', value: OrderStatus.Shipped },
+        { label: 'Entregado', value: OrderStatus.Delivered },
+        { label: 'Cancelado', value: OrderStatus.Cancelled },
+        { label: 'Reembolsado', value: OrderStatus.Refunded },
+    ];
 
     // Status options for filter
     readonly statusOptions: { value: OrderStatus | ''; label: string }[] = [

@@ -14,10 +14,11 @@ import { OrderStatus } from '@core/enums';
 import { OrdersService } from '@core/services/orders';
 import { ToastService } from '@core/services/toast';
 import { OrderStatusBadge } from '@shared/components/order-status-badge/order-status-badge';
+import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 
 @Component({
     selector: 'app-order-detail',
-    imports: [CommonModule, FormsModule, OrderStatusBadge],
+    imports: [CommonModule, FormsModule, OrderStatusBadge, Dropdown],
     templateUrl: './order-detail.html',
     styleUrl: './order-detail.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,6 +54,16 @@ export class OrderDetail implements OnInit {
     });
 
     // Status options for change
+    readonly statusDropdownOptions: DropdownOption[] = [
+        { label: 'Pendiente', value: OrderStatus.Pending },
+        { label: 'Procesando', value: OrderStatus.Processing },
+        { label: 'Pagado', value: OrderStatus.Paid },
+        { label: 'Enviado', value: OrderStatus.Shipped },
+        { label: 'Entregado', value: OrderStatus.Delivered },
+        { label: 'Cancelado', value: OrderStatus.Cancelled },
+        { label: 'Reembolsado', value: OrderStatus.Refunded },
+    ];
+
     readonly statusOptions: { value: OrderStatus; label: string }[] = [
         { value: OrderStatus.Pending, label: 'Pendiente' },
         { value: OrderStatus.Processing, label: 'Procesando' },

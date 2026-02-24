@@ -17,6 +17,7 @@ import { SubscriptionService } from '@core/services/subscription';
 import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { DateRangePicker, DateRange } from '@shared/components/date-range-picker/date-range-picker';
+import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 import { ColumnDef, TableAction } from '@core/types/table';
 import { ProductForm } from '../product-form/product-form';
 import { ProductStatus } from '@core/enums';
@@ -25,7 +26,7 @@ const PAGE_SIZE = 20;
 
 @Component({
     selector: 'app-products-list',
-    imports: [CommonModule, DynamicTable, ProductForm, DateRangePicker],
+    imports: [CommonModule, DynamicTable, ProductForm, DateRangePicker, Dropdown],
     templateUrl: './products-list.html',
     styleUrl: './products-list.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,6 +59,21 @@ export class ProductsList implements OnInit {
     readonly categories = signal<Category[]>([]);
     readonly showDrawer = signal(false);
     readonly editingProduct = signal<Product | null>(null);
+
+    readonly categoryDropdownOptions = computed<DropdownOption[]>(() => {
+        return [
+            { label: 'Todas las categorías', value: '' },
+            ...this.categories().map(cat => ({ label: cat.name, value: cat.id }))
+        ];
+    });
+
+    readonly statusDropdownOptions: DropdownOption[] = [
+        { label: 'Todos los estados', value: '' },
+        { label: 'Activo', value: ProductStatus.Active },
+        { label: 'Borrador', value: ProductStatus.Draft },
+        { label: 'Sin Stock', value: ProductStatus.OutOfStock },
+        { label: 'Archivado', value: ProductStatus.Archived },
+    ];
     readonly statusFilter = signal<string>('');
     readonly categoryFilter = signal<string>('');
     readonly dateRange = signal<DateRange>({ start: null, end: null });
