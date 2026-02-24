@@ -21,7 +21,7 @@
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                         Define your brand identity and preview how customers see your shop.
                     </p>
-                </div>  
+                </div>
             </div>
 
             <!-- Tabs -->
@@ -48,6 +48,7 @@
                 @case ('branding') { <app-settings-branding (brandingChange)="updatePreview($event)" /> }
                 @case ('general') { <app-settings-general /> }
                 @case ('address') { <app-settings-address /> }
+                @case ('shipping-taxes') { <app-settings-shipping-taxes /> }
                 }
 
                 <!-- Danger Zone -->

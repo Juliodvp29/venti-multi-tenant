@@ -6,6 +6,7 @@ import { SettingsAddress } from './components/settings-address';
 import { SettingsDangerZone } from './components/settings-danger-zone';
 import { StorePreview } from './components/store-preview';
 import { TenantService } from '@core/services/tenant';
+import { SettingsShippingTaxes } from './components/settings-shipping-taxes';
 
 export interface PreviewData {
   business_name: string;
@@ -18,11 +19,11 @@ export interface PreviewData {
   viewMode: 'desktop' | 'mobile';
 }
 
-type Tab = 'general' | 'branding' | 'address';
+type Tab = 'general' | 'branding' | 'address' | 'shipping-taxes';
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, SettingsGeneral, SettingsBranding, SettingsAddress, SettingsDangerZone, StorePreview],
+  imports: [CommonModule, SettingsGeneral, SettingsBranding, SettingsAddress, SettingsShippingTaxes, SettingsDangerZone, StorePreview],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,6 +47,11 @@ export class Settings {
       id: 'address',
       label: 'Address',
       icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>`,
+    },
+    {
+      id: 'shipping-taxes',
+      label: 'Envíos e Impuestos',
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.129-1.125V3.375c0-.621-.508-1.125-1.129-1.125H11.25m9.75 16.5h-3.75a1.125 1.125 0 0 1-1.125-1.125V12M3.375 18.75h1.5m1.5-1.5v-1.125c0-.621.504-1.125 1.125-1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V12m0 0h2.625m-2.625 4.5h2.625m-15.75-9.75h3.75m.75 0h1.125m.75 0h3.75m-10.5 2.25h3.75m.75 0h1.125m.75 0h3.75M3.375 7.5h1.5m6-5.25v1.125c0 .621.504 1.125 1.125 1.125h3.75c.621 0 1.125-.504 1.125-1.125V2.25" /></svg>`,
     },
   ];
 
