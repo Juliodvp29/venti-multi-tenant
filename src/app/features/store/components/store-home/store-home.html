@@ -1,0 +1,113 @@
+<div class="store-home-container">
+    <!-- DEBUG: Sections: {{ activeSections().length }} -->
+    @for (section of activeSections(); track section.id) {
+
+    <!-- HERO SECTION -->
+    @if (section.type === 'hero') {
+    <section [style.backgroundColor]="asAny(section.content).backgroundColor || '#111827'"
+        class="relative min-h-[500px] flex items-center justify-center overflow-hidden">
+        <!-- Background Image -->
+        @if (asAny(section.content).backgroundImageUrl) {
+        <img [src]="asAny(section.content).backgroundImageUrl" class="absolute inset-0 w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black" [style.opacity]="(asAny(section.content).overlayOpacity || 40) / 100">
+        </div>
+        }
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight animate-fade-in-up">
+                {{ asAny(section.content).title }}
+            </h1>
+            @if (asAny(section.content).subtitle) {
+            <p class="mt-4 text-xl text-gray-200 max-w-2xl mx-auto animate-fade-in-up delay-100">
+                {{ asAny(section.content).subtitle }}
+            </p>
+            }
+            @if (asAny(section.content).buttonText) {
+            <div class="mt-10 animate-fade-in-up delay-200">
+                <a [routerLink]="asAny(section.content).buttonLink || '/productos'"
+                    class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-lg transform hover:-translate-y-1">
+                    {{ asAny(section.content).buttonText }}
+                </a>
+            </div>
+            }
+        </div>
+    </section>
+    }
+
+    <!-- PRODUCT GRID SECTION -->
+    @if (section.type === 'product_grid') {
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="mb-10 flex items-end justify-between">
+            <div>
+                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ asAny(section.content).title }}
+                </h2>
+                @if (asAny(section.content).description) {
+                <p class="mt-2 text-gray-500 dark:text-gray-400">{{ asAny(section.content).description }}</p>
+                }
+            </div>
+            <a routerLink="/productos"
+                class="text-indigo-600 font-semibold hover:text-indigo-500 transition-colors flex items-center gap-1">
+                Ver todo <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+        <app-product-grid [limit]="asAny(section.content).limit || 8" />
+    </section>
+    }
+
+    <!-- ABOUT US SECTION -->
+    @if (section.type === 'about_us') {
+    <section class="bg-gray-50 dark:bg-gray-800/50 py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div [class.md:order-2]="asAny(section.content).imagePosition === 'right'">
+                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ asAny(section.content).title }}
+                    </h2>
+                    <div class="mt-6 text-lg text-gray-500 dark:text-gray-400 prose dark:prose-invert">
+                        {{ asAny(section.content).content }}
+                    </div>
+                </div>
+                <div [class.md:order-1]="asAny(section.content).imagePosition === 'right'"
+                    class="relative h-96 rounded-3xl overflow-hidden shadow-2xl">
+                    <img [src]="asAny(section.content).imageUrl || 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=800'"
+                        class="absolute inset-0 w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+    }
+
+    <!-- FEATURED CATEGORIES (Placeholder for now) -->
+    @if (section.type === 'featured_categories') {
+    <section class="py-16 bg-white dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ asAny(section.content).title }}</h2>
+            <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div
+                    class="p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all cursor-pointer group">
+                    <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">✨</span>
+                    <span class="font-bold text-gray-900 dark:text-white">Nuevos</span>
+                </div>
+                <div
+                    class="p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all cursor-pointer group">
+                    <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">🔥</span>
+                    <span class="font-bold text-gray-900 dark:text-white">Tendencia</span>
+                </div>
+                <div
+                    class="p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all cursor-pointer group">
+                    <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">💎</span>
+                    <span class="font-bold text-gray-900 dark:text-white">Exclusivos</span>
+                </div>
+                <div
+                    class="p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all cursor-pointer group">
+                    <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">🎁</span>
+                    <span class="font-bold text-gray-900 dark:text-white">Ofertas</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    }
+
+    }
+</div>

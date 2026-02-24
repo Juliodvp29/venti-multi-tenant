@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, effect, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductsService } from '@core/services/products';
 import { Product } from '@core/models/product';
@@ -104,6 +104,7 @@ export class ProductGrid {
     readonly isLoading = signal(true);
     readonly sortBy = signal('popular');
     readonly search = signal('');
+    readonly limit = input<number>(0);
     readonly isSortMenuOpen = signal(false);
 
     readonly sortOptions = [
@@ -138,7 +139,8 @@ export class ProductGrid {
     async loadProducts() {
         try {
             this.isLoading.set(true);
-            const { data } = await this.productsService.getProducts(1, 40, {
+            const limit = this.limit();
+            const { data } = await this.productsService.getProducts(1, limit > 0 ? limit : 40, {
                 sortBy: this.sortBy(),
                 search: this.search()
             });

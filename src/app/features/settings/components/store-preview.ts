@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { StorefrontLayout } from '@core/models';
 
 export interface PreviewData {
     business_name: string;
@@ -10,6 +11,7 @@ export interface PreviewData {
     font_family: string;
     layout: 'modern' | 'classic' | 'minimal';
     viewMode: 'desktop' | 'mobile';
+    storefront_layout: StorefrontLayout;
 }
 
 @Component({
@@ -44,4 +46,6 @@ export class StorePreview {
     preventDefault(event: Event) {
         event.preventDefault();
     }
+
+    asAny(val: any): any { return val; }
 }

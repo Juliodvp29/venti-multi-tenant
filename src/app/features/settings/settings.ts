@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, computed, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SettingsGeneral } from './components/settings-general';
 import { SettingsBranding } from './components/settings-branding';
@@ -7,6 +7,9 @@ import { SettingsDangerZone } from './components/settings-danger-zone';
 import { StorePreview } from './components/store-preview';
 import { TenantService } from '@core/services/tenant';
 import { SettingsShippingTaxes } from './components/settings-shipping-taxes';
+import { SettingsStorefront } from './components/settings-storefront/settings-storefront';
+
+import { StorefrontLayout } from '@core/models';
 
 export interface PreviewData {
   business_name: string;
@@ -17,13 +20,14 @@ export interface PreviewData {
   font_family: string;
   layout: 'modern' | 'classic' | 'minimal';
   viewMode: 'desktop' | 'mobile';
+  storefront_layout: StorefrontLayout;
 }
 
-type Tab = 'general' | 'branding' | 'address' | 'shipping-taxes';
+type Tab = 'general' | 'branding' | 'address' | 'shipping-taxes' | 'storefront';
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, SettingsGeneral, SettingsBranding, SettingsAddress, SettingsShippingTaxes, SettingsDangerZone, StorePreview],
+  imports: [CommonModule, SettingsGeneral, SettingsBranding, SettingsAddress, SettingsShippingTaxes, SettingsStorefront, SettingsDangerZone, StorePreview],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,6 +57,11 @@ export class Settings {
       label: 'Envíos e Impuestos',
       icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.129-1.125V3.375c0-.621-.508-1.125-1.129-1.125H11.25m9.75 16.5h-3.75a1.125 1.125 0 0 1-1.125-1.125V12M3.375 18.75h1.5m1.5-1.5v-1.125c0-.621.504-1.125 1.125-1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V12m0 0h2.625m-2.625 4.5h2.625m-15.75-9.75h3.75m.75 0h1.125m.75 0h3.75m-10.5 2.25h3.75m.75 0h1.125m.75 0h3.75M3.375 7.5h1.5m6-5.25v1.125c0 .621.504 1.125 1.125 1.125h3.75c.621 0 1.125-.504 1.125-1.125V2.25" /></svg>`,
     },
+    {
+      id: 'storefront',
+      label: 'Diseño de Tienda',
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" /></svg>`,
+    },
   ];
 
   readonly previewData = signal<PreviewData>({
@@ -64,23 +73,29 @@ export class Settings {
     font_family: '"Inter", sans-serif',
     layout: 'modern',
     viewMode: 'desktop',
+    storefront_layout: { sections: [] }
   });
 
   constructor() {
     const tenantService = inject(TenantService);
-    const t = tenantService.tenant();
-    if (t) {
-      this.previewData.set({
-        business_name: t.business_name,
-        logo_url: t.logo_url,
-        primary_color: t.primary_color,
-        secondary_color: t.secondary_color,
-        accent_color: t.accent_color,
-        font_family: t.font_family,
-        layout: t.layout || 'modern',
-        viewMode: 'desktop',
-      });
-    }
+
+    // Sync preview data when tenant or layout changes
+    effect(() => {
+      const t = tenantService.tenant();
+      if (t) {
+        this.previewData.update(prev => ({
+          ...prev,
+          business_name: t.business_name,
+          logo_url: t.logo_url,
+          primary_color: t.primary_color,
+          secondary_color: t.secondary_color,
+          accent_color: t.accent_color,
+          font_family: t.font_family,
+          layout: t.layout || 'modern',
+          storefront_layout: tenantService.storefrontLayout()
+        }));
+      }
+    });
   }
 
   readonly fullPreviewData = computed(() => ({
@@ -92,5 +107,9 @@ export class Settings {
   setViewMode(mode: 'desktop' | 'mobile') { this.viewMode.set(mode); }
   updatePreview(branding: any) {
     this.previewData.update(prev => ({ ...prev, ...branding }));
+  }
+
+  updateStorefrontPreview(layout: StorefrontLayout) {
+    this.previewData.update(prev => ({ ...prev, storefront_layout: layout }));
   }
 }

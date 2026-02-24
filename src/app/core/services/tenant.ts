@@ -1,9 +1,10 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem, TenantBranding } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout } from '@core/models';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
 import { TenantRole } from '@core/enums';
 import { AuthService } from './auth';
+import { environment } from '@env/environment';
 
 interface TenantState {
   currentTenant: Nullable<Tenant>;
@@ -45,6 +46,10 @@ export class TenantService {
   readonly tenantId = computed(() => this._state().currentTenant?.id ?? null);
   readonly businessName = computed(() => this._state().currentTenant?.business_name ?? null);
   readonly settings = computed(() => this._state().settings);
+  readonly storefrontLayout = computed<StorefrontLayout>(() => {
+    const settings = this._state().currentTenant?.settings as any;
+    return settings?.storefront_layout || { sections: [] };
+  });
 
   readonly isOwner = computed(
     () => this._state().memberInfo?.role === TenantRole.Owner
@@ -362,6 +367,48 @@ export class TenantService {
   }
 
   /**
+   * Update storefront layout in the settings JSONB column
+   */
+  async updateStorefrontLayout(layout: StorefrontLayout): Promise<{ success: boolean; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return { success: false, error: 'No tenant selected' };
+
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const currentTenant = this._state().currentTenant;
+      const currentSettings = currentTenant?.settings as any || {};
+
+      const updatedSettings = {
+        ...currentSettings,
+        storefront_layout: layout
+      };
+
+      const { data, error } = await this.supabase.client
+        .from('tenants')
+        .update({ settings: updatedSettings })
+        .eq('id', tenantId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      this._state.update(s => ({
+        ...s,
+        currentTenant: data,
+        loading: false
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating storefront layout:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update storefront layout';
+      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
    * Update business address
    */
   async updateAddress(address: {
@@ -456,8 +503,9 @@ export class TenantService {
       const fileName = `${tenantId}/${type}-${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
+      const bucketName = environment.storage.buckets.products;
       const { error: uploadError } = await this.supabase.storage
-        .from('branding')
+        .from(bucketName)
         .upload(filePath, file, {
           cacheControl: '3600',
           upsert: true,
@@ -465,7 +513,7 @@ export class TenantService {
 
       if (uploadError) throw uploadError;
 
-      const { data } = this.supabase.storage.from('branding').getPublicUrl(filePath);
+      const { data } = this.supabase.storage.from(bucketName).getPublicUrl(filePath);
 
       // Update tenant with new URL
       const updateData = type === 'logo' ? { logo_url: data.publicUrl } : { favicon_url: data.publicUrl };

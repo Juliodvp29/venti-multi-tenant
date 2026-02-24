@@ -8,6 +8,10 @@ export const STORE_ROUTES: Routes = [
         children: [
             {
                 path: '',
+                loadComponent: () => import('./components/store-home/store-home').then(m => m.StoreHome)
+            },
+            {
+                path: 'productos',
                 loadComponent: () => import('./components/product-grid/product-grid').then(m => m.ProductGrid)
             },
             {

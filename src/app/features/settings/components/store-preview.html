@@ -66,8 +66,82 @@
             </div>
         </header>
 
-        <!-- Product Hero -->
         <main class="flex-1 overflow-y-auto">
+            @if (data().storefront_layout.sections.length > 0) {
+            <!-- DYNAMIC SECTIONS PREVIEW -->
+            @for (section of data().storefront_layout.sections; track section.id) {
+            @if (section.isActive) {
+            @if (section.type === 'hero') {
+            <section [style.backgroundColor]="asAny(section.content).backgroundColor || '#111827'"
+                class="relative h-[250px] overflow-hidden flex flex-col items-center justify-center text-center p-6">
+                <!-- Background Image -->
+                @if (asAny(section.content).backgroundImageUrl) {
+                <img [src]="asAny(section.content).backgroundImageUrl"
+                    class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black"
+                    [style.opacity]="(asAny(section.content).overlayOpacity || 40) / 100"></div>
+                }
+
+                <div class="relative z-10">
+                    <h2 class="text-xl font-bold text-white mb-2 leading-tight">{{ asAny(section.content).title }}</h2>
+                    <p class="text-xs text-white/80 mb-4">{{ asAny(section.content).subtitle }}</p>
+                    <button class="px-4 py-1.5 rounded-lg text-[10px] font-bold text-white shadow-lg"
+                        [style.background-color]="data().primary_color">
+                        {{ asAny(section.content).buttonText }}
+                    </button>
+                </div>
+            </section>
+            }
+
+            @if (section.type === 'product_grid') {
+            <section class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xs font-bold text-slate-900 tracking-tight">{{ asAny(section.content).title }}</h3>
+                    <span class="text-[9px] font-bold uppercase tracking-wider"
+                        [style.color]="data().primary_color">View all</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    @for (p of mockProducts.slice(0, 4); track p.name) {
+                    <div class="aspect-square rounded-lg bg-slate-50 overflow-hidden mb-1 ring-1 ring-slate-200/50">
+                        <img [src]="p.image" class="w-full h-full object-cover">
+                    </div>
+                    }
+                </div>
+            </section>
+            }
+
+            @if (section.type === 'about_us') {
+            <section class="p-6 bg-slate-50/50">
+                <div class="flex flex-col gap-4">
+                    <h3 class="text-xs font-bold text-slate-900">{{ asAny(section.content).title }}</h3>
+                    <p class="text-[10px] text-slate-500 line-clamp-3">{{ asAny(section.content).content }}</p>
+                    <div class="h-24 rounded-xl overflow-hidden shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=400"
+                            class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </section>
+            }
+
+            @if (section.type === 'featured_categories') {
+            <section class="p-6 text-center">
+                <h3 class="text-xs font-bold text-slate-900 mb-4">{{ asAny(section.content).title }}</h3>
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="p-2 bg-white rounded-lg border border-slate-100 shadow-sm"><span
+                            class="text-lg">✨</span></div>
+                    <div class="p-2 bg-white rounded-lg border border-slate-100 shadow-sm"><span
+                            class="text-lg">🔥</span></div>
+                    <div class="p-2 bg-white rounded-lg border border-slate-100 shadow-sm"><span
+                            class="text-lg">💎</span></div>
+                    <div class="p-2 bg-white rounded-lg border border-slate-100 shadow-sm"><span
+                            class="text-lg">🎁</span></div>
+                </div>
+            </section>
+            }
+            }
+            }
+            } @else {
+            <!-- DEFAULT FALLBACK PREVIEW -->
             <section class="relative h-[250px] bg-slate-100 overflow-hidden flex flex-col md:flex-row items-center"
                 [class.md:flex-row-reverse]="data().layout === 'classic'"
                 [class.bg-white]="data().layout === 'minimal'">
@@ -76,8 +150,7 @@
                         [style.background-color]="data().secondary_color" [style.color]="data().primary_color">
                         Summer '24
                     </span>
-                    <h2 class="text-3xl font-bold mb-4 leading-tight text-slate-900">Redefine your style.
-                    </h2>
+                    <h2 class="text-3xl font-bold mb-4 leading-tight text-slate-900">Redefine your style.</h2>
                     <button
                         class="px-5 py-2 rounded-lg text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105"
                         [style.background-color]="data().primary_color">
@@ -90,7 +163,6 @@
                 </div>
             </section>
 
-            <!-- Featured Products -->
             <section class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-sm font-bold text-slate-900 tracking-tight">Featured Products</h3>
@@ -98,50 +170,22 @@
                         class="text-[10px] font-bold uppercase tracking-wider underline underline-offset-4"
                         [style.color]="data().primary_color">View all</a>
                 </div>
-
-                <div class="grid gap-x-3 gap-y-6" [class.grid-cols-3]="data().viewMode === 'desktop'"
-                    [class.grid-cols-2]="data().viewMode === 'mobile' && data().layout !== 'minimal'"
-                    [class.grid-cols-1]="data().layout === 'minimal'">
-
-                    @for (product of mockProducts; track product.name) {
-                    <div class="group cursor-pointer flex flex-col" [class.flex-row]="data().layout === 'minimal'"
-                        [class.items-center]="data().layout === 'minimal'" [class.gap-3]="data().layout === 'minimal'">
-
-                        <div class="aspect-square rounded-xl bg-slate-50 overflow-hidden mb-2 relative shadow-sm ring-1 ring-slate-200/50 transition-all group-hover:shadow-md"
-                            [class.w-20]="data().layout === 'minimal'" [class.mb-0]="data().layout === 'minimal'">
-                            <img [src]="product.image" [alt]="product.name"
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-
-                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                <div class="grid gap-3" [class.grid-cols-3]="data().viewMode === 'desktop'"
+                    [class.grid-cols-2]="data().viewMode === 'mobile'">
+                    @for (product of mockProducts.slice(0, 3); track product.name) {
+                    <div class="group flex flex-col">
+                        <div
+                            class="aspect-square rounded-xl bg-slate-50 overflow-hidden mb-2 ring-1 ring-slate-200/50 shadow-sm">
+                            <img [src]="product.image" class="w-full h-full object-cover">
                         </div>
-
-                        <div class="flex-1 space-y-1">
-                            <h4 class="text-[10px] font-bold text-slate-800 leading-tight truncate">{{ product.name }}
-                            </h4>
-                            <p class="text-[10px] font-medium text-slate-500">{{ product.price }}</p>
-
-                            @if (data().layout !== 'minimal') {
-                            <button
-                                class="w-full py-1.5 mt-1 rounded-md text-[9px] font-bold text-white shadow-sm transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-1"
-                                [style.background-color]="data().primary_color">
-                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                                Add
-                            </button>
-                            } @else {
-                            <button class="text-[9px] font-bold underline" [style.color]="data().primary_color">
-                                Add to cart
-                            </button>
-                            }
-                        </div>
+                        <h4 class="text-[10px] font-bold text-slate-800 truncate">{{ product.name }}</h4>
+                        <p class="text-[10px] font-medium text-slate-500">{{ product.price }}</p>
                     </div>
                     }
                 </div>
             </section>
+            }
 
-            <!-- Extra Spacing for Scroll -->
             <footer class="p-10 text-center border-t border-slate-50 mt-10">
                 <span class="text-[10px] text-slate-300 font-medium tracking-widest uppercase">© 2024 {{
                     data().business_name }}</span>

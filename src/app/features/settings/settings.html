@@ -49,6 +49,7 @@
                 @case ('general') { <app-settings-general /> }
                 @case ('address') { <app-settings-address /> }
                 @case ('shipping-taxes') { <app-settings-shipping-taxes /> }
+                @case ('storefront') { <app-settings-storefront (layoutChange)="updateStorefrontPreview($event)" /> }
                 }
 
                 <!-- Danger Zone -->
