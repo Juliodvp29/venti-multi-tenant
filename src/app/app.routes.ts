@@ -60,6 +60,10 @@ export const routes: Routes = [
         path: 'reviews',
         loadChildren: () => import('@features/reviews/reviews.routes').then((m) => m.REVIEWS_ROUTES),
       },
+      {
+        path: 'abandoned-carts',
+        loadComponent: () => import('@features/abandoned-carts/abandoned-carts').then((m) => m.AbandonedCarts),
+      },
     ],
   },
   {
