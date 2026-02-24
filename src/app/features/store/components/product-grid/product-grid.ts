@@ -119,11 +119,18 @@ export class ProductGrid {
     });
 
     constructor() {
-        // Load products as soon as the tenant becomes available
+        // Re-load products whenever any dependency changes
         effect(() => {
             const tenantId = this.tenantService.tenantId();
-            if (tenantId) {
+            const initialized = this.tenantService.initialized();
+            const sort = this.sortBy();
+            const search = this.search();
+
+            if (initialized && tenantId) {
                 this.loadProducts();
+            } else if (initialized && !tenantId) {
+                this.isLoading.set(false);
+                this.products.set([]);
             }
         });
     }
@@ -139,6 +146,7 @@ export class ProductGrid {
             this.updateSeo();
         } catch (error) {
             console.error('Error loading products:', error);
+            this.products.set([]);
         } finally {
             this.isLoading.set(false);
         }
@@ -147,13 +155,13 @@ export class ProductGrid {
     onSearch(event: Event) {
         const input = event.target as HTMLInputElement;
         this.search.set(input.value);
-        this.loadProducts();
+        // loadProducts is now called automatically by the effect
     }
 
     changeSort(value: string) {
         this.sortBy.set(value);
         this.isSortMenuOpen.set(false);
-        this.loadProducts();
+        // loadProducts is now called automatically by the effect
     }
 
     private updateSeo() {
