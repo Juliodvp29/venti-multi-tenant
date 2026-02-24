@@ -13,6 +13,7 @@ import { Category } from '@core/models/category';
 import { ProductsService } from '@core/services/products';
 import { CategoriesService } from '@core/services/categories';
 import { TenantService } from '@core/services/tenant';
+import { SubscriptionService } from '@core/services/subscription';
 import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { DateRangePicker, DateRange } from '@shared/components/date-range-picker/date-range-picker';
@@ -34,6 +35,7 @@ export class ProductsList implements OnInit {
     private readonly productsService = inject(ProductsService);
     private readonly categoriesService = inject(CategoriesService);
     private readonly tenantService = inject(TenantService);
+    private readonly subscriptionService = inject(SubscriptionService);
     private readonly toast = inject(ToastService);
     private readonly currencyPipe = inject(CurrencyPipe);
 
@@ -182,7 +184,12 @@ export class ProductsList implements OnInit {
         }
     }
 
-    openCreate() {
+    async openCreate() {
+        const canAdd = await this.subscriptionService.canAddResource('products');
+        if (!canAdd) {
+            this.toast.error('Has alcanzado el límite de productos de tu plan. Por favor, mejora tu plan para añadir más.');
+            return;
+        }
         this.editingProduct.set(null);
         this.showDrawer.set(true);
     }

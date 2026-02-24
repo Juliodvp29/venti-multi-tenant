@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TenantService } from '@core/services/tenant';
+import { SubscriptionService } from '@core/services/subscription';
 import { ToastService } from '@core/services/toast';
 import { TenantMember } from '@core/models';
 import { TenantRole } from '@core/enums';
@@ -22,6 +23,7 @@ import { InviteMemberModalComponent } from './components/invite-member-modal';
 })
 export class Members implements OnInit {
   private readonly tenantService = inject(TenantService);
+  private readonly subscriptionService = inject(SubscriptionService);
   private readonly toast = inject(ToastService);
 
   // State
@@ -34,8 +36,17 @@ export class Members implements OnInit {
   adminCount = computed(() => this.members().filter(m => m.role === TenantRole.Admin || m.role === TenantRole.Owner).length);
   pendingInvites = signal(1); // Demo value for now
 
-  ngOnInit() {
-    this.loadMembers();
+  async ngOnInit() {
+    await this.loadMembers();
+  }
+
+  async openInviteModal() {
+    const canAdd = await this.subscriptionService.canAddResource('members');
+    if (!canAdd) {
+      this.toast.error('Has alcanzado el límite de miembros de tu plan. Por favor, mejora tu plan para invitar a más personas.');
+      return;
+    }
+    this.showInviteModal.set(true);
   }
 
   async loadMembers() {

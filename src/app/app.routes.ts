@@ -41,6 +41,10 @@ export const routes: Routes = [
         loadComponent: () => import('@features/coupons/coupons').then((m) => m.Coupons),
       },
       {
+        path: 'subscription',
+        loadComponent: () => import('@features/subscription/subscription').then((m) => m.Subscription),
+      },
+      {
         path: 'orders',
         loadChildren: () => import('@features/orders/orders.routes').then((m) => m.ordersRoutes),
       },

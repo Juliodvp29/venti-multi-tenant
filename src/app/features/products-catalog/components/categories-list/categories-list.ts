@@ -11,6 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Category } from '@core/models/category';
 import { CategoriesService } from '@core/services/categories';
+import { SubscriptionService } from '@core/services/subscription';
 import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { ColumnDef, TableAction } from '@core/types/table';
@@ -25,6 +26,7 @@ import { CategoryForm } from '../category-form/category-form';
 })
 export class CategoriesList implements OnInit {
     private readonly categoriesService = inject(CategoriesService);
+    private readonly subscriptionService = inject(SubscriptionService);
     private readonly toast = inject(ToastService);
 
     readonly isLoading = signal(false);
@@ -107,7 +109,12 @@ export class CategoriesList implements OnInit {
         }
     }
 
-    openCreate() {
+    async openCreate() {
+        const canAdd = await this.subscriptionService.canAddResource('categories');
+        if (!canAdd) {
+            this.toast.error('Has alcanzado el límite de categorías de tu plan. Por favor, mejora tu plan para añadir más.');
+            return;
+        }
         this.editingCategory.set(null);
         this.showDrawer.set(true);
     }
