@@ -50,9 +50,9 @@ export class EmailService {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) return { success: false, error: 'No tenant selected' };
 
-        // 1. Log the email in our database
+        // 1. Log the email in our database (Non-blocking to prevent UI hang if RLS is slow)
         // Note: email_logs in current schema doesn't have body_html/body_text columns
-        const { error: logError } = await this.supabase.client
+        this.supabase.client
             .from('email_logs')
             .insert({
                 tenant_id: tenantId,
@@ -62,16 +62,18 @@ export class EmailService {
                 related_customer_id: params.customerId,
                 status: 'sent', // Simulated sending
                 sent_at: new Date().toISOString()
+            })
+            .then(({ error: logError }) => {
+                if (logError) {
+                    console.error('Error logging email (background):', logError);
+                } else {
+                    console.log(`[EmailService] Logged email to ${params.to}`);
+                }
             });
 
-        if (logError) {
-            console.error('Error logging email:', logError);
-            return { success: false, error: logError.message };
-        }
-
         // 2. Here would be the actual integration with an ESP (SendGrid, Postmark, etc.)
-        // For now, we simulate success as long as it's logged.
-        console.log(`[EmailService] Email sent to ${params.to}: ${params.subject}`);
+        // For now, we simulate success as long as it's initiated.
+        console.log(`[EmailService] Simulated sending email to ${params.to}: ${params.subject}`);
 
         return { success: true };
     }
