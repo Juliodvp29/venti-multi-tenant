@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { ColumnDef, TableAction, TableSort } from '@core/types/table';
 import { ToastService } from '@core/services/toast';
 import { FileProcessorService } from '@core/services/file-processor';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -194,34 +195,61 @@ export class DynamicTable<T extends Record<string, any>> {
   }
 
   exportToCsv() {
+    this.exportData('csv');
+  }
+
+  exportToExcel() {
+    this.exportData('xlsx');
+  }
+
+  private exportData(format: 'csv' | 'xlsx') {
     if (this.filteredData().length === 0) {
       this.toast.error('No hay datos para exportar');
       return;
     }
 
-    const headers = this.columns().map(c => c.label).join(',');
-    const rows = this.filteredData().map(item => {
-      return this.columns().map(col => {
+    const dataToExport = this.filteredData().map(item => {
+      const row: Record<string, any> = {};
+      this.columns().forEach(col => {
         let val = item[col.key];
         if (col.formatter) val = col.formatter(val, item);
-        // Basic escaping
-        return `"${String(val ?? '').replace(/"/g, '""')}"`;
-      }).join(',');
+        row[col.label] = val;
+      });
+      return row;
     });
 
-    const csvContent = [headers, ...rows].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    if (format === 'csv') {
+      const headers = this.columns().map(c => c.label).join(',');
+      const rows = dataToExport.map(row => {
+        return Object.values(row).map(val => `"${String(val ?? '').replace(/"/g, '""')}"`).join(',');
+      });
+      const csvContent = [headers, ...rows].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      this.downloadFile(blob, `${this.title() || 'export'}_${new Date().getTime()}.csv`);
+    } else {
+      try {
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte");
+        XLSX.writeFile(workbook, `${this.title() || 'export'}_${new Date().getTime()}.xlsx`);
+      } catch (error) {
+        console.error('Error al exportar a Excel:', error);
+        this.toast.error('Error al generar archivo Excel');
+      }
+    }
+
+    this.toast.success('Exportación completada');
+  }
+
+  private downloadFile(blob: Blob, filename: string) {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-
     link.setAttribute('href', url);
-    link.setAttribute('download', `${this.title() || 'export'}_${new Date().getTime()}.csv`);
+    link.setAttribute('download', filename);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
-    this.toast.success('Exportación completada');
   }
 
   triggerImport() {

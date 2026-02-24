@@ -137,7 +137,70 @@ export class AnalyticsService {
             .select('*, product:products(name, image_url)')
             .eq('tenant_id', tenantId)
             .order('revenue', { ascending: false })
-            .limit(5);
+            .limit(10);
+
+        return data || [];
+    }
+
+    async getSalesByCategoryBI() {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) return [];
+
+        const { data } = await this.supabase.client.rpc('get_sales_by_category', {
+            p_tenant_id: tenantId
+        });
+
+        // Fallback: manually aggregate if RPC isn't available
+        if (!data) {
+            const { data: items } = await this.supabase.client
+                .from('order_items')
+                .select(`
+                    total_amount,
+                    product:products(
+                        categories(name)
+                    )
+                `)
+                .eq('tenant_id', tenantId);
+
+            const aggregation: Record<string, number> = {};
+            (items || []).forEach((item: any) => {
+                const catName = item.product?.categories?.name || 'Uncategorized';
+                aggregation[catName] = (aggregation[catName] || 0) + Number(item.total_amount);
+            });
+
+            return Object.entries(aggregation).map(([name, value]) => ({ name, value }));
+        }
+
+        return data;
+    }
+
+    async getCustomerLTV() {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) return [];
+
+        const { data } = await this.supabase.client
+            .from('customers')
+            .select('id, first_name, last_name, email, total_orders, total_spent')
+            .eq('tenant_id', tenantId)
+            .order('total_spent', { ascending: false })
+            .limit(50);
+
+        return (data || []).map(c => ({
+            ...c,
+            name: `${c.first_name || ''} ${c.last_name || ''}`.trim() || 'Guest'
+        }));
+    }
+
+    async getFullDailySalesSummary(days: number = 30) {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) return [];
+
+        const { data } = await this.supabase.client
+            .from('daily_sales_summary')
+            .select('*')
+            .eq('tenant_id', tenantId)
+            .order('date', { ascending: false })
+            .limit(days);
 
         return data || [];
     }
