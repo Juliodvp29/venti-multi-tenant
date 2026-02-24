@@ -53,6 +53,10 @@ export const routes: Routes = [
         loadChildren: () => import('@features/customers/customers.routes').then((m) => m.customersRoutes),
       },
       {
+        path: 'inventory-history',
+        loadComponent: () => import('@features/inventory-history/inventory-history').then((m) => m.InventoryHistory),
+      },
+      {
         path: 'reviews',
         loadChildren: () => import('@features/reviews/reviews.routes').then((m) => m.REVIEWS_ROUTES),
       },
