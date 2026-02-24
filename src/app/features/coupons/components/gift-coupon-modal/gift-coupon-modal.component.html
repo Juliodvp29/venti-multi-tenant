@@ -1,0 +1,107 @@
+@if (isOpen()) {
+<div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" (click)="close.emit()"></div>
+
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div
+            class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-gray-900 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Regalar Cupón</h3>
+                    <p class="text-sm text-gray-500">Envía el código <span
+                            class="font-mono text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">{{ coupon()?.code
+                            }}</span> por correo.</p>
+                </div>
+                <button (click)="close.emit()" class="text-gray-400 hover:text-gray-500 transition-colors">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6">
+                <!-- Search -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Buscar Cliente
+                    </label>
+                    <div class="relative">
+                        <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()"
+                            placeholder="Nombre or email del cliente..."
+                            class="block w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        @if (isLoading()) {
+                        <div class="absolute right-3 top-2.5">
+                            <div
+                                class="animate-spin rounded-full h-4 w-4 border-2 border-indigo-500 border-t-transparent">
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Customer List -->
+                @if (customers().length > 0) {
+                <div class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
+                    @for (customer of customers(); track customer.id) {
+                    <button (click)="selectCustomer(customer)"
+                        class="w-full flex items-center justify-between p-3 rounded-xl border transition-all text-left"
+                        [class.border-indigo-500]="selectedCustomerId() === customer.id"
+                        [class.bg-indigo-50]="selectedCustomerId() === customer.id"
+                        [class.dark:bg-indigo-900/20]="selectedCustomerId() === customer.id"
+                        [class.border-gray-100]="selectedCustomerId() !== customer.id"
+                        [class.dark:border-gray-800]="selectedCustomerId() !== customer.id"
+                        [class.hover:bg-gray-50]="selectedCustomerId() !== customer.id"
+                        [class.dark:hover:bg-gray-800/50]="selectedCustomerId() !== customer.id">
+                        <div>
+                            <p class="font-semibold text-gray-900 dark:text-white">
+                                {{ customer.first_name }} {{ customer.last_name }}
+                            </p>
+                            <p class="text-xs text-gray-500">{{ customer.email }}</p>
+                        </div>
+                        @if (selectedCustomerId() === customer.id) {
+                        <div class="bg-indigo-600 rounded-full p-1">
+                            <svg class="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        }
+                    </button>
+                    }
+                </div>
+                } @else if (searchQuery().length >= 2 && !isLoading()) {
+                <div class="text-center py-8 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
+                    <p class="text-sm text-gray-500">No se encontraron clientes</p>
+                </div>
+                }
+
+                @if (!selectedCustomerId() && searchQuery().length < 2) { <div
+                    class="text-center py-8 border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl">
+                    <p class="text-sm text-gray-400">Escribe al menos 2 caracteres para buscar</p>
+            </div>
+            }
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-gray-50 dark:bg-gray-800/50 px-6 py-4 flex items-center justify-end gap-3">
+            <button type="button" (click)="close.emit()"
+                class="rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                Cancelar
+            </button>
+            <button type="button" [disabled]="!selectedCustomerId() || isSending()" (click)="sendGift()"
+                class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                @if (isSending()) {
+                <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                }
+                Enviar Regalo
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+}

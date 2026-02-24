@@ -7,11 +7,12 @@ import { ColumnDef, TableAction } from '@core/types/table';
 import { ToastService } from '@core/services/toast';
 import { TenantService } from '@core/services/tenant';
 import { CouponModalComponent } from './components/coupon-modal/coupon-modal.component';
+import { GiftCouponModalComponent } from './components/gift-coupon-modal/gift-coupon-modal.component';
 
 @Component({
   selector: 'app-coupons',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DynamicTable, CouponModalComponent, DecimalPipe, CurrencyPipe],
+  imports: [CommonModule, DynamicTable, CouponModalComponent, GiftCouponModalComponent, DecimalPipe, CurrencyPipe],
   templateUrl: './coupons.html',
   styleUrl: './coupons.css',
 })
@@ -33,6 +34,9 @@ export class Coupons implements OnInit {
 
   isModalOpen = signal(false);
   selectedCoupon = signal<DiscountCode | null>(null);
+
+  isGiftModalOpen = signal(false);
+  currentCouponForGift = signal<DiscountCode | null>(null);
 
   // Stats - Dynamically calculated from data
   activeCount = computed(() => this.coupons().filter(c => c.is_active).length);
@@ -66,8 +70,31 @@ export class Coupons implements OnInit {
   ];
 
   actions: TableAction<DiscountCode>[] = [
-    { id: 'edit', label: 'Edit', icon: 'edit', callback: (item) => this.openCouponModal(item) },
-    { id: 'delete', label: 'Delete', icon: 'delete', className: 'text-red-600', callback: (item) => this.deleteCoupon(item.id) }
+    {
+      id: 'gift',
+      label: 'Regalar',
+      icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a2 2 0 10-2 2h2zm0 0l4 4m-4-4l-4 4m4-4v13m-8-2h16" />
+             </svg>`,
+      callback: (item) => this.openGiftModal(item)
+    },
+    {
+      id: 'edit',
+      label: 'Editar',
+      icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+             </svg>`,
+      callback: (item) => this.openCouponModal(item)
+    },
+    {
+      id: 'delete',
+      label: 'Eliminar',
+      icon: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+             </svg>`,
+      className: 'text-red-600',
+      callback: (item) => this.deleteCoupon(item.id)
+    }
   ];
 
   ngOnInit() {
@@ -106,6 +133,16 @@ export class Coupons implements OnInit {
   onModalClose() {
     this.isModalOpen.set(false);
     this.selectedCoupon.set(null);
+  }
+
+  openGiftModal(coupon: DiscountCode) {
+    this.currentCouponForGift.set(coupon);
+    this.isGiftModalOpen.set(true);
+  }
+
+  onGiftModalClose() {
+    this.isGiftModalOpen.set(false);
+    this.currentCouponForGift.set(null);
   }
 
   async deleteCoupon(id: string) {

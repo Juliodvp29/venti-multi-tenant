@@ -80,3 +80,5 @@
 @if (isModalOpen()) {
 <app-coupon-modal [coupon]="selectedCoupon()" (close)="onModalClose()" (saved)="loadCoupons()"></app-coupon-modal>
 }
+
+<app-gift-coupon-modal [isOpen]="isGiftModalOpen()" [coupon]="currentCouponForGift()" (close)="onGiftModalClose()" />
