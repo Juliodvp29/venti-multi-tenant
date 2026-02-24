@@ -37,6 +37,13 @@ export interface StorefrontSection {
     content: SectionContentHero | SectionContentFeaturedCategories | SectionContentAboutUs | SectionContentProductGrid;
 }
 
+export interface NavigationLink {
+    label: string;
+    url: string;
+    isExternal?: boolean;
+}
+
 export interface StorefrontLayout {
     sections: StorefrontSection[];
+    navigation?: NavigationLink[];
 }

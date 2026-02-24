@@ -74,6 +74,31 @@ export class SettingsStorefront {
         this.layout.update(l => ({ ...l, sections }));
     }
 
+    addNavigationLink() {
+        const link = { label: 'Nuevo Enlace', url: '/store' };
+        this.layout.update(l => ({
+            ...l,
+            navigation: [...(l.navigation || []), link]
+        }));
+    }
+
+    removeNavigationLink(index: number) {
+        this.layout.update(l => ({
+            ...l,
+            navigation: (l.navigation || []).filter((_, i) => i !== index)
+        }));
+    }
+
+    moveNavigationLink(index: number, direction: 'up' | 'down') {
+        const links = [...(this.layout().navigation || [])];
+        if (direction === 'up' && index > 0) {
+            [links[index], links[index - 1]] = [links[index - 1], links[index]];
+        } else if (direction === 'down' && index < links.length - 1) {
+            [links[index], links[index + 1]] = [links[index + 1], links[index]];
+        }
+        this.layout.update(l => ({ ...l, navigation: links }));
+    }
+
     async onHeroBannerUpload(event: Event, section: StorefrontSection) {
         const input = event.target as HTMLInputElement;
         if (!input.files?.length) return;

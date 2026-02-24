@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TenantService } from '@core/services/tenant';
@@ -28,9 +28,11 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
             
             <!-- Desktop Nav -->
             <nav class="hidden md:flex items-center gap-8">
-               <a routerLink="/store" class="text-sm font-bold text-slate-600 hover:text-slate-900">Productos</a>
-               <a href="#" class="text-sm font-bold text-slate-600 hover:text-slate-900">Colecciones</a>
-               <a href="#" class="text-sm font-bold text-slate-600 hover:text-slate-900">Sobre Nosotros</a>
+               @for (link of navigation(); track link.label) {
+                   <a [routerLink]="link.url" class="text-sm font-bold text-slate-600 hover:text-slate-900">
+                       {{ link.label }}
+                   </a>
+               }
             </nav>
 
             <!-- Actions -->
@@ -91,6 +93,7 @@ export class StoreHeader {
     @Output() openCart = new EventEmitter<void>();
 
     readonly branding = this.tenantService.branding;
+    readonly navigation = computed(() => this.tenantService.storefrontLayout().navigation || []);
     readonly cartCount = this.cartService.count;
     readonly user = this.authService.user;
 

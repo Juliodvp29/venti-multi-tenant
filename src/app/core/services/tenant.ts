@@ -48,7 +48,23 @@ export class TenantService {
   readonly settings = computed(() => this._state().settings);
   readonly storefrontLayout = computed<StorefrontLayout>(() => {
     const settings = this._state().currentTenant?.settings as any;
-    return settings?.storefront_layout || { sections: [] };
+    const layout = settings?.storefront_layout as StorefrontLayout;
+
+    const defaultLayout: StorefrontLayout = {
+      sections: [],
+      navigation: [
+        { label: 'Productos', url: '/store' },
+        { label: 'Colecciones', url: '/store/colecciones' },
+        { label: 'Sobre Nosotros', url: '/store/sobre-nosotros' }
+      ]
+    };
+
+    if (!layout) return defaultLayout;
+
+    return {
+      ...layout,
+      navigation: layout.navigation || defaultLayout.navigation
+    };
   });
 
   readonly isOwner = computed(
