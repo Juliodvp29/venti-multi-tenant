@@ -61,11 +61,13 @@ export class DynamicTable<T extends Record<string, any>> {
   openMenuId = signal<string | null>(null);
   openMenuItem = signal<T | null>(null);
   menuPosition = signal<{ top: number; left: number } | null>(null);
+  isExportMenuOpen = signal(false);
 
   @HostListener('document:click')
   onDocumentClick() {
     this.openMenuId.set(null);
     this.menuPosition.set(null);
+    this.isExportMenuOpen.set(false);
   }
 
   // Computed: Filtered and Sorted Data
@@ -176,10 +178,16 @@ export class DynamicTable<T extends Record<string, any>> {
     this.openMenuItem.set(item);
   }
 
+  toggleExportMenu(event: Event) {
+    event.stopPropagation();
+    this.isExportMenuOpen.update(v => !v);
+  }
+
   closeMenu() {
     this.openMenuId.set(null);
     this.openMenuItem.set(null);
     this.menuPosition.set(null);
+    this.isExportMenuOpen.set(false);
   }
 
   getItemById(id: string): T | undefined {

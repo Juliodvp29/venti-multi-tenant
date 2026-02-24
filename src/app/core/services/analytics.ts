@@ -133,7 +133,7 @@ export class AnalyticsService {
         if (!tenantId) return [];
 
         const { data } = await this.supabase.client
-            .from('product_performance')
+            .from('vw_product_performance_realtime')
             .select('*, product:products(name, image_url)')
             .eq('tenant_id', tenantId)
             .order('revenue', { ascending: false })
@@ -196,7 +196,7 @@ export class AnalyticsService {
         if (!tenantId) return [];
 
         const { data } = await this.supabase.client
-            .from('daily_sales_summary')
+            .from('vw_daily_sales_realtime')
             .select('*')
             .eq('tenant_id', tenantId)
             .order('date', { ascending: false })
