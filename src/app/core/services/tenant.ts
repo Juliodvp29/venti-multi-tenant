@@ -386,7 +386,10 @@ export class TenantService {
 
       const { data, error } = await this.supabase.client
         .from('tenants')
-        .update({ settings: updatedSettings })
+        .update({
+          settings: updatedSettings,
+          status: 'active' // Activate tenant when layout is saved
+        })
         .eq('id', tenantId)
         .select()
         .single();
