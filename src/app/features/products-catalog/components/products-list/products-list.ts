@@ -112,6 +112,7 @@ export class ProductsList implements OnInit {
             key: 'primary_image_url',
             label: '',
             type: 'image',
+            formatter: (val, item) => val || item.images?.[0]?.url || '',
         },
         {
             key: 'name',

@@ -37,7 +37,7 @@ export interface TenantMember {
     id: string;
     tenant_id: string;
     user_id: string;
-    role: 'owner' | 'admin' | 'editor' | 'viewer'; // Using string union for now or import enum if available
+    role: 'owner' | 'admin' | 'editor' | 'viewer' | 'delivery'; // Using string union for now or import enum if available
     permissions: string[];
     is_active: boolean;
     invited_by?: string;

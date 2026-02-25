@@ -32,6 +32,9 @@ export class OrderDetail implements OnInit {
     readonly currencyPipe = inject(CurrencyPipe);
     readonly datePipe = inject(DatePipe);
 
+    // Enums for template
+    readonly OrderStatus = OrderStatus;
+
     // State
     readonly isLoading = signal(true);
     readonly isSavingNote = signal(false);
@@ -45,12 +48,27 @@ export class OrderDetail implements OnInit {
     readonly refundReason = signal('');
     readonly refundReturnToStock = signal(true);
 
+    // Dispatch info
+    readonly shippingMethod = signal('');
+    readonly trackingNumber = signal('');
+    readonly trackingUrl = signal('');
+    readonly deliveryPersonId = signal<string>('');
+    readonly isSavingDispatch = signal(false);
+
+    readonly deliveryPersonnelOptions = signal<DropdownOption[]>([]);
+
     readonly availableRefundAmount = computed(() => {
         const o = this.order();
         if (!o) return 0;
         const total = Number(o.total_amount || 0);
         const refunded = o.refunds?.reduce((sum, r) => sum + Number(r.amount || 0), 0) || 0;
         return Math.max(0, total - refunded);
+    });
+
+    readonly canAssignDelivery = computed(() => {
+        // Only owners, admins, and editors can assign. Delivery personnel cannot.
+        const role = this.ordersService['tenantService'].memberRole();
+        return role === 'admin' || role === 'owner' || role === 'editor';
     });
 
     // Status options for change
@@ -62,6 +80,17 @@ export class OrderDetail implements OnInit {
         { label: 'Entregado', value: OrderStatus.Delivered },
         { label: 'Cancelado', value: OrderStatus.Cancelled },
         { label: 'Reembolsado', value: OrderStatus.Refunded },
+    ];
+
+    readonly shippingDropdownOptions: DropdownOption[] = [
+        { label: 'Servientrega', value: 'Servientrega' },
+        { label: 'Coordinadora', value: 'Coordinadora' },
+        { label: 'Inter Rapidísimo', value: 'Inter Rapidísimo' },
+        { label: 'Envia', value: 'Envia' },
+        { label: 'Deprisa', value: 'Deprisa' },
+        { label: 'TCC', value: 'TCC' },
+        { label: 'Domicilio Propio', value: 'Domicilio Propio' },
+        { label: 'Recogida en Tienda', value: 'Recogida en Tienda' },
     ];
 
     readonly statusOptions: { value: OrderStatus; label: string }[] = [
@@ -136,7 +165,37 @@ export class OrderDetail implements OnInit {
             this.router.navigate(['/orders']);
             return;
         }
+        await this.loadDeliveryPersonnel();
         await this.loadOrder(id);
+    }
+
+    async loadDeliveryPersonnel() {
+        try {
+            // Fetch users with 'delivery' role for this tenant
+            const { data, error } = await this.ordersService['supabase'].client
+                .from('tenant_members')
+                .select('user_id, role, users:auth.users!user_id(email)' as any)
+                .eq('tenant_id', this.ordersService['tenantService'].tenantId() || '')
+                .eq('role', 'delivery')
+                .eq('is_active', true);
+
+            if (error) throw error;
+
+            // Note: because of Supabase limitations querying auth schema from public schema
+            // without special views, the inner join might fail if not configured.
+            // If it fails, we will gracefully degrade to empty.
+            if (data) {
+                const options: DropdownOption[] = [{ label: 'Sin Asignar', value: '' }];
+                for (const member of data as any[]) {
+                    options.push({ label: member.users?.email || member.user_id, value: member.user_id });
+                }
+                this.deliveryPersonnelOptions.set(options);
+            }
+        } catch (error) {
+            console.error('Failed to load delivery personnel', error);
+            // Fallback options if RLS/join fails
+            this.deliveryPersonnelOptions.set([{ label: 'Sin Asignar', value: '' }]);
+        }
     }
 
     async loadOrder(id: string) {
@@ -149,8 +208,12 @@ export class OrderDetail implements OnInit {
                 return;
             }
             this.order.set(order);
-            this.internalNote.set(order.internal_note ?? '');
+            this.internalNote.set(order.internal_note || '');
             this.selectedStatus.set(order.status);
+            this.shippingMethod.set(order.shipping_method || '');
+            this.trackingNumber.set(order.tracking_number || '');
+            this.trackingUrl.set(order.tracking_url || '');
+            this.deliveryPersonId.set((order as any).delivery_person_id || '');
         } catch (error: any) {
             this.toast.error(error?.message ?? 'Error al cargar el pedido.');
             this.router.navigate(['/orders']);
@@ -174,6 +237,46 @@ export class OrderDetail implements OnInit {
         }
     }
 
+    async saveDispatchInfo() {
+        const order = this.order();
+        if (!order) return;
+        this.isSavingDispatch.set(true);
+        try {
+            await this.ordersService.addTrackingInfo(order.id, {
+                shipping_method: this.shippingMethod() || undefined,
+                tracking_number: this.trackingNumber() || undefined,
+                tracking_url: this.trackingUrl() || undefined
+            });
+            this.order.update(o => o ? {
+                ...o,
+                shipping_method: this.shippingMethod(),
+                tracking_number: this.trackingNumber(),
+                tracking_url: this.trackingUrl()
+            } : o);
+            this.toast.success('Información de despacho guardada.');
+        } catch (error: any) {
+            this.toast.error(error?.message ?? 'Error al guardar la información.');
+        } finally {
+            this.isSavingDispatch.set(false);
+        }
+    }
+
+    async assignDeliveryPerson() {
+        const order = this.order();
+        if (!order) return;
+        this.isSavingDispatch.set(true);
+        try {
+            const assignTo = this.deliveryPersonId() || null;
+            await this.ordersService.assignDeliveryPerson(order.id, assignTo);
+            this.order.update(o => o ? { ...o, delivery_person_id: assignTo } as any : o);
+            this.toast.success(assignTo ? 'Repartidor asignado.' : 'Asignación removida.');
+        } catch (error: any) {
+            this.toast.error(error?.message ?? 'Error al asignar.');
+        } finally {
+            this.isSavingDispatch.set(false);
+        }
+    }
+
     async updateStatus() {
         const order = this.order();
         const newStatus = this.selectedStatus() as OrderStatus;
@@ -191,6 +294,11 @@ export class OrderDetail implements OnInit {
         } finally {
             this.isUpdatingStatus.set(false);
         }
+    }
+
+    markAsShipped() {
+        this.selectedStatus.set(OrderStatus.Shipped);
+        this.updateStatus();
     }
 
     openRefundModal() {

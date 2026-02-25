@@ -30,7 +30,10 @@ import { SeoService } from '@core/services/seo';
             </div>
             <div class="grid grid-cols-4 gap-4">
               @for (img of product()?.images; track img.id) {
-                <div class="aspect-square bg-white rounded-xl border border-slate-100 overflow-hidden cursor-pointer hover:border-indigo-500 transition-all">
+                <div (click)="selectedImage.set(img.url)" 
+                     class="aspect-square bg-white rounded-xl border overflow-hidden cursor-pointer hover:border-indigo-500 transition-all"
+                     [class.border-indigo-500]="displayImage() === img.url"
+                     [class.border-slate-100]="displayImage() !== img.url">
                   <img [src]="img.url" [alt]="product()?.name + ' view'" loading="lazy" class="w-full h-full object-cover">
                 </div>
               }
@@ -302,6 +305,8 @@ export class ProductDetails implements OnInit {
   readonly added = signal(false);
   readonly math = Math;
 
+  readonly selectedImage = signal<string | null>(null);
+
   // Review Form State
   readonly reviewForm = signal({
     rating: 0,
@@ -337,6 +342,7 @@ export class ProductDetails implements OnInit {
   });
 
   readonly displayImage = computed(() => {
+    if (this.selectedImage()) return this.selectedImage();
     const v = this.selectedVariant();
     const p = this.product();
     return v?.image_url || p?.primary_image_url || p?.images?.[0]?.url;

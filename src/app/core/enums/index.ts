@@ -76,6 +76,7 @@ export enum TenantRole {
   Admin = 'admin',
   Editor = 'editor',
   Viewer = 'viewer',
+  Delivery = 'delivery',
 }
 
 export enum CustomerSegment {

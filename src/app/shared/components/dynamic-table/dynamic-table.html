@@ -132,8 +132,8 @@
                         @if (col.type === 'image') {
                         <div
                             class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-gray-700 bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center">
-                            @if (item[col.key]) {
-                            <img class="h-10 w-10 object-cover" [src]="item[col.key]" alt="">
+                            @if (formatValue(col, item)) {
+                            <img class="h-10 w-10 object-cover" [src]="formatValue(col, item)" alt="">
                             } @else {
                             <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor">

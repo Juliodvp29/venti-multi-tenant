@@ -38,6 +38,7 @@ import { TenantRole } from '@core/enums';
                     <option [value]="TenantRole.Viewer">Viewer</option>
                     <option [value]="TenantRole.Editor">Editor</option>
                     <option [value]="TenantRole.Admin">Admin</option>
+                    <option [value]="TenantRole.Delivery">Repartidor (Delivery)</option>
                 </select>
             </div>
 

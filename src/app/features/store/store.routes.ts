@@ -25,6 +25,21 @@ export const STORE_ROUTES: Routes = [
             {
                 path: 'success',
                 loadComponent: () => import('./components/order-success/order-success').then(m => m.OrderSuccess)
+            },
+            {
+                path: 'account',
+                loadComponent: () => import('./components/account/account').then(m => m.Account),
+                children: [
+                    {
+                        path: '',
+                        redirectTo: 'direcciones',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'direcciones',
+                        loadComponent: () => import('./components/account/addresses/addresses').then(m => m.Addresses)
+                    }
+                ]
             }
         ]
     }

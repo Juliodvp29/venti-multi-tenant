@@ -130,7 +130,7 @@ export class AuthService {
 
     const { data: existing, error: fetchError } = await this.supabase.client
       .from('customers')
-      .select('id, user_id')
+      .select('*')
       .eq('tenant_id', tenantId)
       .eq('email', user.email)
       .maybeSingle();
@@ -152,7 +152,7 @@ export class AuthService {
             last_name: lastName || undefined,
           })
           .eq('id', existing.id)
-          .select('id')
+          .select('*')
           .single();
 
         if (updateError) throw updateError;
@@ -171,7 +171,7 @@ export class AuthService {
         first_name: firstName || null,
         last_name: lastName || null,
       })
-      .select('id')
+      .select('*')
       .single();
 
     if (createError) throw createError;

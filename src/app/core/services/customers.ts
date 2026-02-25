@@ -105,4 +105,58 @@ export class CustomersService {
         if (error) throw error;
         return data as CustomerAddress;
     }
+
+    async getCustomerAddresses(customerId: string): Promise<CustomerAddress[]> {
+        const { data, error } = await this.supabase.client
+            .from('customer_addresses')
+            .select('*')
+            .eq('customer_id', customerId)
+            .order('is_default', { ascending: false })
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data as CustomerAddress[];
+    }
+
+    async updateAddress(id: string, address: Partial<CustomerAddress>): Promise<CustomerAddress> {
+        const { data, error } = await this.supabase.client
+            .from('customer_addresses')
+            .update({
+                ...address,
+                updated_at: new Date().toISOString(),
+            } as any)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        return data as CustomerAddress;
+    }
+
+    async deleteAddress(id: string): Promise<void> {
+        const { error } = await this.supabase.client
+            .from('customer_addresses')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+    }
+
+    async setDefaultAddress(customerId: string, addressId: string, type: 'shipping' | 'billing' = 'shipping'): Promise<void> {
+        const column = type === 'shipping' ? 'is_default' : 'is_billing_default';
+
+        // 1. Unset existing default
+        await this.supabase.client
+            .from('customer_addresses')
+            .update({ [column]: false } as any)
+            .eq('customer_id', customerId);
+
+        // 2. Set new default
+        const { error } = await this.supabase.client
+            .from('customer_addresses')
+            .update({ [column]: true } as any)
+            .eq('id', addressId);
+
+        if (error) throw error;
+    }
 }

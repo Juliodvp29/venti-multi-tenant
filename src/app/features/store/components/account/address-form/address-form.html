@@ -1,0 +1,77 @@
+<form (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+            <input type="text" [(ngModel)]="address.first_name" name="first_name" required
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+            <input type="text" [(ngModel)]="address.last_name" name="last_name" required
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+            <input type="tel" [(ngModel)]="address.phone" name="phone"
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Dirección (Línea 1)</label>
+            <input type="text" [(ngModel)]="address.address_line1" name="address_line1" required
+                placeholder="Calle, número, etc."
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Dirección (Línea 2) <span
+                    class="text-gray-400 font-normal">(Opcional)</span></label>
+            <input type="text" [(ngModel)]="address.address_line2" name="address_line2"
+                placeholder="Apartamento, torre, etc."
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Ciudad</label>
+            <input type="text" [(ngModel)]="address.city" name="city" required
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Estado / Departamento</label>
+            <input type="text" [(ngModel)]="address.state" name="state" required
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Código Postal</label>
+            <input type="text" [(ngModel)]="address.postal_code" name="postal_code" required
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">País</label>
+            <input type="text" [(ngModel)]="address.country" name="country" required
+                class="w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500 ring-1 ring-inset ring-gray-200">
+        </div>
+        <div class="md:col-span-2">
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" [(ngModel)]="address.is_default" name="is_default"
+                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                <span class="text-sm text-gray-700">Usar como dirección de envío predeterminada</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
+        <button type="button" (click)="cancel.emit()"
+            class="px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors ring-1 ring-inset ring-gray-200">
+            Cancelar
+        </button>
+        <button type="submit" [disabled]="form.invalid || isSubmitting"
+            class="px-6 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
+            @if (isSubmitting) {
+            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            }
+            Guardar Dirección
+        </button>
+    </div>
+</form>

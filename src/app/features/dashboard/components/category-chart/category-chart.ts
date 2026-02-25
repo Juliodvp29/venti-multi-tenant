@@ -67,12 +67,15 @@ export class CategoryChart {
               fontSize: '24px',
               fontWeight: 'bold',
               offsetY: -20,
-              formatter: (val: string) => val + '%'
+              formatter: (val: string) => this.currencyFormat(Number(val))
             },
             total: {
               show: true,
-              label: 'Apparel',
-              formatter: () => '45%'
+              label: 'Total',
+              formatter: (w: any) => {
+                const total = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
+                return this.currencyFormat(total);
+              }
             }
           }
         }

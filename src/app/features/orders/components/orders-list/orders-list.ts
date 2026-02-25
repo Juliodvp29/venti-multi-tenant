@@ -198,6 +198,7 @@ export class OrdersList implements OnInit, AfterViewInit {
         this.isLoading.set(true);
         try {
             const { data, count } = await this.ordersService.getOrders(page, PAGE_SIZE, this.buildFilters());
+            console.log('Orders fetch returned:', { count, dataLength: data.length, filters: this.buildFilters() });
             this.orders.set(data);
             this.totalCount.set(count);
             this.currentPage.set(page);
