@@ -261,7 +261,7 @@ export class OrdersService {
                     if (!productError && product && product.track_inventory) {
                         await this.supabase.client
                             .from('products')
-                            .update({ stock_quantity: product.stock_quantity + item.quantity })
+                            .update({ stock_quantity: (product.stock_quantity || 0) + item.quantity })
                             .eq('id', item.product_id);
                     }
                 }
@@ -277,7 +277,7 @@ export class OrdersService {
                     if (!variantError && variant) {
                         await this.supabase.client
                             .from('product_variants')
-                            .update({ stock_quantity: variant.stock_quantity + item.quantity })
+                            .update({ stock_quantity: (variant.stock_quantity || 0) + item.quantity })
                             .eq('id', item.variant_id);
                     }
                 }

@@ -126,7 +126,7 @@ export class AuthService {
    */
   async getOrCreateCustomer(tenantId: string): Promise<any> {
     const user = this.user();
-    if (!user) return null;
+    if (!user || !user.email) return null;
 
     const { data: existing, error: fetchError } = await this.supabase.client
       .from('customers')

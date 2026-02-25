@@ -13,7 +13,7 @@ interface TenantState {
   loading: boolean;
   error: Nullable<string>;
   initialized: boolean;
-  settings: TenantSettingItem[];
+  settings: Record<string, unknown>;
 }
 
 @Injectable({
@@ -31,7 +31,7 @@ export class TenantService {
     loading: false,
     error: null,
     initialized: false,
-    settings: [],
+    settings: {},
   });
 
   // ── Computed ─────────────────────────────────────────────
@@ -139,7 +139,7 @@ export class TenantService {
 
       if (error) throw error;
 
-      const tenants = data ?? [];
+      const tenants = (data as any) ?? [];
 
       // Prioritize "real" tenants over seed data
       const sortedTenants = [...tenants].sort((a, b) => {
@@ -151,10 +151,10 @@ export class TenantService {
       });
 
       const savedId = localStorage.getItem('last_tenant_id');
-      let selected = tenants.find(t => t.id === savedId);
+      let selected = tenants.find((t: any) => t.id === savedId);
 
       // If we have a saved seed store but there is a real store available, switch to the real one
-      const firstReal = sortedTenants.find(t => !(t.business_name || '').toLowerCase().includes('seed'));
+      const firstReal = sortedTenants.find((t: any) => !(t.business_name || '').toLowerCase().includes('seed'));
       if (selected && (selected.business_name || '').toLowerCase().includes('seed') && firstReal) {
         selected = firstReal;
       }
@@ -210,7 +210,7 @@ export class TenantService {
 
       this._state.update(s => ({
         ...s,
-        currentTenant: data,
+        currentTenant: data as any,
         loading: false,
         initialized: true
       }));
@@ -245,60 +245,27 @@ export class TenantService {
       .eq('is_active', true)
       .maybeSingle();
 
-    this._state.update((s) => ({ ...s, memberInfo: data }));
+    this._state.update((s) => ({ ...s, memberInfo: data as any }));
   }
 
   async loadTenantSettings(tenantId: string): Promise<void> {
-    const { data, error } = await this.supabase.client
-      .from('tenant_settings')
-      .select('*')
-      .eq('tenant_id', tenantId);
+    const tenant = this._state().tenants.find(t => t.id === tenantId) || this._state().currentTenant;
+    if (!tenant) return;
 
-    if (error) {
-      console.error('Error loading settings:', error);
-      return;
-    }
-
-    this._state.update((s) => ({ ...s, settings: data as TenantSettingItem[] }));
+    this._state.update((s) => ({ ...s, settings: (tenant.settings as Record<string, unknown>) || {} }));
   }
 
   async updateSetting(key: string, value: unknown, type: 'string' | 'number' | 'boolean' | 'json' = 'string'): Promise<void> {
     const tenantId = this.tenantId();
     if (!tenantId) return;
 
-    const { data, error } = await this.supabase.client
-      .from('tenant_settings')
-      .upsert({
-        tenant_id: tenantId,
-        setting_key: key,
-        setting_value: value,
-        setting_type: type,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'tenant_id,setting_key' })
-      .select()
-      .single();
+    const currentSettings = this._state().settings || {};
+    const updatedSettings = { ...currentSettings, [key]: value };
 
-    if (error) throw error;
-
-    this._state.update((s) => ({
-      ...s,
-      settings: [
-        ...s.settings.filter(item => item.setting_key !== key),
-        data as TenantSettingItem
-      ]
-    }));
-  }
-
-  async getSetting<T = unknown>(key: string): Promise<T | null> {
-    const setting = this._state().settings.find(s => s.setting_key === key);
-    return setting ? (setting.setting_value as T) : null;
-  }
-
-  async updateTenant(tenantId: string, updates: Partial<Tenant>): Promise<Tenant> {
     const { data, error } = await this.supabase.client
       .from('tenants')
       .update({
-        ...updates,
+        settings: updatedSettings as any,
         updated_at: new Date().toISOString(),
       })
       .eq('id', tenantId)
@@ -309,11 +276,36 @@ export class TenantService {
 
     this._state.update((s) => ({
       ...s,
-      currentTenant: data,
-      tenants: s.tenants.map((t) => (t.id === tenantId ? data : t)),
+      currentTenant: data as any,
+      settings: updatedSettings
+    }));
+  }
+
+  async getSetting<T = unknown>(key: string): Promise<T | null> {
+    const settings = this._state().settings;
+    return (settings[key] as T) ?? null;
+  }
+
+  async updateTenant(tenantId: string, updates: Partial<Tenant>): Promise<Tenant> {
+    const { data, error } = await this.supabase.client
+      .from('tenants')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
+      } as any)
+      .eq('id', tenantId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    this._state.update((s) => ({
+      ...s,
+      currentTenant: data as any,
+      tenants: s.tenants.map((t) => (t.id === tenantId ? data as any : t)),
     }));
 
-    return data;
+    return data as any;
   }
 
   /**
@@ -414,7 +406,7 @@ export class TenantService {
 
       this._state.update(s => ({
         ...s,
-        currentTenant: data,
+        currentTenant: data as any,
         loading: false
       }));
 
@@ -575,7 +567,7 @@ export class TenantService {
     // Note: In a real app, you might use a signup or invitation flow
     // For now, we'll assume we invite by email and the system handles the rest
     const { data: userData, error: userError } = await this.supabase.client
-      .from('profiles') // Assuming profiles table linked to auth.users
+      .from('profiles' as any) // Assuming profiles table linked to auth.users
       .select('id')
       .eq('email', email)
       .single();
@@ -586,7 +578,7 @@ export class TenantService {
       .from('tenant_members')
       .insert({
         tenant_id: tenantId,
-        user_id: userData.id,
+        user_id: (userData as any).id,
         role: role,
         invited_by: this.authService.userId(),
         invited_at: new Date().toISOString(),
@@ -631,7 +623,7 @@ export class TenantService {
       loading: false,
       error: null,
       initialized: false,
-      settings: [],
+      settings: {},
     });
   }
 }

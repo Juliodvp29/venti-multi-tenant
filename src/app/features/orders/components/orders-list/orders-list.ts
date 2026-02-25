@@ -7,6 +7,8 @@ import {
     OnInit,
     signal,
 } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { Order } from '@core/models/order';
@@ -40,6 +42,7 @@ export class OrdersList implements OnInit, AfterViewInit {
     private readonly datePipe = inject(DatePipe);
 
     private initialized = false;
+    private searchSubject = new Subject<string>();
 
     constructor() {
         effect(() => {
@@ -48,6 +51,13 @@ export class OrdersList implements OnInit, AfterViewInit {
                 this.initialized = true;
                 this.loadStats();
                 this.loadOrders();
+            }
+        });
+
+        this.searchSubject.pipe(debounceTime(400)).subscribe((query) => {
+            this.searchQuery.set(query);
+            if (this.initialized) {
+                this.loadOrders(1);
             }
         });
     }
@@ -202,7 +212,8 @@ export class OrdersList implements OnInit, AfterViewInit {
         this.isStatsLoading.set(true);
         try {
             this.stats.set(await this.ordersService.getOrderStats());
-        } catch {
+        } catch (error) {
+            console.warn('Error loading stats:', error);
             // Stats are non-critical, fail silently
         } finally {
             this.isStatsLoading.set(false);
@@ -226,11 +237,8 @@ export class OrdersList implements OnInit, AfterViewInit {
         this.loadOrders(1);
     }
 
-    private searchTimer: any;
     onSearchChange(query: string) {
-        this.searchQuery.set(query);
-        clearTimeout(this.searchTimer);
-        this.searchTimer = setTimeout(() => this.loadOrders(1), 400);
+        this.searchSubject.next(query);
     }
 
     onRowClick(order: Order) {

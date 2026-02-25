@@ -115,7 +115,7 @@ export class ProductsService {
             .update({
                 ...product,
                 updated_at: new Date().toISOString(),
-            })
+            } as any)
             .eq('id', id)
             .select()
             .single();

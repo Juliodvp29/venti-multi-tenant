@@ -49,6 +49,7 @@ export class ReviewsService {
 
     async createReview(review: Partial<ProductReview>): Promise<ProductReview> {
         const tenantId = this.tenantService.tenantId();
+        if (!tenantId) throw new Error('Tenant not selected');
         const { data, error } = await this.supabase.client
             .from('product_reviews')
             .insert({
@@ -56,7 +57,7 @@ export class ReviewsService {
                 tenant_id: tenantId,
                 status: 'pending',
                 is_approved: false
-            })
+            } as any)
             .select()
             .single();
 

@@ -385,7 +385,7 @@ export class AiAssistantService {
 
     private async handleGetActivePromotions(tenantId: string, args: any) {
         const { data, error } = await this.supabase.client
-            .from('discounts')
+            .from('discount_codes')
             .select('*')
             .eq('tenant_id', tenantId)
             .eq('status', 'active');

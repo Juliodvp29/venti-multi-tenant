@@ -73,7 +73,7 @@ export class Reports {
             ]);
 
             // Top Products
-            this.topProducts.set(products.map(p => ({
+            this.topProducts.set((products as any[]).map(p => ({
                 ...p,
                 name: p.product?.name || 'Desconocido'
             })));
@@ -91,9 +91,9 @@ export class Reports {
             const reversedSummary = [...summary].reverse();
             this.salesSeries.set([{
                 name: 'Ingresos',
-                data: reversedSummary.map(s => Number(s.total_revenue))
+                data: reversedSummary.map((s: any) => Number(s.total_revenue))
             }]);
-            this.salesLabels.set(reversedSummary.map(s => new Date(s.date).toLocaleDateString()));
+            this.salesLabels.set(reversedSummary.map((s: any) => new Date(s.date).toLocaleDateString()));
 
         } catch (error) {
             console.error('Error loading BI reports:', error);

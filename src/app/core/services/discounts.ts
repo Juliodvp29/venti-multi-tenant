@@ -41,6 +41,7 @@ export class DiscountsService {
 
     async validateCode(code: string): Promise<DiscountCode | null> {
         const tenantId = this.tenantService.tenantId();
+        if (!tenantId) return null;
         const { data, error } = await this.supabase.client
             .from('discount_codes')
             .select('*')
@@ -64,6 +65,7 @@ export class DiscountsService {
 
     async createDiscountCode(discount: Partial<DiscountCode>): Promise<DiscountCode> {
         const tenantId = this.tenantService.tenantId();
+        if (!tenantId) throw new Error('Tenant not selected');
         const { data, error } = await this.supabase.client
             .from('discount_codes')
             .insert({
@@ -71,7 +73,7 @@ export class DiscountsService {
                 tenant_id: tenantId,
                 code: discount.code?.toUpperCase(),
                 usage_count: 0
-            })
+            } as any)
             .select()
             .single();
 

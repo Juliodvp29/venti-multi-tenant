@@ -35,7 +35,10 @@ export class SubscriptionService {
             throw error;
         }
 
-        return data || [];
+        return (data || []).map(entry => ({
+            ...entry,
+            amount: entry.amount || 0
+        })) as any;
     }
 
     /**

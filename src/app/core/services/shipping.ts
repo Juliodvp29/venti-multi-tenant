@@ -35,7 +35,7 @@ export class ShippingService {
             .insert({
                 ...zone,
                 tenant_id: this.tenantId,
-            })
+            } as any)
             .select()
             .single();
 
@@ -77,7 +77,7 @@ export class ShippingService {
             .insert({
                 ...rate,
                 tenant_id: this.tenantId,
-            })
+            } as any)
             .select()
             .single();
 
@@ -129,7 +129,7 @@ export class ShippingService {
             .insert({
                 ...rate,
                 tenant_id: this.tenantId,
-            })
+            } as any)
             .select()
             .single();
 

@@ -52,12 +52,13 @@ export class PaymentsService {
 
     async createRefund(refund: Partial<Refund>): Promise<Refund> {
         const tenantId = this.tenantService.tenantId();
+        if (!tenantId) throw new Error('Tenant not selected');
         const { data, error } = await this.supabase.client
             .from('refunds')
             .insert({
                 ...refund,
                 tenant_id: tenantId,
-            })
+            } as any)
             .select()
             .single();
 

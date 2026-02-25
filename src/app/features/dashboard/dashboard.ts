@@ -105,7 +105,7 @@ export class Dashboard {
 
   private async loadTopProducts() {
     const performance = await this.analytics.getProductPerformance();
-    this.topProducts.set(performance.map(p => ({
+    this.topProducts.set((performance as any[]).map(p => ({
       id: p.product_id,
       name: p.product?.name || 'Producto',
       category: 'General',
@@ -117,7 +117,7 @@ export class Dashboard {
 
   private async loadRecentOrders() {
     const { data } = await this.ordersService.getOrders(1, 5);
-    this.recentTransactions.set(data.map(o => {
+    this.recentTransactions.set((data as any[]).map(o => {
       const first = o.customer_first_name || 'Invitado';
       const last = o.customer_last_name || '';
       const fullName = (first + ' ' + last).trim();

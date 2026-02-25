@@ -57,7 +57,7 @@ export class CustomersService {
             .insert({
                 ...customer,
                 tenant_id: tenantId,
-            })
+            } as any)
             .select()
             .single();
 
@@ -98,7 +98,7 @@ export class CustomersService {
                 ...address,
                 customer_id: customerId,
                 tenant_id: tenantId,
-            })
+            } as any)
             .select()
             .single();
 
