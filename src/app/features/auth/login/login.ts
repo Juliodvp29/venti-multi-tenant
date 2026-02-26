@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/services/auth';
 import { ToastService } from '@core/services/toast';
 import { TenantService } from '@core/services/tenant';
@@ -16,6 +16,7 @@ export class Login {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly toast = inject(ToastService);
   private readonly tenantService = inject(TenantService);
 
@@ -60,6 +61,10 @@ export class Login {
       return;
     }
 
+    // Capture redirect BEFORE sign-in (avoids race with guestGuard after auth state change)
+    const redirect = this.route.snapshot.queryParams['redirect']
+      || this.route.snapshot.queryParams['returnUrl'];
+
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -74,6 +79,12 @@ export class Login {
       this.toast.error('Error al iniciar sesión', error.message);
     } else {
       this.toast.success('¡Bienvenido!', 'Has iniciado sesión correctamente');
+
+      // If there's a redirect URL, use it immediately before guestGuard can redirect away
+      if (redirect) {
+        this.router.navigateByUrl(decodeURIComponent(redirect));
+        return;
+      }
 
       try {
         // Determine if they belong to multiple active tenants

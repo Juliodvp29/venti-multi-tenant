@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/services/auth';
 import { ToastService } from '@core/services/toast';
+import { Supabase } from '@core/services/supabase';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,11 +12,13 @@ import { ToastService } from '@core/services/toast';
   templateUrl: './singup.html',
   styleUrl: './singup.css',
 })
-export class Singup {
+export class Singup implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly toast = inject(ToastService);
+  private readonly supabase = inject(Supabase);
 
   // ── State ────────────────────────────────────────────────
   readonly isLoading = signal(false);
@@ -23,6 +26,11 @@ export class Singup {
   readonly showPassword = signal(false);
   readonly showConfirmPassword = signal(false);
   readonly isSuccess = signal(false);
+
+  /** Token from query param when invited as a new user */
+  inviteToken = signal<string | null>(null);
+  /** True when this registration is triggered by an invitation */
+  isInviteFlow = signal(false);
 
   // ── Form ─────────────────────────────────────────────────
   readonly signupForm = this.fb.nonNullable.group({
@@ -87,6 +95,29 @@ export class Singup {
     return { level: 3, text: 'Fuerte', color: 'var(--color-success-500)' };
   });
 
+  // ── Lifecycle ────────────────────────────────────────────
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const token = params['invite_token'];
+      const email = params['email'];
+
+      if (token) {
+        this.inviteToken.set(token);
+        this.isInviteFlow.set(true);
+
+        // When invited, they're joining an existing store, not creating a new one
+        // so businessName is not required — use a placeholder
+        this.signupForm.controls.businessName.clearValidators();
+        this.signupForm.controls.businessName.setValue('invited-user');
+        this.signupForm.controls.businessName.updateValueAndValidity();
+      }
+
+      if (email) {
+        this.signupForm.controls.email.setValue(email);
+      }
+    });
+  }
+
   // ── Methods ──────────────────────────────────────────────
   passwordsMatch(): boolean {
     const password = this.signupForm.controls.password.value;
@@ -112,15 +143,53 @@ export class Singup {
     this.errorMessage.set(null);
 
     const { businessName, email, password } = this.signupForm.getRawValue();
+    const token = this.inviteToken();
 
-    const { error } = await this.authService.signUp(email, password, { business_name: businessName });
-
-    this.isLoading.set(false);
+    const { error } = await this.authService.signUp(email, password, {
+      business_name: this.isInviteFlow() ? null : businessName
+    });
 
     if (error) {
+      this.isLoading.set(false);
       this.errorMessage.set(error.message);
       this.toast.error('Error al registrarse', error.message);
+      return;
+    }
+
+    // If this is an invite flow, accept the invitation automatically after sign-up
+    if (token) {
+      try {
+        // Small delay to ensure the auth session propagates before calling RPC
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        const { error: acceptError } = await (this.supabase.client.rpc as any)('accept_tenant_invitation', {
+          invitation_token: token
+        });
+
+        if (acceptError) {
+          // Invitation acceptance failed but the account was created
+          // Show a warning but still let the user in
+          console.warn('Could not auto-accept invitation:', acceptError);
+          this.toast.warning(
+            'Cuenta creada',
+            'Tu cuenta fue creada pero ocurrió un problema al unirte a la tienda. Intenta abrir el link de invitación nuevamente.'
+          );
+        } else {
+          this.toast.success('¡Bienvenido!', 'Tu cuenta fue creada y te has unido a la tienda exitosamente.');
+        }
+
+        this.isLoading.set(false);
+        this.isSuccess.set(true);
+        setTimeout(() => this.router.navigate(['/select-store']), 1500);
+      } catch (err: any) {
+        console.warn('Invite acceptance error:', err);
+        this.isLoading.set(false);
+        this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta.');
+        setTimeout(() => this.router.navigate(['/auth/login']), 3000);
+      }
     } else {
+      // Normal sign-up flow
+      this.isLoading.set(false);
       this.isSuccess.set(true);
       this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta');
       setTimeout(() => {
@@ -129,3 +198,5 @@ export class Singup {
     }
   }
 }
+
+

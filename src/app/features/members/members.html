@@ -48,6 +48,6 @@
 
     <!-- Modals -->
     @if (showInviteModal()) {
-    <app-invite-member-modal (close)="showInviteModal.set(false)" (submit)="onInviteSubmit($event)" />
+    <app-invite-member-modal (close)="showInviteModal.set(false)" (memberInvite)="onInviteSubmit($event)" />
     }
 </div>

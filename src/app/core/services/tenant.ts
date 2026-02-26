@@ -561,56 +561,76 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return;
 
-    // We always create a pending invitation now, so the user has to accept it.
-    // First, check if there's already a pending invite
-    const { data: existingInvite, error: inviteStatusError } = await (this.supabase.client.from as any)('tenant_invitations')
-      .select('id, status')
+    // Guard: email must be a non-empty valid string
+    const cleanEmail = (email ?? '').trim();
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      throw new Error('Email inválido');
+    }
+
+    // 1. Check if there's already a pending invite for this email
+    const { data: existingInvite } = await (this.supabase.client.from as any)('tenant_invitations')
+      .select('id')
       .eq('tenant_id', tenantId)
-      .eq('email', email)
+      .eq('email', cleanEmail)
       .eq('status', 'pending');
 
     if (existingInvite && existingInvite.length > 0) {
-      throw new Error('This email has already been invited to your store and is pending.');
+      throw new Error('Este email ya tiene una invitación pendiente para esta tienda.');
     }
 
-    // Second, check if they are already a member of this tenant
-    // (In case the user exists in auth.users and is active)
-    const { data: userId } = await (this.supabase.client.rpc as any)('get_user_id_by_email', { email_address: email });
-    if (userId) {
-      const { data: existingMember } = await this.supabase.client
-        .from('tenant_members')
-        .select('id')
-        .eq('tenant_id', tenantId)
-        .eq('user_id', userId)
-        .eq('is_active', true);
-
-      if (existingMember && existingMember.length > 0) {
-        throw new Error('This user is already a member of your store.');
-      }
-    }
-
-    // Now insert the pending invitation
-    // Make sure we pass the correct email string to avoid null constraints
-    const invitePayload = {
-      tenant_id: tenantId,
-      email: email,
-      role: role,
-      status: 'pending',
-      invited_by: this.authService.userId()
-    };
-
+    // 2. Insert the invitation
     const { data: insertedInvite, error: insertError } = await (this.supabase.client.from as any)('tenant_invitations')
-      .insert(invitePayload)
+      .insert({
+        tenant_id: tenantId,
+        email: cleanEmail,
+        role: role,
+        status: 'pending',
+        invited_by: this.authService.userId()
+      })
       .select('token')
       .single();
 
     if (insertError) throw insertError;
+    if (!insertedInvite?.token) throw new Error('No se pudo generar el token de invitación.');
 
-    // Simulate email sending by logging the magic link to the console for testing
-    if (insertedInvite?.token) {
-      const magicLink = `${window.location.origin}/accept-invite?token=${insertedInvite.token}`;
-      console.log('%c Invitation sent! 🎉', 'color: green; font-weight: bold; font-size: 14px;');
-      console.log(`%c Magic Link for ${email}: \n%c${magicLink}`, 'color: gray;', 'color: blue; text-decoration: underline;');
+    const token: string = insertedInvite.token;
+    const inviteLink = `${window.location.origin}/accept-invite?token=${token}`;
+    const storeName = this.businessName() ?? 'Venti Store';
+    const inviterEmail = this.authService.userEmail() ?? 'Un administrador';
+
+    console.log('%c📧 Invitación creada!', 'color: green; font-weight: bold;');
+    console.log('Link:', inviteLink);
+
+    // 3. Send email via Edge Function using raw fetch (bypasses supabase.functions.invoke 401 issue)
+    try {
+      const { data: { session } } = await this.supabase.client.auth.getSession();
+      const supabaseUrl: string = environment.supabase.url;
+      const supabaseKey: string = environment.supabase.anonKey;
+
+      const res = await fetch(`${supabaseUrl}/functions/v1/send-invitation-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token ?? supabaseKey}`,
+          'apikey': supabaseKey,
+        },
+        body: JSON.stringify({
+          to_email: cleanEmail,
+          store_name: storeName,
+          invited_by_email: inviterEmail,
+          role: role,
+          invite_link: inviteLink,
+          user_exists: true,
+          tenant_id: tenantId,
+        })
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        console.warn(`Email Edge Fn returned ${res.status} (invitación creada):`, body);
+      }
+    } catch (emailErr) {
+      console.warn('Email error (invitación creada de todas formas):', emailErr);
     }
   }
 

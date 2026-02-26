@@ -106,7 +106,8 @@ import { TenantRole } from '@core/enums';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InviteMemberModalComponent {
-    submit = output<{ email: string; role: TenantRole }>();
+    submit = output<void>(); // close alias kept for back-compat
+    memberInvite = output<{ email: string; role: TenantRole }>();
     close = output<void>();
     private readonly fb = inject(FormBuilder);
 
@@ -121,8 +122,10 @@ export class InviteMemberModalComponent {
     constructor() { }
 
     onSubmit() {
-        if (this.inviteForm.valid) {
-            this.submit.emit(this.inviteForm.value as { email: string; role: TenantRole });
+        if (this.inviteForm.valid && !this.loading()) {
+            this.loading.set(true);
+            const { email, role } = this.inviteForm.getRawValue();
+            this.memberInvite.emit({ email: email!, role: role! });
         }
     }
 }

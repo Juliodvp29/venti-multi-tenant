@@ -5,10 +5,10 @@ import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 
 @Component({
-    selector: 'app-accept-invite',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-accept-invite',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <div class="flex justify-center">
@@ -103,88 +103,89 @@ import { ToastService } from '@core/services/toast';
   `
 })
 export class AcceptInviteComponent implements OnInit {
-    private readonly tenantService = inject(TenantService);
-    private readonly toast = inject(ToastService);
-    private readonly router = inject(Router);
-    private readonly route = inject(ActivatedRoute);
+  private readonly tenantService = inject(TenantService);
+  private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
-    isLoading = signal(true);
-    isSubmitting = signal(false);
-    errorMsg = signal('');
-    inviteDetails = signal<any>(null);
-    token = signal('');
+  isLoading = signal(true);
+  isSubmitting = signal(false);
+  errorMsg = signal('');
+  inviteDetails = signal<any>(null);
+  token = signal('');
 
-    async ngOnInit() {
-        this.route.queryParams.subscribe(async params => {
-            const token = params['token'];
-            if (!token) {
-                this.errorMsg.set('No invitation token found in the URL. Please make sure you copied the entire link.');
-                this.isLoading.set(false);
-                return;
-            }
+  async ngOnInit() {
+    this.route.queryParams.subscribe(async params => {
+      const token = params['token'];
+      if (!token) {
+        this.errorMsg.set('No invitation token found in the URL. Please make sure you copied the entire link.');
+        this.isLoading.set(false);
+        return;
+      }
 
-            this.token.set(token);
-            await this.verifyToken(token);
-        });
+      this.token.set(token);
+      await this.verifyToken(token);
+    });
+  }
+
+  async verifyToken(token: string) {
+    try {
+      // authGuard already guarantees user is authenticated at this point
+      const { data, error } = await (this.tenantService['supabase'].client.from as any)('tenant_invitations')
+        .select('*')
+        .eq('token', token)
+        .eq('status', 'pending')
+        .single();
+
+      if (error || !data) {
+        this.errorMsg.set('Esta invitación es inválida, expiró, o ya fue aceptada.');
+      } else {
+        this.inviteDetails.set(data);
+      }
+    } catch {
+      this.errorMsg.set('Hubo un problema verificando tu invitación.');
+    } finally {
+      this.isLoading.set(false);
     }
+  }
 
-    async verifyToken(token: string) {
-        try {
-            const { data, error } = await (this.tenantService['supabase'].client.from as any)('tenant_invitations')
-                .select('*')
-                .eq('token', token)
-                .eq('status', 'pending')
-                .single();
+  async accept() {
+    this.isSubmitting.set(true);
+    try {
+      // Create user member & update token status
+      const { error } = await (this.tenantService['supabase'].client.rpc as any)('accept_tenant_invitation', {
+        invitation_token: this.token()
+      });
 
-            if (error || !data) {
-                this.errorMsg.set('This invitation is either invalid, expired, or has already been accepted.');
-            } else {
-                this.inviteDetails.set(data);
-            }
-        } catch {
-            this.errorMsg.set('There was a problem scanning your invitation.');
-        } finally {
-            this.isLoading.set(false);
-        }
+      if (error) {
+        this.toast.error(error.message || 'Failed to accept invitation');
+      } else {
+        this.toast.success('You have successfully joined the store!');
+        this.router.navigate(['/select-store']);
+      }
+    } catch (err: any) {
+      this.toast.error(err.message || 'Something went wrong');
+    } finally {
+      this.isSubmitting.set(false);
     }
+  }
 
-    async accept() {
-        this.isSubmitting.set(true);
-        try {
-            // Create user member & update token status
-            const { error } = await (this.tenantService['supabase'].client.rpc as any)('accept_tenant_invitation', {
-                invitation_token: this.token()
-            });
+  async decline() {
+    this.isSubmitting.set(true);
+    try {
+      // Optionally update status to declined
+      await (this.tenantService['supabase'].client.from as any)('tenant_invitations')
+        .update({ status: 'declined' })
+        .eq('token', this.token());
 
-            if (error) {
-                this.toast.error(error.message || 'Failed to accept invitation');
-            } else {
-                this.toast.success('You have successfully joined the store!');
-                this.router.navigate(['/select-store']);
-            }
-        } catch (err: any) {
-            this.toast.error(err.message || 'Something went wrong');
-        } finally {
-            this.isSubmitting.set(false);
-        }
+      this.toast.info('Invitation declined');
+      this.router.navigate(['/dashboard']);
+    } finally {
+      this.isSubmitting.set(false);
     }
+  }
 
-    async decline() {
-        this.isSubmitting.set(true);
-        try {
-            // Optionally update status to declined
-            await (this.tenantService['supabase'].client.from as any)('tenant_invitations')
-                .update({ status: 'declined' })
-                .eq('token', this.token());
-
-            this.toast.info('Invitation declined');
-            this.router.navigate(['/dashboard']);
-        } finally {
-            this.isSubmitting.set(false);
-        }
-    }
-
-    goToDashboard() {
-        this.router.navigate(['/dashboard']);
-    }
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
 }

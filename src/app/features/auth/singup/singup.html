@@ -9,12 +9,17 @@
                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
         </div>
-        <h2 class="success-title">¡Registro Exitoso!</h2>
+        <h2 class="success-title">{{ isInviteFlow() ? '¡Bienvenido al equipo!' : '¡Registro Exitoso!' }}</h2>
         <p class="success-message">
+            @if (isInviteFlow()) {
+            Tu cuenta fue creada y te has unido a la tienda. Redirigiendo...
+            } @else {
             Hemos enviado un correo de confirmación a tu email.
             Por favor, verifica tu cuenta antes de iniciar sesión.
+            }
         </p>
-        <p class="success-redirect">Redirigiendo al inicio de sesión...</p>
+        <p class="success-redirect">{{ isInviteFlow() ? 'Redirigiendo a tus tiendas...' : 'Redirigiendo al inicio de
+            sesión...' }}</p>
     </div>
     } @else {
     <!-- Header -->
@@ -26,8 +31,9 @@
                     d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
             </svg>
         </div>
-        <h2 class="auth-title">Crear Cuenta</h2>
-        <p class="auth-subtitle">Únete a Venti y gestiona tu negocio</p>
+        <h2 class="auth-title">{{ isInviteFlow() ? 'Acepta tu Invitación' : 'Crear Cuenta' }}</h2>
+        <p class="auth-subtitle">{{ isInviteFlow() ? 'Crea tu cuenta para unirte a la tienda' : 'Únete a Venti y
+            gestiona tu negocio' }}</p>
     </div>
 
     <!-- Error Alert -->
@@ -43,8 +49,17 @@
     }
 
     <!-- Form -->
+    <!-- Invite Flow Banner -->
+    @if (isInviteFlow()) {
+    <div class="alert"
+        style="background:linear-gradient(135deg,#ede9fe,#e0e7ff);border:1px solid #a5b4fc;color:#4338ca;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:500;">
+        🎉 Has sido invitado a unirte a una tienda. Crea tu cuenta para aceptar la invitación.
+    </div>
+    }
+
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
-        <!-- Business Name Field -->
+        <!-- Business Name Field (hidden for invite flow) -->
+        @if (!isInviteFlow()) {
         <div class="form-group">
             <label for="businessName" class="form-label">Nombre del Negocio</label>
             <div class="input-wrapper">
@@ -62,6 +77,7 @@
             <p class="form-error">{{ businessNameError() }}</p>
             }
         </div>
+        }
 
         <!-- Email Field -->
         <div class="form-group">
@@ -179,7 +195,7 @@
             </svg>
             <span>Creando cuenta...</span>
             } @else {
-            <span>Crear Cuenta</span>
+            <span>{{ isInviteFlow() ? 'Crear Cuenta y Unirme' : 'Crear Cuenta' }}</span>
             }
         </button>
     </form>

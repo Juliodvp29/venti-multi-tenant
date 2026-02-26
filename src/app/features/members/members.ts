@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TenantService } from '@core/services/tenant';
 import { SubscriptionService } from '@core/services/subscription';
 import { ToastService } from '@core/services/toast';
-import { TenantMember } from '@core/models';
+import { TenantMember, TenantInvitation } from '@core/models';
 import { TenantRole } from '@core/enums';
 import { MembersStatsComponent } from './components/members-stats';
 import { MembersListComponent } from './components/members-list';
@@ -31,9 +31,9 @@ export class Members implements OnInit {
   showInviteModal = signal(false);
   isLoading = signal(false);
 
-  // Computed Stats
-  totalMembers = computed(() => this.members().length);
-  adminCount = computed(() => this.members().filter(m => m.role === TenantRole.Admin || m.role === TenantRole.Owner).length);
+  // Computed Stats — only count real active members, not pending invites
+  totalMembers = computed(() => this.members().filter(m => !m['is_invite']).length);
+  adminCount = computed(() => this.members().filter(m => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner)).length);
   pendingInvites = signal(0);
 
   async ngOnInit() {
@@ -52,16 +52,22 @@ export class Members implements OnInit {
   async loadMembers() {
     this.isLoading.set(true);
     try {
-      const [membersData, invitesData] = await Promise.all([
+      // Fetch both independently so a failure in one doesn't blank the other
+      const [membersResult, invitesResult] = await Promise.allSettled([
         this.tenantService.getMembers(),
         this.tenantService.getInvitations()
       ]);
 
-      // Format invites to match TenantMember interface for the table
+      const membersData: TenantMember[] =
+        membersResult.status === 'fulfilled' ? membersResult.value : this.members().filter(m => !m['is_invite']);
+
+      const invitesData: TenantInvitation[] =
+        invitesResult.status === 'fulfilled' ? invitesResult.value : [];
+
       const formattedInvites: TenantMember[] = invitesData.map(invite => ({
         id: invite.id,
         tenant_id: invite.tenant_id,
-        user_id: `invite_${invite.id}`, // Dummy ID for grid key
+        user_id: `invite_${invite.id}`,
         email: invite.email,
         role: invite.role,
         permissions: [],
@@ -71,25 +77,27 @@ export class Members implements OnInit {
         invited_at: invite.created_at,
         created_at: invite.created_at,
         updated_at: invite.created_at
-      }));
+      } as any));
 
       this.members.set([...membersData, ...formattedInvites]);
       this.pendingInvites.set(invitesData.length);
     } catch (error) {
-      this.toast.error('Failed to load members');
+      console.error('Error loading members:', error);
+      // Don't show toast here — avoids confusing error message after a successful invite
     } finally {
       this.isLoading.set(false);
     }
   }
 
   async onInviteSubmit(event: { email: string; role: TenantRole }) {
+    const email = (event.email ?? '').trim();
     try {
-      await this.tenantService.inviteMember(event.email, event.role);
-      this.toast.success('Invitation sent successfully');
+      await this.tenantService.inviteMember(email, event.role);
+      this.toast.success('Invitación enviada exitosamente');
       this.showInviteModal.set(false);
       await this.loadMembers();
     } catch (error: any) {
-      this.toast.error(error.message || 'Failed to send invitation');
+      this.toast.error(error.message || 'No se pudo enviar la invitación');
     }
   }
 
