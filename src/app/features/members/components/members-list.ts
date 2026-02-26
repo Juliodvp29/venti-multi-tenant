@@ -21,12 +21,12 @@ import { ColumnDef, TableAction } from '@core/types/table';
         <div class="flex items-center">
             <div class="h-10 w-10 flex-shrink-0">
                 <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800" 
-                     [src]="'https://ui-avatars.com/api/?name=' + item.user_id + '&background=random'" 
+                     [src]="'https://ui-avatars.com/api/?name=' + (item.email || item.user_id) + '&background=random'" 
                      alt="">
             </div>
             <div class="ml-4">
-                <div class="font-semibold text-gray-900 dark:text-white">Alex Rivera</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">alex.r&#64;venti.com</div>
+                <div class="font-semibold text-gray-900 dark:text-white capitalize">{{ (item.email?.split('@')[0] || 'Member').replace('.', ' ') }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">{{ item.email || 'No email available' }}</div>
             </div>
         </div>
       </ng-template>
@@ -54,7 +54,7 @@ export class MembersListComponent {
 
     columns = computed<ColumnDef<TenantMember>[]>(() => [
         {
-            key: 'user_id',
+            key: 'email',
             label: 'Name',
             template: this.nameTemplate()
         },

@@ -34,7 +34,7 @@ export class Members implements OnInit {
   // Computed Stats
   totalMembers = computed(() => this.members().length);
   adminCount = computed(() => this.members().filter(m => m.role === TenantRole.Admin || m.role === TenantRole.Owner).length);
-  pendingInvites = signal(1); // Demo value for now
+  pendingInvites = signal(0);
 
   async ngOnInit() {
     await this.loadMembers();
@@ -52,8 +52,29 @@ export class Members implements OnInit {
   async loadMembers() {
     this.isLoading.set(true);
     try {
-      const data = await this.tenantService.getMembers();
-      this.members.set(data);
+      const [membersData, invitesData] = await Promise.all([
+        this.tenantService.getMembers(),
+        this.tenantService.getInvitations()
+      ]);
+
+      // Format invites to match TenantMember interface for the table
+      const formattedInvites: TenantMember[] = invitesData.map(invite => ({
+        id: invite.id,
+        tenant_id: invite.tenant_id,
+        user_id: `invite_${invite.id}`, // Dummy ID for grid key
+        email: invite.email,
+        role: invite.role,
+        permissions: [],
+        is_active: false,
+        is_invite: true,
+        invited_by: invite.invited_by,
+        invited_at: invite.created_at,
+        created_at: invite.created_at,
+        updated_at: invite.created_at
+      }));
+
+      this.members.set([...membersData, ...formattedInvites]);
+      this.pendingInvites.set(invitesData.length);
     } catch (error) {
       this.toast.error('Failed to load members');
     } finally {

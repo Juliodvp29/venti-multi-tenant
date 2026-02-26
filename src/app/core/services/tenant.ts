@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation } from '@core/models';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
 import { TenantRole } from '@core/enums';
@@ -134,7 +134,6 @@ export class TenantService {
       const { data, error } = await this.supabase.client
         .from('tenants')
         .select('*')
-        .eq('owner_id', userId)
         .is('deleted_at', null);
 
       if (error) throw error;
@@ -547,8 +546,7 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return [];
 
-    const { data, error } = await this.supabase.client
-      .from('tenant_members')
+    const { data, error } = await (this.supabase.client.from as any)('vw_tenant_members')
       .select('*')
       .eq('tenant_id', tenantId);
 
@@ -563,31 +561,74 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return;
 
-    // First check if user exists in auth.users by email
-    // Note: In a real app, you might use a signup or invitation flow
-    // For now, we'll assume we invite by email and the system handles the rest
-    const { data: userData, error: userError } = await this.supabase.client
-      .from('profiles' as any) // Assuming profiles table linked to auth.users
-      .select('id')
+    // We always create a pending invitation now, so the user has to accept it.
+    // First, check if there's already a pending invite
+    const { data: existingInvite, error: inviteStatusError } = await (this.supabase.client.from as any)('tenant_invitations')
+      .select('id, status')
+      .eq('tenant_id', tenantId)
       .eq('email', email)
+      .eq('status', 'pending');
+
+    if (existingInvite && existingInvite.length > 0) {
+      throw new Error('This email has already been invited to your store and is pending.');
+    }
+
+    // Second, check if they are already a member of this tenant
+    // (In case the user exists in auth.users and is active)
+    const { data: userId } = await (this.supabase.client.rpc as any)('get_user_id_by_email', { email_address: email });
+    if (userId) {
+      const { data: existingMember } = await this.supabase.client
+        .from('tenant_members')
+        .select('id')
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId)
+        .eq('is_active', true);
+
+      if (existingMember && existingMember.length > 0) {
+        throw new Error('This user is already a member of your store.');
+      }
+    }
+
+    // Now insert the pending invitation
+    // Make sure we pass the correct email string to avoid null constraints
+    const invitePayload = {
+      tenant_id: tenantId,
+      email: email,
+      role: role,
+      status: 'pending',
+      invited_by: this.authService.userId()
+    };
+
+    const { data: insertedInvite, error: insertError } = await (this.supabase.client.from as any)('tenant_invitations')
+      .insert(invitePayload)
+      .select('token')
       .single();
 
-    if (userError) throw new Error('User not found. They must have an account first.');
+    if (insertError) throw insertError;
 
-    const { error } = await this.supabase.client
-      .from('tenant_members')
-      .insert({
-        tenant_id: tenantId,
-        user_id: (userData as any).id,
-        role: role,
-        invited_by: this.authService.userId(),
-        invited_at: new Date().toISOString(),
-        is_active: true,
-      });
-
-    if (error) throw error;
+    // Simulate email sending by logging the magic link to the console for testing
+    if (insertedInvite?.token) {
+      const magicLink = `${window.location.origin}/accept-invite?token=${insertedInvite.token}`;
+      console.log('%c Invitation sent! 🎉', 'color: green; font-weight: bold; font-size: 14px;');
+      console.log(`%c Magic Link for ${email}: \n%c${magicLink}`, 'color: gray;', 'color: blue; text-decoration: underline;');
+    }
   }
 
+  /**
+   * Get pending invitations
+   */
+  async getInvitations(): Promise<TenantInvitation[]> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return [];
+
+    const { data, error } = await (this.supabase.client.from as any)('tenant_invitations')
+      .select('*')
+      .eq('tenant_id', tenantId)
+      .eq('status', 'pending');
+
+    if (error) throw error;
+    return data as TenantInvitation[];
+  }
   /**
    * Update a member's role
    */

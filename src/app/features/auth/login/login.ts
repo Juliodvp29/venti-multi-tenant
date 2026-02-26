@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth';
 import { ToastService } from '@core/services/toast';
+import { TenantService } from '@core/services/tenant';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,6 +17,7 @@ export class Login {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
+  private readonly tenantService = inject(TenantService);
 
   // ── State ────────────────────────────────────────────────
   readonly isLoading = signal(false);
@@ -72,6 +74,24 @@ export class Login {
       this.toast.error('Error al iniciar sesión', error.message);
     } else {
       this.toast.success('¡Bienvenido!', 'Has iniciado sesión correctamente');
+
+      try {
+        // Determine if they belong to multiple active tenants
+        const { data: { session } } = await this.authService['supabase'].auth.getSession();
+        if (session) {
+          const { data: stores, error: storesError } = await (this.tenantService['supabase'].client.from as any)('tenants')
+            .select('id')
+            .is('deleted_at', null);
+
+          if (!storesError && stores && stores.length > 1) {
+            this.router.navigate(['/select-store']);
+            return;
+          }
+        }
+      } catch (e) {
+        console.error('Error checking stores layout during login', e);
+      }
+
       this.router.navigate(['/']);
     }
   }

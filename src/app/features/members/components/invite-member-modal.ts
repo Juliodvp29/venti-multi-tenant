@@ -26,7 +26,7 @@ import { TenantRole } from '@core/enums';
             <div>
                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
                 <input type="email" formControlName="email" 
-                       class="block w-full rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                       class="w-full px-4 py-3 bg-slate-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-medium text-slate-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-gray-500"
                        placeholder="name@example.com">
             </div>
 
@@ -34,7 +34,7 @@ import { TenantRole } from '@core/enums';
             <div>
                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Select Role</label>
                 <select formControlName="role" 
-                        class="block w-full rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        class="w-full px-4 py-3 bg-slate-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-slate-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition-all">
                     <option [value]="TenantRole.Viewer">Viewer</option>
                     <option [value]="TenantRole.Editor">Editor</option>
                     <option [value]="TenantRole.Admin">Admin</option>

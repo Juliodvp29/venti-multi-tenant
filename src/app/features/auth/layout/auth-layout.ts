@@ -26,14 +26,14 @@ import { RouterOutlet } from '@angular/router';
                 </style>
               </defs>
               <g transform="translate(10, 5)">
-                <path d="M 35 45 L 65 92 L 95 45 L 145 45" class="stroke-white" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                <circle cx="50" cy="112" r="7.5" class="fill-white" />
-                <circle cx="80" cy="112" r="7.5" class="fill-white" />
+                <path d="M 35 45 L 65 92 L 95 45 L 145 45" class="stroke-indigo-600 dark:stroke-white" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                <circle cx="50" cy="112" r="7.5" class="fill-indigo-600 dark:fill-white" />
+                <circle cx="80" cy="112" r="7.5" class="fill-indigo-600 dark:fill-white" />
               </g>
 
               <text x="105" y="100">
-                <tspan class="fill-white" font-weight="700" font-size="64px">enti </tspan>
-                <tspan class="fill-white" opacity="0.9" font-weight="800" font-size="64px">Shop</tspan>
+                <tspan class="fill-gray-900 dark:fill-white" font-weight="700" font-size="64px">enti </tspan>
+                <tspan class="fill-indigo-600 dark:fill-indigo-400" opacity="0.9" font-weight="800" font-size="64px">Shop</tspan>
               </text>
             </svg>
           </div>

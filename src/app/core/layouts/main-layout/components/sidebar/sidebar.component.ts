@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '@core/services/auth';
 
 @Component({
@@ -191,10 +191,12 @@ import { AuthService } from '@core/services/auth';
 })
 export class SidebarComponent {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   @Input() isOpen = false;
 
   async onLogout() {
     await this.authService.signOut();
+    this.router.navigate(['/auth/login']);
   }
 }

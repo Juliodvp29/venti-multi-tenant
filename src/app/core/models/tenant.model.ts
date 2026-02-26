@@ -45,6 +45,20 @@ export interface TenantMember {
     joined_at?: string;
     created_at: string;
     updated_at: string;
+    email?: string;
+    is_invite?: boolean;
+}
+
+export interface TenantInvitation {
+    id: string;
+    tenant_id: string;
+    email: string;
+    role: 'owner' | 'admin' | 'editor' | 'viewer' | 'delivery';
+    token: string;
+    status: 'pending' | 'accepted' | 'expired';
+    invited_by: string;
+    expires_at: string;
+    created_at: string;
 }
 
 export type SubscriptionPlan = 'free' | 'basic' | 'professional' | 'enterprise';

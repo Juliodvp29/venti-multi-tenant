@@ -16,6 +16,16 @@ export const routes: Routes = [
     loadChildren: () => import('@features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
+    path: 'select-store',
+    canActivate: [authGuard],
+    loadComponent: () => import('@features/store-selection/select-store').then((m) => m.SelectStoreComponent),
+  },
+  {
+    path: 'accept-invite',
+    canActivate: [authGuard],
+    loadComponent: () => import('@features/store-selection/accept-invite').then((m) => m.AcceptInviteComponent),
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
