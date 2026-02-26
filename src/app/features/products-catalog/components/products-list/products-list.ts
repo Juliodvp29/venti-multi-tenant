@@ -79,6 +79,10 @@ export class ProductsList implements OnInit {
     readonly dateRange = signal<DateRange>({ start: null, end: null });
     readonly searchQuery = signal('');
 
+    readonly hasActiveFilters = computed(() => {
+        return !!this.statusFilter() || !!this.categoryFilter();
+    });
+
     // Server-side pagination
     readonly currentPage = signal(1);
     readonly totalCount = signal(0);
@@ -192,6 +196,13 @@ export class ProductsList implements OnInit {
         }
     }
 
+    clearFilters() {
+        this.searchQuery.set('');
+        this.statusFilter.set('');
+        this.categoryFilter.set('');
+        this.loadProducts(1);
+    }
+
     async loadCategories() {
         try {
             const data = await this.categoriesService.getCategories(false);
@@ -239,8 +250,14 @@ export class ProductsList implements OnInit {
 
         try {
             await this.productsService.deleteProduct(product.id);
-            this.products.update(ps => ps.filter(p => p.id !== product.id));
             this.toast.success(`Producto "${product.name}" eliminado.`);
+
+            // Reload table to avoid "Sin resultados" if deleted last item
+            if (this.products().length <= 1 && this.currentPage() > 1) {
+                this.loadProducts(this.currentPage() - 1);
+            } else {
+                this.loadProducts(this.currentPage());
+            }
         } catch (error: any) {
             this.toast.error(error?.message ?? 'Error al eliminar el producto.');
         }

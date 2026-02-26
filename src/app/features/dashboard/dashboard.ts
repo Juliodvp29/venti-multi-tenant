@@ -29,10 +29,17 @@ export class Dashboard {
   private readonly tenantService = inject(TenantService);
 
   // Stats Signals
-  readonly revenueTotal = signal<number | null>(0);
+  readonly revenueTotal = signal<number>(0);
+  readonly revenueTrend = signal<number>(0);
+
   readonly ordersTotal = signal<number>(0);
+  readonly ordersTrend = signal<number>(0);
+
   readonly avgOrderValue = signal<number>(0);
+  readonly avgOrderTrend = signal<number>(0);
+
   readonly customersTotal = signal<number>(0);
+  readonly customersTrend = signal<number>(0);
 
   // Charts Data
   readonly salesSeries = signal<any[]>([]);
@@ -68,20 +75,26 @@ export class Dashboard {
   private async loadStats() {
     const stats = await this.analytics.getDashboardStats();
     if (stats) {
-      this.revenueTotal.set(stats.today_revenue); // Using today's revenue for primary metric
-      this.ordersTotal.set(stats.month_orders);
-      this.avgOrderValue.set(stats.avg_order_value_30d);
+      this.revenueTotal.set(stats.today_revenue);
+      this.revenueTrend.set(stats.revenue_trend);
+
+      this.ordersTotal.set(stats.today_orders);
+      this.ordersTrend.set(stats.orders_trend);
+
+      this.avgOrderValue.set(stats.today_avg_value);
+      this.avgOrderTrend.set(stats.avg_value_trend);
+
+      this.customersTotal.set(stats.today_customers);
+      this.customersTrend.set(stats.customers_trend);
     }
   }
 
   private async loadSalesChart() {
-    const daily = await this.analytics.getDailySales(12); // Last 12 points
-    if (daily.length > 0) {
-      this.salesSeries.set([{
-        name: 'Ingresos',
-        data: daily.map(d => d.total_revenue)
-      }]);
-    }
+    const monthlyData = await this.analytics.getMonthlySales();
+    this.salesSeries.set([{
+      name: 'Ingresos',
+      data: monthlyData
+    }]);
   }
 
   private async loadCategories() {

@@ -65,7 +65,7 @@ export class Settings {
   ];
 
   readonly previewData = signal<PreviewData>({
-    business_name: 'Venti Store',
+    business_name: 'Venti Shop',
     logo_url: null,
     primary_color: '#000000',
     secondary_color: '#ffffff',

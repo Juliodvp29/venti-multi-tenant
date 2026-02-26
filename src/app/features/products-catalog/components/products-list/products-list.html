@@ -91,7 +91,8 @@
         <app-dynamic-table [data]="filteredProducts()" [columns]="columns" [actions]="actions" title="Productos"
             description="Gestiona tu catálogo completo de productos." searchPlaceholder="Buscar por nombre, SKU..."
             [allowImport]="true" (importData)="onImportData($event)" [totalItemsOverride]="totalCount()"
-            [pageSize]="PAGE_SIZE" (pageChange)="loadProducts($event)" (searchChange)="onSearchChange($event)">
+            [pageSize]="PAGE_SIZE" (pageChange)="loadProducts($event)" (searchChange)="onSearchChange($event)"
+            [hasActiveFilters]="hasActiveFilters()" (clearFilters)="clearFilters()">
 
             <!-- Actions Slot -->
             <div actions>

@@ -25,10 +25,10 @@ export class StoreComponent {
       const branding = this.branding();
       if (branding) {
         this.seo.updateTags({
-          title: branding.business_name || 'Venti Store',
+          title: branding.business_name || 'Venti Shop',
           description: branding.description || 'Nuestra tienda online oficial.',
           image: branding.logo_url || undefined,
-          siteName: branding.business_name || 'Venti'
+          siteName: branding.business_name || 'Venti Shop'
         });
       }
     });

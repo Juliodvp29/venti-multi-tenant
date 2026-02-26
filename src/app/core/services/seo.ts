@@ -56,11 +56,11 @@ export class SeoService {
     private readonly platformId = inject(PLATFORM_ID);
     private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-    private readonly defaultSiteName = 'Venti';
+    private readonly defaultSiteName = 'Venti Shop';
     private readonly defaultLocale = 'es_ES';
 
     private readonly defaultConfig: Partial<SeoConfig> = {
-        title: 'Venti - Plataforma Multi-Tenant de Ecommerce',
+        title: 'Venti Shop - Plataforma Multi-Tenant de Ecommerce',
         description: 'Plataforma moderna de ecommerce multi-tenant construida con Angular y Supabase',
         type: 'website',
         locale: this.defaultLocale,

@@ -69,28 +69,66 @@ export class AnalyticsService {
         if (!tenantId) return null;
 
         try {
-            // Fetch latest summary
-            const { data } = await this.supabase.client
-                .from('daily_sales_summary')
-                .select('*')
-                .eq('tenant_id', tenantId)
-                .order('date', { ascending: false })
-                .limit(1)
-                .maybeSingle();
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+            const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toISOString();
 
-            // If no dynamic summary, fallback to some counts (highly simplified)
-            if (!data) {
-                return {
-                    today_revenue: 0,
-                    month_orders: 0,
-                    avg_order_value_30d: 0,
-                };
-            }
+            // Real-time queries
+            const [todayOrders, yesterdayOrders, todayCustomers, yesterdayCustomers] = await Promise.all([
+                this.supabase.client.from('orders')
+                    .select('total_amount')
+                    .eq('tenant_id', tenantId)
+                    .gte('created_at', startOfToday)
+                    .neq('status', 'cancelled')
+                    .neq('status', 'refunded'),
+                this.supabase.client.from('orders')
+                    .select('total_amount')
+                    .eq('tenant_id', tenantId)
+                    .gte('created_at', startOfYesterday)
+                    .lt('created_at', startOfToday)
+                    .neq('status', 'cancelled')
+                    .neq('status', 'refunded'),
+                this.supabase.client.from('customers')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('tenant_id', tenantId)
+                    .gte('created_at', startOfToday),
+                this.supabase.client.from('customers')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('tenant_id', tenantId)
+                    .gte('created_at', startOfYesterday)
+                    .lt('created_at', startOfToday)
+            ]);
+
+            const tOrders = todayOrders.data || [];
+            const yOrders = yesterdayOrders.data || [];
+
+            const todayRevenue = tOrders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
+            const yesterdayRevenue = yOrders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
+
+            const todayCount = tOrders.length;
+            const yesterdayCount = yOrders.length;
+
+            const todayAvg = todayCount > 0 ? todayRevenue / todayCount : 0;
+            const yesterdayAvg = yesterdayCount > 0 ? yesterdayRevenue / yesterdayCount : 0;
+
+            const tCust = todayCustomers.count || 0;
+            const yCust = yesterdayCustomers.count || 0;
+
+            // Trend calculation helper
+            const calcTrend = (current: number, previous: number) => {
+                if (previous === 0) return current > 0 ? 100 : 0;
+                return ((current - previous) / previous) * 100;
+            };
 
             return {
-                today_revenue: Number(data.total_revenue),
-                month_orders: Number(data.total_orders),
-                avg_order_value_30d: Number(data.average_order_value),
+                today_revenue: todayRevenue,
+                revenue_trend: calcTrend(todayRevenue, yesterdayRevenue),
+                today_orders: todayCount,
+                orders_trend: calcTrend(todayCount, yesterdayCount),
+                today_avg_value: todayAvg,
+                avg_value_trend: calcTrend(todayAvg, yesterdayAvg),
+                today_customers: tCust,
+                customers_trend: calcTrend(tCust, yCust)
             };
         } catch (error) {
             console.error('Error fetching dashboard stats:', error);
@@ -98,18 +136,33 @@ export class AnalyticsService {
         }
     }
 
-    async getDailySales(limit: number = 30) {
+    async getMonthlySales() {
         const tenantId = this.tenantService.tenantId();
-        if (!tenantId) return [];
+        if (!tenantId) return new Array(12).fill(0);
+
+        const now = new Date();
+        const startOfYear = new Date(now.getFullYear(), 0, 1).toISOString();
 
         const { data } = await this.supabase.client
-            .from('daily_sales_summary')
-            .select('date, total_revenue')
+            .from('orders')
+            .select('created_at, total_amount')
             .eq('tenant_id', tenantId)
-            .order('date', { ascending: true })
-            .limit(limit);
+            .gte('created_at', startOfYear)
+            .neq('status', 'cancelled')
+            .neq('status', 'refunded');
 
-        return data || [];
+        const monthlyData = new Array(12).fill(0);
+
+        if (data) {
+            data.forEach(order => {
+                if (!order.created_at) return;
+                const date = new Date(order.created_at as string);
+                const month = date.getMonth(); // 0-11
+                monthlyData[month] += Number(order.total_amount || 0);
+            });
+        }
+
+        return monthlyData;
     }
 
     async getCategoryDistribution() {

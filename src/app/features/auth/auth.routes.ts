@@ -13,25 +13,25 @@ export const authRoutes: Routes = [
       },
       {
         path: 'login',
-        title: 'Iniciar Sesión | Venti',
+        title: 'Iniciar Sesión | Venti Shop',
         loadComponent: () =>
           import('./login/login').then((m) => m.Login),
       },
       {
         path: 'register',
-        title: 'Crear Cuenta | Venti',
+        title: 'Crear Cuenta | Venti Shop',
         loadComponent: () =>
           import('./singup/singup').then((m) => m.Singup),
       },
       {
         path: 'forgot-password',
-        title: 'Recuperar Contraseña | Venti',
+        title: 'Recuperar Contraseña | Venti Shop',
         loadComponent: () =>
           import('./forgot-password/forgot-password').then((m) => m.ForgotPassword),
       },
       {
         path: 'reset-password',
-        title: 'Nueva Contraseña | Venti',
+        title: 'Nueva Contraseña | Venti Shop',
         loadComponent: () =>
           import('./reset-password/reset-password').then((m) => m.ResetPassword),
       },

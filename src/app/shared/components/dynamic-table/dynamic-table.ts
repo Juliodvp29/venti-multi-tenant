@@ -47,12 +47,16 @@ export class DynamicTable<T extends Record<string, any>> {
    *  the table emits pageChange instead of slicing data locally. */
   totalItemsOverride = input<number | null>(null);
 
+  /** Tells the table if external filters are applied, to show the Clear button */
+  hasActiveFilters = input<boolean>(false);
+
   // Outputs
   actionClick = output<{ actionId: string; item: T }>();
   rowClick = output<T>();
   importData = output<Record<string, any>[]>();
   pageChange = output<number>();
   searchChange = output<string>();
+  clearFilters = output<void>();
 
   // Reactive State
   searchQuery = signal('');
@@ -142,13 +146,24 @@ export class DynamicTable<T extends Record<string, any>> {
   }
 
   onSearch(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.searchQuery.set(value);
-    this.currentPage.set(1);
-    // In server-side mode emit so parent can re-fetch
-    if (this.totalItemsOverride() !== null) {
-      this.searchChange.emit(value);
+    const el = event.target as HTMLInputElement;
+    this.searchQuery.set(el.value);
+    // Reset to page 1 on search
+    if (this.currentPage() !== 1) {
+      this.currentPage.set(1);
+      this.pageChange.emit(1);
     }
+    this.searchChange.emit(this.searchQuery());
+  }
+
+  onClearFilters() {
+    this.searchQuery.set('');
+    this.searchChange.emit('');
+    if (this.currentPage() !== 1) {
+      this.currentPage.set(1);
+      this.pageChange.emit(1);
+    }
+    this.clearFilters.emit();
   }
 
   nextPage() {

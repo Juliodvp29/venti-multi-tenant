@@ -18,13 +18,28 @@ import { RouterOutlet } from '@angular/router';
       <div class="auth-container">
         <!-- Logo -->
         <div class="auth-logo">
-          <div class="logo-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 3.129 3h17.742a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+          <div class="flex items-center justify-center mb-6 logo-container">
+            <svg viewBox="0 0 500 150" class="h-20 max-w-full drop-shadow-md" style="font-family: 'Outfit', sans-serif;">
+              <defs>
+                <style>
+                  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&display=swap');
+                </style>
+              </defs>
+              <g transform="translate(10, 5)">
+                <path d="M 35 45 L 65 92 L 95 45 L 145 45" class="stroke-white" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                <circle cx="50" cy="112" r="7.5" class="fill-white" />
+                <circle cx="80" cy="112" r="7.5" class="fill-white" />
+              </g>
+
+              <text x="105" y="100">
+                <tspan class="fill-white" font-weight="700" font-size="64px">enti </tspan>
+                <tspan class="fill-white" opacity="0.9" font-weight="800" font-size="64px">Shop</tspan>
+              </text>
             </svg>
           </div>
-          <h1 class="logo-text">Venti</h1>
-          <p class="logo-subtitle">Plataforma Multi-Tenant</p>
+          <p class="logo-subtitle mt-2 text-center text-sm font-medium tracking-widest uppercase">
+            Plataforma Multi-Tenant
+          </p>
         </div>
 
         <!-- Page Content -->
@@ -111,16 +126,7 @@ import { RouterOutlet } from '@angular/router';
       margin-bottom: var(--spacing-8);
     }
 
-    .logo-icon {
-      width: 72px;
-      height: 72px;
-      margin: 0 auto var(--spacing-4);
-      background: linear-gradient(135deg, var(--auth-gradient-from), var(--auth-gradient-to));
-      border-radius: var(--radius-2xl);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-2xl);
+    .logo-container {
       animation: logoFloat 3s ease-in-out infinite;
     }
 
@@ -129,25 +135,8 @@ import { RouterOutlet } from '@angular/router';
         transform: translateY(0);
       }
       50% {
-        transform: translateY(-10px);
+        transform: translateY(-8px);
       }
-    }
-
-    .logo-icon svg {
-      width: 40px;
-      height: 40px;
-      color: white;
-    }
-
-    .logo-text {
-      font-size: var(--font-size-4xl);
-      font-weight: var(--font-weight-extrabold);
-      margin: 0 0 var(--spacing-2);
-      background: linear-gradient(135deg, var(--auth-gradient-from), var(--auth-gradient-to));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.02em;
     }
 
     .logo-subtitle {
