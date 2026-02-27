@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TenantService } from '@core/services/tenant';
 import { SubscriptionService } from '@core/services/subscription';
@@ -26,6 +26,18 @@ export class Members implements OnInit {
   private readonly subscriptionService = inject(SubscriptionService);
   private readonly toast = inject(ToastService);
 
+  private initialized = false;
+
+  constructor() {
+    effect(() => {
+      const tenantId = this.tenantService.tenantId();
+      if (tenantId && !this.initialized) {
+        this.initialized = true;
+        this.loadMembers();
+      }
+    });
+  }
+
   // State
   members = signal<TenantMember[]>([]);
   showInviteModal = signal(false);
@@ -36,8 +48,8 @@ export class Members implements OnInit {
   adminCount = computed(() => this.members().filter(m => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner)).length);
   pendingInvites = signal(0);
 
-  async ngOnInit() {
-    await this.loadMembers();
+  ngOnInit() {
+    // Data loading is handled by the constructor effect once tenant is ready
   }
 
   async openInviteModal() {
