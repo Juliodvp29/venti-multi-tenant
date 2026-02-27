@@ -23,9 +23,9 @@ export class SettingsShippingTaxes implements OnInit {
     readonly taxRates = signal<TaxRate[]>([]);
 
     readonly shippingRateTypes = [
-        { value: ShippingRateType.FlatRate, label: 'Tarifa Fija' },
-        { value: ShippingRateType.WeightBased, label: 'Basado en Peso' },
-        { value: ShippingRateType.PriceBased, label: 'Basado en Precio' },
+        { value: ShippingRateType.FlatRate, label: 'Flat Rate' },
+        { value: ShippingRateType.WeightBased, label: 'Weight Based' },
+        { value: ShippingRateType.PriceBased, label: 'Price Based' },
     ];
 
     async ngOnInit() {
@@ -43,7 +43,7 @@ export class SettingsShippingTaxes implements OnInit {
             this.taxRates.set(taxes);
         } catch (error) {
             console.error('Error loading shipping/taxes:', error);
-            this.toastService.error('Error al cargar la configuración');
+            this.toastService.error('Error loading settings');
         } finally {
             this.isLoading.set(false);
         }
@@ -115,11 +115,11 @@ export class SettingsShippingTaxes implements OnInit {
             } else {
                 await this.shippingService.createShippingZone(val);
             }
-            this.toastService.success('Zona de envío guardada');
+            this.toastService.success('Shipping zone saved');
             await this.loadData();
             this.closeModal();
         } catch (error) {
-            this.toastService.error('Error al guardar la zona');
+            this.toastService.error('Error saving zone');
         } finally {
             this.isSaving.set(false);
         }
@@ -139,44 +139,44 @@ export class SettingsShippingTaxes implements OnInit {
             } else {
                 await this.shippingService.createTaxRate(payload);
             }
-            this.toastService.success('Tasa de impuestos guardada');
+            this.toastService.success('Tax rate saved');
             await this.loadData();
             this.closeModal();
         } catch (error) {
-            this.toastService.error('Error al guardar el impuesto');
+            this.toastService.error('Error saving tax rate');
         } finally {
             this.isSaving.set(false);
         }
     }
 
     async deleteZone(id: string) {
-        if (!confirm('¿Estás seguro de eliminar esta zona?')) return;
+        if (!confirm('Are you sure you want to delete this zone?')) return;
         try {
             await this.shippingService.deleteShippingZone(id);
-            this.toastService.success('Zona eliminada');
+            this.toastService.success('Zone deleted');
             await this.loadData();
         } catch (error) {
-            this.toastService.error('Error al eliminar la zona');
+            this.toastService.error('Error deleting zone');
         }
     }
 
     async deleteTax(id: string) {
-        if (!confirm('¿Estás seguro de eliminar este impuesto?')) return;
+        if (!confirm('Are you sure you want to delete this tax rate?')) return;
         try {
             await this.shippingService.deleteTaxRate(id);
-            this.toastService.success('Impuesto eliminado');
+            this.toastService.success('Tax rate deleted');
             await this.loadData();
         } catch (error) {
-            this.toastService.error('Error al eliminar el impuesto');
+            this.toastService.error('Error deleting tax rate');
         }
     }
 
     // ── Rates Management ─────────────────────────────────────
 
     async addRate(zoneId: string) {
-        const name = prompt('Nombre de la tarifa (ej: Envío Estándar)');
+        const name = prompt('Rate name (ex: Standard Shipping)');
         if (!name) return;
-        const amountStr = prompt('Precio (ej: 5.00)');
+        const amountStr = prompt('Price (ex: 5.00)');
         if (amountStr === null) return;
         const amount = parseFloat(amountStr);
 
@@ -188,15 +188,15 @@ export class SettingsShippingTaxes implements OnInit {
                 rate_type: ShippingRateType.FlatRate,
                 is_active: true
             });
-            this.toastService.success('Tarifa agregada');
+            this.toastService.success('Rate added');
             await this.loadData();
         } catch (error) {
-            this.toastService.error('Error al agregar tarifa');
+            this.toastService.error('Error adding rate');
         }
     }
 
     async updateRate(rate: any) {
-        const amountStr = prompt(`Actualizar precio para ${rate.name}`, rate.rate_amount.toString());
+        const amountStr = prompt(`Update price for ${rate.name}`, rate.rate_amount.toString());
         if (amountStr === null) return;
         const amount = parseFloat(amountStr);
 
@@ -204,21 +204,21 @@ export class SettingsShippingTaxes implements OnInit {
             await this.shippingService.updateShippingRate(rate.id, {
                 rate_amount: amount
             });
-            this.toastService.success('Tarifa actualizada');
+            this.toastService.success('Rate updated');
             await this.loadData();
         } catch (error) {
-            this.toastService.error('Error al actualizar tarifa');
+            this.toastService.error('Error updating rate');
         }
     }
 
     async deleteRate(rateId: string) {
-        if (!confirm('¿Eliminar esta tarifa?')) return;
+        if (!confirm('Delete this rate?')) return;
         try {
             await this.shippingService.deleteShippingRate(rateId);
-            this.toastService.success('Tarifa eliminada');
+            this.toastService.success('Rate deleted');
             await this.loadData();
         } catch (error) {
-            this.toastService.error('Error al eliminar tarifa');
+            this.toastService.error('Error deleting rate');
         }
     }
 }

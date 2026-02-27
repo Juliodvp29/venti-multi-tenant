@@ -47,10 +47,10 @@ export class ProductForm {
     readonly optionDefinitions = signal<ProductOption[]>([]); // UI state for the generator
 
     readonly statusOptions: { value: ProductStatus; label: string }[] = [
-        { value: ProductStatus.Draft, label: 'Borrador' },
-        { value: ProductStatus.Active, label: 'Activo' },
-        { value: ProductStatus.Archived, label: 'Archivado' },
-        { value: ProductStatus.OutOfStock, label: 'Sin Stock' },
+        { value: ProductStatus.Draft, label: 'Draft' },
+        { value: ProductStatus.Active, label: 'Active' },
+        { value: ProductStatus.Archived, label: 'Archived' },
+        { value: ProductStatus.OutOfStock, label: 'Out of Stock' },
     ];
 
     readonly form = this.fb.nonNullable.group({
@@ -275,7 +275,7 @@ export class ProductForm {
     async submit() {
         if (this.form.invalid) {
             this.form.markAllAsTouched();
-            this.toast.error('Por favor, corrige los errores en el formulario.');
+            this.toast.error('Please correct the errors in the form.');
             return;
         }
 
@@ -303,14 +303,14 @@ export class ProductForm {
                     is_featured: raw.is_featured,
                 };
                 result = await this.productsService.updateProduct(this.product()!.id, updateDto);
-                this.toast.success(`Producto "${result.name}" actualizado correctamente.`);
+                this.toast.success(`Product "${result.name}" updated successfully.`);
             } else {
                 result = await this.productsService.createProduct(dto);
                 // Upload any pending images for the newly created product
                 if (this.imageUploader) {
                     await this.imageUploader.uploadAllPending(result.id);
                 }
-                this.toast.success(`Producto "${result.name}" creado correctamente.`);
+                this.toast.success(`Product "${result.name}" created successfully.`);
             }
 
             // Save category associations
@@ -332,7 +332,7 @@ export class ProductForm {
             this.selectedCategoryIds.set(new Set());
         } catch (error: any) {
             console.error('Error saving product:', error);
-            this.toast.error(error?.message ?? 'Error al guardar el producto.');
+            this.toast.error(error?.message ?? 'Error saving product.');
         } finally {
             this.isSaving.set(false);
         }

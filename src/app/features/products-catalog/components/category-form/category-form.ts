@@ -104,7 +104,7 @@ export class CategoryForm implements OnInit {
     async submit() {
         if (this.form.invalid) {
             this.form.markAllAsTouched();
-            this.toast.error('Por favor, corrige los errores en el formulario.');
+            this.toast.error('Please correct the errors in the form.');
             return;
         }
 
@@ -123,10 +123,10 @@ export class CategoryForm implements OnInit {
             let result: Category;
             if (this.isEditMode() && this.category()) {
                 result = await this.categoriesService.updateCategory(this.category()!.id, dto as UpdateCategoryDto);
-                this.toast.success(`Categoría "${result.name}" actualizada correctamente.`);
+                this.toast.success(`Category "${result.name}" updated successfully.`);
             } else {
                 result = await this.categoriesService.createCategory(dto);
-                this.toast.success(`Categoría "${result.name}" creada correctamente.`);
+                this.toast.success(`Category "${result.name}" created successfully.`);
             }
 
             this.saved.emit(result);
@@ -134,7 +134,7 @@ export class CategoryForm implements OnInit {
             this.slugManuallyEdited.set(false);
         } catch (error: any) {
             console.error('Error saving category:', error);
-            this.toast.error(error?.message ?? 'Error al guardar la categoría.');
+            this.toast.error(error?.message ?? 'Error saving category.');
         } finally {
             this.isSaving.set(false);
         }

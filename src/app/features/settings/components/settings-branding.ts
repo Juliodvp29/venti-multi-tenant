@@ -83,11 +83,11 @@ export class SettingsBranding {
 
         const file = input.files[0];
         if (!file.type.startsWith('image/')) {
-            this.toastService.error('El archivo debe ser una imagen');
+            this.toastService.error('File must be an image');
             return;
         }
         if (file.size > 2 * 1024 * 1024) {
-            this.toastService.error('La imagen no debe superar los 2MB');
+            this.toastService.error('Image must not exceed 2MB');
             return;
         }
 
@@ -96,12 +96,12 @@ export class SettingsBranding {
             const result = await this.tenantService.uploadBrandingAsset(file, type);
             if (result.success && result.url) {
                 this.form.patchValue({ [type === 'logo' ? 'logo_url' : 'favicon_url']: result.url });
-                this.toastService.success('Imagen actualizada correctamente');
+                this.toastService.success('Image updated successfully');
             } else {
-                this.toastService.error(result.error || 'Error al subir la imagen');
+                this.toastService.error(result.error || 'Error uploading image');
             }
         } catch {
-            this.toastService.error('Error al subir la imagen');
+            this.toastService.error('Error uploading image');
         } finally {
             this.isSaving.set(false);
             input.value = '';
@@ -110,7 +110,7 @@ export class SettingsBranding {
 
     async save() {
         if (this.form.invalid) {
-            this.toastService.error('Por favor, corrige los errores en el formulario');
+            this.toastService.error('Please correct errors in the form');
             return;
         }
         this.isSaving.set(true);
@@ -123,13 +123,13 @@ export class SettingsBranding {
                 layout: data.layout as 'modern' | 'classic' | 'minimal',
             });
             if (result.success) {
-                this.toastService.success('Configuración guardada correctamente');
+                this.toastService.success('Settings saved successfully');
                 this.form.markAsPristine();
             } else {
-                this.toastService.error(result.error || 'Error al guardar');
+                this.toastService.error(result.error || 'Error saving settings');
             }
         } catch {
-            this.toastService.error('Error al guardar la configuración');
+            this.toastService.error('Error saving settings');
         } finally {
             this.isSaving.set(false);
         }
@@ -147,6 +147,6 @@ export class SettingsBranding {
             });
             this.form.markAsPristine();
         }
-        this.toastService.info('Cambios descartados');
+        this.toastService.info('Changes discarded');
     }
 }
