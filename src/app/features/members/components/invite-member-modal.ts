@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 import { TenantRole } from '@core/enums';
 
 @Component({
     selector: 'app-invite-member-modal',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, Dropdown],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule],
     template: `
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div class="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-gray-900 border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200">
@@ -34,12 +33,12 @@ import { TenantRole } from '@core/enums';
             <!-- Role Selection -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Select Role</label>
-                <app-dropdown
-                    [options]="roleOptions"
-                    [value]="inviteForm.get('role')?.value"
-                    (valueChange)="inviteForm.get('role')?.setValue($event)"
-                    width="w-full">
-                </app-dropdown>
+                <select formControlName="role" 
+                        class="w-full px-4 py-3 bg-slate-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-slate-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer appearance-none transition-all">
+                    @for (role of roleOptions; track role.value) {
+                        <option [value]="role.value">{{ role.label }}</option>
+                    }
+                </select>
             </div>
 
             <!-- Permissions (Simulated as per design) -->
@@ -119,7 +118,7 @@ export class InviteMemberModalComponent {
         role: [TenantRole.Viewer, [Validators.required]],
     });
 
-    roleOptions: DropdownOption[] = [
+    roleOptions = [
         { label: 'Viewer', value: TenantRole.Viewer },
         { label: 'Editor', value: TenantRole.Editor },
         { label: 'Admin', value: TenantRole.Admin },

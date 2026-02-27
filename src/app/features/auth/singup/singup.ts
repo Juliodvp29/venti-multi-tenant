@@ -110,6 +110,11 @@ export class Singup implements OnInit {
         this.signupForm.controls.businessName.clearValidators();
         this.signupForm.controls.businessName.setValue('invited-user');
         this.signupForm.controls.businessName.updateValueAndValidity();
+      } else {
+        // Enforce invite-only registration: redirect to login if no token is provided
+        this.toast.warning('Registro restringido', 'El registro de nuevas cuentas está disponible únicamente mediante invitación.');
+        this.router.navigate(['/auth/login']);
+        return;
       }
 
       if (email) {

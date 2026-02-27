@@ -204,7 +204,9 @@
     <div class="auth-footer">
         <p class="text-center">
             ¿Ya tienes una cuenta?
-            <a routerLink="/auth/login" class="link-primary">Inicia sesión aquí</a>
+            <a [routerLink]="['/auth/login']"
+                [queryParams]="isInviteFlow() ? { returnUrl: '/accept-invite?token=' + inviteToken() } : {}"
+                class="link-primary">Inicia sesión aquí</a>
         </p>
     </div>
     }

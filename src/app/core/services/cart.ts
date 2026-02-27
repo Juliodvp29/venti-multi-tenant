@@ -1,8 +1,11 @@
-import { Injectable, computed, signal, inject } from '@angular/core';
+import { Injectable, computed, signal, inject, effect } from '@angular/core';
 import { CartItem } from '@core/models/cart';
 import { Product, ProductVariant } from '@core/models/product';
 import { DiscountCode } from '@core/models/discount.model';
+import { TaxRate } from '@core/models';
 import { DiscountsService } from './discounts';
+import { ShippingService } from './shipping';
+import { TenantService } from './tenant';
 import { ToastService } from './toast';
 
 @Injectable({
@@ -10,16 +13,41 @@ import { ToastService } from './toast';
 })
 export class CartService {
     private readonly discountsService = inject(DiscountsService);
+    private readonly shippingService = inject(ShippingService);
+    private readonly tenantService = inject(TenantService);
     private readonly toast = inject(ToastService);
 
     private readonly _items = signal<CartItem[]>(this.loadCart());
     private readonly _appliedCoupon = signal<DiscountCode | null>(null);
+    private readonly _taxRates = signal<TaxRate[]>([]);
+    private readonly _shippingCountry = signal<string | null>(null);
+    private readonly _shippingState = signal<string | null>(null);
 
     // Computed properties
     readonly items = computed(() => this._items());
     readonly count = computed(() => this._items().reduce((acc, item) => acc + item.quantity, 0));
     readonly subtotal = computed(() => this._items().reduce((acc, item) => acc + (item.price * item.quantity), 0));
-    readonly taxRate = 0.15; // Example 15% tax
+
+    readonly activeTaxRates = computed(() => this._taxRates().filter(t => t.is_active));
+
+    readonly taxRate = computed(() => {
+        const rates = this.activeTaxRates();
+        if (rates.length === 0) return 0;
+
+        const country = this._shippingCountry();
+        const state = this._shippingState();
+
+        if (country) {
+            const exactMatch = rates.find(r => r.country === country && r.state === state);
+            if (exactMatch) return exactMatch.rate;
+
+            const countryMatch = rates.find(r => r.country === country && !r.state);
+            if (countryMatch) return countryMatch.rate;
+        }
+
+        // If no country selected or no match, use the first available rule as an estimate
+        return rates[0].rate;
+    });
 
     readonly discountAmount = computed(() => {
         const coupon = this._appliedCoupon();
@@ -33,12 +61,34 @@ export class CartService {
         return 0;
     });
 
-    readonly tax = computed(() => (this.subtotal() - this.discountAmount()) * this.taxRate);
+    readonly tax = computed(() => (this.subtotal() - this.discountAmount()) * this.taxRate());
     readonly total = computed(() => this.subtotal() - this.discountAmount() + this.tax());
     readonly appliedCoupon = computed(() => this._appliedCoupon());
 
     constructor() {
-        // Sync to localStorage whenever items change
+        // Sync to localStorage whenever items change. We can't do exact effect for this without creating loop, so saveCart is manually called.
+
+        // Load tax rates automatically when a tenant is loaded
+        effect(() => {
+            const tenantId = this.tenantService.tenantId();
+            if (tenantId) {
+                this.loadTaxRates();
+            }
+        });
+    }
+
+    private async loadTaxRates() {
+        try {
+            const rates = await this.shippingService.getTaxRates();
+            this._taxRates.set(rates);
+        } catch (e) {
+            console.error('Error loading tax rates:', e);
+        }
+    }
+
+    setShippingLocation(country: string, state?: string) {
+        this._shippingCountry.set(country);
+        this._shippingState.set(state || null);
     }
 
     async applyCoupon(code: string): Promise<boolean> {

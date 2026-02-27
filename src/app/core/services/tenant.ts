@@ -601,6 +601,17 @@ export class TenantService {
     console.log('%c📧 Invitación creada!', 'color: green; font-weight: bold;');
     console.log('Link:', inviteLink);
 
+    // 2.5 Check if user exists using RPC
+    let userExists = false;
+    try {
+      const { data, error } = await (this.supabase.client.rpc as any)('check_user_exists', { p_email: cleanEmail });
+      if (!error && data !== null) {
+        userExists = !!data;
+      }
+    } catch (e) {
+      console.warn('Could not check if user exists, defaulting to false:', e);
+    }
+
     // 3. Send email via Edge Function using raw fetch (bypasses supabase.functions.invoke 401 issue)
     try {
       const { data: { session } } = await this.supabase.client.auth.getSession();
@@ -620,7 +631,7 @@ export class TenantService {
           invited_by_email: inviterEmail,
           role: role,
           invite_link: inviteLink,
-          user_exists: true,
+          user_exists: userExists,
           tenant_id: tenantId,
         })
       });

@@ -39,7 +39,7 @@ export class ReviewsService {
         const { error } = await this.supabase.client
             .from('product_reviews')
             .update({
-                is_approved: true,
+                status: 'approved',
                 approved_at: new Date().toISOString(),
             })
             .eq('id', id);
@@ -55,8 +55,7 @@ export class ReviewsService {
             .insert({
                 ...review,
                 tenant_id: tenantId,
-                status: 'pending',
-                is_approved: false
+                status: 'pending'
             } as any)
             .select()
             .single();
@@ -96,7 +95,6 @@ export class ReviewsService {
 
         const updateData: any = {
             status,
-            is_approved: status === 'approved',
             updated_at: new Date().toISOString()
         };
 
@@ -127,22 +125,29 @@ export class ReviewsService {
 
         const total = data.length;
         const pending = data.filter(r => r.status === 'pending').length;
-        const sum = data.reduce((acc, r) => acc + (r.rating || 0), 0);
-        const average = total > 0 ? Number((sum / total).toFixed(1)) : 0;
+
+        // Calculate average and trend ONLY using approved reviews
+        const approved = data.filter(r => r.status === 'approved');
+        const approvedTotal = approved.length;
+        const sum = approved.reduce((acc, r) => acc + (r.rating || 0), 0);
+        const average = approvedTotal > 0 ? Number((sum / approvedTotal).toFixed(1)) : 0;
 
         let averageTrend = 0;
-        if (total > 1) {
+        if (approvedTotal > 1) {
             // Calculate previous average excluding the most recent review
-            const previousTotal = total - 1;
-            const previousSum = sum - (data[data.length - 1].rating || 0);
+            const previousTotal = approvedTotal - 1;
+            const previousSum = sum - (approved[approved.length - 1].rating || 0);
             const previousAverage = previousTotal > 0 ? previousSum / previousTotal : 0;
 
             if (previousAverage > 0) {
                 // Percentage change: ((new - old) / old) * 100
                 averageTrend = ((average - previousAverage) / previousAverage) * 100;
             } else if (average > 0) {
-                averageTrend = 100;
+                averageTrend = 100; // From 0 rating to a positive rating
             }
+        } else if (approvedTotal === 1) {
+            // Only 1 review exists, no previous data, so trend is 0%
+            averageTrend = 0;
         }
 
         return { average, total, pending, averageTrend };

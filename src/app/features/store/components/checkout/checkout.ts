@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -174,6 +174,19 @@ export class Checkout implements OnInit {
 
   private customerId = signal<string | null>(null);
   private resolvedCustomer: any = null;
+
+  constructor() {
+    effect(() => {
+      const id = this.selectedAddressId();
+      const addresses = this.savedAddresses();
+      if (id && addresses.length > 0) {
+        const address = addresses.find(a => a.id === id);
+        if (address) {
+          this.cartService.setShippingLocation(address.country, address.state || undefined);
+        }
+      }
+    });
+  }
 
   async ngOnInit() {
     await this.loadCustomerAndAddresses();

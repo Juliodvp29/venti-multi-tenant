@@ -49,31 +49,36 @@ export class MembersListComponent {
     edit = output<TenantMember>();
     remove = output<TenantMember>();
 
-    nameTemplate = viewChild.required<TemplateRef<any>>('nameTemplate');
-    statusTemplate = viewChild.required<TemplateRef<any>>('statusTemplate');
+    nameTemplate = viewChild<TemplateRef<any>>('nameTemplate');
+    statusTemplate = viewChild<TemplateRef<any>>('statusTemplate');
 
-    columns = computed<ColumnDef<TenantMember>[]>(() => [
-        {
-            key: 'email',
-            label: 'Name',
-            template: this.nameTemplate()
-        },
-        {
-            key: 'role',
-            label: 'Role',
-            formatter: (val: string) => val.charAt(0).toUpperCase() + val.slice(1)
-        },
-        {
-            key: 'is_active',
-            label: 'Status',
-            template: this.statusTemplate()
-        },
-        {
-            key: 'created_at',
-            label: 'Date Joined',
-            type: 'date'
-        }
-    ]);
+    columns = computed<ColumnDef<TenantMember>[]>(() => {
+        const nameTpl = this.nameTemplate();
+        const statusTpl = this.statusTemplate();
+
+        return [
+            {
+                key: 'email',
+                label: 'Name',
+                template: nameTpl
+            },
+            {
+                key: 'role',
+                label: 'Role',
+                formatter: (val: string) => val ? val.charAt(0).toUpperCase() + val.slice(1) : ''
+            },
+            {
+                key: 'is_active',
+                label: 'Status',
+                template: statusTpl
+            },
+            {
+                key: 'created_at',
+                label: 'Date Joined',
+                type: 'date'
+            }
+        ];
+    });
 
     actions: TableAction<TenantMember>[] = [
         {
