@@ -43,6 +43,7 @@ export class TenantService {
   readonly error = computed(() => this._state().error);
   readonly initialized = computed(() => this._state().initialized);
   readonly memberRole = computed(() => this._state().memberInfo?.role ?? null);
+  readonly currentRole = computed(() => this._state().memberInfo?.role ?? null as unknown as TenantRole);
   readonly tenantId = computed(() => this._state().currentTenant?.id ?? null);
   readonly businessName = computed(() => this._state().currentTenant?.business_name ?? null);
   readonly settings = computed(() => this._state().settings);

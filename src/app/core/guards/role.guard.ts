@@ -1,39 +1,45 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TenantService } from '@core/services/tenant';
+import { TenantRole } from '@core/enums';
 import { ToastService } from '@core/services/toast';
-import { TenantRole } from '@enums/index';
 
-/**
- * Usage in routes:
- * canActivate: [roleGuard('owner')]
- * canActivate: [roleGuard(['owner', 'admin'])]
- */
-export const roleGuard = (allowedRoles: TenantRole | TenantRole[]): CanActivateFn => {
-  return () => {
-    const tenantService = inject(TenantService);
-    const router = inject(Router);
-    const toast = inject(ToastService);
+export const roleGuard: CanActivateFn = (route, state) => {
+  const tenantService = inject(TenantService);
+  const router = inject(Router);
+  const toast = inject(ToastService);
 
-    const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
-    const currentRole = tenantService.memberRole();
+  // Read required roles from the route data
+  const requiredRoles = route.data?.['roles'] as string[] | undefined;
 
-    if (currentRole && roles.includes(currentRole as TenantRole)) {
-      return true;
-    }
+  // If no roles are required, let them in
+  if (!requiredRoles || requiredRoles.length === 0) {
+    return true;
+  }
 
-    toast.error('No tienes permisos para acceder a esta sección');
-    return router.createUrlTree(['/dashboard']);
-  };
+  const currentRole = tenantService.currentRole();
+
+  // If we don't have a role somehow but we need one, block
+  if (!currentRole) {
+    router.navigate(['/auth/login']);
+    return false;
+  }
+
+  // Owner and Admin always have access unless strictly excluded
+  const isAdminOrOwner = currentRole === TenantRole.Owner || currentRole === TenantRole.Admin;
+
+  if (isAdminOrOwner || requiredRoles.includes(currentRole as string)) {
+    return true;
+  }
+
+  // User does not have the required role
+  console.warn(`Access Denied. User role ${currentRole} missing required roles:`, requiredRoles);
+  toast.warning('Acceso Restringido', 'No tienes permisos para ver este módulo.');
+
+  // Send highly restrictive users (like delivery) to their only screen, else dashboard
+  if (currentRole === TenantRole.Delivery) {
+    return router.createUrlTree(['/orders']);
+  }
+
+  return router.createUrlTree(['/dashboard']);
 };
-
-/** Shortcut guards */
-export const ownerGuard: CanActivateFn = roleGuard(TenantRole.Owner);
-
-export const adminGuard: CanActivateFn = roleGuard([TenantRole.Owner, TenantRole.Admin]);
-
-export const editorGuard: CanActivateFn = roleGuard([
-  TenantRole.Owner,
-  TenantRole.Admin,
-  TenantRole.Editor,
-]);

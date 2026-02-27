@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '@core/services/auth';
+import { HasRoleDirective } from '@shared/directives/has-role.directive';
 
 @Component({
   selector: 'app-sidebar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, HasRoleDirective],
   template: `
     <aside 
       class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-auto md:flex md:flex-col"
@@ -35,7 +36,7 @@ import { AuthService } from '@core/services/auth';
 
       <!-- Navigation -->
       <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-        <a 
+        <a *appHasRole="['viewer', 'editor']"
           routerLink="/dashboard" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -46,7 +47,7 @@ import { AuthService } from '@core/services/auth';
           Dashboard
         </a>
 
-        <a 
+        <a *appHasRole="['viewer', 'editor']"
           routerLink="/products" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -57,7 +58,7 @@ import { AuthService } from '@core/services/auth';
           Catalogo de Productos
         </a>
 
-        <a 
+        <a *appHasRole="['editor']"
           routerLink="/inventory-history" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -68,7 +69,7 @@ import { AuthService } from '@core/services/auth';
           Movimientos de Stock
         </a>
 
-        <a 
+        <a *appHasRole="['viewer', 'editor', 'delivery']"
           routerLink="/orders" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -79,7 +80,7 @@ import { AuthService } from '@core/services/auth';
           Ordenes
         </a>
         
-        <a 
+        <a *appHasRole="['editor']"
           routerLink="/customers" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -90,7 +91,7 @@ import { AuthService } from '@core/services/auth';
           Clientes
         </a>
 
-        <a 
+        <a *appHasRole="[]"
           routerLink="/members" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -101,7 +102,7 @@ import { AuthService } from '@core/services/auth';
           Equipo
         </a>
 
-        <a 
+        <a *appHasRole="['editor']"
           routerLink="/coupons" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -112,7 +113,7 @@ import { AuthService } from '@core/services/auth';
           Cupones
         </a>
 
-        <a 
+        <a *appHasRole="['editor']"
           routerLink="/abandoned-carts" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -123,7 +124,7 @@ import { AuthService } from '@core/services/auth';
           Carritos Abandonados
         </a>
 
-        <a 
+        <a *appHasRole="['editor']"
           routerLink="/reports" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -134,7 +135,7 @@ import { AuthService } from '@core/services/auth';
           Reportes BI
         </a>
 
-        <a 
+        <a *appHasRole="['editor']"
           routerLink="/reviews" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -145,7 +146,7 @@ import { AuthService } from '@core/services/auth';
           Reseñas
         </a>
         
-        <a 
+        <a *appHasRole="['owner']"
           routerLink="/subscription" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
@@ -156,7 +157,7 @@ import { AuthService } from '@core/services/auth';
           Mi Suscripción
         </a>
 
-        <a 
+        <a *appHasRole="[]"
           routerLink="/settings" 
           routerLinkActive="bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400" 
           class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-colors"
