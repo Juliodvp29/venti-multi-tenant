@@ -15,8 +15,8 @@ export class SettingsDangerZone {
 
     async deleteStore() {
         const confirmed = await this.toastService.confirm(
-            '¿Estás seguro de que deseas eliminar esta tienda? Esta acción no se puede deshacer.',
-            'Eliminar Tienda'
+            'Are you sure you want to delete this store? This action cannot be undone.',
+            'Delete Store'
         );
 
         if (!confirmed) {
@@ -31,15 +31,15 @@ export class SettingsDangerZone {
         try {
             const result = await this.tenantService.deleteTenant(tenantId);
             if (result.success) {
-                this.toastService.success('Tienda eliminada correctamente');
+                this.toastService.success('Store deleted successfully');
                 // Redirect or handle post-deletion state
                 window.location.href = '/';
             } else {
-                this.toastService.error(result.error || 'Error al eliminar la tienda');
+                this.toastService.error(result.error || 'Error deleting store');
             }
         } catch (error) {
             console.error('Error deleting store:', error);
-            this.toastService.error('Error al eliminar la tienda');
+            this.toastService.error('Error deleting store');
         } finally {
             this.isDeleting.set(false);
         }

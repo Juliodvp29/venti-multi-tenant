@@ -47,6 +47,8 @@ export class TenantService {
     // Normalize to lowercase to match TenantRole enum values (DB may store 'Admin', 'Editor', etc.)
     return role ? (role.toLowerCase() as string) : null;
   });
+  // Typed alias used by some guards — normalized to lowercase
+  readonly currentRole = computed(() => this.memberRole() as TenantRole | null);
   readonly tenantId = computed(() => this._state().currentTenant?.id ?? null);
   readonly businessName = computed(() => this._state().currentTenant?.business_name ?? null);
   readonly settings = computed(() => this._state().settings);

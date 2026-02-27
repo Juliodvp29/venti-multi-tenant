@@ -75,7 +75,7 @@ export class SettingsStorefront {
     }
 
     addNavigationLink() {
-        const link = { label: 'Nuevo Enlace', url: '/store' };
+        const link = { label: 'New Link', url: '/store' };
         this.layout.update(l => ({
             ...l,
             navigation: [...(l.navigation || []), link]
@@ -112,10 +112,10 @@ export class SettingsStorefront {
             const content = section.content as SectionContentHero;
             content.backgroundImageUrl = result.url;
             this.forceLayoutUpdate();
-            this.toast.success('Imagen de banner subida');
+            this.toast.success('Banner image uploaded');
         } catch (error) {
             console.error('Error uploading banner:', error);
-            this.toast.error('Error al subir la imagen');
+            this.toast.error('Error uploading image');
         }
     }
 
@@ -130,13 +130,13 @@ export class SettingsStorefront {
         try {
             const result = await this.tenantService.updateStorefrontLayout(this.layout());
             if (result.success) {
-                this.toast.success('Diseño de tienda actualizado correctamente');
+                this.toast.success('Store layout updated successfully');
             } else {
-                this.toast.error(result.error || 'Error al actualizar el diseño');
+                this.toast.error(result.error || 'Error updating layout');
             }
         } catch (error) {
             console.error('Error saving layout:', error);
-            this.toast.error('Ocurrió un error inesperado');
+            this.toast.error('An unexpected error occurred');
         } finally {
             this.isSaving.set(false);
         }

@@ -34,23 +34,23 @@ export class Reports {
 
     // Table Definitions
     readonly productColumns: ColumnDef<any>[] = [
-        { key: 'name', label: 'Producto', sortable: true },
-        { key: 'purchases', label: 'Ventas', sortable: true },
-        { key: 'revenue', label: 'Ingresos', type: 'currency', sortable: true }
+        { key: 'name', label: 'Product', sortable: true },
+        { key: 'purchases', label: 'Sales', sortable: true },
+        { key: 'revenue', label: 'Revenue', type: 'currency', sortable: true }
     ];
 
     readonly customerColumns: ColumnDef<any>[] = [
-        { key: 'name', label: 'Cliente', sortable: true },
+        { key: 'name', label: 'Customer', sortable: true },
         { key: 'email', label: 'Email' },
-        { key: 'total_orders', label: 'Órdenes', sortable: true },
-        { key: 'total_spent', label: 'Total Gastado', type: 'currency', sortable: true }
+        { key: 'total_orders', label: 'Orders', sortable: true },
+        { key: 'total_spent', label: 'Total Spent', type: 'currency', sortable: true }
     ];
 
     readonly summaryColumns: ColumnDef<any>[] = [
-        { key: 'date', label: 'Fecha', type: 'date', sortable: true },
-        { key: 'total_orders', label: 'Órdenes', sortable: true },
-        { key: 'total_revenue', label: 'Ingresos', type: 'currency', sortable: true },
-        { key: 'average_order_value', label: 'Ticket Promedio', type: 'currency', sortable: true }
+        { key: 'date', label: 'Date', type: 'date', sortable: true },
+        { key: 'total_orders', label: 'Orders', sortable: true },
+        { key: 'total_revenue', label: 'Revenue', type: 'currency', sortable: true },
+        { key: 'average_order_value', label: 'Average Order Value', type: 'currency', sortable: true }
     ];
 
     constructor() {
@@ -75,7 +75,7 @@ export class Reports {
             // Top Products
             this.topProducts.set((products as any[]).map(p => ({
                 ...p,
-                name: p.product?.name || 'Desconocido'
+                name: p.product?.name || 'Unknown'
             })));
 
             // Category Chart
@@ -90,14 +90,14 @@ export class Reports {
 
             const reversedSummary = [...summary].reverse();
             this.salesSeries.set([{
-                name: 'Ingresos',
+                name: 'Revenue',
                 data: reversedSummary.map((s: any) => Number(s.total_revenue))
             }]);
             this.salesLabels.set(reversedSummary.map((s: any) => new Date(s.date).toLocaleDateString()));
 
         } catch (error) {
             console.error('Error loading BI reports:', error);
-            this.toast.error('Error al cargar los reportes de inteligencia');
+            this.toast.error('Error loading BI reports');
         } finally {
             this.isLoading.set(false);
         }

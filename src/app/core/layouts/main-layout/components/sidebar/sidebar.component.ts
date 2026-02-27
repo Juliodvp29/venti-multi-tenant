@@ -27,7 +27,6 @@ import { TenantService } from '@core/services/tenant';
             <circle cx="50" cy="112" r="7.5" class="fill-indigo-600 dark:fill-indigo-400" />
             <circle cx="80" cy="112" r="7.5" class="fill-indigo-600 dark:fill-indigo-400" />
           </g>
-
           <text x="105" y="100">
             <tspan class="fill-indigo-600 dark:fill-indigo-400" font-weight="700" font-size="64px">enti </tspan>
             <tspan class="fill-gray-900 dark:fill-white" font-weight="800" font-size="64px">Shop</tspan>

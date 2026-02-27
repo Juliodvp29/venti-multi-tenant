@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TenantService } from '@core/services/tenant';
+import { TenantRole } from '@core/enums';
 import { ToastService } from '@core/services/toast';
-import { TenantRole } from '@enums/index';
 
 /**
  * Usage in routes:
@@ -69,9 +69,8 @@ export const viewerGuard: CanActivateFn = roleGuard([
 ]);
 
 /**
- * Delivery redirect guard — applied to the whole main-layout group.
- * If the user is a Delivery agent and the target route is not 'orders',
- * they are silently redirected to /orders.
+ * Delivery redirect guard — applied to the dashboard route.
+ * Silently redirects Delivery users to /orders before dashboard loads.
  */
 export const deliveryRedirectGuard: CanActivateFn = async () => {
   const tenantService = inject(TenantService);

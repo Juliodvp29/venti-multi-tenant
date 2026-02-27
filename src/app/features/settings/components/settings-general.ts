@@ -43,7 +43,7 @@ export class SettingsGeneral {
 
     async save() {
         if (this.form.invalid) {
-            this.toastService.error('Por favor, corrige los errores en el formulario');
+            this.toastService.error('Please correct errors in the form');
             return;
         }
 
@@ -52,14 +52,14 @@ export class SettingsGeneral {
         try {
             const result = await this.tenantService.updateBusinessInfo(this.form.getRawValue());
             if (result.success) {
-                this.toastService.success('Configuración guardada correctamente');
+                this.toastService.success('Settings saved successfully');
                 this.form.markAsPristine();
             } else {
-                this.toastService.error(result.error || 'Error al guardar la configuración');
+                this.toastService.error(result.error || 'Error saving settings');
             }
         } catch (error) {
             console.error('Error saving settings:', error);
-            this.toastService.error('Error al guardar la configuración');
+            this.toastService.error('Error saving settings');
         } finally {
             this.isSaving.set(false);
         }
@@ -77,6 +77,6 @@ export class SettingsGeneral {
             });
             this.form.markAsPristine();
         }
-        this.toastService.info('Cambios descartados');
+        this.toastService.info('Changes discarded');
     }
 }

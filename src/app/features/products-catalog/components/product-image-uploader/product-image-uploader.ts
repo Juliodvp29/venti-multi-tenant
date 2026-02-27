@@ -123,7 +123,7 @@ export class ProductImageUploader implements OnInit {
                 uploaded.push(image);
                 URL.revokeObjectURL(item.previewUrl);
             } catch (e: any) {
-                this.toast.error(`Error al subir "${item.file.name}": ${e?.message ?? 'Error desconocido'}`);
+                this.toast.error(`Error uploading "${item.file.name}": ${e?.message ?? 'Unknown error'}`);
             }
         }
 
@@ -155,7 +155,7 @@ export class ProductImageUploader implements OnInit {
                 this.pendingImages.update(prev => prev.filter(p => p.previewUrl !== item.previewUrl));
                 URL.revokeObjectURL(item.previewUrl);
             } catch (e: any) {
-                this.toast.error(`Error al subir "${item.file.name}": ${e?.message ?? 'Error desconocido'}`);
+                this.toast.error(`Error uploading "${item.file.name}": ${e?.message ?? 'Unknown error'}`);
                 this.pendingImages.update(prev =>
                     prev.map(p => p.previewUrl === item.previewUrl ? { ...p, uploading: false } : p)
                 );
@@ -173,9 +173,9 @@ export class ProductImageUploader implements OnInit {
             await this.productsService.deleteProductImage(image.id, image.url);
             this.savedImages.update(imgs => imgs.filter(i => i.id !== image.id));
             this.savedImagesChange.emit(this.savedImages());
-            this.toast.success('Imagen eliminada.');
+            this.toast.success('Image deleted.');
         } catch (e: any) {
-            this.toast.error(`Error al eliminar imagen: ${e?.message ?? 'Error desconocido'}`);
+            this.toast.error(`Error deleting image: ${e?.message ?? 'Unknown error'}`);
         }
     }
 
@@ -194,7 +194,7 @@ export class ProductImageUploader implements OnInit {
             this.savedImages.update(imgs => imgs.map(i => ({ ...i, is_primary: i.id === image.id })));
             this.savedImagesChange.emit(this.savedImages());
         } catch (e: any) {
-            this.toast.error('Error al cambiar imagen principal.');
+            this.toast.error('Error setting primary image.');
         }
     }
 }
