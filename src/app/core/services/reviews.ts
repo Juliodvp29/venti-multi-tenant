@@ -113,14 +113,15 @@ export class ReviewsService {
         if (error) throw error;
     }
 
-    async getReviewStats(): Promise<{ average: number; total: number; pending: number }> {
+    async getReviewStats(): Promise<{ average: number; total: number; pending: number; averageTrend: number }> {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');
 
         const { data, error } = await this.supabase.client
             .from('product_reviews')
-            .select('rating, status')
-            .eq('tenant_id', tenantId);
+            .select('rating, status, created_at')
+            .eq('tenant_id', tenantId)
+            .order('created_at', { ascending: true }); // Oldest first
 
         if (error) throw error;
 
@@ -129,6 +130,21 @@ export class ReviewsService {
         const sum = data.reduce((acc, r) => acc + (r.rating || 0), 0);
         const average = total > 0 ? Number((sum / total).toFixed(1)) : 0;
 
-        return { average, total, pending };
+        let averageTrend = 0;
+        if (total > 1) {
+            // Calculate previous average excluding the most recent review
+            const previousTotal = total - 1;
+            const previousSum = sum - (data[data.length - 1].rating || 0);
+            const previousAverage = previousTotal > 0 ? previousSum / previousTotal : 0;
+
+            if (previousAverage > 0) {
+                // Percentage change: ((new - old) / old) * 100
+                averageTrend = ((average - previousAverage) / previousAverage) * 100;
+            } else if (average > 0) {
+                averageTrend = 100;
+            }
+        }
+
+        return { average, total, pending, averageTrend };
     }
 }
