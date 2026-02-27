@@ -42,7 +42,11 @@ export class TenantService {
   readonly loading = computed(() => this._state().loading); // Alias for Settings
   readonly error = computed(() => this._state().error);
   readonly initialized = computed(() => this._state().initialized);
-  readonly memberRole = computed(() => this._state().memberInfo?.role ?? null);
+  readonly memberRole = computed(() => {
+    const role = this._state().memberInfo?.role;
+    // Normalize to lowercase to match TenantRole enum values (DB may store 'Admin', 'Editor', etc.)
+    return role ? (role.toLowerCase() as string) : null;
+  });
   readonly tenantId = computed(() => this._state().currentTenant?.id ?? null);
   readonly businessName = computed(() => this._state().currentTenant?.business_name ?? null);
   readonly settings = computed(() => this._state().settings);
@@ -68,16 +72,16 @@ export class TenantService {
   });
 
   readonly isOwner = computed(
-    () => this._state().memberInfo?.role === TenantRole.Owner
+    () => this._state().memberInfo?.role?.toLowerCase() === TenantRole.Owner
   );
   readonly isAdmin = computed(() =>
     [TenantRole.Owner, TenantRole.Admin].includes(
-      this._state().memberInfo?.role as TenantRole
+      this._state().memberInfo?.role?.toLowerCase() as TenantRole
     )
   );
   readonly canEdit = computed(() =>
     [TenantRole.Owner, TenantRole.Admin, TenantRole.Editor].includes(
-      this._state().memberInfo?.role as TenantRole
+      this._state().memberInfo?.role?.toLowerCase() as TenantRole
     )
   );
 

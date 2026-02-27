@@ -3,6 +3,8 @@ import { guestGuard } from '@core/guards/guest.guard';
 import { authGuard } from '@core/guards/auth.guard';
 import { MainLayoutComponent } from '@core/layouts/main-layout/main-layout.component';
 import { storeGuard } from '@core/guards/store.guard';
+import { TenantRole } from '@core/enums';
+import { roleGuard, adminGuard, editorGuard, viewerGuard, deliveryRedirectGuard } from '@core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -32,50 +34,63 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
+        // deliveryRedirectGuard sends Delivery users to /orders before dashboard loads
+        canActivate: [deliveryRedirectGuard, roleGuard([TenantRole.Owner, TenantRole.Admin, TenantRole.Viewer])],
         loadComponent: () => import('@features/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'products',
+        canActivate: [viewerGuard],
         loadComponent: () => import('@features/products-catalog/products-catalog').then((m) => m.ProductsCatalog),
       },
       {
         path: 'settings',
+        canActivate: [adminGuard],
         loadComponent: () => import('@features/settings/settings').then((m) => m.Settings),
       },
       {
         path: 'members',
+        canActivate: [adminGuard],
         loadComponent: () => import('@features/members/members').then((m) => m.Members),
       },
       {
         path: 'coupons',
+        canActivate: [editorGuard],
         loadComponent: () => import('@features/coupons/coupons').then((m) => m.Coupons),
       },
       {
         path: 'subscription',
+        canActivate: [adminGuard],
         loadComponent: () => import('@features/subscription/subscription').then((m) => m.Subscription),
       },
       {
         path: 'orders',
+        // All roles can access orders (including Delivery)
         loadChildren: () => import('@features/orders/orders.routes').then((m) => m.ordersRoutes),
       },
       {
         path: 'customers',
+        canActivate: [editorGuard],
         loadChildren: () => import('@features/customers/customers.routes').then((m) => m.customersRoutes),
       },
       {
         path: 'inventory-history',
+        canActivate: [editorGuard],
         loadComponent: () => import('@features/inventory-history/inventory-history').then((m) => m.InventoryHistory),
       },
       {
         path: 'reviews',
+        canActivate: [editorGuard],
         loadChildren: () => import('@features/reviews/reviews.routes').then((m) => m.REVIEWS_ROUTES),
       },
       {
         path: 'abandoned-carts',
+        canActivate: [editorGuard],
         loadComponent: () => import('@features/abandoned-carts/abandoned-carts').then((m) => m.AbandonedCarts),
       },
       {
         path: 'reports',
+        canActivate: [adminGuard],
         loadComponent: () => import('@features/reports/reports').then((m) => m.Reports),
       },
     ],
