@@ -9,8 +9,133 @@ import { Supabase } from '@core/services/supabase';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-singup',
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './singup.html',
-  styleUrl: './singup.css',
+  template: `
+    <div class="min-h-screen bg-slate-50 dark:bg-gray-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      <!-- Background Orbs -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[250px] -left-[250px] w-[500px] h-[500px] rounded-full bg-indigo-500/10 blur-[80px]"></div>
+        <div class="absolute -bottom-[200px] -right-[200px] w-[400px] h-[400px] rounded-full bg-violet-500/10 blur-[80px]"></div>
+      </div>
+
+      <!-- Logo -->
+      <div class="relative z-10 mb-10 text-center">
+        <div class="flex items-center justify-center mb-4">
+          <svg viewBox="0 0 500 150" class="h-16 max-w-full drop-shadow-md" style="font-family: 'Outfit', sans-serif;">
+            <g transform="translate(10, 5)">
+              <path d="M 35 45 L 65 92 L 95 45 L 145 45" class="stroke-indigo-600 dark:stroke-white" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              <circle cx="50" cy="112" r="7.5" class="fill-indigo-600 dark:fill-white" />
+              <circle cx="80" cy="112" r="7.5" class="fill-indigo-600 dark:fill-white" />
+            </g>
+            <text x="105" y="100">
+              <tspan class="fill-gray-900 dark:fill-white" font-weight="700" font-size="64px">enti </tspan>
+              <tspan class="fill-indigo-600 dark:fill-indigo-400" opacity="0.9" font-weight="800" font-size="64px">Shop</tspan>
+            </text>
+          </svg>
+        </div>
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 dark:text-gray-400">
+          Plataforma Multi-Tenant
+        </p>
+      </div>
+
+      <div class="relative z-10 max-w-lg w-full bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden animate-slide-up p-8 md:p-12">
+        
+        @if (isSuccess()) {
+          <div class="flex flex-col items-center justify-center text-center py-8 animate-fade-in">
+             <div class="w-20 h-20 bg-emerald-50 dark:bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-600 mb-8 scale-up">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
+             </div>
+             <h2 class="text-3xl font-black mb-4 dark:text-white tracking-tight">Check your email!</h2>
+             <p class="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+               {{ isInviteFlow() ? 'Your account was created and you have joined the store.' : 'We have sent a verification link to your email. Please confirm it to get started.' }}
+             </p>
+          </div>
+        } @else {
+          <div class="mb-10 text-center">
+            <h2 class="text-3xl font-black mb-3 dark:text-white tracking-tight">
+              {{ isInviteFlow() ? 'Join the team' : 'Store Creation' }}
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+              {{ isInviteFlow() ? 'Complete your registration to join the store.' : 'Set up your admin account for your new store.' }}
+            </p>
+          </div>
+
+          @if (errorMessage()) {
+            <div class="mb-8 p-4 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 text-red-600 dark:text-red-400 rounded-2xl text-[11px] font-bold uppercase flex items-center gap-3">
+               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+               </svg>
+               {{ errorMessage() }}
+            </div>
+          }
+
+          <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
+            @if (!isInviteFlow()) {
+              <div class="space-y-2">
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Business Name</label>
+                <input type="text" formControlName="businessName" placeholder="My Awesome Shop" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+                @if (businessNameError()) { <p class="text-[10px] text-red-500 font-bold px-1">{{ businessNameError() }}</p> }
+              </div>
+            }
+
+            <div class="space-y-2">
+              <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Email Address</label>
+              <input type="email" formControlName="email" placeholder="admin@venti.com" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+              @if (emailError()) { <p class="text-[10px] text-red-500 font-bold px-1">{{ emailError() }}</p> }
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Password</label>
+                <input [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="••••••••" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+                @if (passwordError()) { <p class="text-[10px] text-red-500 font-bold px-1">{{ passwordError() }}</p> }
+              </div>
+              <div class="space-y-2">
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Confirm</label>
+                <input [type]="showConfirmPassword() ? 'text' : 'password'" formControlName="confirmPassword" placeholder="••••••••" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+                 @if (confirmPasswordError()) { <p class="text-[10px] text-red-500 font-bold px-1">{{ confirmPasswordError() }}</p> }
+              </div>
+            </div>
+
+            <div class="pt-6">
+              <button 
+                type="submit"
+                [disabled]="isLoading()"
+                class="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-2xl shadow-indigo-500/30 transition-all hover:-translate-y-1 active:scale-[0.98] tracking-tight uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ isLoading() ? 'Creating account...' : 'Create My Store' }}
+              </button>
+            </div>
+          </form>
+
+          <div class="mt-10 text-center">
+             <p class="text-[11px] text-gray-400 dark:text-gray-500 font-medium tracking-tight">
+               Already have an account? 
+               <a [routerLink]="['/auth/login']" class="text-indigo-600 dark:text-indigo-400 font-black hover:underline ml-1">Log in here</a>
+             </p>
+          </div>
+        }
+      </div>
+    </div>
+  `,
+  styles: [`
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-slide-up {
+      animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .animate-fade-in {
+      animation: fade-in 0.4s ease-out;
+    }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    .scale-up {
+      animation: scale-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes scale-up { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  `],
 })
 export class Singup implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -29,8 +154,12 @@ export class Singup implements OnInit {
 
   /** Token from query param when invited as a new user */
   inviteToken = signal<string | null>(null);
+  /** Selected plan from query param when registering a new store */
+  selectedPlan = signal<string | null>(null);
   /** True when this registration is triggered by an invitation */
   isInviteFlow = signal(false);
+  /** True when this registration is creating a new store/tenant */
+  isNewStoreFlow = signal(false);
 
   // ── Form ─────────────────────────────────────────────────
   readonly signupForm = this.fb.nonNullable.group({
@@ -99,6 +228,7 @@ export class Singup implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       const token = params['invite_token'];
+      const planId = params['plan'];
       const email = params['email'];
 
       if (token) {
@@ -110,9 +240,14 @@ export class Singup implements OnInit {
         this.signupForm.controls.businessName.clearValidators();
         this.signupForm.controls.businessName.setValue('invited-user');
         this.signupForm.controls.businessName.updateValueAndValidity();
+      } else if (planId) {
+        this.selectedPlan.set(planId);
+        this.isNewStoreFlow.set(true);
+
+        // businessName is required for new stores (standard Validators already set in fb.group)
       } else {
-        // Enforce invite-only registration: redirect to login if no token is provided
-        this.toast.warning('Registration restricted', 'Account registration is only available by invitation.');
+        // Enforce restricted registration: redirect to login if no token or plan is provided
+        this.toast.warning('Registration restricted', 'To register, you must be invited or select a plan from our landing page.');
         this.router.navigate(['/auth/login']);
         return;
       }
@@ -149,9 +284,11 @@ export class Singup implements OnInit {
 
     const { businessName, email, password } = this.signupForm.getRawValue();
     const token = this.inviteToken();
+    const plan = this.selectedPlan();
 
     const { error } = await this.authService.signUp(email, password, {
-      business_name: this.isInviteFlow() ? null : businessName
+      business_name: this.isInviteFlow() ? null : businessName,
+      plan: plan
     });
 
     if (error) {

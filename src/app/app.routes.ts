@@ -9,8 +9,8 @@ import { roleGuard, adminGuard, editorGuard, viewerGuard, deliveryRedirectGuard 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
+    loadComponent: () => import('@features/landing/landing').then((m) => m.Landing),
+    canActivate: [guestGuard],
   },
   {
     path: 'auth',

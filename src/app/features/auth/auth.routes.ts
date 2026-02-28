@@ -18,12 +18,6 @@ export const authRoutes: Routes = [
           import('./login/login').then((m) => m.Login),
       },
       {
-        path: 'register',
-        title: 'Crear Cuenta | Venti Shop',
-        loadComponent: () =>
-          import('./singup/singup').then((m) => m.Singup),
-      },
-      {
         path: 'forgot-password',
         title: 'Recuperar Contraseña | Venti Shop',
         loadComponent: () =>
@@ -36,5 +30,16 @@ export const authRoutes: Routes = [
           import('./reset-password/reset-password').then((m) => m.ResetPassword),
       },
     ],
+  },
+  {
+    path: 'purchase',
+    loadComponent: () =>
+      import('./purchase/purchase').then((m) => m.Purchase),
+  },
+  {
+    path: 'register',
+    title: 'Crear Cuenta | Venti Shop',
+    loadComponent: () =>
+      import('./singup/singup').then((m) => m.Singup),
   },
 ];
