@@ -22,29 +22,29 @@ export class CustomersList implements OnInit {
     readonly activeTab = signal<'all' | 'new' | 'returning' | 'vip'>('all');
 
     readonly tabs = [
-        { id: 'all', label: 'Todos los Clientes' },
-        { id: 'new', label: 'Nuevos' },
-        { id: 'returning', label: 'Recurrentes' },
+        { id: 'all', label: 'All Customers' },
+        { id: 'new', label: 'New' },
+        { id: 'returning', label: 'Returning' },
         { id: 'vip', label: 'VIP' },
     ] as const;
 
     readonly columns: ColumnDef<Customer>[] = [
         {
             key: 'first_name',
-            label: 'Nombre Cliente',
-            formatter: (_, item) => `${item.first_name || ''} ${item.last_name || ''}`.trim() || 'Invitado'
+            label: 'Customer Name',
+            formatter: (_, item) => `${item.first_name || ''} ${item.last_name || ''}`.trim() || 'Guest'
         },
         { key: 'email', label: 'Email' },
         {
             key: 'customer_segment',
-            label: 'Estado',
+            label: 'Status',
             formatter: (val, item) => this.getSegmentLabel(item)
         },
-        { key: 'total_orders', label: 'Pedidos', type: 'number' },
-        { key: 'total_spent', label: 'Total Gastado', type: 'currency' },
+        { key: 'total_orders', label: 'Orders', type: 'number' },
+        { key: 'total_spent', label: 'Total Spent', type: 'currency' },
         {
             key: 'last_order_date',
-            label: 'Última Visita',
+            label: 'Last Visit',
             type: 'date',
             formatter: (val) => val ? new Date(val).toLocaleDateString() : 'N/A'
         }
@@ -58,8 +58,8 @@ export class CustomersList implements OnInit {
 
         return list.filter(c => {
             const segment = this.getSegmentLabel(c).toLowerCase();
-            if (tab === 'new') return segment === 'nuevo';
-            if (tab === 'returning') return segment === 'recurrente';
+            if (tab === 'new') return segment === 'new';
+            if (tab === 'returning') return segment === 'returning';
             if (tab === 'vip') return segment === 'vip';
             return true;
         });
@@ -87,7 +87,7 @@ export class CustomersList implements OnInit {
 
     private getSegmentLabel(c: Customer): string {
         if (c.total_spent > 1000) return 'VIP';
-        if (c.total_orders > 1) return 'Recurrente';
-        return 'Nuevo';
+        if (c.total_orders > 1) return 'Returning';
+        return 'New';
     }
 }

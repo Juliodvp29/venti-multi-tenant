@@ -69,15 +69,15 @@ export class GiftCouponModalComponent {
             // 1. Get Template
             const template = await this.emailService.getTemplate('gift_coupon');
             if (!template) {
-                throw new Error('No se encontró la plantilla de correo "gift_coupon"');
+                throw new Error('Email template "gift_coupon" not found');
             }
 
             // 2. Prepare variables
             const variables = {
-                customer_name: `${customer.first_name} ${customer.last_name}`.trim() || 'Amigo',
-                store_name: 'Nuestra Tienda', // This could come from tenant settings if available
+                customer_name: `${customer.first_name} ${customer.last_name}`.trim() || 'Friend',
+                store_name: 'Our Store', // This could come from tenant settings if available
                 coupon_code: coupon.code,
-                coupon_description: coupon.type === 'percentage' ? `${coupon.value}% de descuento` : `$${coupon.value} de descuento`,
+                coupon_description: coupon.type === 'percentage' ? `${coupon.value}% off` : `$${coupon.value} off`,
                 shop_url: window.location.origin
             };
 
@@ -97,19 +97,19 @@ export class GiftCouponModalComponent {
             });
 
             if (result.success) {
-                this.toast.success(`Cupón enviado a ${customer.email}`);
+                this.toast.success(`Coupon sent to ${customer.email}`);
                 this.close.emit();
                 // Reset state
                 this.selectedCustomerId.set(null);
                 this.searchQuery.set('');
                 this.customers.set([]);
             } else {
-                this.toast.error('Error al enviar el correo');
+                this.toast.error('Error sending email');
             }
 
         } catch (error: any) {
             console.error('Error sending gift coupon:', error);
-            this.toast.error(error?.message || 'Error al procesar el envío');
+            this.toast.error(error?.message || 'Error processing the shipment');
         } finally {
             this.isSending.set(false);
         }
