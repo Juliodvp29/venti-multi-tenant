@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
     <div class="space-y-4">
       <div class="flex items-center justify-between text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
         <span>{{ label }}</span>
-        <span>{{ used | number }} / {{ isUnlimited ? '∞' : (limit | number) }}</span>
+        <span>{{ used | number }} / {{ isUnlimited ? 'Unlimited' : (limit | number) }}</span>
       </div>
       
       <div class="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">

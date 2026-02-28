@@ -58,7 +58,7 @@ export class Coupons implements OnInit {
     {
       key: 'usage_count',
       label: 'USAGE COUNT',
-      formatter: (val, item) => `${val} / ${item.usage_limit || '∞'}`
+      formatter: (val, item) => `${val} / ${item.usage_limit || 'Unlimited'}`
     },
     {
       key: 'is_active',

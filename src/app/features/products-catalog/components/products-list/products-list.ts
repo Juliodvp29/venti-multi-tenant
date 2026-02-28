@@ -149,7 +149,7 @@ export class ProductsList implements OnInit {
             label: 'Stock',
             sortable: true,
             type: 'number',
-            formatter: (val, item) => item['track_inventory'] ? String(val) : '∞',
+            formatter: (val, item) => item['track_inventory'] ? String(val) : 'Unlimited',
         },
         {
             key: 'status',
