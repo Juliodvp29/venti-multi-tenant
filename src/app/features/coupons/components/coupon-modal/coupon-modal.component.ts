@@ -7,10 +7,10 @@ import { ToastService } from '@core/services/toast';
 import { DatePicker } from '@shared/components/date-picker/date-picker';
 
 @Component({
-    selector: 'app-coupon-modal',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, DatePicker],
-    template: `
+  selector: 'app-coupon-modal',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DatePicker],
+  template: `
     <div class="fixed inset-0 z-[60] flex items-center justify-end bg-black/50 backdrop-blur-sm px-4 py-6 sm:p-0">
       <div class="w-full max-w-lg bg-white dark:bg-gray-900 h-full overflow-y-auto shadow-2xl flex flex-col transform transition-transform duration-300">
         <!-- Header -->
@@ -198,62 +198,62 @@ import { DatePicker } from '@shared/components/date-picker/date-picker';
   `
 })
 export class CouponModalComponent implements OnInit {
-    private readonly fb = inject(FormBuilder);
-    private readonly discountsService = inject(DiscountsService);
-    private readonly toast = inject(ToastService);
+  private readonly fb = inject(FormBuilder);
+  private readonly discountsService = inject(DiscountsService);
+  private readonly toast = inject(ToastService);
 
-    coupon = input<DiscountCode | null>(null);
-    close = output<void>();
-    saved = output<void>();
+  coupon = input<DiscountCode | null>(null);
+  close = output<void>();
+  saved = output<void>();
 
-    form = this.fb.group({
-        code: ['', [Validators.required, Validators.minLength(3)]],
-        description: [''],
-        type: ['percentage', Validators.required],
-        value: [0, [Validators.required, Validators.min(0)]],
-        starts_at: [''],
-        ends_at: [''],
-        minimum_purchase_amount: [null],
-        usage_limit: [null],
-        is_active: [true]
-    });
+  form = this.fb.group({
+    code: ['', [Validators.required, Validators.minLength(3)]],
+    description: [''],
+    type: ['percentage', Validators.required],
+    value: [0, [Validators.required, Validators.min(0)]],
+    starts_at: [''],
+    ends_at: [''],
+    minimum_purchase_amount: [null],
+    usage_limit: [null],
+    is_active: [true]
+  });
 
-    ngOnInit() {
-        const existingCoupon = this.coupon();
-        if (existingCoupon) {
-            this.form.patchValue({
-                ...existingCoupon,
-                starts_at: existingCoupon.starts_at ? new Date(existingCoupon.starts_at).toISOString().split('T')[0] : '',
-                ends_at: existingCoupon.ends_at ? new Date(existingCoupon.ends_at).toISOString().split('T')[0] : ''
-            } as any);
-        }
+  ngOnInit() {
+    const existingCoupon = this.coupon();
+    if (existingCoupon) {
+      this.form.patchValue({
+        ...existingCoupon,
+        starts_at: existingCoupon.starts_at ? new Date(existingCoupon.starts_at).toISOString().split('T')[0] : '',
+        ends_at: existingCoupon.ends_at ? new Date(existingCoupon.ends_at).toISOString().split('T')[0] : ''
+      } as any);
     }
+  }
 
-    generateCode() {
-        const words = ['SUMMER', 'WELCOME', 'SAVE', 'OFFER', 'VENTI', 'DISCOUNT'];
-        const randomWord = words[Math.floor(Math.random() * words.length)];
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        this.form.patchValue({ code: `${randomWord}${randomNum}` });
+  generateCode() {
+    const words = ['SUMMER', 'WELCOME', 'SAVE', 'OFFER', 'VENTI', 'DISCOUNT'];
+    const randomWord = words[Math.floor(Math.random() * words.length)];
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    this.form.patchValue({ code: `${randomWord}${randomNum}` });
+  }
+
+  async onSubmit() {
+    if (this.form.invalid) return;
+
+    try {
+      const data = this.form.value;
+      const existingCoupon = this.coupon();
+
+      if (existingCoupon) {
+        await this.discountsService.updateDiscountCode(existingCoupon.id, data as Partial<DiscountCode>);
+        this.toast.success('Coupon updated');
+      } else {
+        await this.discountsService.createDiscountCode(data as Partial<DiscountCode>);
+        this.toast.success('Coupon created');
+      }
+      this.saved.emit();
+      this.close.emit();
+    } catch (error) {
+      this.toast.error('Error saving coupon');
     }
-
-    async onSubmit() {
-        if (this.form.invalid) return;
-
-        try {
-            const data = this.form.value;
-            const existingCoupon = this.coupon();
-
-            if (existingCoupon) {
-                await this.discountsService.updateDiscountCode(existingCoupon.id, data as Partial<DiscountCode>);
-                this.toast.success('Cupón actualizado');
-            } else {
-                await this.discountsService.createDiscountCode(data as Partial<DiscountCode>);
-                this.toast.success('Cupón creado');
-            }
-            this.saved.emit();
-            this.close.emit();
-        } catch (error) {
-            this.toast.error('Error al guardar cupón');
-        }
-    }
+  }
 }
