@@ -34,8 +34,8 @@ export class ResetPassword {
   readonly passwordError = computed(() => {
     const control = this.resetPasswordForm.controls.password;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'La contraseña es requerida';
-      if (control.errors['minlength']) return 'Mínimo 8 caracteres';
+      if (control.errors['required']) return 'Password is required';
+      if (control.errors['minlength']) return 'Minimum 8 characters';
     }
     return null;
   });
@@ -43,8 +43,8 @@ export class ResetPassword {
   readonly confirmPasswordError = computed(() => {
     const control = this.resetPasswordForm.controls.confirmPassword;
     if (control.touched) {
-      if (control.errors?.['required']) return 'Confirma tu contraseña';
-      if (!this.passwordsMatch()) return 'Las contraseñas no coinciden';
+      if (control.errors?.['required']) return 'Confirm your password';
+      if (!this.passwordsMatch()) return 'Passwords do not match';
     }
     return null;
   });
@@ -60,9 +60,9 @@ export class ResetPassword {
     if (/\d/.test(password)) strength++;
     if (/[^a-zA-Z0-9]/.test(password)) strength++;
 
-    if (strength <= 2) return { level: 1, text: 'Débil', color: 'var(--color-error-500)' };
-    if (strength <= 3) return { level: 2, text: 'Media', color: 'var(--color-warning-500)' };
-    return { level: 3, text: 'Fuerte', color: 'var(--color-success-500)' };
+    if (strength <= 2) return { level: 1, text: 'Weak', color: 'var(--color-error-500)' };
+    if (strength <= 3) return { level: 2, text: 'Medium', color: 'var(--color-warning-500)' };
+    return { level: 3, text: 'Strong', color: 'var(--color-success-500)' };
   });
 
   // ── Methods ──────────────────────────────────────────────
@@ -100,7 +100,7 @@ export class ResetPassword {
       this.toast.error('Error', error.message);
     } else {
       this.isSuccess.set(true);
-      this.toast.success('¡Contraseña actualizada!', 'Tu contraseña ha sido restablecida correctamente');
+      this.toast.success('Password updated!', 'Your password has been successfully reset');
       setTimeout(() => {
         this.router.navigate(['/auth/login']);
       }, 2000);

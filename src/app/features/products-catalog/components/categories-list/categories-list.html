@@ -15,7 +15,7 @@
             <div>
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ totalCategories() }}</p>
                 <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Total
-                    Categorías</p>
+                    Categories</p>
             </div>
         </div>
 
@@ -31,7 +31,7 @@
             </div>
             <div>
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ activeCategories() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Activas
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Active
                 </p>
             </div>
         </div>
@@ -48,7 +48,7 @@
             </div>
             <div>
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ inactiveCategories() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Inactivas
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Inactive
                 </p>
             </div>
         </div>
@@ -63,7 +63,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Cargando categorías...</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Loading categories...</p>
         </div>
     </div>
     }
@@ -72,9 +72,9 @@
     @if (categories().length > 0 || !isLoading()) {
     <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
         [class.pointer-events-none]="isLoading()">
-        <app-dynamic-table [data]="flatCategories()" [columns]="columns" [actions]="actions" title="Categorías"
-            description="Organiza tus productos en jerarquías significativas."
-            searchPlaceholder="Buscar por nombre o slug..." [allowImport]="true" (importData)="onImportData($event)">
+        <app-dynamic-table [data]="flatCategories()" [columns]="columns" [actions]="actions" title="Categories"
+            description="Organize your products into meaningful hierarchies."
+            searchPlaceholder="Search by name or slug..." [allowImport]="true" (importData)="onImportData($event)">
 
             <!-- Actions Slot -->
             <div actions>
@@ -84,7 +84,7 @@
                         stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
-                    Nueva Categoría
+                    New Category
                 </button>
             </div>
 

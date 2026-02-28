@@ -15,15 +15,15 @@ import { TenantService } from '@core/services/tenant';
       <!-- Header Area -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
         <div>
-            <h2 class="text-4xl font-black text-slate-900 tracking-tight mb-2">Descubre lo Nuevo</h2>
-            <p class="text-slate-500 font-medium">Explora nuestra selección de productos destacados para ti.</p>
+            <h2 class="text-4xl font-black text-slate-900 tracking-tight mb-2">Discover What's New</h2>
+            <p class="text-slate-500 font-medium">Explore our selection of featured products for you.</p>
         </div>
         
         <div class="flex items-center gap-3">
              <div class="relative">
                 <input 
                     type="text" 
-                    placeholder="Buscar productos..." 
+                    placeholder="Search products..." 
                     (input)="onSearch($event)"
                     class="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-sm w-64 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm">
                 <svg class="w-4 h-4 absolute left-4 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,8 +88,8 @@ import { TenantService } from '@core/services/tenant';
       @if (!isLoading() && products().length === 0) {
           <div class="py-24 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
               <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">📦</div>
-              <h3 class="text-xl font-bold text-slate-900 mb-1">No hay productos</h3>
-              <p class="text-slate-500">Estamos preparando nuevas sorpresas para ti. Vuelve pronto.</p>
+              <h3 class="text-xl font-bold text-slate-900 mb-1">No products found</h3>
+              <p class="text-slate-500">We're preparing new surprises for you. Come back soon.</p>
           </div>
       }
     </div>
@@ -108,15 +108,15 @@ export class ProductGrid {
     readonly isSortMenuOpen = signal(false);
 
     readonly sortOptions = [
-        { label: 'Más Populares', value: 'popular' },
-        { label: 'Lo más Nuevo', value: 'newest' },
-        { label: 'Más Vendidos', value: 'best_sellers' },
-        { label: 'Precio: Menor a Mayor', value: 'price_asc' },
-        { label: 'Precio: Mayor a Menor', value: 'price_desc' },
+        { label: 'Most Popular', value: 'popular' },
+        { label: 'Newest', value: 'newest' },
+        { label: 'Best Sellers', value: 'best_sellers' },
+        { label: 'Price: Low to High', value: 'price_asc' },
+        { label: 'Price: High to Low', value: 'price_desc' },
     ];
 
     readonly sortLabel = computed(() => {
-        return this.sortOptions.find(o => o.value === this.sortBy())?.label || 'Ordenar';
+        return this.sortOptions.find(o => o.value === this.sortBy())?.label || 'Sort';
     });
 
     constructor() {
@@ -169,8 +169,8 @@ export class ProductGrid {
     private updateSeo() {
         const businessName = this.tenantService.branding()?.business_name || 'Venti Store';
         this.seo.updateTags({
-            title: 'Productos',
-            description: `Explora nuestra colección de productos en ${businessName}. Envíos rápidos y la mejor calidad.`,
+            title: 'Products',
+            description: `Explore our collection of products at ${businessName}. Fast shipping and best quality.`,
             type: 'website',
             siteName: businessName
         });

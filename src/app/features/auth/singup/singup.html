@@ -9,17 +9,17 @@
                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
         </div>
-        <h2 class="success-title">{{ isInviteFlow() ? '¡Bienvenido al equipo!' : '¡Registro Exitoso!' }}</h2>
+        <h2 class="success-title">{{ isInviteFlow() ? 'Welcome to the team!' : 'Successful Registration!' }}</h2>
         <p class="success-message">
             @if (isInviteFlow()) {
-            Tu cuenta fue creada y te has unido a la tienda. Redirigiendo...
+            Your account was created and you have joined the store. Redirecting...
             } @else {
-            Hemos enviado un correo de confirmación a tu email.
-            Por favor, verifica tu cuenta antes de iniciar sesión.
+            We have sent a confirmation email to your email address.
+            Please verify your account before logging in.
             }
         </p>
-        <p class="success-redirect">{{ isInviteFlow() ? 'Redirigiendo a tus tiendas...' : 'Redirigiendo al inicio de
-            sesión...' }}</p>
+        <p class="success-redirect">{{ isInviteFlow() ? 'Redirecting to your stores...' : 'Redirecting to login...' }}
+        </p>
     </div>
     } @else {
     <!-- Header -->
@@ -31,9 +31,9 @@
                     d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
             </svg>
         </div>
-        <h2 class="auth-title">{{ isInviteFlow() ? 'Acepta tu Invitación' : 'Crear Cuenta' }}</h2>
-        <p class="auth-subtitle">{{ isInviteFlow() ? 'Crea tu cuenta para unirte a la tienda' : 'Únete a Venti y
-            gestiona tu negocio' }}</p>
+        <h2 class="auth-title">{{ isInviteFlow() ? 'Accept your Invitation' : 'Create Account' }}</h2>
+        <p class="auth-subtitle">{{ isInviteFlow() ? 'Create your account to join the store' : 'Join Venti and
+            manage your business' }}</p>
     </div>
 
     <!-- Error Alert -->
@@ -53,7 +53,7 @@
     @if (isInviteFlow()) {
     <div class="alert"
         style="background:linear-gradient(135deg,#ede9fe,#e0e7ff);border:1px solid #a5b4fc;color:#4338ca;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:500;">
-        🎉 Has sido invitado a unirte a una tienda. Crea tu cuenta para aceptar la invitación.
+        🎉 You have been invited to join a store. Create your account to accept the invitation.
     </div>
     }
 
@@ -61,7 +61,7 @@
         <!-- Business Name Field (hidden for invite flow) -->
         @if (!isInviteFlow()) {
         <div class="form-group">
-            <label for="businessName" class="form-label">Nombre del Negocio</label>
+            <label for="businessName" class="form-label">Business Name</label>
             <div class="input-wrapper">
                 <div class="input-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -71,7 +71,7 @@
                     </svg>
                 </div>
                 <input id="businessName" type="text" formControlName="businessName" class="form-input"
-                    placeholder="Mi Restaurante" autocomplete="organization" />
+                    placeholder="My Restaurant" autocomplete="organization" />
             </div>
             @if (businessNameError()) {
             <p class="form-error">{{ businessNameError() }}</p>
@@ -81,7 +81,7 @@
 
         <!-- Email Field -->
         <div class="form-group">
-            <label for="email" class="form-label">Correo Electrónico</label>
+            <label for="email" class="form-label">Email Address</label>
             <div class="input-wrapper">
                 <div class="input-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -100,7 +100,7 @@
 
         <!-- Password Field -->
         <div class="form-group">
-            <label for="password" class="form-label">Contraseña</label>
+            <label for="password" class="form-label">Password</label>
             <div class="input-wrapper">
                 <div class="input-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -112,7 +112,7 @@
                 <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
                     class="form-input" placeholder="••••••••" autocomplete="new-password" />
                 <button type="button" class="input-action" (click)="togglePasswordVisibility()"
-                    [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                    [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
                     @if (showPassword()) {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
@@ -149,7 +149,7 @@
 
         <!-- Confirm Password Field -->
         <div class="form-group">
-            <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
             <div class="input-wrapper">
                 <div class="input-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -162,7 +162,7 @@
                     formControlName="confirmPassword" class="form-input" placeholder="••••••••"
                     autocomplete="new-password" />
                 <button type="button" class="input-action" (click)="toggleConfirmPasswordVisibility()"
-                    [attr.aria-label]="showConfirmPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                    [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'">
                     @if (showConfirmPassword()) {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor">
@@ -193,9 +193,9 @@
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                 </path>
             </svg>
-            <span>Creando cuenta...</span>
+            <span>Creating account...</span>
             } @else {
-            <span>{{ isInviteFlow() ? 'Crear Cuenta y Unirme' : 'Crear Cuenta' }}</span>
+            <span>{{ isInviteFlow() ? 'Create Account and Join' : 'Create Account' }}</span>
             }
         </button>
     </form>
@@ -203,10 +203,10 @@
     <!-- Login Link -->
     <div class="auth-footer">
         <p class="text-center">
-            ¿Ya tienes una cuenta?
+            Already have an account?
             <a [routerLink]="['/auth/login']"
                 [queryParams]="isInviteFlow() ? { returnUrl: '/accept-invite?token=' + inviteToken() } : {}"
-                class="link-primary">Inicia sesión aquí</a>
+                class="link-primary">Sign in here</a>
         </p>
     </div>
     }

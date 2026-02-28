@@ -62,17 +62,17 @@ export class ProductsList implements OnInit {
 
     readonly categoryDropdownOptions = computed<DropdownOption[]>(() => {
         return [
-            { label: 'Todas las categorías', value: '' },
+            { label: 'All categories', value: '' },
             ...this.categories().map(cat => ({ label: cat.name, value: cat.id }))
         ];
     });
 
     readonly statusDropdownOptions: DropdownOption[] = [
-        { label: 'Todos los estados', value: '' },
-        { label: 'Activo', value: ProductStatus.Active },
-        { label: 'Borrador', value: ProductStatus.Draft },
-        { label: 'Sin Stock', value: ProductStatus.OutOfStock },
-        { label: 'Archivado', value: ProductStatus.Archived },
+        { label: 'All statuses', value: '' },
+        { label: 'Active', value: ProductStatus.Active },
+        { label: 'Draft', value: ProductStatus.Draft },
+        { label: 'Out of Stock', value: ProductStatus.OutOfStock },
+        { label: 'Archived', value: ProductStatus.Archived },
     ];
     readonly statusFilter = signal<string>('');
     readonly categoryFilter = signal<string>('');
@@ -112,11 +112,11 @@ export class ProductsList implements OnInit {
     });
 
     readonly statusOptions = [
-        { value: '', label: 'Todos los estados' },
-        { value: ProductStatus.Active, label: 'Activo' },
-        { value: ProductStatus.Draft, label: 'Borrador' },
-        { value: ProductStatus.Archived, label: 'Archivado' },
-        { value: ProductStatus.OutOfStock, label: 'Sin Stock' },
+        { value: '', label: 'All statuses' },
+        { value: ProductStatus.Active, label: 'Active' },
+        { value: ProductStatus.Draft, label: 'Draft' },
+        { value: ProductStatus.Archived, label: 'Archived' },
+        { value: ProductStatus.OutOfStock, label: 'Out of Stock' },
     ];
 
     readonly columns: ColumnDef<Product>[] = [
@@ -128,7 +128,7 @@ export class ProductsList implements OnInit {
         },
         {
             key: 'name',
-            label: 'Producto',
+            label: 'Product',
             sortable: true,
             type: 'text',
         },
@@ -140,7 +140,7 @@ export class ProductsList implements OnInit {
         },
         {
             key: 'price',
-            label: 'Precio',
+            label: 'Price',
             sortable: true,
             type: 'currency',
         },
@@ -153,7 +153,7 @@ export class ProductsList implements OnInit {
         },
         {
             key: 'status',
-            label: 'Estado',
+            label: 'Status',
             type: 'status',
             formatter: (val) => {
                 const map: Record<string, string> = {
@@ -170,13 +170,13 @@ export class ProductsList implements OnInit {
     readonly actions: TableAction<Product>[] = [
         {
             id: 'edit',
-            label: 'Editar',
+            label: 'Edit',
             className: 'hover:text-indigo-600 dark:hover:text-indigo-400 font-medium',
             callback: (item) => this.openEdit(item),
         },
         {
             id: 'delete',
-            label: 'Eliminar',
+            label: 'Delete',
             className: 'hover:text-red-600 dark:hover:text-red-400 font-medium',
             callback: (item) => this.deleteProduct(item),
         },
@@ -198,7 +198,7 @@ export class ProductsList implements OnInit {
             this.totalCount.set(count);
             this.currentPage.set(page);
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error al cargar los productos.');
+            this.toast.error(error?.message ?? 'Error loading products.');
         } finally {
             this.isLoading.set(false);
         }
@@ -223,7 +223,7 @@ export class ProductsList implements OnInit {
     async openCreate() {
         const canAdd = await this.subscriptionService.canAddResource('products');
         if (!canAdd) {
-            this.toast.error('Has alcanzado el límite de productos de tu plan. Por favor, mejora tu plan para añadir más.');
+            this.toast.error("You've reached the products limit for your plan. Please upgrade to add more.");
             return;
         }
         this.editingProduct.set(null);
@@ -237,7 +237,7 @@ export class ProductsList implements OnInit {
             this.editingProduct.set(fullProduct);
             this.showDrawer.set(true);
         } catch (error: any) {
-            this.toast.error('No se pudieron cargar los detalles completos del producto.');
+            this.toast.error('Could not load product details.');
         } finally {
             this.isLoading.set(false);
         }
@@ -250,15 +250,15 @@ export class ProductsList implements OnInit {
 
     async deleteProduct(product: Product) {
         const confirmed = await this.toast.confirm(
-            `¿Eliminar el producto "${product.name}"? Esta acción no se puede deshacer.`,
-            'Eliminar Producto'
+            `Delete product "${product.name}"? This action cannot be undone.`,
+            'Delete Product'
         );
 
         if (!confirmed) return;
 
         try {
             await this.productsService.deleteProduct(product.id);
-            this.toast.success(`Producto "${product.name}" eliminado.`);
+            this.toast.success(`Product "${product.name}" deleted.`);
 
             // Reload table to avoid "Sin resultados" if deleted last item
             if (this.products().length <= 1 && this.currentPage() > 1) {
@@ -267,7 +267,7 @@ export class ProductsList implements OnInit {
                 this.loadProducts(this.currentPage());
             }
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error al eliminar el producto.');
+            this.toast.error(error?.message ?? 'Error deleting product.');
         }
     }
 
@@ -339,13 +339,13 @@ export class ProductsList implements OnInit {
             batches.push(rows.slice(i, i + BATCH_SIZE));
         }
 
-        this.toast.info(`Importando ${total} producto${total > 1 ? 's' : ''}...`);
+        this.toast.info(`Importing ${total} product${total > 1 ? 's' : ''}...`);
 
         for (const batch of batches) {
             const results = await Promise.allSettled(
                 batch.map(async (row) => {
                     const name = String(row['name'] ?? '').trim();
-                    if (!name) throw new Error('Campo "name" vacío');
+                    if (!name) throw new Error('Empty "name" field');
 
                     const price = Number(row['price'] ?? 0);
 
@@ -390,12 +390,12 @@ export class ProductsList implements OnInit {
         }
 
         if (created > 0 && failed === 0) {
-            this.toast.success(`✅ ${created} producto${created > 1 ? 's' : ''} importado${created > 1 ? 's' : ''} correctamente.`);
+            this.toast.success(`✅ ${created} product${created > 1 ? 's' : ''} imported successfully.`);
         } else if (created > 0 && failed > 0) {
-            this.toast.warning(`⚠️ ${created} importados, ${failed} con error. Revisa la consola.`);
+            this.toast.warning(`⚠️ ${created} imported, ${failed} with error. Check console.`);
             console.warn('[Import Products] Errores:', errors);
         } else {
-            this.toast.error(`❌ Ningún producto pudo importarse. Verifica el archivo.`);
+            this.toast.error(`❌ No products could be imported. Check the file.`);
             console.error('[Import Products] Errores:', errors);
         }
 

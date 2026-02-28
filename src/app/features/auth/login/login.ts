@@ -36,16 +36,16 @@ export class Login {
   readonly emailError = computed(() => {
     const control = this.loginForm.controls.email;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'El correo es requerido';
-      if (control.errors['email']) return 'Correo inválido';
+      if (control.errors['required']) return 'Email is required';
+      if (control.errors['email']) return 'Invalid email';
     }
     return null;
   });
   readonly passwordError = computed(() => {
     const control = this.loginForm.controls.password;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'La contraseña es requerida';
-      if (control.errors['minlength']) return 'Mínimo 6 caracteres';
+      if (control.errors['required']) return 'Password is required';
+      if (control.errors['minlength']) return 'Minimum 6 characters';
     }
     return null;
   });
@@ -76,9 +76,9 @@ export class Login {
 
     if (error) {
       this.errorMessage.set(error.message);
-      this.toast.error('Error al iniciar sesión', error.message);
+      this.toast.error('Login error', error.message);
     } else {
-      this.toast.success('¡Bienvenido!', 'Has iniciado sesión correctamente');
+      this.toast.success('Welcome!', 'You have logged in successfully');
 
       // If there's a redirect URL, use it immediately before guestGuard can redirect away
       if (redirect) {

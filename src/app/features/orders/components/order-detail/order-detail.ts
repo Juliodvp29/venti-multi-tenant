@@ -89,8 +89,8 @@ export class OrderDetail implements OnInit {
         { label: 'Envia', value: 'Envia' },
         { label: 'Deprisa', value: 'Deprisa' },
         { label: 'TCC', value: 'TCC' },
-        { label: 'Own Delivery', value: 'Domicilio Propio' },
-        { label: 'In-Store Pickup', value: 'Recogida en Tienda' },
+        { label: 'Own Delivery', value: 'Own Delivery' },
+        { label: 'In-Store Pickup', value: 'In-Store Pickup' },
     ];
 
     readonly statusOptions: { value: OrderStatus; label: string }[] = [

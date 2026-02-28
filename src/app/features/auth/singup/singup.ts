@@ -46,8 +46,8 @@ export class Singup implements OnInit {
   readonly businessNameError = computed(() => {
     const control = this.signupForm.controls.businessName;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'El nombre del negocio es requerido';
-      if (control.errors['minlength']) return 'Mínimo 2 caracteres';
+      if (control.errors['required']) return 'Business name is required';
+      if (control.errors['minlength']) return 'Minimum 2 characters';
     }
     return null;
   });
@@ -55,8 +55,8 @@ export class Singup implements OnInit {
   readonly emailError = computed(() => {
     const control = this.signupForm.controls.email;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'El correo es requerido';
-      if (control.errors['email']) return 'Correo inválido';
+      if (control.errors['required']) return 'Email is required';
+      if (control.errors['email']) return 'Invalid email';
     }
     return null;
   });
@@ -64,8 +64,8 @@ export class Singup implements OnInit {
   readonly passwordError = computed(() => {
     const control = this.signupForm.controls.password;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'La contraseña es requerida';
-      if (control.errors['minlength']) return 'Mínimo 8 caracteres';
+      if (control.errors['required']) return 'Password is required';
+      if (control.errors['minlength']) return 'Minimum 8 characters';
     }
     return null;
   });
@@ -73,8 +73,8 @@ export class Singup implements OnInit {
   readonly confirmPasswordError = computed(() => {
     const control = this.signupForm.controls.confirmPassword;
     if (control.touched) {
-      if (control.errors?.['required']) return 'Confirma tu contraseña';
-      if (!this.passwordsMatch()) return 'Las contraseñas no coinciden';
+      if (control.errors?.['required']) return 'Confirm your password';
+      if (!this.passwordsMatch()) return 'Passwords do not match';
     }
     return null;
   });
@@ -90,9 +90,9 @@ export class Singup implements OnInit {
     if (/\d/.test(password)) strength++;
     if (/[^a-zA-Z0-9]/.test(password)) strength++;
 
-    if (strength <= 2) return { level: 1, text: 'Débil', color: 'var(--color-error-500)' };
-    if (strength <= 3) return { level: 2, text: 'Media', color: 'var(--color-warning-500)' };
-    return { level: 3, text: 'Fuerte', color: 'var(--color-success-500)' };
+    if (strength <= 2) return { level: 1, text: 'Weak', color: 'var(--color-error-500)' };
+    if (strength <= 3) return { level: 2, text: 'Medium', color: 'var(--color-warning-500)' };
+    return { level: 3, text: 'Strong', color: 'var(--color-success-500)' };
   });
 
   // ── Lifecycle ────────────────────────────────────────────
@@ -112,7 +112,7 @@ export class Singup implements OnInit {
         this.signupForm.controls.businessName.updateValueAndValidity();
       } else {
         // Enforce invite-only registration: redirect to login if no token is provided
-        this.toast.warning('Registro restringido', 'El registro de nuevas cuentas está disponible únicamente mediante invitación.');
+        this.toast.warning('Registration restricted', 'Account registration is only available by invitation.');
         this.router.navigate(['/auth/login']);
         return;
       }
@@ -157,7 +157,7 @@ export class Singup implements OnInit {
     if (error) {
       this.isLoading.set(false);
       this.errorMessage.set(error.message);
-      this.toast.error('Error al registrarse', error.message);
+      this.toast.error('Registration error', error.message);
       return;
     }
 
@@ -176,11 +176,11 @@ export class Singup implements OnInit {
           // Show a warning but still let the user in
           console.warn('Could not auto-accept invitation:', acceptError);
           this.toast.warning(
-            'Cuenta creada',
-            'Tu cuenta fue creada pero ocurrió un problema al unirte a la tienda. Intenta abrir el link de invitación nuevamente.'
+            'Account created',
+            'Your account was created but there was a problem joining the store. Please try opening the invitation link again.'
           );
         } else {
-          this.toast.success('¡Bienvenido!', 'Tu cuenta fue creada y te has unido a la tienda exitosamente.');
+          this.toast.success('Welcome!', 'Your account was created and you have successfully joined the store.');
         }
 
         this.isLoading.set(false);
@@ -189,14 +189,14 @@ export class Singup implements OnInit {
       } catch (err: any) {
         console.warn('Invite acceptance error:', err);
         this.isLoading.set(false);
-        this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta.');
+        this.toast.success('Successful registration!', 'Check your email to confirm your account.');
         setTimeout(() => this.router.navigate(['/auth/login']), 3000);
       }
     } else {
       // Normal sign-up flow
       this.isLoading.set(false);
       this.isSuccess.set(true);
-      this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta');
+      this.toast.success('Successful registration!', 'Check your email to confirm your account');
       setTimeout(() => {
         this.router.navigate(['/auth/login']);
       }, 3000);

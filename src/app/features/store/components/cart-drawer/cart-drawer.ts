@@ -16,7 +16,7 @@ import { CartService } from '@core/services/cart';
     <div class="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
         <div class="p-6 border-b border-slate-100 flex items-center justify-between">
             <h2 class="text-xl font-bold flex items-center gap-2">
-                Tu Carrito
+                Your Cart
                 <span class="text-sm font-medium text-slate-400">({{ items().length }} items)</span>
             </h2>
             <button (click)="close.emit()" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
@@ -53,9 +53,9 @@ import { CartService } from '@core/services/cart';
             } @empty {
                 <div class="h-full flex flex-col items-center justify-center text-center py-12">
                      <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4 text-3xl">🛒</div>
-                     <p class="font-bold text-slate-900 mb-1">Tu carrito está vacío</p>
-                     <p class="text-sm text-slate-500 mb-6">¡Empieza a comprar y añade productos!</p>
-                     <button (click)="close.emit()" class="text-indigo-600 font-bold hover:underline">Seguir Comprando</button>
+                     <p class="font-bold text-slate-900 mb-1">Your cart is empty</p>
+                     <p class="text-sm text-slate-500 mb-6">Start shopping and add products!</p>
+                     <button (click)="close.emit()" class="text-indigo-600 font-bold hover:underline">Continue Shopping</button>
                 </div>
             }
         </div>
@@ -68,7 +68,7 @@ import { CartService } from '@core/services/cart';
                         <input 
                             [(ngModel)]="couponCode" 
                             type="text" 
-                            placeholder="Código de cupón"
+                            placeholder="Coupon code"
                             class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all uppercase"
                         >
                         <button 
@@ -76,7 +76,7 @@ import { CartService } from '@core/services/cart';
                             [disabled]="!couponCode()"
                             class="px-4 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 disabled:opacity-50 transition-all"
                         >
-                            Aplicar
+                            Apply
                         </button>
                     </div>
                 } @else {
@@ -87,7 +87,7 @@ import { CartService } from '@core/services/cart';
                             </svg>
                             <span class="text-sm font-bold">{{ cartService.appliedCoupon()?.code }}</span>
                         </div>
-                        <button (click)="cartService.removeCoupon()" class="text-slate-400 hover:text-red-500 font-bold text-sm">Remover</button>
+                        <button (click)="cartService.removeCoupon()" class="text-slate-400 hover:text-red-500 font-bold text-sm">Remove</button>
                     </div>
                 }
             </div>
@@ -101,13 +101,13 @@ import { CartService } from '@core/services/cart';
             
             @if (cartService.appliedCoupon()) {
                 <div class="flex justify-between mb-2 text-sm text-indigo-600 font-bold">
-                    <span>Descuento</span>
+                    <span>Discount</span>
                     <span>-{{ cartService.discountAmount() | currency }}</span>
                 </div>
             }
 
             <div class="flex justify-between mb-2 text-sm text-slate-500">
-                <span>Impuestos</span>
+                <span>Taxes</span>
                 <span>{{ cartService.tax() | currency }}</span>
             </div>
 
@@ -117,7 +117,7 @@ import { CartService } from '@core/services/cart';
             </div>
             
             <button (click)="close.emit()" routerLink="/store/checkout" [disabled]="items().length === 0" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
-                Ir al Checkout
+                Go to Checkout
             </button>
         </div>
     </div>

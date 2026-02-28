@@ -11,8 +11,8 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Pedidos</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gestiona y revisa los pedidos de tu tienda.</p>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Orders</h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage and review your store's orders.</p>
         </div>
     </div>
 
@@ -37,8 +37,8 @@
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
                     {{ stats()?.totalThisMonth ?? 0 }}</p>
                 }
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Pedidos
-                    este mes</p>
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Orders
+                    this month</p>
             </div>
         </div>
 
@@ -60,12 +60,12 @@
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
                     {{ stats()?.pendingFulfillment ?? 0 }}
                     @if ((stats()?.pendingFulfillment ?? 0) > 0) {
-                    <span class="ml-2 text-xs font-semibold text-amber-600 dark:text-amber-400">Atención</span>
+                    <span class="ml-2 text-xs font-semibold text-amber-600 dark:text-amber-400">Attention</span>
                     }
                 </p>
                 }
                 <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Pendientes de envío</p>
+                    Pending shipment</p>
             </div>
         </div>
 
@@ -95,7 +95,7 @@
                 </p>
                 }
                 <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Revenue hoy</p>
+                    Revenue today</p>
             </div>
         </div>
 
@@ -110,7 +110,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Cargando pedidos...</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Loading orders...</p>
         </div>
     </div>
     }
@@ -119,18 +119,18 @@
     @if (orders().length > 0 || !isLoading()) {
     <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
         [class.pointer-events-none]="isLoading()">
-        <app-dynamic-table [data]="orders()" [columns]="columns()" title="Pedidos"
-            description="Haz clic en un pedido para ver los detalles completos."
-            searchPlaceholder="Buscar por #orden o email..." [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE"
-            (pageChange)="loadOrders($event)" (rowClick)="onRowClick($event)" (searchChange)="onSearchChange($event)">
+        <app-dynamic-table [data]="orders()" [columns]="columns()" title="Orders"
+            description="Click on an order to see full details." searchPlaceholder="Search by #order or email..."
+            [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE" (pageChange)="loadOrders($event)"
+            (rowClick)="onRowClick($event)" (searchChange)="onSearchChange($event)">
 
             <!-- Filters Slot -->
             <div filters class="flex items-center gap-2">
                 <!-- Status filter -->
                 <app-dropdown [options]="statusDropdownOptions" [value]="statusFilter()"
-                    (valueChange)="statusFilter.set($event); loadOrders(1)" width="w-44" placeholder="Estado" />
+                    (valueChange)="statusFilter.set($event); loadOrders(1)" width="w-44" placeholder="Status" />
                 <!-- Date range picker -->
-                <app-date-range-picker [(value)]="dateRange" placeholder="Rango de fechas"
+                <app-date-range-picker [(value)]="dateRange" placeholder="Date range"
                     (rangeChange)="onDateRangeChange($event)" />
             </div>
 

@@ -59,9 +59,9 @@ export class TenantService {
     const defaultLayout: StorefrontLayout = {
       sections: [],
       navigation: [
-        { label: 'Productos', url: '/store' },
-        { label: 'Colecciones', url: '/store/colecciones' },
-        { label: 'Sobre Nosotros', url: '/store/sobre-nosotros' }
+        { label: 'Products', url: '/store' },
+        { label: 'Collections', url: '/store/collections' },
+        { label: 'About Us', url: '/store/about-us' }
       ]
     };
 
@@ -570,7 +570,7 @@ export class TenantService {
     // Guard: email must be a non-empty valid string
     const cleanEmail = (email ?? '').trim();
     if (!cleanEmail || !cleanEmail.includes('@')) {
-      throw new Error('Email inválido');
+      throw new Error('Invalid email');
     }
 
     // 1. Check if there's already a pending invite for this email
@@ -581,7 +581,7 @@ export class TenantService {
       .eq('status', 'pending');
 
     if (existingInvite && existingInvite.length > 0) {
-      throw new Error('Este email ya tiene una invitación pendiente para esta tienda.');
+      throw new Error('A pending invitation already exists for this email.');
     }
 
     // 2. Insert the invitation
@@ -597,14 +597,14 @@ export class TenantService {
       .single();
 
     if (insertError) throw insertError;
-    if (!insertedInvite?.token) throw new Error('No se pudo generar el token de invitación.');
+    if (!insertedInvite?.token) throw new Error('Could not generate invitation token.');
 
     const token: string = insertedInvite.token;
     const inviteLink = `${window.location.origin}/accept-invite?token=${token}`;
     const storeName = this.businessName() ?? 'Venti Store';
     const inviterEmail = this.authService.userEmail() ?? 'Un administrador';
 
-    console.log('%c📧 Invitación creada!', 'color: green; font-weight: bold;');
+    console.log('%c📧 Invitation created!', 'color: green; font-weight: bold;');
     console.log('Link:', inviteLink);
 
     // 2.5 Check if user exists using RPC
@@ -644,10 +644,10 @@ export class TenantService {
 
       if (!res.ok) {
         const body = await res.text();
-        console.warn(`Email Edge Fn returned ${res.status} (invitación creada):`, body);
+        console.warn(`Email Edge Fn returned ${res.status} (invitation created):`, body);
       }
     } catch (emailErr) {
-      console.warn('Email error (invitación creada de todas formas):', emailErr);
+      console.warn('Email error (invitation created anyway):', emailErr);
     }
   }
 

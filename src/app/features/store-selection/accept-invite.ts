@@ -138,12 +138,12 @@ export class AcceptInviteComponent implements OnInit {
         .single();
 
       if (error || !data) {
-        this.errorMsg.set('Esta invitación es inválida, expiró, o ya fue aceptada.');
+        this.errorMsg.set('This invitation is invalid, expired, or has already been accepted.');
       } else {
         this.inviteDetails.set(data);
       }
     } catch {
-      this.errorMsg.set('Hubo un problema verificando tu invitación.');
+      this.errorMsg.set('There was a problem verifying your invitation.');
     } finally {
       this.isLoading.set(false);
     }

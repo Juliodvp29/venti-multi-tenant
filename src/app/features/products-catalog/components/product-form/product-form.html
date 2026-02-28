@@ -26,7 +26,7 @@
     <!-- Form Body — scrollable -->
     <div class="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-900">
 
-        <!-- Section: Información Básica -->
+        <!-- Section: Basic Information -->
         <div>
             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Basic
                 Information</h3>
@@ -74,7 +74,7 @@
                 <!-- SKU -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">SKU</label>
-                    <input type="text" formControlName="sku" placeholder="ej. CAM-001-BLK"
+                    <input type="text" formControlName="sku" placeholder="e.g. CAM-001-BLK"
                         class="block w-full rounded-xl border px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
                 </div>
 
@@ -153,7 +153,7 @@
         <!-- Divider -->
         <div class="border-t border-gray-100 dark:border-gray-800"></div>
 
-        <!-- Section: Precios -->
+        <!-- Section: Pricing -->
         <div>
             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Pricing</h3>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -197,7 +197,7 @@
         <!-- Divider -->
         <div class="border-t border-gray-100 dark:border-gray-800"></div>
 
-        <!-- Section: Inventario -->
+        <!-- Section: Inventory -->
         <div class="pb-2">
             <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Inventory
             </h3>
@@ -252,7 +252,7 @@
         <!-- Divider -->
         <div class="border-t border-gray-100 dark:border-gray-800"></div>
 
-        <!-- Section: Variantes -->
+        <!-- Section: Variants -->
         <div>
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Variants
@@ -402,7 +402,7 @@
     <!-- Divider -->
     <div class="border-t border-gray-100 dark:border-gray-800"></div>
 
-    <!-- Section: Imágenes -->
+    <!-- Section: Images -->
     <div class="px-6 py-5">
         <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Images</h3>
         <app-product-image-uploader [productId]="isEditMode() ? product()?.id ?? null : null"

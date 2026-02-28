@@ -126,7 +126,7 @@ export class OrdersService {
                 order_id: order.id,
                 tenant_id: tenantId,
                 new_status: order.status || OrderStatus.Pending,
-                note: 'Pedido creado exitosamente',
+                note: 'Order created successfully',
             } as any);
         } catch (e) {
             console.warn('Could not insert order status history (likely RLS), ignoring:', e);
@@ -361,7 +361,7 @@ export class OrdersService {
             order_id: order.id,
             tenant_id: tenantId,
             new_status: totalRefundedSoFar >= order.total_amount ? OrderStatus.Refunded : order.status,
-            note: `Reembolso de $${amount} procesado por motivo: ${reason}`
+            note: `Refund of $${amount} processed for reason: ${reason}`
         });
     }
 }
