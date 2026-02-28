@@ -100,6 +100,14 @@ export class ProductsList implements OnInit {
     readonly filteredProducts = computed(() => {
         const filter = this.statusFilter();
         if (!filter) return this.products();
+        if (filter === ProductStatus.OutOfStock) {
+            // Match products explicitly marked out_of_stock OR
+            // active products tracking inventory with 0 stock
+            return this.products().filter(p =>
+                p.status === ProductStatus.OutOfStock ||
+                (p.track_inventory && p.stock_quantity === 0)
+            );
+        }
         return this.products().filter(p => p.status === filter);
     });
 

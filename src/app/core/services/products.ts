@@ -65,7 +65,15 @@ export class ProductsService {
         }
 
         if (filters?.['status']) {
-            query = query.eq('status', filters['status']);
+            if (filters['status'] === 'out_of_stock') {
+                // Match products explicitly marked as out_of_stock OR
+                // active products that track inventory and have 0 stock
+                query = query.or(
+                    `status.eq.out_of_stock,and(track_inventory.eq.true,stock_quantity.eq.0)`
+                );
+            } else {
+                query = query.eq('status', filters['status']);
+            }
         }
 
 
