@@ -92,7 +92,7 @@ export class Dashboard {
   private async loadSalesChart() {
     const monthlyData = await this.analytics.getMonthlySales();
     this.salesSeries.set([{
-      name: 'Ingresos',
+      name: 'Revenue',
       data: monthlyData
     }]);
   }
@@ -103,13 +103,13 @@ export class Dashboard {
     // Sort by value descending
     const sorted = distribution.sort((a, b) => b.value - a.value);
 
-    // Take top 3 and group the rest as "Otros"
+    // Take top 3 and group the rest as "Others"
     const top = sorted.slice(0, 3);
     const others = sorted.slice(3);
 
     if (others.length > 0) {
       const othersTotal = others.reduce((sum, item) => sum + item.value, 0);
-      top.push({ name: 'Otros', value: othersTotal });
+      top.push({ name: 'Others', value: othersTotal });
     }
 
     this.categorySeries.set(top.map(d => d.value));
@@ -120,7 +120,7 @@ export class Dashboard {
     const performance = await this.analytics.getProductPerformance();
     this.topProducts.set((performance as any[]).map(p => ({
       id: p.product_id,
-      name: p.product?.name || 'Producto',
+      name: p.product?.name || 'Product',
       category: 'General',
       sales: p.purchases,
       revenue: `$${(p.revenue / 1000).toFixed(1)}k`,
@@ -131,15 +131,15 @@ export class Dashboard {
   private async loadRecentOrders() {
     const { data } = await this.ordersService.getOrders(1, 5);
     this.recentTransactions.set((data as any[]).map(o => {
-      const first = o.customer_first_name || 'Invitado';
+      const first = o.customer_first_name || 'Guest';
       const last = o.customer_last_name || '';
       const fullName = (first + ' ' + last).trim();
 
       return {
         id: o.order_number,
         customerName: fullName,
-        customerInitial: (first?.[0] || 'I') + (last?.[0] || ''),
-        product: 'Varios items',
+        customerInitial: (first?.[0] || 'G') + (last?.[0] || ''),
+        product: 'Multiple items',
         date: new Date(o.created_at).toLocaleDateString(),
         amount: o.total_amount,
         status: this.mapStatus(o.status)

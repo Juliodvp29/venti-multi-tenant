@@ -602,7 +602,7 @@ export class TenantService {
     const token: string = insertedInvite.token;
     const inviteLink = `${window.location.origin}/accept-invite?token=${token}`;
     const storeName = this.businessName() ?? 'Venti Store';
-    const inviterEmail = this.authService.userEmail() ?? 'Un administrador';
+    const inviterEmail = this.authService.userEmail() ?? 'An administrator';
 
     console.log('%c📧 Invitation created!', 'color: green; font-weight: bold;');
     console.log('Link:', inviteLink);

@@ -1,14 +1,14 @@
 <div class="space-y-6 pb-12">
     <!-- Header -->
     <header>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Resumen de la Tienda</h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Bienvenido de nuevo. Esto es lo que está pasando en tu
-            tienda hoy.</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Store Overview</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Welcome back. Here's what's happening at your
+            store today.</p>
     </header>
 
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <app-stat-card label="Ventas Totales" [value]="revenueTotal() | currency" [trend]="{ value: revenueTrend() }">
+        <app-stat-card label="Total Sales" [value]="revenueTotal() | currency" [trend]="{ value: revenueTrend() }">
             <svg icon xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -16,7 +16,7 @@
             </svg>
         </app-stat-card>
 
-        <app-stat-card label="Órdenes Totales" [value]="ordersTotal() | number" [trend]="{ value: ordersTrend() }"
+        <app-stat-card label="Total Orders" [value]="ordersTotal() | number" [trend]="{ value: ordersTrend() }"
             iconBgClass="bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
             <svg icon xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -25,7 +25,7 @@
             </svg>
         </app-stat-card>
 
-        <app-stat-card label="Valor Promedio" [value]="avgOrderValue() | currency" [trend]="{ value: avgOrderTrend() }"
+        <app-stat-card label="Average Value" [value]="avgOrderValue() | currency" [trend]="{ value: avgOrderTrend() }"
             iconBgClass="bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
             <svg icon xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -34,7 +34,7 @@
             </svg>
         </app-stat-card>
 
-        <app-stat-card label="Clientes Nuevos" [value]="customersTotal() | number" [trend]="{ value: customersTrend() }"
+        <app-stat-card label="New Customers" [value]="customersTotal() | number" [trend]="{ value: customersTrend() }"
             iconBgClass="bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
             <svg icon xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -60,20 +60,19 @@
             <!-- Upgrade Banner -->
             <div class="relative h-full overflow-hidden rounded-3xl bg-indigo-600 p-8 md:p-10 text-white shadow-lg">
                 <div class="relative z-10 max-w-xl">
-                    <h2 class="text-3xl font-bold">Escala tu negocio con Venti Shop Plus</h2>
+                    <h2 class="text-3xl font-bold">Scale your business with Venti Shop Plus</h2>
                     <p class="mt-4 text-indigo-100 text-sm leading-relaxed">
-                        Desbloquea analíticas avanzadas, branding personalizado para el checkout y soporte dedicado
-                        24/7.
-                        Haz crecer tus ingresos hasta un 25% con nuestras herramientas de optimización.
+                        Unlock advanced analytics, custom checkout branding, and 24/7 dedicated support.
+                        Grow your revenue by up to 25% with our optimization tools.
                     </p>
                     <div class="mt-8 flex flex-wrap gap-4">
                         <button
                             class="px-6 py-2.5 bg-white text-indigo-600 font-bold rounded-xl shadow-lg hover:bg-indigo-50 transition-all">
-                            Mejorar ahora
+                            Upgrade now
                         </button>
                         <button
                             class="px-6 py-2.5 bg-indigo-500/30 text-white font-bold rounded-xl border border-indigo-400/30 hover:bg-indigo-500/50 transition-all">
-                            Saber más
+                            Learn more
                         </button>
                     </div>
                 </div>

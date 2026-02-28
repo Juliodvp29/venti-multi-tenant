@@ -23,10 +23,10 @@ export class AiAssistantService {
 
     private readonly model = this.genAI.getGenerativeModel({
         model: 'gemini-3-flash-preview',
-        systemInstruction: `Eres un asistente experto en gestión de e-commerce. 
-  La fecha actual es ${new Date().toISOString()}. 
-  Usa las herramientas proporcionadas para dar respuestas basadas en datos reales. 
-  Si el usuario pide un reporte, resume los datos de forma profesional en formato Markdown.`,
+        systemInstruction: `You are an expert assistant in e-commerce management. 
+  The current date is ${new Date().toISOString()}. 
+  Use the provided tools to give answers based on real data. 
+  If the user asks for a report, summarize the data professionally in Markdown format.`,
         tools: [
             {
                 functionDeclarations: [
@@ -67,25 +67,25 @@ export class AiAssistantService {
                     },
                     {
                         name: 'get_order_details',
-                        description: 'Obtiene toda la información detallada de una orden específica, incluyendo productos comprados, estado de pago y datos de envío.',
+                        description: 'Gets all detailed information for a specific order, including purchased products, payment status, and shipping data.',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {
-                                orderNumber: { type: SchemaType.STRING, description: 'El número de orden (ej: STORE-2024-0001)' }
+                                orderNumber: { type: SchemaType.STRING, description: 'The order number (e.g., STORE-2024-0001)' }
                             },
                             required: ['orderNumber']
                         }
                     },
                     {
                         name: 'get_sales_metrics',
-                        description: 'Obtiene métricas de ventas agregadas (ingresos totales, número de órdenes) para un periodo de tiempo. Útil para responder "cuánto vendimos ayer" o "comparativa de este mes".',
+                        description: 'Gets aggregated sales metrics (total revenue, number of orders) for a period of time. Useful for answering "how much did we sell yesterday" or "this month comparison".',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {
                                 period: {
                                     type: SchemaType.STRING,
                                     enum: ['today', 'yesterday', 'this_week', 'this_month', 'last_month'],
-                                    description: 'El periodo de tiempo a consultar',
+                                    description: 'The time period to query',
                                 }
                             },
                             required: ['period']
@@ -93,42 +93,42 @@ export class AiAssistantService {
                     },
                     {
                         name: 'get_inventory_alerts',
-                        description: 'Lista los productos que están agotados o por debajo del umbral de stock bajo. Responde a "¿Qué productos debo reponer?"',
+                        description: 'Lists products that are out of stock or below the low stock threshold. Responds to "What products should I restock?"',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {
-                                onlyOutOfStock: { type: SchemaType.BOOLEAN, description: 'Si es true, solo muestra los que tienen stock 0' }
+                                onlyOutOfStock: { type: SchemaType.BOOLEAN, description: 'If true, only shows those with 0 stock' }
                             }
                         } as any
                     },
                     {
                         name: 'get_product_performance',
-                        description: 'Identifica los productos más vendidos (top sellers) y los que generan más ingresos en los últimos 30 días.',
+                        description: 'Identifies top selling products and those generating the most revenue in the last 30 days.',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {
-                                limit: { type: SchemaType.NUMBER, description: 'Cantidad de productos a mostrar (defecto 5)' }
+                                limit: { type: SchemaType.NUMBER, description: 'Number of products to show (default 5)' }
                             }
                         } as any
                     },
                     {
                         name: 'analyze_customer_segment',
-                        description: 'Busca clientes por segmento (VIP, Loyal, Repeat, New) o por correo. Útil para "¿Quiénes son mis clientes VIP?" o "¿Cuándo fue la última compra de este cliente?"',
+                        description: 'Search customers by segment (VIP, Loyal, Repeat, New) or by email. Useful for "Who are my VIP customers?" or "When was this customer\'s last purchase?"',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {
                                 segment: {
                                     type: SchemaType.STRING,
                                     enum: ['VIP', 'Loyal', 'Repeat', 'New', 'Prospect'],
-                                    description: 'El segmento de clientes a filtrar',
+                                    description: 'The customer segment to filter',
                                 },
-                                email: { type: SchemaType.STRING, description: 'Email opcional para buscar un cliente específico' }
+                                email: { type: SchemaType.STRING, description: 'Optional email to search for a specific customer' }
                             }
                         } as any
                     },
                     {
                         name: 'get_active_promotions',
-                        description: 'Lista los códigos de descuento activos, su validez y cuántas veces se han usado.',
+                        description: 'Lists active discount codes, their validity, and how many times they have been used.',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {}
@@ -136,35 +136,35 @@ export class AiAssistantService {
                     },
                     {
                         name: 'get_recent_audit_logs',
-                        description: 'Consulta los últimos cambios importantes en la plataforma (creación de productos, cambios de precios, reembolsos). Útil para auditoría técnica.',
+                        description: 'Queries the latest important changes on the platform (product creation, price changes, refunds). Useful for technical audit.',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {
-                                resourceType: { type: SchemaType.STRING, description: 'Filtrar por tipo de recurso: product, order, tenant, payment' },
-                                limit: { type: SchemaType.NUMBER, description: 'Número de registros a traer' }
+                                resourceType: { type: SchemaType.STRING, description: 'Filter by resource type: product, order, tenant, payment' },
+                                limit: { type: SchemaType.NUMBER, description: 'Number of records to fetch' }
                             }
                         } as any
                     },
                     {
                         name: 'get_app_guide',
-                        description: 'Consulta el manual de usuario y guía de navegación del sistema. Útil para responder "¿Cómo hago X?", "¿Dónde encuentro Y?" o "¿Para qué sirve esta pantalla?".',
+                        description: 'Queries the user manual and system navigation guide. Useful for answering "How do I do X?", "Where do I find Y?" or "What is this screen for?".',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {
-                                topic: { type: SchemaType.STRING, description: 'El tema o funcionalidad sobre la que el usuario tiene dudas (ej: "historial de estados", "branding", "ventas")' }
+                                topic: { type: SchemaType.STRING, description: 'The topic or functionality the user has doubts about (e.g., "status history", "branding", "sales")' }
                             }
                         }
                     },
                     {
                         name: 'navigate_to',
-                        description: 'Redirige automáticamente al usuario a una sección específica del sistema. Útil cuando el usuario dice "llévame a...", "quiero ver...", o cuando el asistente sugiere ir a una pantalla para realizar una acción.',
+                        description: 'Automatically redirects the user to a specific section of the system. Useful when the user says "take me to...", "I want to see...", or when the assistant suggests going to a screen to perform an action.',
                         parameters: {
                             type: SchemaType.OBJECT,
                             properties: {
                                 page: {
                                     type: SchemaType.STRING,
                                     enum: ['dashboard', 'products', 'orders', 'customers', 'members', 'settings'],
-                                    description: 'La página a la que se desea navegar'
+                                    description: 'The page to navigate to'
                                 }
                             },
                             required: ['page']
@@ -186,7 +186,7 @@ export class AiAssistantService {
     private loadMessages(): Message[] {
         const defaultMessage: Message = {
             role: 'model',
-            content: '¡Hola! Soy tu asistente de Venti. Puedo ayudarte con información sobre tus ventas, órdenes y productos. ¿En qué puedo ayudarte hoy?',
+            content: 'Hello! I am your Venti assistant. I can help you with information about your sales, orders, and products. How can I help you today?',
             timestamp: new Date()
         };
 
@@ -284,7 +284,7 @@ export class AiAssistantService {
             // Final text extraction
             const modelText = response.candidates?.[0]?.content?.parts
                 ?.map(p => p.text || '')
-                .join('') || 'Lo siento, no pude generar una respuesta de texto.';
+                .join('') || 'Sorry, I could not generate a text response.';
 
             this.messages.update(msgs => {
                 const updated = [...msgs, {
@@ -301,7 +301,7 @@ export class AiAssistantService {
             this.messages.update(msgs => {
                 const updated = [...msgs, {
                     role: 'model' as const,
-                    content: 'Lo siento, ocurrió un error al procesar tu solicitud. ¿Podrías intentar de nuevo?',
+                    content: 'Sorry, an error occurred while processing your request. Could you try again?',
                     timestamp: new Date()
                 }];
                 this.saveMessages(updated);
@@ -457,12 +457,12 @@ export class AiAssistantService {
 
     private async handleGetAppGuide(args: any) {
         const guides: Record<string, string> = {
-            'dashboard': 'El Dashboard principal muestra un resumen de ventas mensuales, estados de órdenes y acceso rápido a funciones clave.',
-            'products': 'En el Catálogo de Productos puedes crear, editar y gestionar el stock de tus artículos. Se encuentra en el menú lateral.',
-            'orders': 'La sección de Órdenes muestra todos los pedidos realizados. Aquí puedes filtrar por estado, cliente o fecha.',
-            'order-history': 'Para ver el historial de estados de una orden: 1. Ve a "Ordenes". 2. Haz clic en la orden que deseas consultar. 3. Desliza hacia abajo hasta encontrar la sección "Historial de Estados".',
-            'branding': 'Puedes personalizar el logo y colores de tu tienda en Configuración -> Marca.',
-            'settings': 'En Configuración puedes gestionar ajustes de la tienda, marca, impuestos y métodos de envío.'
+            'dashboard': 'The main Dashboard shows a summary of monthly sales, order statuses, and quick access to key functions.',
+            'products': 'In the Product Catalog, you can create, edit, and manage the stock of your items. It is found in the side menu.',
+            'orders': 'The Orders section shows all placed orders. Here you can filter by status, customer, or date.',
+            'order-history': 'To view the status history of an order: 1. Go to "Orders". 2. Click on the order you want to consult. 3. Scroll down until you find the "Status History" section.',
+            'branding': 'You can customize your store logo and colors in Settings -> Branding.',
+            'settings': 'In Settings, you can manage store settings, branding, taxes, and shipping methods.'
         };
 
         const topic = args.topic?.toLowerCase() || '';
@@ -483,8 +483,8 @@ export class AiAssistantService {
         const path = pages[args.page];
         if (path) {
             this.navigationRequest$.next(path);
-            return { success: true, message: `Navegando a la sección de ${args.page}...` };
+            return { success: true, message: `Navigating to the ${args.page} section...` };
         }
-        return { success: false, error: 'Página no válida' };
+        return { success: false, error: 'Invalid page' };
     }
 }

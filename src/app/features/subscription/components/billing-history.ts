@@ -3,24 +3,24 @@ import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { SubscriptionHistoryEntry } from '@core/models/billing.model';
 
 @Component({
-    selector: 'app-billing-history',
-    imports: [CommonModule, CurrencyPipe, DatePipe],
-    template: `
+  selector: 'app-billing-history',
+  imports: [CommonModule, CurrencyPipe, DatePipe],
+  template: `
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
       <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
-        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Historial de Facturación</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Consulta tus pagos anteriores y descarga tus facturas.</p>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Billing History</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Check your previous payments and download your invoices.</p>
       </div>
 
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-gray-50/50 dark:bg-gray-800/50">
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Fecha</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Date</th>
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Plan</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Monto</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Estado</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 text-right">Acción</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Amount</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Status</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 text-right">Action</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -52,7 +52,7 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
                 </td>
                 <td class="px-6 py-4 text-right">
                   <button class="text-sm font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 transition-colors">
-                    Ver Factura
+                    View Invoice
                   </button>
                 </td>
               </tr>
@@ -63,7 +63,7 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
                     <svg class="w-10 h-10 text-gray-300 dark:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span>No hay facturas registradas todavía.</span>
+                    <span>No invoices recorded yet.</span>
                   </div>
                 </td>
               </tr>
@@ -73,8 +73,8 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BillingHistory {
-    @Input() history: SubscriptionHistoryEntry[] = [];
+  @Input() history: SubscriptionHistoryEntry[] = [];
 }

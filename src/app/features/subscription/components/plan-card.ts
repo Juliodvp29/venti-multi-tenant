@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { BillingPlan } from '@core/models/billing.model';
 
 @Component({
-    selector: 'app-plan-card',
-    imports: [CommonModule],
-    template: `
+  selector: 'app-plan-card',
+  imports: [CommonModule],
+  template: `
     <div 
       class="relative flex flex-col p-8 bg-white dark:bg-gray-900 rounded-2xl border-2 transition-all duration-300"
       [class.border-indigo-600]="plan.isRecommended"
@@ -17,7 +17,7 @@ import { BillingPlan } from '@core/models/billing.model';
       <!-- Recommended Badge -->
       @if (plan.isRecommended) {
         <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-lg">
-          Recomendado
+          Recommended
         </div>
       }
 
@@ -25,7 +25,7 @@ import { BillingPlan } from '@core/models/billing.model';
         <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ plan.name }}</h3>
         <div class="mt-4 flex items-baseline gap-1">
           <span class="text-4xl font-extrabold text-gray-900 dark:text-white">\${{ plan.price }}</span>
-          <span class="text-gray-500 dark:text-gray-400">/mes</span>
+          <span class="text-gray-500 dark:text-gray-400">/mo</span>
         </div>
         <p class="mt-4 text-sm text-gray-500 dark:text-gray-400 h-10 line-clamp-2">
           {{ plan.description }}
@@ -43,7 +43,7 @@ import { BillingPlan } from '@core/models/billing.model';
         [class.dark:bg-gray-800]="isCurrent"
         [class.text-gray-500]="isCurrent"
       >
-        {{ isCurrent ? 'Plan Actual' : 'Cambiar a ' + plan.name }}
+        {{ isCurrent ? 'Current Plan' : 'Switch to ' + plan.name }}
       </button>
 
       <ul class="mt-8 space-y-4 flex-1">
@@ -58,11 +58,11 @@ import { BillingPlan } from '@core/models/billing.model';
       </ul>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanCard {
-    @Input({ required: true }) plan!: BillingPlan;
-    @Input() isCurrent = false;
-    @Input() isLoading = false;
-    @Output() onUpgrade = new EventEmitter<string>();
+  @Input({ required: true }) plan!: BillingPlan;
+  @Input() isCurrent = false;
+  @Input() isLoading = false;
+  @Output() onUpgrade = new EventEmitter<string>();
 }

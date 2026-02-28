@@ -46,7 +46,7 @@ export class Subscription implements OnInit {
       const history = await this.subscriptionService.getSubscriptionHistory();
       this.history.set(history);
     } catch (error) {
-      this.toastService.error('Error al cargar el historial de facturación');
+      this.toastService.error('Error loading billing history');
     } finally {
       this.isLoading.set(false);
     }
@@ -58,10 +58,10 @@ export class Subscription implements OnInit {
     this.isChangingPlan.set(true);
     try {
       await this.subscriptionService.changePlan(planId);
-      this.toastService.success('Solicitud de cambio de plan enviada');
+      this.toastService.success('Plan change request sent');
       // In a real app, we would wait for the payment flow or webhook
     } catch (error) {
-      this.toastService.error('Error al solicitar el cambio de plan');
+      this.toastService.error('Error requesting plan change');
     } finally {
       this.isChangingPlan.set(false);
     }

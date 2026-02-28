@@ -40,8 +40,8 @@ export const BILLING_PLANS: BillingPlan[] = [
         price: 0,
         currency: 'USD',
         interval: 'month',
-        description: 'Perfecto para comenzar y probar todas las funciones básicas.',
-        features: ['Hasta 50 Productos', '5 Categorías', '2 Miembros de equipo', 'Soporte vía comunidad'],
+        description: 'Perfect to start and test all basic functions.',
+        features: ['Up to 50 Products', '5 Categories', '2 Team members', 'Community support'],
         limitations: {
             products: 50,
             categories: 5,
@@ -56,8 +56,8 @@ export const BILLING_PLANS: BillingPlan[] = [
         price: 15,
         currency: 'USD',
         interval: 'month',
-        description: 'La opción más económica para lanzar tu marca profesional.',
-        features: ['Hasta 1,000 Productos', 'Categorías ilimitadas', '5 Miembros de equipo', 'Dominio personalizado'],
+        description: 'The most affordable option to launch your professional brand.',
+        features: ['Up to 1,000 Products', 'Unlimited Categories', '5 Team members', 'Custom domain'],
         isRecommended: true,
         limitations: {
             products: 1000,
@@ -73,8 +73,8 @@ export const BILLING_PLANS: BillingPlan[] = [
         price: 79,
         currency: 'USD',
         interval: 'month',
-        description: 'Optimizado para marcas de alto volumen y escala.',
-        features: ['Hasta 25,000 Productos', 'Miembros ilimitados', 'Soporte prioritario 24/7', 'Acceso API'],
+        description: 'Optimized for high volume and scaling brands.',
+        features: ['Up to 25,000 Products', 'Unlimited members', '24/7 Priority support', 'API access'],
         limitations: {
             products: 25000,
             categories: 9999,
@@ -89,8 +89,8 @@ export const BILLING_PLANS: BillingPlan[] = [
         price: 299,
         currency: 'USD',
         interval: 'month',
-        description: 'Máximo rendimiento para operaciones corporativas.',
-        features: ['Productos ilimitados', 'Infraestructura dedicada', 'Account Manager', 'SLA garantizado'],
+        description: 'Maximum performance for corporate operations.',
+        features: ['Unlimited products', 'Dedicated infrastructure', 'Account Manager', 'Guaranteed SLA'],
         limitations: {
             products: 999999,
             categories: 999999,

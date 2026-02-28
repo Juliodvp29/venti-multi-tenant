@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
 
       @if (percentage >= 100 && !isUnlimited) {
         <p class="text-[10px] font-bold text-red-500 uppercase tracking-tighter animate-pulse">
-            Límite alcanzado. ¡Mejora tu plan!
+            Limit reached. Upgrade your plan!
         </p>
       }
     </div>
