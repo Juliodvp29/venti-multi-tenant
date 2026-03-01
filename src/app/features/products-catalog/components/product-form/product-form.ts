@@ -4,6 +4,8 @@ import {
     effect,
     inject,
     input,
+    OnDestroy,
+    OnInit,
     output,
     signal,
     ViewChild,
@@ -12,6 +14,7 @@ import { Product, CreateProductDto, UpdateProductDto, ProductVariant, ProductOpt
 import { Category } from '@core/models/category';
 import { ProductsService } from '@core/services/products';
 import { ToastService } from '@core/services/toast';
+import { AiAssistantService } from '@core/services/ai-assistant';
 import { ProductStatus } from '@core/enums';
 import { ProductImageUploader } from '../product-image-uploader/product-image-uploader';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -24,12 +27,13 @@ import { CommonModule } from '@angular/common';
     styleUrl: './product-form.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductForm {
+export class ProductForm implements OnInit, OnDestroy {
     @ViewChild(ProductImageUploader) imageUploader?: ProductImageUploader;
 
     private readonly fb = inject(FormBuilder);
     private readonly productsService = inject(ProductsService);
     private readonly toast = inject(ToastService);
+    private readonly aiService = inject(AiAssistantService);
 
     product = input<Product | null>(null);
     categories = input<Category[]>([]);
@@ -111,6 +115,14 @@ export class ProductForm {
                 this.selectedCategoryIds.set(new Set());
             }
         });
+    }
+
+    ngOnInit() {
+        this.aiService.hide();
+    }
+
+    ngOnDestroy() {
+        this.aiService.show();
     }
 
     get variants() {

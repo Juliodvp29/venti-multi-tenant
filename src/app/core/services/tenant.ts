@@ -43,15 +43,33 @@ export class TenantService {
   readonly error = computed(() => this._state().error);
   readonly initialized = computed(() => this._state().initialized);
   readonly memberRole = computed(() => {
-    const role = this._state().memberInfo?.role;
-    // Normalize to lowercase to match TenantRole enum values (DB may store 'Admin', 'Editor', etc.)
-    return role ? (role.toLowerCase() as string) : null;
+    const memberRole = this._state().memberInfo?.role;
+    if (memberRole) return memberRole.toLowerCase() as string;
+
+    // Fallback: If current user is the owner in tenants table
+    const tenant = this._state().currentTenant;
+    const userId = this.authService.userId();
+    if (tenant && userId && tenant.owner_id === userId) {
+      return 'owner';
+    }
+
+    return null;
   });
   // Typed alias used by some guards — normalized to lowercase
   readonly currentRole = computed(() => this.memberRole() as TenantRole | null);
   readonly tenantId = computed(() => this._state().currentTenant?.id ?? null);
   readonly businessName = computed(() => this._state().currentTenant?.business_name ?? null);
   readonly settings = computed(() => this._state().settings);
+  readonly storeUrl = computed(() => {
+    const tenant = this.currentTenant();
+    if (!tenant) return '/store';
+    // For local development, we need to pass the subdomain as a query parameter
+    // if we are not using custom local domains.
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return `/store?s=${tenant.subdomain}`;
+    }
+    return `/store`;
+  });
   readonly storefrontLayout = computed<StorefrontLayout>(() => {
     const settings = this._state().currentTenant?.settings as any;
     const layout = settings?.storefront_layout as StorefrontLayout;
@@ -137,17 +155,55 @@ export class TenantService {
     }));
 
     try {
-      const { data, error } = await this.supabase.client
-        .from('tenants')
-        .select('*')
-        .is('deleted_at', null);
+      // Parallel queries for robustness: 
+      // 1. Get explicitly assigned memberships
+      // 2. Get stores owned directly (helps bypass RLS circularity issues for owners)
+      const [membershipsRes, ownedTenantsRes] = await Promise.all([
+        this.supabase.client
+          .from('tenant_members')
+          .select('*, tenant:tenants(*)')
+          .eq('user_id', userId)
+          .eq('is_active', true),
+        this.supabase.client
+          .from('tenants')
+          .select('*')
+          .eq('owner_id', userId)
+          .is('deleted_at', null)
+      ]);
 
-      if (error) throw error;
+      if (membershipsRes.error) {
+        console.error('Error loading memberships:', membershipsRes.error);
+      }
 
-      const tenants = (data as any) ?? [];
+      if (ownedTenantsRes.error) {
+        console.error('Error loading owned stores:', ownedTenantsRes.error);
+      }
+
+      // Collect all tenants from both sources
+      const membershipData = (membershipsRes.data as any[]) ?? [];
+      const ownedTenants = (ownedTenantsRes.data as any[]) ?? [];
+
+      // Map to unique tenants
+      const tenantMap = new Map<string, Tenant>();
+
+      // Add from memberships first
+      membershipData.forEach(m => {
+        if (m.tenant && !m.tenant.deleted_at) {
+          tenantMap.set(m.tenant.id, m.tenant);
+        }
+      });
+
+      // Add from owned tenants (might include some missing from membershipData due to RLS)
+      ownedTenants.forEach(t => {
+        if (!tenantMap.has(t.id)) {
+          tenantMap.set(t.id, t);
+        }
+      });
+
+      const allTenants = Array.from(tenantMap.values());
 
       // Prioritize "real" tenants over seed data
-      const sortedTenants = [...tenants].sort((a, b) => {
+      const sortedTenants = [...allTenants].sort((a, b) => {
         const aIsSeed = (a.business_name || '').toLowerCase().includes('seed');
         const bIsSeed = (b.business_name || '').toLowerCase().includes('seed');
         if (aIsSeed && !bIsSeed) return 1;
@@ -156,27 +212,40 @@ export class TenantService {
       });
 
       const savedId = localStorage.getItem('last_tenant_id');
-      let selected = tenants.find((t: any) => t.id === savedId);
+      let selectedMembership = membershipData.find(m => m.tenant?.id === savedId);
 
       // If we have a saved seed store but there is a real store available, switch to the real one
-      const firstReal = sortedTenants.find((t: any) => !(t.business_name || '').toLowerCase().includes('seed'));
-      if (selected && (selected.business_name || '').toLowerCase().includes('seed') && firstReal) {
-        selected = firstReal;
+      const firstRealMembership = membershipData
+        .filter(m => m.tenant && !(m.tenant.business_name || '').toLowerCase().includes('seed'))
+        .sort((a, b) => (a.tenant.created_at > b.tenant.created_at ? -1 : 1))[0];
+
+      if (selectedMembership && (selectedMembership.tenant?.business_name || '').toLowerCase().includes('seed') && firstRealMembership) {
+        selectedMembership = firstRealMembership;
       }
 
-      const selectedTenant = selected || sortedTenants[0] || null;
+      const finalMembership = selectedMembership || membershipData[0] || null;
+
+      // If we have no membership but we have owned tenants, pick the first owned tenant
+      let selectedTenant = finalMembership?.tenant || null;
+      if (!selectedTenant && sortedTenants.length > 0) {
+        selectedTenant = sortedTenants[0];
+      }
 
       this._state.update((s) => ({
         ...s,
-        tenants: sortedTenants, // Use sorted list for better UX if we ever show it again
+        tenants: sortedTenants,
         currentTenant: selectedTenant,
+        memberInfo: finalMembership ? {
+          ...finalMembership,
+          tenant: undefined // Avoid circular or unnecessary data in memberInfo
+        } : null
       }));
 
       if (selectedTenant) {
         if (selectedTenant.id !== savedId) {
           localStorage.setItem('last_tenant_id', selectedTenant.id);
         }
-        await this.loadMemberInfo(selectedTenant.id);
+        // Load settings
         await this.loadTenantSettings(selectedTenant.id);
       }
     } catch (error) {

@@ -182,6 +182,15 @@ export class AiAssistantService {
 
     messages = signal<Message[]>(this.loadMessages());
     isLoading = signal<boolean>(false);
+    isVisible = signal<boolean>(true);
+
+    hide() {
+        this.isVisible.set(false);
+    }
+
+    show() {
+        this.isVisible.set(true);
+    }
 
     private loadMessages(): Message[] {
         const defaultMessage: Message = {

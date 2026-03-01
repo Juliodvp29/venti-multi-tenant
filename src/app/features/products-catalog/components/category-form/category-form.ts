@@ -4,6 +4,7 @@ import {
     effect,
     inject,
     input,
+    OnDestroy,
     OnInit,
     output,
     signal,
@@ -13,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { Category, CreateCategoryDto, UpdateCategoryDto } from '@core/models/category';
 import { CategoriesService } from '@core/services/categories';
 import { ToastService } from '@core/services/toast';
+import { AiAssistantService } from '@core/services/ai-assistant';
 
 @Component({
     selector: 'app-category-form',
@@ -25,6 +27,7 @@ export class CategoryForm implements OnInit {
     private readonly fb = inject(FormBuilder);
     private readonly categoriesService = inject(CategoriesService);
     private readonly toast = inject(ToastService);
+    private readonly aiService = inject(AiAssistantService);
 
     /** Pass a category to enable edit mode */
     category = input<Category | null>(null);
@@ -67,7 +70,13 @@ export class CategoryForm implements OnInit {
         });
     }
 
-    ngOnInit() { }
+    ngOnInit() {
+        this.aiService.hide();
+    }
+
+    ngOnDestroy() {
+        this.aiService.show();
+    }
 
     get parentCategories(): Category[] {
         const editing = this.category();

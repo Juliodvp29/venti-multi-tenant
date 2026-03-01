@@ -23,6 +23,7 @@ export class AiAssistantComponent implements OnInit, AfterViewChecked {
     userInput = '';
     messages = this.aiService.messages;
     isLoading = this.aiService.isLoading;
+    isVisible = this.aiService.isVisible;
 
     ngOnInit() {
         this.aiService.navigationRequest$

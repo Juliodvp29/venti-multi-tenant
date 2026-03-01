@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
+import { TenantService } from '@core/services/tenant';
 
 @Component({
   selector: 'app-header',
@@ -17,11 +18,21 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
         </svg>
       </button>
 
-      <div class="flex-1 flex justify-between">
+      <div class="flex-1 flex justify-between items-center">
         <div class="flex-1 flex">
             <!-- Search bar could go here -->
         </div>
-        <div class="ml-4 flex items-center md:ml-6">
+        <div class="ml-4 flex items-center gap-4 md:ml-6">
+          <!-- View Store Link -->
+          <a [href]="tenantService.storeUrl()" 
+             target="_blank" 
+             class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors border border-indigo-100 dark:border-indigo-900/50">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            <span class="hidden sm:inline">Ver tienda</span>
+          </a>
+
           <button type="button" class="bg-white dark:bg-gray-800 p-1 rounded-full text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:ring-offset-gray-900">
             <span class="sr-only">View notifications</span>
             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -35,4 +46,5 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 })
 export class HeaderComponent {
   @Output() toggleSidebar = new EventEmitter<void>();
+  protected readonly tenantService = inject(TenantService);
 }
