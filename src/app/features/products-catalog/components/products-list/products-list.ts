@@ -280,12 +280,8 @@ export class ProductsList implements OnInit {
     }
 
     onProductSaved(product: Product) {
-        const exists = this.products().some(p => p.id === product.id);
-        if (exists) {
-            this.products.update(ps => ps.map(p => p.id === product.id ? product : p));
-        } else {
-            this.loadProducts(1);
-        }
+        // ALWAYS reload products from server to ensure variants, images, and aggregated stock are correct
+        this.loadProducts(this.currentPage());
         this.closeDrawer();
     }
 

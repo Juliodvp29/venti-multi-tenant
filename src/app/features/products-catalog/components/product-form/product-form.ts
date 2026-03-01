@@ -48,6 +48,13 @@ export class ProductForm implements OnInit, OnDestroy {
 
     // Variants & Options State
     readonly hasVariants = signal(false);
+    toggleVariants() {
+        const newState = !this.hasVariants();
+        this.hasVariants.set(newState);
+        if (newState) {
+            this.form.patchValue({ track_inventory: true });
+        }
+    }
     readonly optionDefinitions = signal<ProductOption[]>([]); // UI state for the generator
 
     readonly statusOptions: { value: ProductStatus; label: string }[] = [
@@ -241,7 +248,7 @@ export class ProductForm implements OnInit, OnDestroy {
                 price: [existing?.price || nv.price, [Validators.min(0)]],
                 compare_at_price: [existing?.compare_at_price || null],
                 cost_price: [existing?.cost_price || null],
-                stock_quantity: [existing?.stock_quantity || 0, [Validators.min(0)]],
+                stock_quantity: [existing?.stock_quantity ?? nv.stock_quantity, [Validators.min(0)]],
                 options: [nv.options],
                 is_active: [existing?.is_active ?? true]
             }));
@@ -302,7 +309,7 @@ export class ProductForm implements OnInit, OnDestroy {
                 status: raw.status,
                 description: raw.description || undefined,
                 sku: raw.sku || undefined,
-                track_inventory: raw.track_inventory,
+                track_inventory: this.hasVariants() ? true : raw.track_inventory,
                 stock_quantity: raw.stock_quantity,
             };
 

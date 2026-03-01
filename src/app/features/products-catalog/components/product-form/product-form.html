@@ -260,7 +260,7 @@
                 <div class="flex items-center gap-2">
                     <span class="text-xs font-medium text-gray-500">{{ hasVariants() ? 'Enabled' : 'Disabled'
                         }}</span>
-                    <button type="button" (click)="hasVariants.set(!hasVariants())" class="toggle-btn scale-90"
+                    <button type="button" (click)="toggleVariants()" class="toggle-btn scale-90"
                         [class.active]="hasVariants()">
                         <span class="toggle-thumb"></span>
                     </button>
