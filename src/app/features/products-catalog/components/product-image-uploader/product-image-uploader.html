@@ -110,7 +110,7 @@
 
     <!-- Summary -->
     @if (savedImages().length > 0 || pendingImages().length > 0) {
-    <p class="text-xs text-gray-400 dark:text-gray-500">
+    <p class="text-xs text-gray-400 dark:text-gray-400">
         {{ savedImages().length }} saved
         @if (pendingImages().length > 0) {
         · <span class="text-indigo-500">{{ pendingImages().length }} pending (will be uploaded on save)</span>

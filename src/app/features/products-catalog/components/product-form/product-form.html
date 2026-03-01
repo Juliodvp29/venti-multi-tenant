@@ -331,16 +331,16 @@
                             <thead class="bg-gray-50 dark:bg-gray-800/50">
                                 <tr>
                                     <th
-                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
                                         Variant</th>
                                     <th
-                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
                                         SKU</th>
                                     <th
-                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
                                         Price</th>
                                     <th
-                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest w-24">
+                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest w-24">
                                         Stock</th>
                                     <th class="px-4 py-3"></th>
                                 </tr>
@@ -355,18 +355,18 @@
                                         </td>
                                         <td class="px-4 py-2">
                                             <input type="text" formControlName="sku"
-                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm font-mono placeholder-gray-300">
+                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm font-mono placeholder-gray-300 dark:text-white dark:placeholder-gray-500">
                                         </td>
                                         <td class="px-4 py-2">
                                             <div class="flex items-center gap-1">
                                                 <span class="text-gray-400 text-xs">$</span>
                                                 <input type="number" formControlName="price"
-                                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm">
+                                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm dark:text-white">
                                             </div>
                                         </td>
                                         <td class="px-4 py-2">
                                             <input type="number" formControlName="stock_quantity"
-                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm text-center">
+                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm text-center dark:text-white">
                                         </td>
                                         <td class="px-4 py-3 text-right">
                                             <button type="button"
@@ -385,7 +385,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <p class="text-[10px] text-gray-400 italic">Changes in the generator will overwrite the fields
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 italic">Changes in the generator will
+                        overwrite the fields
                         above if the options combination changes.</p>
                 </div>
                 }
