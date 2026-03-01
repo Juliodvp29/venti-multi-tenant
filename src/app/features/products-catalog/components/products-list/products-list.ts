@@ -92,9 +92,22 @@ export class ProductsList implements OnInit {
     readonly totalProducts = computed(() => this.totalCount());
     readonly activeProducts = computed(() => this.products().filter(p => p.status === ProductStatus.Active).length);
     readonly draftProducts = computed(() => this.products().filter(p => p.status === ProductStatus.Draft).length);
-    readonly lowStockProducts = computed(() =>
-        this.products().filter(p => p.track_inventory && p.stock_quantity <= p.low_stock_threshold).length
-    );
+    readonly lowStockProducts = computed(() => {
+        return this.products().filter(p => {
+            if (!p.track_inventory) return false;
+            const stock = this.getProductStock(p);
+            // If low_stock_threshold is not set, default to 10 (as seen in main.sql settings)
+            const threshold = p.low_stock_threshold ?? 10;
+            return stock <= threshold;
+        }).length;
+    });
+
+    getProductStock(product: Product): number {
+        if (product.variants && product.variants.length > 0) {
+            return product.variants.reduce((acc, v) => acc + (v.stock_quantity || 0), 0);
+        }
+        return product.stock_quantity || 0;
+    }
 
     // Filtered products for the table (status filter applied client-side on the current page)
     readonly filteredProducts = computed(() => {
@@ -105,7 +118,7 @@ export class ProductsList implements OnInit {
             // active products tracking inventory with 0 stock
             return this.products().filter(p =>
                 p.status === ProductStatus.OutOfStock ||
-                (p.track_inventory && p.stock_quantity === 0)
+                (p.track_inventory && this.getProductStock(p) === 0)
             );
         }
         return this.products().filter(p => p.status === filter);
@@ -151,12 +164,7 @@ export class ProductsList implements OnInit {
             type: 'number',
             formatter: (val, item) => {
                 if (!item['track_inventory']) return 'Unlimited';
-                const variants = (item as any)['variants'] || [];
-                if (variants.length > 0) {
-                    const total = variants.reduce((acc: number, v: any) => acc + (v.stock_quantity || 0), 0);
-                    return String(total);
-                }
-                return String(val);
+                return String(this.getProductStock(item));
             },
         },
         {

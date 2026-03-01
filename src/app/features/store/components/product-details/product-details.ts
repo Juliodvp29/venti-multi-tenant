@@ -35,6 +35,24 @@ import { SeoService } from '@core/services/seo';
                   </svg>
                 </div>
               </div>
+
+              <!-- Navigation Arrows -->
+              @if ((product()?.images?.length || 0) > 1) {
+                <button (click)="prevImage($event)" 
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 text-slate-900 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 z-10 shadow-lg border border-white/30"
+                        title="Previous image">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button (click)="nextImage($event)" 
+                        class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 text-slate-900 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 z-10 shadow-lg border border-white/30"
+                        title="Next image">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              }
             </div>
             <div class="grid grid-cols-4 gap-4">
               @for (img of product()?.images; track img.id) {
@@ -354,6 +372,28 @@ export class ProductDetails implements OnInit {
     const x = (event.clientX - rect.left) / rect.width;
     const y = (event.clientY - rect.top) / rect.height;
     this.zoomOrigin.set(`${x * 100}% ${y * 100}%`);
+  }
+
+  nextImage(event: Event) {
+    event.stopPropagation();
+    const images = this.product()?.images || [];
+    if (images.length <= 1) return;
+
+    const currentUrl = this.displayImage();
+    const currentIndex = images.findIndex(img => img.url === currentUrl);
+    const nextIndex = (currentIndex + 1) % images.length;
+    this.selectedImage.set(images[nextIndex].url);
+  }
+
+  prevImage(event: Event) {
+    event.stopPropagation();
+    const images = this.product()?.images || [];
+    if (images.length <= 1) return;
+
+    const currentUrl = this.displayImage();
+    const currentIndex = images.findIndex(img => img.url === currentUrl);
+    const prevIndex = (currentIndex - 1 + images.length) % images.length;
+    this.selectedImage.set(images[prevIndex].url);
   }
 
   // Review Form State
