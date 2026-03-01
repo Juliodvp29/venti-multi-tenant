@@ -72,12 +72,12 @@ import { SeoService } from '@core/services/seo';
             <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-[2.5rem] blur opacity-20 dark:opacity-40"></div>
             <div class="relative bg-slate-50 dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden group transition-all duration-500 hover:shadow-indigo-500/20 hover:border-indigo-500/30">
               <img 
-                src="dashboard.png" 
+                src="dashboard.webp" 
                 alt="Venti Dashboard Light" 
                 class="w-full h-full object-contain transition-all duration-700 group-hover:scale-[1.02] dark:hidden"
               />
               <img 
-                src="dashboard-black.png" 
+                src="dashboard-black.webp" 
                 alt="Venti Dashboard Dark" 
                 class="w-full h-full object-contain transition-all duration-700 group-hover:scale-[1.02] hidden dark:block"
               />
