@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, ViewChild, AfterViewChecked, OnInit, DestroyRef } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild, AfterViewChecked, OnInit, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,6 +11,8 @@ import { MarkdownPipe } from '../../pipes/markdown.pipe';
     imports: [CommonModule, FormsModule, MarkdownPipe],
     templateUrl: './ai-assistant.html',
     styleUrl: './ai-assistant.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class AiAssistantComponent implements OnInit, AfterViewChecked {
     private readonly aiService = inject(AiAssistantService);
@@ -30,8 +32,6 @@ export class AiAssistantComponent implements OnInit, AfterViewChecked {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(path => {
                 this.router.navigate([path]);
-                // Automatically close on navigation for better UX, or keep open if preferred
-                // this.isOpen = false;
             });
     }
 

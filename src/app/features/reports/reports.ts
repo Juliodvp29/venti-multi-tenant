@@ -10,7 +10,6 @@ import { CategoryChart } from '../dashboard/components/category-chart/category-c
 
 @Component({
     selector: 'app-reports',
-    standalone: true,
     imports: [CommonModule, DynamicTable, SalesChart, CategoryChart],
     templateUrl: './reports.html',
     styleUrl: './reports.css',

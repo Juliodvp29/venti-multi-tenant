@@ -1,0 +1,174 @@
+<div
+    class="min-h-screen bg-slate-50 dark:bg-gray-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[250px] -left-[250px] w-[500px] h-[500px] rounded-full bg-indigo-500/10 blur-[80px]">
+        </div>
+        <div
+            class="absolute -bottom-[200px] -right-[200px] w-[400px] h-[400px] rounded-full bg-violet-500/10 blur-[80px]">
+        </div>
+    </div>
+
+    <div class="relative z-10 mb-12 text-center">
+        <div class="flex items-center justify-center mb-4">
+            <svg viewBox="0 0 500 150" class="h-16 max-w-full drop-shadow-md"
+                style="font-family: 'Outfit', sans-serif;">
+                <g transform="translate(10, 5)">
+                    <path d="M 35 45 L 65 92 L 95 45 L 145 45" class="stroke-indigo-600 dark:stroke-white"
+                        stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    <circle cx="50" cy="112" r="7.5" class="fill-indigo-600 dark:fill-white" />
+                    <circle cx="80" cy="112" r="7.5" class="fill-indigo-600 dark:fill-white" />
+                </g>
+                <text x="105" y="100">
+                    <tspan class="fill-gray-900 dark:fill-white" font-weight="700" font-size="64px">enti </tspan>
+                    <tspan class="fill-indigo-600 dark:fill-indigo-400" opacity="0.9" font-weight="800"
+                        font-size="64px">Shop</tspan>
+                </text>
+            </svg>
+        </div>
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 dark:text-gray-400">
+            Plataforma Multi-Tenant
+        </p>
+    </div>
+
+    <div
+        class="relative z-10 max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-0 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden animate-slide-up">
+
+        <div
+            class="p-10 md:p-14 bg-gray-50/50 dark:bg-gray-800/30 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800">
+            <div>
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-10">
+                    Order Summary
+                </div>
+
+                <h2 class="text-4xl font-black mb-4 dark:text-white tracking-tight">{{ plan()?.name }} Plan</h2>
+                <p class="text-base text-gray-500 dark:text-gray-400 mb-10 leading-relaxed">{{ plan()?.description }}
+                </p>
+
+                <div class="space-y-5 mb-12">
+                    @for (feature of plan()?.features; track feature) {
+                    <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300 font-medium">
+                        <div
+                            class="w-6 h-6 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        {{ feature }}
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-end">
+                    <span class="text-gray-500 dark:text-gray-400 font-bold uppercase text-xs tracking-widest">Total due
+                        today</span>
+                    <div class="text-right">
+                        <div class="text-4xl font-black dark:text-white tracking-tighter">{{ plan()?.price |
+                            currency:'USD' }}</div>
+                        <div
+                            class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold mt-1">
+                            + Local taxes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-10 md:p-14 relative overflow-hidden bg-white dark:bg-gray-900">
+            <h3 class="text-2xl font-black mb-10 dark:text-white tracking-tight">Payment Method</h3>
+
+            @if (isProcessing()) {
+            <div
+                class="absolute inset-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-fade-in">
+                <div
+                    class="w-24 h-24 bg-indigo-100 dark:bg-indigo-500/10 rounded-full flex items-center justify-center text-indigo-600 mb-8 scale-up">
+                    @if (!isSuccess()) {
+                    <svg class="w-12 h-12 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    } @else {
+                    <svg class="w-12 h-12 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                    }
+                </div>
+                <h4 class="text-3xl font-black mb-3 dark:text-white tracking-tight">
+                    {{ isSuccess() ? 'Success!' : 'Verifying Card' }}
+                </h4>
+                <p class="text-gray-500 dark:text-gray-400 font-medium">
+                    {{ isSuccess() ? 'Your store is ready. Redirecting...' : 'Encrypted connection established.' }}
+                </p>
+            </div>
+            }
+
+            <form (submit)="onConfirm($event)" class="space-y-8">
+                <div class="space-y-2">
+                    <label
+                        class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Cardholder
+                        Name</label>
+                    <input type="text" placeholder="John Doe"
+                        class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600">
+                </div>
+
+                <div class="space-y-2">
+                    <label
+                        class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Card
+                        Number</label>
+                    <div class="relative">
+                        <input type="text" placeholder="•••• •••• •••• ••••"
+                            class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
+                        <div class="absolute right-5 top-1/2 -translate-y-1/2 flex gap-2">
+                            <div class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
+                                <span class="text-[8px] font-black italic text-gray-500">VISA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Expiry
+                            Date</label>
+                        <input type="text" placeholder="MM/YY" (input)="onExpiryInput($event)" maxlength="5"
+                            class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
+                    </div>
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">CVC</label>
+                        <input type="text" placeholder="•••" maxlength="3" (input)="onCvcInput($event)"
+                            class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit"
+                        class="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-2xl shadow-indigo-500/30 transition-all hover:-translate-y-1 active:scale-[0.98] tracking-tight uppercase">
+                        Start Subscription
+                    </button>
+                    <div
+                        class="mt-6 flex items-center justify-center gap-2 text-[9px] text-gray-400 dark:text-gray-600 font-bold uppercase tracking-widest">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Encrypted & Secure Payment
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <p
+        class="mt-8 text-[11px] text-gray-400 dark:text-gray-600 max-w-sm text-center font-medium relative z-10 leading-relaxed">
+        By continuing, you agree to our Terms of Service and Privacy Policy. Your subscription will begin after
+        verification.
+    </p>
+</div>
