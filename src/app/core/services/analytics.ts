@@ -187,7 +187,7 @@ export class AnalyticsService {
 
         const { data } = await this.supabase.client
             .from('vw_product_performance_realtime')
-            .select('*, product:products(name, image_url)')
+            .select('*, product:products(name, product_images(url, is_primary))')
             .eq('tenant_id', tenantId)
             .order('revenue', { ascending: false })
             .limit(10);

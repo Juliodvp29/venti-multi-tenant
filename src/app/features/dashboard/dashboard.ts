@@ -98,7 +98,7 @@ export class Dashboard {
   }
 
   private async loadCategories() {
-    const distribution = await this.analytics.getCategoryDistribution();
+    const distribution = await this.analytics.getSalesByCategoryBI();
 
     // Sort by value descending
     const sorted = distribution.sort((a, b) => b.value - a.value);
@@ -124,7 +124,7 @@ export class Dashboard {
       category: 'General',
       sales: p.purchases,
       revenue: `$${(p.revenue / 1000).toFixed(1)}k`,
-      image: p.product?.image_url
+      image: p.product?.product_images?.find((img: any) => img.is_primary)?.url || p.product?.product_images?.[0]?.url
     })));
   }
 

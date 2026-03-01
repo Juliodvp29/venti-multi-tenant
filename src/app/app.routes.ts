@@ -1,6 +1,8 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 import { guestGuard } from '@core/guards/guest.guard';
 import { authGuard } from '@core/guards/auth.guard';
+import { AuthService } from '@core/services/auth';
 import { MainLayoutComponent } from '@core/layouts/main-layout/main-layout.component';
 import { storeGuard } from '@core/guards/store.guard';
 import { TenantRole } from '@core/enums';
@@ -8,9 +10,16 @@ import { roleGuard, adminGuard, editorGuard, viewerGuard, deliveryRedirectGuard 
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'home',
     loadComponent: () => import('@features/landing/landing').then((m) => m.Landing),
-    canActivate: [guestGuard],
+  },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: () => {
+      const auth = inject(AuthService);
+      return auth.isAuthenticated() ? 'dashboard' : 'home';
+    },
   },
   {
     path: 'auth',
