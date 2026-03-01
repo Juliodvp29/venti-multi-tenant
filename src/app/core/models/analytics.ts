@@ -57,9 +57,6 @@ export interface ProductPerformance extends BaseModel {
         name: string;
         image_url?: string;
     };
-    // Assuming "joined product property" refers to a property that holds the full product details
-    // This property is already defined as 'product?' above.
-    // If a different property was intended, please clarify.
 }
 
 export interface LowStockAlert {

@@ -145,13 +145,11 @@ export class CustomersService {
     async setDefaultAddress(customerId: string, addressId: string, type: 'shipping' | 'billing' = 'shipping'): Promise<void> {
         const column = type === 'shipping' ? 'is_default' : 'is_billing_default';
 
-        // 1. Unset existing default
         await this.supabase.client
             .from('customer_addresses')
             .update({ [column]: false } as any)
             .eq('customer_id', customerId);
 
-        // 2. Set new default
         const { error } = await this.supabase.client
             .from('customer_addresses')
             .update({ [column]: true } as any)

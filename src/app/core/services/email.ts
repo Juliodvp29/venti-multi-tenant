@@ -50,8 +50,6 @@ export class EmailService {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) return { success: false, error: 'No tenant selected' };
 
-        // 1. Log the email in our database (Non-blocking to prevent UI hang if RLS is slow)
-        // Note: email_logs in current schema doesn't have body_html/body_text columns
         this.supabase.client
             .from('email_logs')
             .insert({
@@ -68,16 +66,9 @@ export class EmailService {
                     console.error('Error logging email (background):', logError);
                 }
             });
-
-        // Actual integration would go here (SendGrid, Postmark, etc.)
-
         return { success: true };
     }
 
-    /**
-     * Helper to replace placeholders in a string
-     * format: {{variable_name}}
-     */
     replacePlaceholders(content: string, variables: Record<string, string>): string {
         let result = content;
         Object.entries(variables).forEach(([key, value]) => {

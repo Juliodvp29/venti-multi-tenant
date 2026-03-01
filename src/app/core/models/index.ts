@@ -16,19 +16,12 @@ import {
   WeightUnit,
 } from '@enums/index';
 
-// ============================================================
-// BASE
-// ============================================================
-
 export interface BaseModel {
   id: string;
   created_at: string;
   updated_at?: string;
 }
 
-// ============================================================
-// AUTH / USER
-// ============================================================
 
 export interface AuthUser {
   id: string;
@@ -52,10 +45,6 @@ export interface AuthSession {
   user: AuthUser;
 }
 
-// ============================================================
-// TENANT
-// ============================================================
-
 export * from './tenant.model';
 
 export interface TenantSettings {
@@ -68,58 +57,21 @@ export interface TenantSettings {
   updated_at: string;
 }
 
-// ============================================================
-// CATEGORIES
-// ============================================================
-
 export * from './category';
-
-// ============================================================
-// PRODUCTS
-// ============================================================
 
 export * from './product';
 
-// ============================================================
-// CUSTOMERS
-// ============================================================
-
 export * from './customer';
-
-// ============================================================
-// ORDERS
-// ============================================================
 
 export * from './order';
 
-// ============================================================
-// PAYMENTS
-// ============================================================
-
 export * from './payment';
-
-// ============================================================
-// DISCOUNTS
-// ============================================================
 
 export * from './discount.model';
 
-// ============================================================
-// REVIEWS
-// ============================================================
-
 export * from './review';
 
-// ============================================================
-// ANALYTICS
-// ============================================================
-
 export * from './analytics';
-
-
-// ============================================================
-// MEDIA
-// ============================================================
 
 export interface MediaLibraryItem extends BaseModel {
   tenant_id: string;
@@ -137,10 +89,6 @@ export interface MediaLibraryItem extends BaseModel {
   used_in?: Record<string, unknown>;
   uploaded_by?: string;
 }
-
-// ============================================================
-// EMAIL
-// ============================================================
 
 export interface EmailTemplate extends BaseModel {
   tenant_id: string;
@@ -168,10 +116,6 @@ export interface EmailLog extends BaseModel {
   sent_at?: string;
 }
 
-// ============================================================
-// WEBHOOKS
-// ============================================================
-
 export interface WebhookEndpoint extends BaseModel {
   tenant_id: string;
   url: string;
@@ -193,10 +137,6 @@ export interface WebhookDelivery extends BaseModel {
   next_retry_at?: string;
   delivered_at?: string;
 }
-
-// ============================================================
-// SHIPPING
-// ============================================================
 
 export interface ShippingZone extends BaseModel {
   tenant_id: string;
@@ -234,10 +174,6 @@ export interface TaxRate extends BaseModel {
   is_active: boolean;
 }
 
-// ============================================================
-// AUDIT LOGS
-// ============================================================
-
 export interface AuditLog {
   id: string;
   tenant_id?: string;
@@ -255,16 +191,7 @@ export interface AuditLog {
   created_at: string;
 }
 
-// ============================================================
-// STOREFRONT CMS
-// ============================================================
-
 export * from './storefront.model';
-
-
-// ============================================================
-// API RESPONSE WRAPPERS
-// ============================================================
 
 export interface ApiResponse<T> {
   data: T | null;

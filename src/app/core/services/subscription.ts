@@ -82,10 +82,7 @@ export class SubscriptionService {
         return usage[resourceType] < limit;
     }
 
-    /**
-     * Placeholder for upgrading/changing plan
-       * This would typically integrate with Stripe or another payment provider
-       */
+  
     async changePlan(planId: string) {
         // Implementation for changing plan
         return Promise.resolve({ success: true });

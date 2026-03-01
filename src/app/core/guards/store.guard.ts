@@ -9,9 +9,6 @@ export const storeGuard: CanActivateFn = async (route, state) => {
     // Get current hostname
     const hostname = window.location.hostname;
 
-    // Logic to extract subdomain
-    // Example: jstore.venti.com -> jstore
-    // Example: localhost -> null (or use a test one)
     let subdomain: string | null = null;
 
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
@@ -20,11 +17,9 @@ export const storeGuard: CanActivateFn = async (route, state) => {
         if (sParam) {
             subdomain = sParam.split('=')[0].split('?')[0];
         } else {
-            // Fallback: If we already have a tenant in service, keep it
             if (tenantService.tenantId()) {
                 return true;
             }
-            // Last resort fallback for jd-store (standard testing)
             subdomain = 'jd-store';
         }
     } else {
@@ -41,7 +36,6 @@ export const storeGuard: CanActivateFn = async (route, state) => {
     const resolved = await tenantService.resolveTenantBySubdomain(subdomain);
 
     if (!resolved) {
-        // If resolution failed but we HAD a tenant, maybe it's just a transient error
         if (tenantService.tenantId()) {
             return true;
         }

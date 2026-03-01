@@ -54,7 +54,6 @@ export class DiscountsService {
 
         const discount = data as DiscountCode;
 
-        // Basic validation (more validation in storefront logic)
         const now = new Date();
         if (discount.starts_at && new Date(discount.starts_at) > now) return null;
         if (discount.ends_at && new Date(discount.ends_at) < now) return null;

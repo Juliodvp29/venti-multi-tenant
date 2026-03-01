@@ -84,12 +84,12 @@ export class CategoriesService {
         const map = new Map<string, Category>();
         const roots: Category[] = [];
 
-        // First pass: create map and add children array
+        // create map and add children array
         categories.forEach(cat => {
             map.set(cat.id, { ...cat, children: [] });
         });
 
-        // Second pass: link children to parents
+        // link children to parents
         map.forEach(cat => {
             if (cat.parent_id && map.has(cat.parent_id)) {
                 map.get(cat.parent_id)?.children?.push(cat);

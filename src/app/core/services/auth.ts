@@ -18,7 +18,6 @@ export class AuthService {
   private readonly supabase = inject(Supabase);
   private readonly router = inject(Router);
 
-  // ── State ────────────────────────────────────────────────
   private readonly _state = signal<AuthState>({
     user: null,
     session: null,
@@ -26,7 +25,6 @@ export class AuthService {
     initialized: false,
   });
 
-  // ── Computed selectors ───────────────────────────────────
   readonly user = computed(() => this._state().user);
   readonly session = computed(() => this._state().session);
   readonly isAuthenticated = computed(() => !!this._state().session);
@@ -41,12 +39,8 @@ export class AuthService {
 
   constructor() {
     this.initAuth();
-
-    // Effect: Handle navigation based on auth state
-    // Navigation logic removed. It should be handled by Route Guards or specific components.
   }
 
-  // ── Init ─────────────────────────────────────────────────
 
   private async initAuth(): Promise<void> {
     // Get current session on startup
@@ -69,7 +63,6 @@ export class AuthService {
     });
   }
 
-  // ── Methods ──────────────────────────────────────────────
 
   async signInWithEmail(email: string, password: string) {
     this._state.update((s) => ({ ...s, loading: true }));
@@ -121,9 +114,6 @@ export class AuthService {
     return this._state().session?.access_token ?? null;
   }
 
-  /**
-   * For the storefront: Ensures a customer record exists for the current user and tenant.
-   */
   async getOrCreateCustomer(tenantId: string): Promise<any> {
     const user = this.user();
     if (!user || !user.email) return null;

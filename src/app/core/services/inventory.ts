@@ -15,11 +15,6 @@ export class InventoryService {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');
 
-        // We fetch from audit_logs where resource_type is products or orders
-        // Actually, manual adjustments are 'products' resource updates
-        // Sales are 'orders' (but it's better to track order_items or similar)
-        // For now, let's look for resource_type = 'products' (manual) and 'orders' (sales)
-
         const { data, error, count } = await this.supabase.client
             .from('audit_logs')
             .select('*', { count: 'exact' })
@@ -69,23 +64,14 @@ export class InventoryService {
             }
             productName = newVal.name || oldVal?.name || 'Producto Desconocido';
         } else if (log.resource_type === 'orders') {
-            // Sales (on update to paid or on creation?)
-            // In this schema, stock_quantity is updated via trigger when order_items are inserted.
-            // But the audit_log trigger on products will fire when the stock_quantity column changes.
-            // So we might already have 'adjustment' logs for sales.
-            // Let's check if the description says something.
+
 
             if (log.description?.includes('order') || log.description?.includes('sale')) {
                 type = 'sale';
             } else {
-                // If it's an update to a product's stock_quantity triggered by a sale, 
-                // RLS or session user might be different.
-                return null; // For now, let's avoid duplicates if products trigger fires.
+                return null;
             }
         }
-
-        // If it's a product update that changed stock, we want it.
-        // If it's a manual update, we show it.
 
         return {
             id: log.id,

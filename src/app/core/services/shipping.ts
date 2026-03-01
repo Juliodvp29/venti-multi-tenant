@@ -16,7 +16,6 @@ export class ShippingService {
         return id;
     }
 
-    // ── Shipping Zones ─────────────────────────────────────────
 
     async getShippingZones() {
         const { data, error } = await this.supabase.client
@@ -69,7 +68,6 @@ export class ShippingService {
         if (error) throw error;
     }
 
-    // ── Shipping Rates ─────────────────────────────────────────
 
     async createShippingRate(rate: Partial<ShippingRate>) {
         const { data, error } = await this.supabase.client
@@ -111,7 +109,6 @@ export class ShippingService {
         if (error) throw error;
     }
 
-    // ── Tax Rates ──────────────────────────────────────────────
 
     async getTaxRates() {
         const { data, error } = await this.supabase.client

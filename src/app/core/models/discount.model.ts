@@ -19,7 +19,6 @@ export interface DiscountCode extends BaseModel {
     ends_at?: string;
     is_active: boolean;
 
-    // Performance metrics (optional)
     times_used?: number;
     unique_customers?: number;
     total_discount_given?: number;

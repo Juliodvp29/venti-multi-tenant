@@ -13,6 +13,6 @@ export interface InventoryMovement extends BaseModel {
     new_quantity: number;
     user_id?: string;
     user_email?: string;
-    reference_id?: string; // e.g. Order ID
+    reference_id?: string;
     description?: string;
 }

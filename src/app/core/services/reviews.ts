@@ -64,7 +64,6 @@ export class ReviewsService {
         return data as ProductReview;
     }
 
-    // ── Admin Methods ────────────────────────────────────────
 
     async getAdminReviews(
         page: number = 1,
@@ -119,7 +118,7 @@ export class ReviewsService {
             .from('product_reviews')
             .select('rating, status, created_at')
             .eq('tenant_id', tenantId)
-            .order('created_at', { ascending: true }); // Oldest first
+            .order('created_at', { ascending: true }); 
 
         if (error) throw error;
 

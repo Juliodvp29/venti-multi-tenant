@@ -15,7 +15,7 @@ export interface BillingPlan {
         categories: number;
         members: number;
         custom_domain: boolean;
-        transaction_fee: number; // percentage
+        transaction_fee: number;
         [key: string]: any;
     };
 }

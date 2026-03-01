@@ -137,7 +137,6 @@ export class CartService {
 
             const newItem: CartItem = {
                 id: itemId,
-                productId: product.id,
                 variantId: variantId,
                 name: variant ? `${product.name} - ${variant.name}` : product.name,
                 price: variant?.price ?? product.price,

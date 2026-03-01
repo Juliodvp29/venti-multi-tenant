@@ -25,7 +25,6 @@ export class StorageService {
     progress: 0,
   });
 
-  // Default optimization settings
   private readonly defaultOptimization: ImageOptimizationOptions = {
     convertToWebP: true,
     maxWidth: 2048,
@@ -35,7 +34,6 @@ export class StorageService {
     thumbnailSize: 300,
   };
 
-  // ── Bucket helpers ───────────────────────────────────────
 
   private getBucket(bucket: StorageBucket): string {
     return environment.storage.buckets[bucket];
@@ -46,7 +44,6 @@ export class StorageService {
     return data.publicUrl;
   }
 
-  // ── File validation ──────────────────────────────────────
 
   validateImage(file: File): string | null {
     const { allowedImageTypes, maxFileSizeMb } = environment.storage;
@@ -59,7 +56,6 @@ export class StorageService {
     return null;
   }
 
-  // ── Image Optimization ───────────────────────────────────
 
   /**
    * Convert image to WebP format
@@ -337,7 +333,6 @@ export class StorageService {
     return Promise.all(uploads);
   }
 
-  // ── Delete ───────────────────────────────────────────────
 
   async deleteFile(bucket: StorageBucket, path: string): Promise<void> {
     const { error } = await this.supabase.storage.from(this.getBucket(bucket)).remove([path]);
@@ -349,7 +344,6 @@ export class StorageService {
     if (error) throw error;
   }
 
-  // ── List ─────────────────────────────────────────────────
 
   async listFiles(bucket: StorageBucket, folder: string) {
     const { data, error } = await this.supabase.storage

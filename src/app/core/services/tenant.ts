@@ -184,9 +184,6 @@ export class TenantService {
     }));
 
     try {
-      // Parallel queries for robustness: 
-      // 1. Get explicitly assigned memberships
-      // 2. Get stores owned directly (helps bypass RLS circularity issues for owners)
       const [membershipsRes, ownedTenantsRes] = await Promise.all([
         this.supabase.client
           .from('tenant_members')
@@ -231,7 +228,6 @@ export class TenantService {
 
       const allTenants = Array.from(tenantMap.values());
 
-      // Prioritize "real" tenants over seed data
       const sortedTenants = [...allTenants].sort((a, b) => {
         const aIsSeed = (a.business_name || '').toLowerCase().includes('seed');
         const bIsSeed = (b.business_name || '').toLowerCase().includes('seed');
@@ -243,7 +239,6 @@ export class TenantService {
       const savedId = localStorage.getItem('last_tenant_id');
       let selectedMembership = membershipData.find(m => m.tenant?.id === savedId);
 
-      // If we have a saved seed store but there is a real store available, switch to the real one
       const firstRealMembership = membershipData
         .filter(m => m.tenant && !(m.tenant.business_name || '').toLowerCase().includes('seed'))
         .sort((a, b) => (a.tenant.created_at > b.tenant.created_at ? -1 : 1))[0];
@@ -254,8 +249,6 @@ export class TenantService {
 
       const finalMembership = selectedMembership || membershipData[0] || null;
 
-      // If we are on the storefront, we should prioritize the tenant already 
-      // resolved by subdomain over any managed stores the user might have.
       const isStorefront = window.location.pathname.startsWith('/store');
       const existingTenant = this.currentTenant();
 
@@ -289,7 +282,6 @@ export class TenantService {
         error: 'Failed to load tenant information',
       }));
     } finally {
-      // ALWAYS ensure initialized is set to true, regardless of success or failure
       this._state.update((s) => ({
         ...s,
         loading: false,
@@ -670,13 +662,11 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return;
 
-    // Guard: email must be a non-empty valid string
     const cleanEmail = (email ?? '').trim();
     if (!cleanEmail || !cleanEmail.includes('@')) {
       throw new Error('Invalid email');
     }
 
-    // 1. Check if there's already a pending invite for this email
     const { data: existingInvite } = await (this.supabase.client.from as any)('tenant_invitations')
       .select('id')
       .eq('tenant_id', tenantId)
@@ -687,7 +677,6 @@ export class TenantService {
       throw new Error('A pending invitation already exists for this email.');
     }
 
-    // 2. Insert the invitation
     const { data: insertedInvite, error: insertError } = await (this.supabase.client.from as any)('tenant_invitations')
       .insert({
         tenant_id: tenantId,
@@ -707,7 +696,6 @@ export class TenantService {
     const storeName = this.businessName() ?? 'Venti Store';
     const inviterEmail = this.authService.userEmail() ?? 'An administrator';
 
-    // 2.5 Check if user exists using RPC
     let userExists = false;
     try {
       const { data, error } = await (this.supabase.client.rpc as any)('check_user_exists', { p_email: cleanEmail });
@@ -718,7 +706,6 @@ export class TenantService {
       console.warn('Could not check if user exists, defaulting to false:', e);
     }
 
-    // 3. Send email via Edge Function using raw fetch (bypasses supabase.functions.invoke 401 issue)
     try {
       const { data: { session } } = await this.supabase.client.auth.getSession();
       const supabaseUrl: string = environment.supabase.url;

@@ -29,7 +29,6 @@ export interface Customer extends BaseModel {
     total_orders: number;
     total_spent: number;
     addresses?: CustomerAddress[];
-    // From vw_customer_analytics
     lifetime_orders?: number;
     lifetime_value?: number;
     average_order_value?: number;

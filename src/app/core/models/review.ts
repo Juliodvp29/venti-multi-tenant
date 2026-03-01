@@ -10,11 +10,10 @@ export interface ProductReview extends BaseModel {
     review?: string;
     status: 'pending' | 'approved' | 'rejected';
     is_verified_purchase: boolean;
-    is_approved: boolean; // Deprecated
+    is_approved: boolean;
     approved_by?: string;
     approved_at?: string;
 
-    // Join data for admin
     product?: {
         name: string;
         sku?: string;

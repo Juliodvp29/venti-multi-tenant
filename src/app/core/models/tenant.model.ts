@@ -37,7 +37,7 @@ export interface TenantMember {
     id: string;
     tenant_id: string;
     user_id: string;
-    role: 'owner' | 'admin' | 'editor' | 'viewer' | 'delivery'; // Using string union for now or import enum if available
+    role: 'owner' | 'admin' | 'editor' | 'viewer' | 'delivery';
     permissions: string[];
     is_active: boolean;
     invited_by?: string;
@@ -68,29 +68,24 @@ export type TenantStatus = 'active' | 'suspended' | 'pending' | 'cancelled';
 export interface Tenant {
     id: string;
 
-    // Business Information
     business_name: string;
     slug: string;
     subdomain: string;
     custom_domain: string | null;
     description: string | null;
 
-    // Owner Information
     owner_id: string;
     contact_email: string;
     contact_phone: string | null;
 
-    // Subscription
     plan: SubscriptionPlan;
     plan_status: SubscriptionStatus;
     trial_ends_at: string | null;
     subscription_ends_at: string | null;
 
-    // Status & Settings
     status: TenantStatus;
     is_verified: boolean;
 
-    // Branding
     logo_url: string | null;
     favicon_url: string | null;
     primary_color: string;
@@ -99,7 +94,6 @@ export interface Tenant {
     font_family: string;
     layout: 'modern' | 'classic' | 'minimal';
 
-    // Business Address
     address_line1: string | null;
     address_line2: string | null;
     city: string | null;
@@ -107,10 +101,8 @@ export interface Tenant {
     postal_code: string | null;
     country: string | null;
 
-    // Settings JSON
     settings: TenantSettings;
 
-    // Metadata
     created_at: string;
     updated_at: string;
     deleted_at: string | null;

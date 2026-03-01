@@ -4,22 +4,12 @@ import { TenantService } from '@core/services/tenant';
 import { TenantRole } from '@core/enums';
 import { ToastService } from '@core/services/toast';
 
-/**
- * Usage in routes:
- * canActivate: [roleGuard('owner')]
- * canActivate: [roleGuard(['owner', 'admin'])]
- *
- * IMPORTANT: The guard waits for the tenant to be initialized before checking the role,
- * preventing false redirects when member data is still loading.
- */
 export const roleGuard = (allowedRoles: TenantRole | TenantRole[]): CanActivateFn => {
   return async () => {
     const tenantService = inject(TenantService);
     const router = inject(Router);
     const toast = inject(ToastService);
 
-    // Wait for tenant data to be initialized before checking roles.
-    // This prevents false redirects when memberInfo is still loading from Supabase.
     if (!tenantService.initialized()) {
       await new Promise<void>((resolve) => {
         const interval = setInterval(() => {
@@ -40,12 +30,10 @@ export const roleGuard = (allowedRoles: TenantRole | TenantRole[]): CanActivateF
 
     toast.error('No tienes permisos para acceder a esta sección');
 
-    // /orders is accessible to ALL roles — safe universal fallback that avoids loops
     return router.createUrlTree(['/orders']);
   };
 };
 
-/** ── Shortcut guards ──────────────────────────────────── */
 
 /** Owner only */
 export const ownerGuard: CanActivateFn = roleGuard(TenantRole.Owner);

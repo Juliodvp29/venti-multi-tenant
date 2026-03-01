@@ -36,7 +36,6 @@ export class ProductsService {
             query = query.eq('product_categories.category_id', filters['categoryId']);
         }
 
-        // Sorting Logic
         const sortBy = filters?.['sortBy'] || 'newest';
         switch (sortBy) {
             case 'price_asc':
@@ -46,11 +45,9 @@ export class ProductsService {
                 query = query.order('price', { ascending: false });
                 break;
             case 'popular':
-                // For now, combining featured and newest as fallback
                 query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false });
                 break;
             case 'best_sellers':
-                // Fallback to newest for now, ideally join with order count
                 query = query.order('created_at', { ascending: false });
                 break;
             case 'newest':
@@ -66,8 +63,6 @@ export class ProductsService {
 
         if (filters?.['status']) {
             if (filters['status'] === 'out_of_stock') {
-                // Match products explicitly marked as out_of_stock OR
-                // active products that track inventory and have 0 stock
                 query = query.or(
                     `status.eq.out_of_stock,and(track_inventory.eq.true,stock_quantity.eq.0)`
                 );
@@ -267,8 +262,8 @@ export class ProductsService {
                 tenant_id: tenantId,
                 updated_at: new Date().toISOString()
             };
-            if (!entry.id) delete entry.id; // Allow DB to generate UUID for new records
-            if (entry.sku === '') entry.sku = null; // Prevent unique constraint violation on empty string
+            if (!entry.id) delete entry.id;
+            if (entry.sku === '') entry.sku = null;
             return entry;
         });
 

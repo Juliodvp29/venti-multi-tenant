@@ -26,13 +26,11 @@ export class ToastService {
     return new Promise((resolve) => {
       this.add('confirm', message, title, 0,
         () => {
-          this.remove(this._toasts().find(t => t.type === 'confirm' && t.message === message)?.id!); // A bit safer to pass ID if possible, but let's just make sure we remove the right one. Actually, 'add' returns ID.
+          this.remove(this._toasts().find(t => t.type === 'confirm' && t.message === message)?.id!);
           resolve(true);
         },
         () => {
-          // We might need to handle specific removal inside the component or pass the ID back? 
-          // Simpler: The component handles calling remove(id).
-          // But here we need to resolve the promise.
+          this.remove(this._toasts().find(t => t.type === 'confirm' && t.message === message)?.id!);
           resolve(false);
         }
       );

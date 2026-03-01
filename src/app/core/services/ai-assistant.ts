@@ -248,7 +248,6 @@ export class AiAssistantService {
         this.isLoading.set(true);
 
         try {
-            // Gemini history must start with 'user' role.
             // We filter out the initial model welcome message if it's the first one.
             const history = this.messages()
                 .map(m => ({
