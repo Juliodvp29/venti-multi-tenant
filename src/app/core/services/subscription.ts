@@ -87,9 +87,7 @@ export class SubscriptionService {
        * This would typically integrate with Stripe or another payment provider
        */
     async changePlan(planId: string) {
-        // Logic for changing plan would go here
-        console.log('Changing plan to:', planId);
-        // For now, this is just a placeholder
+        // Implementation for changing plan
         return Promise.resolve({ success: true });
     }
 }

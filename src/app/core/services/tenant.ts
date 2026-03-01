@@ -707,9 +707,6 @@ export class TenantService {
     const storeName = this.businessName() ?? 'Venti Store';
     const inviterEmail = this.authService.userEmail() ?? 'An administrator';
 
-    console.log('%c📧 Invitation created!', 'color: green; font-weight: bold;');
-    console.log('Link:', inviteLink);
-
     // 2.5 Check if user exists using RPC
     let userExists = false;
     try {

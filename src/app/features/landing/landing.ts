@@ -10,7 +10,6 @@ import { SeoService } from '@core/services/seo';
   imports: [CommonModule, RouterLink],
   template: `
     <div class="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-indigo-500/30">
-      <!-- Navbar -->
       <nav class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16 items-center">
@@ -37,7 +36,6 @@ import { SeoService } from '@core/services/seo';
         </div>
       </nav>
 
-      <!-- Hero Section -->
       <section class="relative pt-20 pb-32 overflow-hidden">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-b from-indigo-500/10 via-transparent to-transparent rounded-full blur-3xl -z-10"></div>
         
@@ -67,7 +65,6 @@ import { SeoService } from '@core/services/seo';
             </a>
           </div>
 
-          <!-- Feature Image Placeholder -->
           <div class="relative max-w-5xl mx-auto animate-float opacity-0" style="animation-delay: 0.6s; animation-fill-mode: forwards;">
             <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-[2.5rem] blur opacity-20 dark:opacity-40"></div>
             <div class="relative bg-slate-50 dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden group transition-all duration-500 hover:shadow-indigo-500/20 hover:border-indigo-500/30">
@@ -81,18 +78,14 @@ import { SeoService } from '@core/services/seo';
                 alt="Venti Dashboard Dark" 
                 class="w-full h-full object-contain transition-all duration-700 group-hover:scale-[1.02] hidden dark:block"
               />
-              <!-- Subtle glass overlay -->
-              <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-transparent opacity-40 group-hover:opacity-0 transition-opacity duration-500 pointer-events-none"></div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Premium Scroll Reveal Features -->
       <section class="py-32 space-y-40 overflow-hidden bg-white dark:bg-gray-950 border-y border-gray-100 dark:border-gray-800/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <!-- Feature 1: Powerful Analytics -->
           <div class="reveal-item flex flex-col md:flex-row items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out">
             <div class="flex-1 space-y-6">
               <div class="inline-flex p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl text-indigo-600 dark:text-indigo-400">
@@ -129,7 +122,6 @@ import { SeoService } from '@core/services/seo';
             </div>
           </div>
 
-          <!-- Feature 2: Smart Inventory (Reverse Layout) -->
           <div class="reveal-item flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out">
             <div class="flex-1 space-y-6">
               <div class="inline-flex p-3 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl text-emerald-600 dark:text-emerald-400">
@@ -169,7 +161,6 @@ import { SeoService } from '@core/services/seo';
             </div>
           </div>
 
-          <!-- Feature 3: Customization -->
           <div class="reveal-item flex flex-col md:flex-row items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out">
             <div class="flex-1 space-y-6">
               <div class="inline-flex p-3 bg-orange-50 dark:bg-orange-500/10 rounded-2xl text-orange-600 dark:text-orange-400">
@@ -208,7 +199,6 @@ import { SeoService } from '@core/services/seo';
         </div>
       </section>
 
-      <!-- Features Section -->
       <section id="features" class="py-32 bg-white dark:bg-gray-900 scroll-mt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center mb-20">
@@ -259,7 +249,6 @@ import { SeoService } from '@core/services/seo';
         </div>
       </section>
 
-      <!-- Pricing Section -->
       <section id="pricing" class="py-32 scroll-mt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center mb-20 animate-fade-in">
@@ -308,7 +297,6 @@ import { SeoService } from '@core/services/seo';
         </div>
       </section>
 
-      <!-- Footer -->
       <footer id="contact" class="py-20 border-at border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 scroll-mt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">

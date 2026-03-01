@@ -110,9 +110,7 @@ export class AbandonedCartService {
     }
 
     async sendRecoveryEmail(cart: AbandonedCart, couponId?: string): Promise<{ success: boolean; error?: string }> {
-        // Mock implementation using EmailService concept
-        console.log(`Sending recovery email to ${cart.customer_email} with coupon ${couponId}`);
-        // Here we would call EmailService.send({ template: 'abandoned-cart', ... })
+        // Recovery email logic placeholder
         return { success: true };
     }
 }

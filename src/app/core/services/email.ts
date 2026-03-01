@@ -66,14 +66,10 @@ export class EmailService {
             .then(({ error: logError }) => {
                 if (logError) {
                     console.error('Error logging email (background):', logError);
-                } else {
-                    console.log(`[EmailService] Logged email to ${params.to}`);
                 }
             });
 
-        // 2. Here would be the actual integration with an ESP (SendGrid, Postmark, etc.)
-        // For now, we simulate success as long as it's initiated.
-        console.log(`[EmailService] Simulated sending email to ${params.to}: ${params.subject}`);
+        // Actual integration would go here (SendGrid, Postmark, etc.)
 
         return { success: true };
     }
