@@ -11,12 +11,9 @@ import { errorInterceptor } from '@core/interceptors/error.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    // Angular 21 - Zoneless change detection (signals-based)
     provideZonelessChangeDetection(),
     provideAnimationsAsync(),
-    // Router with view transitions and input binding
     provideRouter(routes, withViewTransitions(), withComponentInputBinding()),
-    // HTTP client with functional interceptors
     provideHttpClient(
       withFetch(),
       withInterceptors([authInterceptor, loaderInterceptor, errorInterceptor])

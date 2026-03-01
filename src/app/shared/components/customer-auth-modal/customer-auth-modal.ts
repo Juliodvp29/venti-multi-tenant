@@ -6,207 +6,70 @@ import { ToastService } from '@core/services/toast';
 import { TenantService } from '@core/services/tenant';
 
 @Component({
-    selector: 'app-customer-auth-modal',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
-    template: `
-    <div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-      <div class="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-300 max-h-[90vh] flex flex-col">
-        <!-- Close Button (Fixed at top) -->
-        <button (click)="close.emit()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors z-[110] bg-white/80 backdrop-blur-sm">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-
-        <div class="overflow-y-auto w-full">
-
-        <!-- Header Tabs -->
-        <div class="flex border-b border-slate-100 pr-12">
-          <button 
-            (click)="tab.set('login')"
-            class="flex-1 py-6 text-sm font-bold uppercase tracking-widest transition-all"
-            [class.text-indigo-600]="tab() === 'login'"
-            [class.border-b-4]="tab() === 'login'"
-            [class.border-indigo-600]="tab() === 'login'"
-            [class.text-slate-400]="tab() !== 'login'">
-            Iniciar Sesión
-          </button>
-          <button 
-            (click)="tab.set('signup')"
-            class="flex-1 py-6 text-sm font-bold uppercase tracking-widest transition-all"
-            [class.text-indigo-600]="tab() === 'signup'"
-            [class.border-b-4]="tab() === 'signup'"
-            [class.border-indigo-600]="tab() === 'signup'"
-            [class.text-slate-400]="tab() !== 'signup'">
-            Crear Cuenta
-          </button>
-        </div>
-
-        <div class="p-8 sm:p-10">
-          @if (needsVerification()) {
-            <div class="text-center py-4 animate-in zoom-in duration-500">
-              <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 class="text-3xl font-black text-slate-900 mb-4">¡Revisa tu correo!</h3>
-              <p class="text-slate-600 font-medium leading-relaxed mb-8">
-                Hoy más que nunca la seguridad es lo primero. Te hemos enviado un link de confirmación a tu correo para activar tu cuenta.
-              </p>
-              <button 
-                (click)="close.emit()"
-                class="w-full py-5 bg-slate-900 text-white rounded-[1.25rem] font-black text-lg shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all">
-                Entendido
-              </button>
-            </div>
-          } @else {
-            <div class="mb-10 text-center">
-              <h3 class="text-3xl font-black text-slate-900 mb-2">
-                {{ tab() === 'login' ? '¡Bienvenido!' : 'Únete a nosotros' }}
-              </h3>
-              <p class="text-slate-500 font-medium">
-                {{ tab() === 'login' ? 'Ingresa para gestionar tus pedidos y reseñas.' : 'Crea tu cuenta para una mejor experiencia.' }}
-              </p>
-            </div>
-
-            <!-- Form Area -->
-            <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="space-y-6">
-              @if (tab() === 'signup') {
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 pl-1">Nombre</label>
-                    <input 
-                      type="text" 
-                      formControlName="firstName"
-                      placeholder="Tu nombre"
-                      class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:bg-white focus:border-indigo-500 outline-none transition-all font-medium text-slate-900">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 pl-1">Apellido</label>
-                    <input 
-                      type="text" 
-                      formControlName="lastName"
-                      placeholder="Tu apellido"
-                      class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:bg-white focus:border-indigo-500 outline-none transition-all font-medium text-slate-900">
-                  </div>
-                </div>
-              }
-
-              <div>
-                <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 pl-1">Email</label>
-                <input 
-                  type="email" 
-                  formControlName="email"
-                  placeholder="ejemplo@correo.com"
-                  class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:bg-white focus:border-indigo-500 outline-none transition-all font-medium text-slate-900">
-              </div>
-
-              <div>
-                <label class="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2 pl-1">Contraseña</label>
-                <input 
-                  type="password" 
-                  formControlName="password"
-                  placeholder="••••••••"
-                  class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:bg-white focus:border-indigo-500 outline-none transition-all font-medium text-slate-900">
-              </div>
-
-              <button 
-                type="submit"
-                [disabled]="loading() || authForm.invalid"
-                class="w-full py-5 bg-slate-900 text-white rounded-[1.25rem] font-black text-lg shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
-                <span class="flex items-center justify-center gap-3">
-                  @if (loading()) {
-                    <svg class="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Procesando...
-                  } @else {
-                    {{ tab() === 'login' ? 'Entrar Ahora' : 'Crear mi Cuenta' }}
-                  }
-                </span>
-              </button>
-            </form>
-
-            @if (tab() === 'login') {
-              <p class="mt-8 text-center text-slate-500 font-medium">
-                ¿No tienes cuenta? 
-                <button (click)="tab.set('signup')" class="text-indigo-600 font-bold hover:underline">Regístrate</button>
-              </p>
-            } @else {
-              <p class="mt-8 text-center text-slate-500 font-medium">
-                ¿Ya tienes cuenta? 
-                <button (click)="tab.set('login')" class="text-indigo-600 font-bold hover:underline">Inicia Sesión</button>
-              </p>
-            }
-          }
-        </div>
-        </div>
-      </div>
-    </div>
-  `,
+  selector: 'app-customer-auth-modal',
+  templateUrl: './customer-auth-modal.html',
+  styleUrl: './customer-auth-modal.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
 export class CustomerAuthModal {
-    private readonly fb = inject(FormBuilder);
-    private readonly auth = inject(AuthService);
-    private readonly tenant = inject(TenantService);
-    private readonly toast = inject(ToastService);
+  private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly tenant = inject(TenantService);
+  private readonly toast = inject(ToastService);
 
-    readonly tab = signal<'login' | 'signup'>('login');
-    readonly loading = signal(false);
-    readonly needsVerification = signal(false);
-    readonly close = output<void>();
-    readonly authenticated = output<void>();
+  readonly tab = signal<'login' | 'signup'>('login');
+  readonly loading = signal(false);
+  readonly needsVerification = signal(false);
+  readonly close = output<void>();
+  readonly authenticated = output<void>();
 
-    readonly authForm = this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        firstName: [''],
-        lastName: [''],
-    });
+  readonly authForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    firstName: [''],
+    lastName: [''],
+  });
 
-    async onSubmit() {
-        if (this.authForm.invalid || this.loading()) return;
-        if (this.needsVerification()) {
-            this.close.emit();
-            return;
-        }
-
-        this.loading.set(true);
-        try {
-            const { email, password, firstName, lastName } = this.authForm.getRawValue();
-            const tenantId = this.tenant.tenantId();
-
-            if (!tenantId) throw new Error('Tenant missing');
-
-            if (this.tab() === 'login') {
-                const { error } = await this.auth.signInWithEmail(email!, password!);
-                if (error) throw error;
-
-                // Ensure customer record exists
-                await this.auth.getOrCreateCustomer(tenantId);
-
-                this.toast.success('¡Bienvenido de nuevo!');
-                this.authenticated.emit();
-                this.close.emit();
-            } else {
-                const redirectUrl = window.location.href;
-                const { error } = await this.auth.signUp(email!, password!, {
-                    first_name: firstName,
-                    last_name: lastName
-                }, redirectUrl);
-                if (error) throw error;
-
-                this.needsVerification.set(true);
-                this.toast.success('¡Casi listo! Revisa tu correo.');
-            }
-        } catch (error: any) {
-            console.error('Auth error:', error);
-            this.toast.error(error.message || 'Error de autenticación');
-        } finally {
-            this.loading.set(false);
-        }
+  async onSubmit() {
+    if (this.authForm.invalid || this.loading()) return;
+    if (this.needsVerification()) {
+      this.close.emit();
+      return;
     }
+
+    this.loading.set(true);
+    try {
+      const { email, password, firstName, lastName } = this.authForm.getRawValue();
+      const tenantId = this.tenant.tenantId();
+
+      if (!tenantId) throw new Error('Tenant missing');
+
+      if (this.tab() === 'login') {
+        const { error } = await this.auth.signInWithEmail(email!, password!);
+        if (error) throw error;
+
+        await this.auth.getOrCreateCustomer(tenantId);
+
+        this.toast.success('¡Welcome back!');
+        this.authenticated.emit();
+        this.close.emit();
+      } else {
+        const redirectUrl = window.location.href;
+        const { error } = await this.auth.signUp(email!, password!, {
+          first_name: firstName,
+          last_name: lastName
+        }, redirectUrl);
+        if (error) throw error;
+
+        this.needsVerification.set(true);
+        this.toast.success('¡Almost ready! Check your email.');
+      }
+    } catch (error: any) {
+      console.error('Auth error:', error);
+      this.toast.error(error.message || 'Authentication error');
+    } finally {
+      this.loading.set(false);
+    }
+  }
 }

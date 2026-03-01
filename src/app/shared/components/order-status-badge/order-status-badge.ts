@@ -28,12 +28,9 @@ const PAYMENT_STATUS_MAP: Record<PaymentStatus, BadgeConfig> = {
 
 @Component({
     selector: 'app-order-status-badge',
+    templateUrl: './order-status-badge.html',
+    styleUrl: './order-status-badge.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
-        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset {{ config().classes }}">
-            {{ config().label }}
-        </span>
-    `,
 })
 export class OrderStatusBadge {
     status = input.required<OrderStatus | PaymentStatus>();

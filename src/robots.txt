@@ -2,15 +2,37 @@
 User-agent: *
 Allow: /
 
-# Disallow admin and auth pages from indexing
-Disallow: /admin/
+# Disallow auth pages from indexing
 Disallow: /auth/login
 Disallow: /auth/signup
 Disallow: /auth/reset-password
 Disallow: /auth/forgot-password
 
+# Disallow private application area
+Disallow: /dashboard
+Disallow: /products
+Disallow: /settings
+Disallow: /members
+Disallow: /coupons
+Disallow: /subscription
+Disallow: /orders
+Disallow: /customers
+Disallow: /inventory-history
+Disallow: /reviews
+Disallow: /abandoned-carts
+Disallow: /reports
+Disallow: /select-store
+Disallow: /accept-invite
+
 # Disallow API endpoints
 Disallow: /api/
+
+# Block AI Crawlers
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
 
 # Sitemap location
 Sitemap: https://venti.app/sitemap.xml

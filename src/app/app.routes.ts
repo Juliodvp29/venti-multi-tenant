@@ -43,7 +43,6 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        // deliveryRedirectGuard sends Delivery users to /orders before dashboard loads
         canActivate: [deliveryRedirectGuard, roleGuard([TenantRole.Owner, TenantRole.Admin, TenantRole.Viewer])],
         loadComponent: () => import('@features/dashboard/dashboard').then((m) => m.Dashboard),
       },
@@ -74,7 +73,6 @@ export const routes: Routes = [
       },
       {
         path: 'orders',
-        // All roles can access orders (including Delivery)
         loadChildren: () => import('@features/orders/orders.routes').then((m) => m.ordersRoutes),
       },
       {

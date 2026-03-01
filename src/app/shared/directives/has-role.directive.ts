@@ -26,7 +26,7 @@ export class HasRoleDirective {
     @Input() set appHasRole(roles: string | string[]) {
         const stringRoles = Array.isArray(roles) ? roles : [roles];
         this.allowedRoles = stringRoles as TenantRole[];
-        // We update eagerly in case the effect hasn't run yet but the input changed
+        // update eagerly in case the effect hasn't run yet but the input changed
         const currentRole = (this.tenantService as any).currentRole ? (this.tenantService as any).currentRole() : TenantRole.Admin;
         this.updateView(currentRole);
     }
@@ -37,7 +37,7 @@ export class HasRoleDirective {
             return;
         }
 
-        // Owner and Admin always have access unless strictly excluded (which we rarely do)
+        // Owner and Admin always have access unless strictly excluded 
         const isAdminOrOwner = currentRole === TenantRole.Owner || currentRole === TenantRole.Admin;
         const hasRequiredRole = this.allowedRoles.includes(currentRole);
 

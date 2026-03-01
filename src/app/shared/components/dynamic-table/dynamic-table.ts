@@ -42,12 +42,7 @@ export class DynamicTable<T extends Record<string, any>> {
   pageSize = input<number>(10);
   searchPlaceholder = input<string>('Search...');
   allowImport = input<boolean>(false);
-  /** When provided, enables server-side pagination mode.
-   *  The parent is responsible for fetching the correct page;
-   *  the table emits pageChange instead of slicing data locally. */
   totalItemsOverride = input<number | null>(null);
-
-  /** Tells the table if external filters are applied, to show the Clear button */
   hasActiveFilters = input<boolean>(false);
 
   // Outputs
@@ -74,9 +69,7 @@ export class DynamicTable<T extends Record<string, any>> {
     this.isExportMenuOpen.set(false);
   }
 
-  // Computed: Filtered and Sorted Data
   filteredData = computed(() => {
-    // In server-side mode skip local filtering/sorting (data is already the correct page)
     if (this.totalItemsOverride() !== null) return [...this.data()];
 
     let result = [...this.data()];
