@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect } from '@angular/core';
+import { CartItem } from '@core/models/cart';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '@core/services/cart';
+import { TenantService } from '@core/services/tenant';
 import { OrdersService } from '@core/services/orders';
 import { CustomerAuthService } from '@core/services/customer-auth';
 import { CustomersService } from '@core/services/customers';
@@ -20,7 +22,7 @@ import { AddressForm } from '../account/address-form/address-form';
       <!-- Form -->
       <div class="lg:col-span-12">
          <nav class="flex mb-8 text-sm text-slate-500">
-          <a routerLink="/store" class="hover:text-slate-900 transition-colors">Store</a>
+          <a routerLink="/store" queryParamsHandling="preserve" class="hover:text-slate-900 transition-colors">Store</a>
           <span class="mx-2">/</span>
           <span class="text-slate-900 font-medium">Checkout</span>
         </nav>
@@ -99,8 +101,14 @@ import { AddressForm } from '../account/address-form/address-form';
           <div class="space-y-4 mb-6 max-h-96 overflow-y-auto pr-2">
             @for (item of cartService.items(); track item.id) {
               <div class="flex gap-4">
-                <div class="w-16 h-16 rounded-xl border border-slate-100 overflow-hidden flex-shrink-0 bg-slate-50">
-                  <img [src]="item.imageUrl" class="w-full h-full object-cover">
+                <div class="w-16 h-16 rounded-xl border border-slate-100 overflow-hidden flex-shrink-0 bg-slate-50 flex items-center justify-center">
+                  @if (getItemImage(item)) {
+                    <img [src]="getItemImage(item)" [alt]="item.name" class="w-full h-full object-cover">
+                  } @else {
+                    <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  }
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="font-bold text-slate-900 truncate">{{ item.name }}</p>
@@ -157,6 +165,7 @@ import { AddressForm } from '../account/address-form/address-form';
 })
 export class Checkout implements OnInit {
   readonly cartService = inject(CartService);
+  private readonly tenantService = inject(TenantService);
   private readonly router = inject(Router);
   private readonly ordersService = inject(OrdersService);
   private readonly customerAuth = inject(CustomerAuthService);
@@ -223,10 +232,13 @@ export class Checkout implements OnInit {
 
   async onAddressFormSaved(address: Partial<CustomerAddress>) {
     if (!this.customerId()) {
-      // If they managed to act as a guest, we would save it to local state, 
-      // but since ensureCustomer usually prompts login, we can assume customerId exists
-      // Wait, ensureCustomer() might return null if they close the login modal.
-      // Let's force login if they try to save
+      const tenantId = this.tenantService.tenantId();
+      if (!tenantId) {
+        console.error('[Checkout] Cannot save address: Tenant ID is missing');
+        this.toast.error('Session error: The store could not be identified. Please reload the page.');
+        return;
+      }
+
       this.resolvedCustomer = await this.customerAuth.ensureCustomer();
       if (!this.resolvedCustomer) {
         this.toast.warning('Log in to save your address and continue');
@@ -313,7 +325,7 @@ export class Checkout implements OnInit {
       };
 
       const orderItems = this.cartService.items().map(item => ({
-        product_id: item.id,
+        product_id: item.productId,
         variant_id: item.variantId,
         product_name: item.name,
         quantity: item.quantity,
@@ -328,11 +340,22 @@ export class Checkout implements OnInit {
       this.cartService.clearCart();
       this.toast.success('Order received successfully!');
       this.router.navigate(['/store/success']);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error placing order:', error);
-      this.toast.error('An error occurred while processing your order');
+      const message = error?.message || 'An error occurred while processing your order';
+      this.toast.error(message);
     } finally {
       this.isSubmitting.set(false);
     }
+  }
+
+  getItemImage(item: CartItem): string | null {
+    if (item.imageUrl) return item.imageUrl;
+    const p = item.product;
+    if (!p) return null;
+    return p.primary_image_url ||
+      p.images?.find(img => img.is_primary)?.url ||
+      p.images?.[0]?.url ||
+      null;
   }
 }

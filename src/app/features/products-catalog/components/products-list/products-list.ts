@@ -149,7 +149,15 @@ export class ProductsList implements OnInit {
             label: 'Stock',
             sortable: true,
             type: 'number',
-            formatter: (val, item) => item['track_inventory'] ? String(val) : 'Unlimited',
+            formatter: (val, item) => {
+                if (!item['track_inventory']) return 'Unlimited';
+                const variants = (item as any)['variants'] || [];
+                if (variants.length > 0) {
+                    const total = variants.reduce((acc: number, v: any) => acc + (v.stock_quantity || 0), 0);
+                    return String(total);
+                }
+                return String(val);
+            },
         },
         {
             key: 'status',

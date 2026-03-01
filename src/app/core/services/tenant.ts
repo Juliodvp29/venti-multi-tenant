@@ -153,10 +153,14 @@ export class TenantService {
       const isAuth = this.authService.isAuthenticated();
       const isAuthInit = this.authService.isInitialized();
 
+      // If we are on the storefront, we don't want the staff-auth logic to clear
+      // the tenant that was resolved via subdomain.
+      const isStorefront = window.location.pathname.startsWith('/store');
+
       if (isAuthInit && isAuth && userId && !this.initialized()) {
         this.loadUserTenants();
-      } else if (isAuthInit && !isAuth) {
-        // Clear tenant when logged out
+      } else if (isAuthInit && !isAuth && !isStorefront) {
+        // Clear tenant when logged out, but ONLY if not on storefront
         this.clearTenant();
       }
     });
@@ -250,8 +254,13 @@ export class TenantService {
 
       const finalMembership = selectedMembership || membershipData[0] || null;
 
-      // If we have no membership but we have owned tenants, pick the first owned tenant
-      let selectedTenant = finalMembership?.tenant || null;
+      // If we are on the storefront, we should prioritize the tenant already 
+      // resolved by subdomain over any managed stores the user might have.
+      const isStorefront = window.location.pathname.startsWith('/store');
+      const existingTenant = this.currentTenant();
+
+      let selectedTenant = (isStorefront && existingTenant) ? existingTenant : (finalMembership?.tenant || null);
+
       if (!selectedTenant && sortedTenants.length > 0) {
         selectedTenant = sortedTenants[0];
       }
@@ -262,7 +271,7 @@ export class TenantService {
         currentTenant: selectedTenant,
         memberInfo: finalMembership ? {
           ...finalMembership,
-          tenant: undefined // Avoid circular or unnecessary data in memberInfo
+          tenant: undefined
         } : null
       }));
 

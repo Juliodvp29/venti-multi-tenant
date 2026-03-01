@@ -219,7 +219,7 @@
                 </div>
 
                 <!-- Stock Quantity -->
-                @if (form.getRawValue().track_inventory) {
+                @if (form.getRawValue().track_inventory && !hasVariants()) {
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Stock
                         Quantity</label>

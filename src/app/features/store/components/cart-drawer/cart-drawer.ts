@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal } from '@angular/core';
+import { CartItem } from '@core/models/cart';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -29,8 +30,14 @@ import { CartService } from '@core/services/cart';
         <div class="flex-1 overflow-y-auto p-6 space-y-6">
             @for (item of items(); track item.id) {
                 <div class="flex gap-4">
-                    <div class="w-20 h-20 rounded-2xl border border-slate-100 overflow-hidden flex-shrink-0 bg-slate-50">
-                        <img [src]="item.imageUrl" class="w-full h-full object-cover">
+                    <div class="w-20 h-20 rounded-2xl border border-slate-100 overflow-hidden flex-shrink-0 bg-slate-50 flex items-center justify-center">
+                        @if (getItemImage(item)) {
+                            <img [src]="getItemImage(item)" [alt]="item.name" class="w-full h-full object-cover">
+                        } @else {
+                            <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        }
                     </div>
                     <div class="flex-1 min-w-0 flex flex-col">
                         <div class="flex justify-between items-start gap-2">
@@ -116,7 +123,7 @@ import { CartService } from '@core/services/cart';
                 <span class="text-slate-900 text-xl font-bold">{{ cartService.total() | currency }}</span>
             </div>
             
-            <button (click)="close.emit()" routerLink="/store/checkout" [disabled]="items().length === 0" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+            <button (click)="close.emit()" routerLink="/store/checkout" queryParamsHandling="preserve" [disabled]="items().length === 0" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
                 Go to Checkout
             </button>
         </div>
@@ -137,5 +144,15 @@ export class CartDrawer {
         if (success) {
             this.couponCode.set('');
         }
+    }
+
+    getItemImage(item: CartItem): string | null {
+        if (item.imageUrl) return item.imageUrl;
+        const p = item.product;
+        if (!p) return null;
+        return p.primary_image_url ||
+            p.images?.find(img => img.is_primary)?.url ||
+            p.images?.[0]?.url ||
+            null;
     }
 }

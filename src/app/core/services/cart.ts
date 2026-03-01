@@ -142,7 +142,11 @@ export class CartService {
                 name: variant ? `${product.name} - ${variant.name}` : product.name,
                 price: variant?.price ?? product.price,
                 quantity: quantity,
-                imageUrl: variant?.image_url || product.primary_image_url || null,
+                imageUrl: variant?.image_url ||
+                    product.primary_image_url ||
+                    product.images?.find(img => img.is_primary)?.url ||
+                    product.images?.[0]?.url ||
+                    null,
                 product: product
             };
 

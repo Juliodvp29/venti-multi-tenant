@@ -205,7 +205,7 @@ export class ProductForm implements OnInit, OnDestroy {
                     options: { ...currentOptions },
                     sku: null,
                     price: this.form.getRawValue().price,
-                    stock_quantity: 0,
+                    stock_quantity: this.form.getRawValue().stock_quantity || 99,
                     is_active: true
                 }];
             }

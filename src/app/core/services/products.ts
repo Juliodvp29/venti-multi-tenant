@@ -22,8 +22,8 @@ export class ProductsService {
         if (!tenantId) throw new Error('Tenant not selected');
 
         const columns = filters?.['categoryId']
-            ? '*, images:product_images(*), product_categories!inner(category_id), variants:product_variants(id)'
-            : '*, images:product_images(*), variants:product_variants(id)';
+            ? '*, images:product_images(*), product_categories!inner(category_id), variants:product_variants(stock_quantity)'
+            : '*, images:product_images(*), variants:product_variants(stock_quantity)';
 
         let query = this.supabase.client
             .from('products')

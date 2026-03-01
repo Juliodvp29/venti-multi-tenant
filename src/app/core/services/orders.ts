@@ -121,16 +121,6 @@ export class OrdersService {
 
         if (itemsError) throw itemsError;
 
-        try {
-            await this.supabase.client.from('order_status_history').insert({
-                order_id: order.id,
-                tenant_id: tenantId,
-                new_status: order.status || OrderStatus.Pending,
-                note: 'Order created successfully',
-            } as any);
-        } catch (e) {
-            console.warn('Could not insert order status history (likely RLS), ignoring:', e);
-        }
 
         return order as Order;
     }

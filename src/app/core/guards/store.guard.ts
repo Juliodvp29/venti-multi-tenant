@@ -18,10 +18,14 @@ export const storeGuard: CanActivateFn = async (route, state) => {
         const urlParams = new URLSearchParams(window.location.search);
         const sParam = urlParams.get('s');
         if (sParam) {
-            // Clean up common trailing characters for convenience in testing
             subdomain = sParam.split('=')[0].split('?')[0];
         } else {
-            subdomain = 'jstore';
+            // Fallback: If we already have a tenant in service, keep it
+            if (tenantService.tenantId()) {
+                return true;
+            }
+            // Last resort fallback for jd-store (standard testing)
+            subdomain = 'jd-store';
         }
     } else {
         const parts = hostname.split('.');
@@ -31,14 +35,16 @@ export const storeGuard: CanActivateFn = async (route, state) => {
     }
 
     if (!subdomain) {
-        // No subdomain found, maybe handle as main site or redirect
         return true;
     }
 
     const resolved = await tenantService.resolveTenantBySubdomain(subdomain);
 
     if (!resolved) {
-        // Store not found, redirect to a 404 or main page
+        // If resolution failed but we HAD a tenant, maybe it's just a transient error
+        if (tenantService.tenantId()) {
+            return true;
+        }
         router.navigate(['/404']);
         return false;
     }
