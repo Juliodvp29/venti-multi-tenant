@@ -13,7 +13,7 @@ export interface SeoConfig {
     author?: string;
     /** Override the site name showed in og:site_name and title separator */
     siteName?: string;
-    /** BCP 47 locale, e.g. 'es_MX'. Defaults to 'es_ES' */
+    /** BCP 47 locale, e.g. 'es_MX'. Defaults to 'en_US' */
     locale?: string;
     /** For articles: ISO date string */
     publishedTime?: string;
@@ -57,11 +57,11 @@ export class SeoService {
     private readonly isBrowser = isPlatformBrowser(this.platformId);
 
     private readonly defaultSiteName = 'Venti Shop';
-    private readonly defaultLocale = 'es_ES';
+    private readonly defaultLocale = 'en_US';
 
     private readonly defaultConfig: Partial<SeoConfig> = {
-        title: 'Venti Shop - Plataforma Multi-Tenant de Ecommerce',
-        description: 'Plataforma moderna de ecommerce multi-tenant construida con Angular y Supabase',
+        title: 'Venti Shop - Multi-Tenant Ecommerce Platform',
+        description: 'Modern multi-tenant ecommerce platform built with Angular and Supabase',
         type: 'website',
         locale: this.defaultLocale,
     };
