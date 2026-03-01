@@ -15,7 +15,7 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
     <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
             <!-- Logo & Title -->
-            <a routerLink="/store" class="flex items-center gap-3 group">
+            <a routerLink="/store" queryParamsHandling="preserve" class="flex items-center gap-3 group">
                 @if (branding()?.logo_url) {
                     <div class="h-10 w-10 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 p-1 flex-shrink-0">
                         <img [src]="branding()?.logo_url" alt="Logo" class="w-full h-full object-contain">
@@ -29,7 +29,7 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
             <!-- Desktop Nav -->
             <nav class="hidden md:flex items-center gap-8">
                @for (link of navigation(); track link.label) {
-                   <a [routerLink]="link.url" class="text-sm font-bold text-slate-600 hover:text-slate-900">
+                   <a [routerLink]="link.url" queryParamsHandling="preserve" class="text-sm font-bold text-slate-600 hover:text-slate-900">
                        {{ link.label }}
                    </a>
                }

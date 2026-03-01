@@ -75,9 +75,33 @@ export class TenantService {
     const layout = settings?.storefront_layout as StorefrontLayout;
 
     const defaultLayout: StorefrontLayout = {
-      sections: [],
+      sections: [
+        {
+          id: 'default-hero',
+          type: 'hero',
+          isActive: true,
+          content: {
+            title: 'Welcome to Our Store',
+            subtitle: 'Discover our latest arrivals and exclusive collections.',
+            buttonText: 'Shop Now',
+            buttonLink: '/store/productos',
+            alignment: 'center',
+            overlayOpacity: 40
+          }
+        },
+        {
+          id: 'default-products',
+          type: 'product_grid',
+          isActive: true,
+          content: {
+            title: 'Featured Products',
+            description: 'Check out our most popular products.',
+            limit: 8
+          }
+        }
+      ],
       navigation: [
-        { label: 'Products', url: '/store' },
+        { label: 'Products', url: '/store/productos' },
         { label: 'Collections', url: '/store/collections' },
         { label: 'About Us', url: '/store/about-us' }
       ]
@@ -87,6 +111,7 @@ export class TenantService {
 
     return {
       ...layout,
+      sections: layout.sections?.length > 0 ? layout.sections : defaultLayout.sections,
       navigation: layout.navigation || defaultLayout.navigation
     };
   });

@@ -17,7 +17,7 @@ import { AnalyticsService } from '@core/services/analytics';
                 <img [src]="product.images?.[0]?.url" 
                      [alt]="product.name" 
                      loading="lazy"
-                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                     class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700">
             }
             
             @if (product.compare_at_price) {
@@ -47,7 +47,7 @@ import { AnalyticsService } from '@core/services/analytics';
                         }
                     </button>
                 } @else {
-                    <a [routerLink]="['/store/product', product.id]"
+                    <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve"
                        class="w-full py-3 rounded-2xl font-bold shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer bg-slate-900 text-white hover:bg-slate-800">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -63,7 +63,7 @@ import { AnalyticsService } from '@core/services/analytics';
         <div class="p-5 flex-1 flex flex-col">
             <div class="mb-4">
                 <h3 class="font-bold text-slate-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors mb-1">
-                    <a [routerLink]="['/store/product', product.id]">{{ product.name }}</a>
+                    <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve">{{ product.name }}</a>
                 </h3>
                 <p class="text-xs text-slate-400 font-medium uppercase tracking-widest">{{ product.sku }}</p>
             </div>
@@ -76,7 +76,7 @@ import { AnalyticsService } from '@core/services/analytics';
                     <span class="text-xl font-black" [style.color]="'var(--primary-color)'">{{ product.price | currency }}</span>
                 </div>
                 
-                <a [routerLink]="['/store/product', product.id]" class="p-2 text-slate-400 hover:text-slate-900 transition-colors">
+                <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve" class="p-2 text-slate-400 hover:text-slate-900 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>

@@ -23,7 +23,7 @@
             }
             @if (asAny(section.content).buttonText) {
             <div class="mt-10 animate-fade-in-up delay-200">
-                <a [routerLink]="asAny(section.content).buttonLink || '/products'"
+                <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
                     class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-lg transform hover:-translate-y-1">
                     {{ asAny(section.content).buttonText }}
                 </a>
@@ -44,7 +44,7 @@
                 <p class="mt-2 text-gray-500 dark:text-gray-400">{{ asAny(section.content).description }}</p>
                 }
             </div>
-            <a routerLink="/products"
+            <a routerLink="/store/productos" queryParamsHandling="preserve"
                 class="text-indigo-600 font-semibold hover:text-indigo-500 transition-colors flex items-center gap-1">
                 View all <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M9 5l7 7-7 7" />
