@@ -17,20 +17,17 @@ export class ResetPassword {
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
 
-  // ── State ────────────────────────────────────────────────
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly showPassword = signal(false);
   readonly showConfirmPassword = signal(false);
   readonly isSuccess = signal(false);
 
-  // ── Form ─────────────────────────────────────────────────
   readonly resetPasswordForm = this.fb.nonNullable.group({
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]],
   });
 
-  // ── Computed ─────────────────────────────────────────────
   readonly passwordError = computed(() => {
     const control = this.resetPasswordForm.controls.password;
     if (control.touched && control.errors) {
@@ -65,7 +62,6 @@ export class ResetPassword {
     return { level: 3, text: 'Strong', color: 'var(--color-success-500)' };
   });
 
-  // ── Methods ──────────────────────────────────────────────
   passwordsMatch(): boolean {
     const password = this.resetPasswordForm.controls.password.value;
     const confirmPassword = this.resetPasswordForm.controls.confirmPassword.value;

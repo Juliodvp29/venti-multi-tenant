@@ -17,8 +17,8 @@ export interface DashboardProduct {
   template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm h-full flex flex-col">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-base font-bold text-gray-900 dark:text-white">Top Productos</h3>
-        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">Este Mes</span>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white">Top Products</h3>
+        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">This Month</span>
       </div>
 
       <div class="flex-1 space-y-5">
@@ -41,7 +41,7 @@ export interface DashboardProduct {
             </div>
 
             <div class="text-right">
-              <p class="text-sm font-bold text-gray-900 dark:text-white">{{ product.sales }} ventas</p>
+              <p class="text-sm font-bold text-gray-900 dark:text-white">{{ product.sales }} sales</p>
               <p class="text-[10px] font-bold text-green-600 dark:text-green-400">{{ product.revenue }}</p>
             </div>
           </div>
@@ -49,7 +49,7 @@ export interface DashboardProduct {
       </div>
 
       <button class="w-full mt-6 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
-        Ver reporte de inventario
+        View inventory report
       </button>
     </div>
   `,

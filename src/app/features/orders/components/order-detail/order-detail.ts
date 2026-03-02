@@ -32,10 +32,8 @@ export class OrderDetail implements OnInit {
     readonly currencyPipe = inject(CurrencyPipe);
     readonly datePipe = inject(DatePipe);
 
-    // Enums for template
     readonly OrderStatus = OrderStatus;
 
-    // State
     readonly isLoading = signal(true);
     readonly isSavingNote = signal(false);
     readonly isUpdatingStatus = signal(false);
@@ -48,7 +46,6 @@ export class OrderDetail implements OnInit {
     readonly refundReason = signal('');
     readonly refundReturnToStock = signal(true);
 
-    // Dispatch info
     readonly shippingMethod = signal('');
     readonly trackingNumber = signal('');
     readonly trackingUrl = signal('');
@@ -66,12 +63,10 @@ export class OrderDetail implements OnInit {
     });
 
     readonly canAssignDelivery = computed(() => {
-        // Only owners, admins, and editors can assign. Delivery personnel cannot.
         const role = this.ordersService['tenantService'].memberRole();
         return role === 'admin' || role === 'owner' || role === 'editor';
     });
 
-    // Status options for change
     readonly statusDropdownOptions: DropdownOption[] = [
         { label: 'Pending', value: OrderStatus.Pending },
         { label: 'Processing', value: OrderStatus.Processing },
@@ -103,7 +98,6 @@ export class OrderDetail implements OnInit {
         { value: OrderStatus.Refunded, label: 'Refunded' },
     ];
 
-    // Computed
     readonly customerFullName = computed(() => {
         const o = this.order();
         if (!o) return '';
@@ -181,9 +175,6 @@ export class OrderDetail implements OnInit {
 
             if (error) throw error;
 
-            // Note: because of Supabase limitations querying auth schema from public schema
-            // without special views, the inner join might fail if not configured.
-            // If it fails, we will gracefully degrade to empty.
             if (data) {
                 const options: DropdownOption[] = [{ label: 'Unassigned', value: '' }];
                 for (const member of data as any[]) {

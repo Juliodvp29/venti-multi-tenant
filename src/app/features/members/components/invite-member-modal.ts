@@ -105,7 +105,7 @@ import { TenantRole } from '@core/enums';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InviteMemberModalComponent {
-    submit = output<void>(); // close alias kept for back-compat
+    submit = output<void>();
     memberInvite = output<{ email: string; role: TenantRole }>();
     close = output<void>();
     private readonly fb = inject(FormBuilder);

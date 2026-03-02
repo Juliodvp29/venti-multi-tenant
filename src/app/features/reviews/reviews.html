@@ -2,8 +2,8 @@
     <!-- Header -->
     <div class="flex justify-between items-end">
         <div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2">Reseñas de Productos</h1>
-            <p class="text-slate-500 font-medium">Gestiona y modera lo que tus clientes dicen de tus productos.</p>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2">Product Reviews</h1>
+            <p class="text-slate-500 font-medium">Manage and moderate what your customers say about your products.</p>
         </div>
     </div>
 
@@ -41,10 +41,10 @@
                     </svg>
                 </div>
                 <span
-                    class="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded-lg uppercase tracking-widest">Este
-                    mes</span>
+                    class="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded-lg uppercase tracking-widest">This
+                    month</span>
             </div>
-            <p class="text-sm font-black text-slate-400 uppercase tracking-widest mb-1">Total de Reseñas</p>
+            <p class="text-sm font-black text-slate-400 uppercase tracking-widest mb-1">Total Reviews</p>
             <h3 class="text-4xl font-black text-slate-900">{{ stats().total | number }}</h3>
         </div>
 
@@ -57,11 +57,11 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-sm font-black text-slate-400 uppercase tracking-widest mb-1">Pendientes de Moderación</p>
+            <p class="text-sm font-black text-slate-400 uppercase tracking-widest mb-1">Pending Moderation</p>
             <div class="flex items-baseline gap-3">
                 <h3 class="text-4xl font-black text-slate-900">{{ stats().pending }}</h3>
                 @if (stats().pending > 0) {
-                <span class="text-xs font-bold text-red-500 animate-pulse">Requiere atención</span>
+                <span class="text-xs font-bold text-red-500 animate-pulse">Requires attention</span>
                 }
             </div>
         </div>
@@ -73,10 +73,10 @@
             <div class="flex items-center gap-4">
                 <select (change)="onStatusChange($any($event.target).value)"
                     class="px-6 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
-                    <option value="all">Todos los Estados</option>
-                    <option value="pending">Pendientes</option>
-                    <option value="approved">Aprobadas</option>
-                    <option value="rejected">Rechazadas</option>
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
                 </select>
             </div>
         </div>

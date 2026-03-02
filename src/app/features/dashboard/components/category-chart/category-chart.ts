@@ -9,8 +9,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
   template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm h-full">
       <div class="mb-6">
-        <h3 class="text-base font-bold text-gray-900 dark:text-white">Ventas por Categoría</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Rendimiento este mes</p>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white">Sales by category</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Performance this month</p>
       </div>
 
       <div class="relative h-[240px] flex items-center justify-center">

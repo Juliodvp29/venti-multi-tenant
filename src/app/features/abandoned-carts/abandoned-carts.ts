@@ -41,7 +41,6 @@ export class AbandonedCarts implements OnInit {
   }
 
   async sendRecovery(cart: AbandonedCart) {
-    // In a real scenario, this would open a modal to select a coupon code
     const result = await this.cartService.sendRecoveryEmail(cart);
     if (result.success) {
       this.toast.success(`Recovery email sent to ${cart.customer_name}`);

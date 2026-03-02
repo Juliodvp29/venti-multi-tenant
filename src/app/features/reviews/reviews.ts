@@ -41,33 +41,33 @@ export class Reviews {
   columns: ColumnDef<ProductReview>[] = [
     {
       key: 'product',
-      label: 'Producto',
-      formatter: (val, item) => item.product?.name || 'Producto eliminado'
+      label: 'Product',
+      formatter: (val, item) => item.product?.name || 'Product deleted'
     },
     {
       key: 'customer',
-      label: 'Cliente',
+      label: 'Customer',
       formatter: (val, item) => `${item.customer?.first_name} ${item.customer?.last_name || ''}`
     },
     {
       key: 'rating',
-      label: 'Calificación',
+      label: 'Rating',
       type: 'text',
       formatter: (val) => '⭐'.repeat(val as number)
     },
     {
       key: 'review',
-      label: 'Contenido',
+      label: 'Content',
       formatter: (val) => (val as string)?.substring(0, 50) + '...'
     },
     {
       key: 'status',
-      label: 'Estado',
+      label: 'Status',
       type: 'text'
     },
     {
       key: 'created_at',
-      label: 'Fecha',
+      label: 'Date',
       type: 'date'
     }
   ];

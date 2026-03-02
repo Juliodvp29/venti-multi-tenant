@@ -15,17 +15,14 @@ export class ForgotPassword {
   private readonly authService = inject(AuthService);
   private readonly toast = inject(ToastService);
 
-  // ── State ────────────────────────────────────────────────
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly isSuccess = signal(false);
 
-  // ── Form ─────────────────────────────────────────────────
   readonly forgotPasswordForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
   });
 
-  // ── Computed ─────────────────────────────────────────────
   readonly emailError = computed(() => {
     const control = this.forgotPasswordForm.controls.email;
     if (control.touched && control.errors) {
@@ -35,7 +32,6 @@ export class ForgotPassword {
     return null;
   });
 
-  // ── Methods ──────────────────────────────────────────────
   async onSubmit() {
     if (this.forgotPasswordForm.invalid) {
       this.forgotPasswordForm.markAllAsTouched();

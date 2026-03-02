@@ -20,18 +20,15 @@ export class Login {
   private readonly toast = inject(ToastService);
   private readonly tenantService = inject(TenantService);
 
-  // ── State ────────────────────────────────────────────────
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly showPassword = signal(false);
 
-  // ── Form ─────────────────────────────────────────────────
   readonly loginForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  // ── Computed ─────────────────────────────────────────────
   readonly isFormValid = computed(() => this.loginForm.valid);
   readonly emailError = computed(() => {
     const control = this.loginForm.controls.email;
@@ -50,7 +47,6 @@ export class Login {
     return null;
   });
 
-  // ── Methods ──────────────────────────────────────────────
   togglePasswordVisibility() {
     this.showPassword.update(v => !v);
   }
@@ -61,7 +57,6 @@ export class Login {
       return;
     }
 
-    // Capture redirect BEFORE sign-in (avoids race with guestGuard after auth state change)
     const redirect = this.route.snapshot.queryParams['redirect']
       || this.route.snapshot.queryParams['returnUrl'];
 
@@ -80,14 +75,12 @@ export class Login {
     } else {
       this.toast.success('Welcome!', 'You have logged in successfully');
 
-      // If there's a redirect URL, use it immediately before guestGuard can redirect away
       if (redirect) {
         this.router.navigateByUrl(decodeURIComponent(redirect));
         return;
       }
 
       try {
-        // Determine if they belong to multiple active tenants
         const { data: { session } } = await this.authService['supabase'].auth.getSession();
         if (session) {
           const { data: stores, error: storesError } = await (this.tenantService['supabase'].client.from as any)('tenants')

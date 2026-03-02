@@ -38,10 +38,9 @@ export class Coupons implements OnInit {
   isGiftModalOpen = signal(false);
   currentCouponForGift = signal<DiscountCode | null>(null);
 
-  // Stats - Dynamically calculated from data
   activeCount = computed(() => this.coupons().filter(c => c.is_active).length);
   totalRedemptions = computed(() => this.coupons().reduce((acc, c) => acc + (c.usage_count || 0), 0));
-  totalDiscounted = computed(() => 12450); // This would ideally come from a real aggregated metric
+  totalDiscounted = computed(() => 12450);
 
   columns: ColumnDef<DiscountCode>[] = [
     {
@@ -108,7 +107,6 @@ export class Coupons implements OnInit {
       this.coupons.set(data || []);
     } catch (error) {
       console.error('Error loading coupons:', error);
-      // Fail silently if it's just a missing tenant during init
       if (!(error instanceof Error && error.message.includes('Tenant'))) {
         this.toast.error('Error loading coupons');
       }

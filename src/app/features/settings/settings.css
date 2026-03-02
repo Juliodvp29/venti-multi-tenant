@@ -1,5 +1,3 @@
-/* Minimal CSS - Tailwind handles most styling */
-
 /* Tab transition animation */
 .tab-content-enter {
     animation: fadeIn 200ms ease-in;

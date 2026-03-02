@@ -5,17 +5,17 @@ import { ReviewsService } from '@core/services/reviews';
 import { ToastService } from '@core/services/toast';
 
 @Component({
-    selector: 'app-review-moderation-modal',
-    imports: [CommonModule],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
+  selector: 'app-review-moderation-modal',
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
     <div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
       <div class="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-300 flex flex-col">
         <!-- Header -->
         <div class="p-8 border-b border-slate-100 flex justify-between items-start">
           <div>
             <div class="flex items-center gap-3 mb-2">
-              <h2 class="text-2xl font-black text-slate-900">Moderación de Reseña</h2>
+              <h2 class="text-2xl font-black text-slate-900">Review moderation</h2>
               <span [class]="statusClasses()" class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">
                 {{ review().status }}
               </span>
@@ -34,7 +34,7 @@ import { ToastService } from '@core/services/toast';
           <div class="grid grid-cols-2 gap-8 mb-8">
             <!-- Reviewer -->
             <div class="space-y-3">
-              <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Cliente</p>
+              <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Customer</p>
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-lg">
                   {{ review().customer?.first_name?.[0] || 'U' }}
@@ -46,7 +46,7 @@ import { ToastService } from '@core/services/toast';
                       <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                       </svg>
-                      Compra Verificada
+                      Verified Purchase
                     </p>
                   }
                 </div>
@@ -55,7 +55,7 @@ import { ToastService } from '@core/services/toast';
 
             <!-- Product -->
             <div class="space-y-3">
-              <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Producto</p>
+              <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Product</p>
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 overflow-hidden">
                   <img [src]="primaryImage()" class="w-full h-full object-cover">
@@ -88,15 +88,15 @@ import { ToastService } from '@core/services/toast';
             <!-- Context Info -->
             <div class="grid grid-cols-3 gap-4">
               <div class="bg-slate-50 p-4 rounded-2xl">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">ID Pedido</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Order ID</p>
                 <p class="font-bold text-slate-900">#{{ (review().order_id?.split('-') || [])[0] || 'N/A' }}</p>
               </div>
               <div class="bg-slate-50 p-4 rounded-2xl">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Fecha Envío</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date</p>
                 <p class="font-bold text-slate-900">{{ review().created_at | date:'mediumDate' }}</p>
               </div>
               <div class="bg-slate-50 p-4 rounded-2xl">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Estado</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
                 <p class="font-bold text-slate-900 capitalize">{{ review().status }}</p>
               </div>
             </div>
@@ -106,19 +106,19 @@ import { ToastService } from '@core/services/toast';
         <!-- Footer Actions -->
         <div class="p-8 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
           <button class="text-slate-400 font-bold hover:text-slate-600 transition-colors uppercase tracking-widest text-xs">
-            Marcar para Revisión
+            Mark for Review
           </button>
           
           <div class="flex gap-4">
             <button 
               (click)="onAction('rejected')"
               class="px-8 py-4 bg-white border-2 border-slate-200 text-slate-600 rounded-2xl font-black hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-all active:scale-[0.98]">
-              Rechazar Reseña
+              Reject Review
             </button>
             <button 
               (click)="onAction('approved')"
               class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-[0.98]">
-              Aprobar Reseña
+              Approve Review
             </button>
           </div>
         </div>
@@ -127,37 +127,37 @@ import { ToastService } from '@core/services/toast';
   `,
 })
 export class ReviewModerationModal {
-    private readonly reviewsService = inject(ReviewsService);
-    private readonly toast = inject(ToastService);
+  private readonly reviewsService = inject(ReviewsService);
+  private readonly toast = inject(ToastService);
 
-    review = input.required<ProductReview>();
-    close = output<void>();
-    updated = output<void>();
+  review = input.required<ProductReview>();
+  close = output<void>();
+  updated = output<void>();
 
-    primaryImage = computed(() => {
-        const product = this.review().product;
-        if (!product?.product_images?.length) return 'assets/placeholder-product.png';
-        const primary = product.product_images.find(img => img.is_primary);
-        return primary?.url || product.product_images[0].url;
-    });
+  primaryImage = computed(() => {
+    const product = this.review().product;
+    if (!product?.product_images?.length) return 'assets/placeholder-product.png';
+    const primary = product.product_images.find(img => img.is_primary);
+    return primary?.url || product.product_images[0].url;
+  });
 
-    statusClasses() {
-        switch (this.review().status) {
-            case 'approved': return 'bg-green-100 text-green-700';
-            case 'rejected': return 'bg-red-100 text-red-700';
-            default: return 'bg-amber-100 text-amber-700';
-        }
+  statusClasses() {
+    switch (this.review().status) {
+      case 'approved': return 'bg-green-100 text-green-700';
+      case 'rejected': return 'bg-red-100 text-red-700';
+      default: return 'bg-amber-100 text-amber-700';
     }
+  }
 
-    async onAction(status: 'approved' | 'rejected') {
-        try {
-            await this.reviewsService.updateReviewStatus(this.review().id, status);
-            this.toast.success(status === 'approved' ? 'Reseña aprobada con éxito' : 'Reseña rechazada');
-            this.updated.emit();
-            this.close.emit();
-        } catch (error) {
-            console.error('Error updating review:', error);
-            this.toast.error('Error al actualizar la reseña');
-        }
+  async onAction(status: 'approved' | 'rejected') {
+    try {
+      await this.reviewsService.updateReviewStatus(this.review().id, status);
+      this.toast.success(status === 'approved' ? 'Review approved successfully' : 'Review rejected');
+      this.updated.emit();
+      this.close.emit();
+    } catch (error) {
+      console.error('Error updating review:', error);
+      this.toast.error('Error updating review');
     }
+  }
 }

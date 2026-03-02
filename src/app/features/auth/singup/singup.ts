@@ -145,7 +145,6 @@ export class Singup implements OnInit {
   private readonly toast = inject(ToastService);
   private readonly supabase = inject(Supabase);
 
-  // ── State ────────────────────────────────────────────────
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly showPassword = signal(false);
@@ -169,7 +168,6 @@ export class Singup implements OnInit {
     confirmPassword: ['', [Validators.required]],
   });
 
-  // ── Computed ─────────────────────────────────────────────
   readonly isFormValid = computed(() => this.signupForm.valid && this.passwordsMatch());
 
   readonly businessNameError = computed(() => {
@@ -224,7 +222,6 @@ export class Singup implements OnInit {
     return { level: 3, text: 'Strong', color: 'var(--color-success-500)' };
   });
 
-  // ── Lifecycle ────────────────────────────────────────────
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       const token = params['invite_token'];
@@ -258,7 +255,6 @@ export class Singup implements OnInit {
     });
   }
 
-  // ── Methods ──────────────────────────────────────────────
   passwordsMatch(): boolean {
     const password = this.signupForm.controls.password.value;
     const confirmPassword = this.signupForm.controls.confirmPassword.value;
@@ -289,7 +285,7 @@ export class Singup implements OnInit {
     const { error } = await this.authService.signUp(email, password, {
       business_name: this.isInviteFlow() ? null : businessName,
       plan: plan
-    });
+    }, `${window.location.origin}/dashboard`);
 
     if (error) {
       this.isLoading.set(false);
@@ -309,8 +305,6 @@ export class Singup implements OnInit {
         });
 
         if (acceptError) {
-          // Invitation acceptance failed but the account was created
-          // Show a warning but still let the user in
           console.warn('Could not auto-accept invitation:', acceptError);
           this.toast.warning(
             'Account created',

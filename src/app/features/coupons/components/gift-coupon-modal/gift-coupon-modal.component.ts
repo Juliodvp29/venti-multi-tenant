@@ -20,14 +20,11 @@ export class GiftCouponModalComponent {
     private readonly toast = inject(ToastService);
     private readonly tenantService = inject(TenantService);
 
-    // Inputs
     isOpen = input.required<boolean>();
     coupon = input.required<DiscountCode | null>();
 
-    // Outputs
     close = output<void>();
 
-    // State
     searchQuery = signal('');
     customers = signal<Customer[]>([]);
     isLoading = signal(false);

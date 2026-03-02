@@ -101,12 +101,9 @@ export class SelectStoreComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      // In a real scenario, the backend limits what we can see based on RLS anyway
-      // Wait, tenantService needs a method to fetch all valid tenants for current user
       const stores = await this.getAllUserStores();
       this.stores.set(stores);
 
-      // If they only have 1 store, just redirect immediately
       if (stores.length === 1) {
         this.selectStore(stores[0].id);
       }
@@ -118,8 +115,6 @@ export class SelectStoreComponent implements OnInit {
   }
 
   async getAllUserStores() {
-    // Note: Due to RLS we can just select from public.tenants
-    // It will only return the rows the user is an active member or owner of
     const { data, error } = await this.tenantService['supabase'].client
       .from('tenants')
       .select('id, business_name, slug');
@@ -129,10 +124,7 @@ export class SelectStoreComponent implements OnInit {
   }
 
   selectStore(tenantId: string) {
-    // Actually set it in the service
-    // Then navigate to dashboard
     this.tenantService.setCurrentTenant(tenantId);
-    // Ideally store it in local storage here as a preference
     localStorage.setItem('venti_last_tenant', tenantId);
     this.router.navigate(['/dashboard']);
   }

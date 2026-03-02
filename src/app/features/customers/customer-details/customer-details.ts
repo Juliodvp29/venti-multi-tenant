@@ -73,7 +73,6 @@ export class CustomerDetails implements OnInit {
             const data = await this.customersService.getCustomer(id);
             this.customer.set(data);
 
-            // Load recent orders for this customer using the new filter
             const ordersRes = await this.ordersService.getOrders(1, 5, { customer_id: id });
             this.recentOrders.set(ordersRes.data);
 
@@ -88,7 +87,6 @@ export class CustomerDetails implements OnInit {
     saveNote() {
         if (!this.noteText.trim()) return;
 
-        // In a real app, this would call a notes service
         this.toast.success('Note saved successfully');
         this.noteText = '';
     }

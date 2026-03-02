@@ -130,7 +130,6 @@ export class AcceptInviteComponent implements OnInit {
 
   async verifyToken(token: string) {
     try {
-      // authGuard already guarantees user is authenticated at this point
       const { data, error } = await (this.tenantService['supabase'].client.from as any)('tenant_invitations')
         .select('*')
         .eq('token', token)

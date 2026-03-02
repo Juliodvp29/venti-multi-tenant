@@ -38,24 +38,20 @@ export class Members implements OnInit {
     });
   }
 
-  // State
   members = signal<TenantMember[]>([]);
   showInviteModal = signal(false);
   isLoading = signal(false);
 
-  // Computed Stats — only count real active members, not pending invites
-  totalMembers = computed(() => this.members().filter(m => !m['is_invite']).length);
   adminCount = computed(() => this.members().filter(m => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner)).length);
   pendingInvites = signal(0);
 
   ngOnInit() {
-    // Data loading is handled by the constructor effect once tenant is ready
   }
 
   async openInviteModal() {
     const canAdd = await this.subscriptionService.canAddResource('members');
     if (!canAdd) {
-      this.toast.error('Has alcanzado el límite de miembros de tu plan. Por favor, mejora tu plan para invitar a más personas.');
+      this.toast.error('You have reached the member limit for your plan. Please upgrade your plan to invite more people.');
       return;
     }
     this.showInviteModal.set(true);
@@ -64,7 +60,6 @@ export class Members implements OnInit {
   async loadMembers() {
     this.isLoading.set(true);
     try {
-      // Fetch both independently so a failure in one doesn't blank the other
       const [membersResult, invitesResult] = await Promise.allSettled([
         this.tenantService.getMembers(),
         this.tenantService.getInvitations()
@@ -95,7 +90,6 @@ export class Members implements OnInit {
       this.pendingInvites.set(invitesData.length);
     } catch (error) {
       console.error('Error loading members:', error);
-      // Don't show toast here — avoids confusing error message after a successful invite
     } finally {
       this.isLoading.set(false);
     }
@@ -105,11 +99,11 @@ export class Members implements OnInit {
     const email = (event.email ?? '').trim();
     try {
       await this.tenantService.inviteMember(email, event.role);
-      this.toast.success('Invitación enviada exitosamente');
+      this.toast.success('Invitation sent successfully');
       this.showInviteModal.set(false);
       await this.loadMembers();
     } catch (error: any) {
-      this.toast.error(error.message || 'No se pudo enviar la invitación');
+      this.toast.error(error.message || 'Failed to send invitation');
     }
   }
 
@@ -126,7 +120,6 @@ export class Members implements OnInit {
   }
 
   async onMemberRoleUpdate(member: TenantMember) {
-    // Logic for editing role could open another modal or a simple prompt for now
     const newRole = prompt('Enter new role (viewer, editor, admin):', member.role) as TenantRole;
     if (newRole && Object.values(TenantRole).includes(newRole)) {
       try {

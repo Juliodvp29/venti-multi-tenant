@@ -1,9 +1,6 @@
 import { Signal } from '@angular/core';
 import { ApiError } from '@models/index';
 
-// ============================================================
-// UTILITY TYPES
-// ============================================================
 
 /** Make selected keys optional */
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -22,9 +19,6 @@ export type Nullable<T> = T | null;
 /** Optional type */
 export type Optional<T> = T | undefined;
 
-// ============================================================
-// SIGNAL STATE TYPES
-// ============================================================
 
 export interface LoadingState {
   loading: boolean;
@@ -43,9 +37,6 @@ export interface PaginatedState<T> extends LoadingState {
   hasMore: boolean;
 }
 
-// ============================================================
-// FORM TYPES
-// ============================================================
 
 export type FormState = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -55,9 +46,6 @@ export interface FormResult<T = unknown> {
   error?: string;
 }
 
-// ============================================================
-// UPLOAD TYPES
-// ============================================================
 
 export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
 
@@ -74,9 +62,6 @@ export interface UploadResult {
   fullPath: string;
 }
 
-// ============================================================
-// NAVIGATION TYPES
-// ============================================================
 
 export interface NavItem {
   label: string;
@@ -87,9 +72,6 @@ export interface NavItem {
   roles?: string[];
 }
 
-// ============================================================
-// NOTIFICATION TYPES
-// ============================================================
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info' | 'confirm';
 
@@ -103,9 +85,6 @@ export interface Toast {
   onCancel?: () => void;
 }
 
-// ============================================================
-// PLAN LIMITS
-// ============================================================
 
 export interface PlanLimits {
   maxProducts: number | null;

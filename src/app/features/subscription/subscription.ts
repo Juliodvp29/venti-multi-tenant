@@ -59,7 +59,6 @@ export class Subscription implements OnInit {
     try {
       await this.subscriptionService.changePlan(planId);
       this.toastService.success('Plan change request sent');
-      // In a real app, we would wait for the payment flow or webhook
     } catch (error) {
       this.toastService.error('Error requesting plan change');
     } finally {
