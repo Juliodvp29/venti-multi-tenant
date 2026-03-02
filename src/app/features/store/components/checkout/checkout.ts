@@ -325,7 +325,7 @@ export class Checkout implements OnInit {
       };
 
       const orderItems = this.cartService.items().map(item => ({
-        product_id: item.productId,
+        product_id: item.product.id,
         variant_id: item.variantId,
         product_name: item.name,
         quantity: item.quantity,
