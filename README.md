@@ -654,7 +654,28 @@ The project uses TypeScript path aliases configured in `tsconfig.json` for clean
 
 ---
 
-## 📝 License
+## �️ Roadmap
+
+The platform is actively under development. Here's what's planned for upcoming releases:
+
+### 💳 Payments & Checkout
+- [ ] **Stripe integration** — real payment processing for the storefront checkout
+- [ ] **Invoice generation** — PDF invoice creation and download for completed orders
+
+### 🔔 Notifications & Communication
+- [ ] **Order status email notifications** — automatic transactional emails to customers on status changes
+- [ ] **Abandoned cart recovery emails** — scheduled emails to recover incomplete checkouts
+- [ ] **In-app notification center** — real-time alerts for new orders, low stock, and reviews
+
+
+### ⚙️ Platform & DevOps
+- [ ] **Subdomain routing in production** — proper `{slug}.venti.com` DNS routing for storefronts
+- [ ] **Webhook delivery UI** — configure and monitor outbound webhooks from the settings panel
+- [ ] **Webhook retry logic** — automatic retry on failed deliveries with exponential backoff
+
+---
+
+## �📝 License
 
 This project is open source and available under the [MIT License](LICENSE).
 
