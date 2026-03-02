@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 export interface DashboardTransaction {
   id: string;
@@ -14,23 +15,23 @@ export interface DashboardTransaction {
 @Component({
   selector: 'app-recent-transactions',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, CurrencyPipe],
+  imports: [CommonModule, CurrencyPipe, RouterLink],
   template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
       <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
-        <h3 class="text-base font-bold text-gray-900 dark:text-white">Transacciones Recientes</h3>
-        <button class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Ver todas</button>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white">Recent Transactions</h3>
+        <a [routerLink]="['/orders']" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">View all</a>
       </div>
 
       <div class="overflow-x-auto">
         <table class="w-full text-left">
           <thead>
             <tr class="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50/50 dark:bg-gray-800/30">
-              <th class="px-6 py-3">Cliente</th>
-              <th class="px-6 py-3">Producto</th>
-              <th class="px-6 py-3">Fecha</th>
-              <th class="px-6 py-3">Monto</th>
-              <th class="px-6 py-3 text-center">Estado</th>
+              <th class="px-6 py-3">Customer</th>
+              <th class="px-6 py-3">Product</th>
+              <th class="px-6 py-3">Date</th>
+              <th class="px-6 py-3">Amount</th>
+              <th class="px-6 py-3 text-center">Status</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">

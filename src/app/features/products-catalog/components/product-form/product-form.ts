@@ -19,10 +19,11 @@ import { ProductStatus } from '@core/enums';
 import { ProductImageUploader } from '../product-image-uploader/product-image-uploader';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Dropdown } from '@shared/components/dropdown/dropdown';
 
 @Component({
     selector: 'app-product-form',
-    imports: [CommonModule, ReactiveFormsModule, ProductImageUploader],
+    imports: [CommonModule, ReactiveFormsModule, ProductImageUploader, Dropdown],
     templateUrl: './product-form.html',
     styleUrl: './product-form.css',
     changeDetection: ChangeDetectionStrategy.OnPush,

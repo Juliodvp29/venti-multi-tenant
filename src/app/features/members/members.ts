@@ -42,6 +42,7 @@ export class Members implements OnInit {
   showInviteModal = signal(false);
   isLoading = signal(false);
 
+  totalMembers = computed(() => this.members().filter(m => !m['is_invite']).length);
   adminCount = computed(() => this.members().filter(m => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner)).length);
   pendingInvites = signal(0);
 

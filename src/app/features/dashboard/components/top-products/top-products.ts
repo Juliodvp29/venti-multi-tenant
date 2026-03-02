@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 export interface DashboardProduct {
   id: string;
@@ -12,7 +13,7 @@ export interface DashboardProduct {
 
 @Component({
   selector: 'app-top-products',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   host: { class: 'block h-full' },
   template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm h-full flex flex-col">
@@ -48,7 +49,7 @@ export interface DashboardProduct {
         }
       </div>
 
-      <button class="w-full mt-6 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+      <button [routerLink]="['/reports']" class="w-full mt-6 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
         View inventory report
       </button>
     </div>

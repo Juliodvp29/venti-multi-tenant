@@ -15,10 +15,12 @@ import { Category, CreateCategoryDto, UpdateCategoryDto } from '@core/models/cat
 import { CategoriesService } from '@core/services/categories';
 import { ToastService } from '@core/services/toast';
 import { AiAssistantService } from '@core/services/ai-assistant';
+import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
+import { computed } from '@angular/core';
 
 @Component({
     selector: 'app-category-form',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, Dropdown],
     templateUrl: './category-form.html',
     styleUrl: './category-form.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +42,16 @@ export class CategoryForm implements OnInit {
     readonly isSaving = signal(false);
     readonly isEditMode = signal(false);
     readonly slugManuallyEdited = signal(false);
+
+    readonly parentDropdownOptions = computed<DropdownOption[]>(() => {
+        const editing = this.category();
+        const parents = this.categories().filter(c => c.id !== editing?.id && !c.parent_id);
+
+        return [
+            { label: 'None (Top Level)', value: '' },
+            ...parents.map(c => ({ label: c.name, value: c.id }))
+        ];
+    });
 
     readonly form = this.fb.nonNullable.group({
         name: ['', [Validators.required, Validators.minLength(2)]],
@@ -78,10 +90,6 @@ export class CategoryForm implements OnInit {
         this.aiService.show();
     }
 
-    get parentCategories(): Category[] {
-        const editing = this.category();
-        return this.categories().filter(c => c.id !== editing?.id && !c.parent_id);
-    }
 
     onNameInput(event: Event) {
         if (this.slugManuallyEdited()) return;

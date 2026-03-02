@@ -15,7 +15,6 @@ export interface DropdownOption {
     styleUrl: './dropdown.css'
 })
 export class Dropdown {
-    // Inputs
     options = input.required<DropdownOption[]>();
     value = input.required<any>();
     placeholder = input<string>('Seleccionar...');
@@ -23,13 +22,10 @@ export class Dropdown {
     width = input<string>('w-full');
     disabled = input<boolean>(false);
 
-    // Outputs
     valueChange = output<any>();
 
-    // Internal State
     isOpen = signal(false);
 
-    // Computed or Helper methods
     get selectedOption() {
         return this.options().find(opt => opt.value === this.value());
     }
