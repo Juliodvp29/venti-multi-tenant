@@ -2,32 +2,32 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="md:col-span-1">
             <label class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Business Address
+                Dirección del Negocio
             </label>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                This address will appear on your invoices and emails.
+                Esta dirección aparecerá en tus facturas y correos electrónicos.
             </p>
         </div>
         <div class="md:col-span-2 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
             <div class="sm:col-span-6">
-                <label for="country" class="block text-xs font-medium text-gray-500 mb-1">Country</label>
+                <label for="country" class="block text-xs font-medium text-gray-500 mb-1">País</label>
                 <select id="country" formControlName="country"
                     class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700">
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="MX">Mexico</option>
+                    <option value="US">Estados Unidos</option>
+                    <option value="CA">Canadá</option>
+                    <option value="MX">México</option>
                     <option value="CO">Colombia</option>
-                    <option value="ES">Spain</option>
-                    <option value="UK">United Kingdom</option>
+                    <option value="ES">España</option>
+                    <option value="UK">Reino Unido</option>
                 </select>
             </div>
 
             <div class="sm:col-span-6">
-                <label for="address_line1" class="block text-xs font-medium text-gray-500 mb-1">Street Address</label>
+                <label for="address_line1" class="block text-xs font-medium text-gray-500 mb-1">Dirección</label>
                 <input type="text" formControlName="address_line1" id="address_line1"
                     class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700">
                 @if (form.controls.address_line1.touched && form.controls.address_line1.errors) {
-                <p class="mt-1 text-sm text-red-600">Address is required</p>
+                <p class="mt-1 text-sm text-red-600">La dirección es obligatoria</p>
                 }
             </div>
 
@@ -39,19 +39,19 @@
             </div>
 
             <div class="sm:col-span-2">
-                <label for="city" class="block text-xs font-medium text-gray-500 mb-1">City</label>
+                <label for="city" class="block text-xs font-medium text-gray-500 mb-1">Ciudad</label>
                 <input type="text" formControlName="city" id="city"
                     class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700">
             </div>
 
             <div class="sm:col-span-2">
-                <label for="state" class="block text-xs font-medium text-gray-500 mb-1">State / Province</label>
+                <label for="state" class="block text-xs font-medium text-gray-500 mb-1">Estado / Provincia</label>
                 <input type="text" formControlName="state" id="state"
                     class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700">
             </div>
 
             <div class="sm:col-span-2">
-                <label for="postal_code" class="block text-xs font-medium text-gray-500 mb-1">ZIP / Postal Code</label>
+                <label for="postal_code" class="block text-xs font-medium text-gray-500 mb-1">Código Postal</label>
                 <input type="text" formControlName="postal_code" id="postal_code"
                     class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700">
             </div>
@@ -62,7 +62,7 @@
     <div class="flex justify-end gap-3 pt-6">
         <button type="button" (click)="cancel()" [disabled]="!form.dirty || isSaving()"
             class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-            Discard
+            Descartar
         </button>
         <button type="submit" [disabled]="!form.dirty || form.invalid || isSaving()"
             class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
@@ -73,9 +73,9 @@
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                 </path>
             </svg>
-            <span>Saving...</span>
+            <span>Guardando...</span>
             } @else {
-            <span>Save Changes</span>
+            <span>Guardar Cambios</span>
             }
         </button>
     </div>

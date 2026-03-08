@@ -81,9 +81,9 @@ export class TenantService {
           type: 'hero',
           isActive: true,
           content: {
-            title: 'Welcome to Our Store',
-            subtitle: 'Discover our latest arrivals and exclusive collections.',
-            buttonText: 'Shop Now',
+            title: 'Bienvenido a nuestra tienda',
+            subtitle: 'Descubre nuestras últimas novedades y colecciones exclusivas.',
+            buttonText: 'Comprar ahora',
             buttonLink: '/store/productos',
             alignment: 'center',
             overlayOpacity: 40
@@ -94,16 +94,16 @@ export class TenantService {
           type: 'product_grid',
           isActive: true,
           content: {
-            title: 'Featured Products',
-            description: 'Check out our most popular products.',
+            title: 'Productos Destacados',
+            description: 'Descubre nuestros productos más populares.',
             limit: 8
           }
         }
       ],
       navigation: [
-        { label: 'Products', url: '/store/productos' },
-        { label: 'Collections', url: '/store/collections' },
-        { label: 'About Us', url: '/store/about-us' }
+        { label: 'Productos', url: '/store/productos' },
+        { label: 'Colecciones', url: '/store/collections' },
+        { label: 'Sobre Nosotros', url: '/store/about-us' }
       ]
     };
 

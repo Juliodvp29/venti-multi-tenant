@@ -3,10 +3,10 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="md:col-span-1">
             <label for="business_name" class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Business Name
+                Nombre del Negocio
             </label>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                The public name of your e-commerce store.
+                El nombre público de tu tienda en línea.
             </p>
         </div>
         <div class="md:col-span-2">
@@ -14,7 +14,7 @@
                 class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
                 placeholder="Venti Coffee Roasters" />
             @if (form.controls.business_name.touched && form.controls.business_name.errors) {
-            <p class="mt-1 text-sm text-red-600">Business name is required</p>
+            <p class="mt-1 text-sm text-red-600">El nombre del negocio es obligatorio</p>
             }
         </div>
     </div>
@@ -25,10 +25,10 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="md:col-span-1">
             <label for="slug" class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Store Slug
+                Slug de la Tienda
             </label>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Used for your internal store identification.
+                Utilizado para la identificación interna de tu tienda.
             </p>
         </div>
         <div class="md:col-span-2">
@@ -44,10 +44,10 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="md:col-span-1">
             <label for="subdomain" class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Subdomain
+                Subdominio
             </label>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Your store will be accessible via this URL.
+                Tu tienda será accesible a través de esta URL.
             </p>
         </div>
         <div class="md:col-span-2">
@@ -68,24 +68,26 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="md:col-span-1">
             <label class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Contact Information
+                Información de Contacto
             </label>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                How customers and Venti can reach you.
+                Cómo los clientes y Venti pueden contactarte.
             </p>
         </div>
         <div class="md:col-span-2 space-y-4">
             <div>
-                <label for="contact_email" class="block text-xs font-medium text-gray-500 mb-1">Email Address</label>
+                <label for="contact_email" class="block text-xs font-medium text-gray-500 mb-1">Correo
+                    Electrónico</label>
                 <input id="contact_email" type="email" formControlName="contact_email"
                     class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
                     placeholder="hello@venticoffee.com" />
                 @if (form.controls.contact_email.touched && form.controls.contact_email.errors) {
-                <p class="mt-1 text-sm text-red-600">Valid email is required</p>
+                <p class="mt-1 text-sm text-red-600">Se requiere un correo electrónico válido</p>
                 }
             </div>
             <div>
-                <label for="contact_phone" class="block text-xs font-medium text-gray-500 mb-1">Phone Number</label>
+                <label for="contact_phone" class="block text-xs font-medium text-gray-500 mb-1">Número de
+                    Teléfono</label>
                 <input id="contact_phone" type="tel" formControlName="contact_phone"
                     class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
                     placeholder="+1 (555) 000-1234" />
@@ -97,7 +99,7 @@
     <div class="flex justify-end gap-3 pt-6">
         <button type="button" (click)="cancel()" [disabled]="!form.dirty || isSaving()"
             class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-            Discard
+            Descartar
         </button>
         <button type="submit" [disabled]="!form.dirty || form.invalid || isSaving()"
             class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
@@ -108,9 +110,9 @@
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                 </path>
             </svg>
-            <span>Saving...</span>
+            <span>Guardando...</span>
             } @else {
-            <span>Save Changes</span>
+            <span>Guardar Cambios</span>
             }
         </button>
     </div>

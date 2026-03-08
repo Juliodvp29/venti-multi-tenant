@@ -11,11 +11,11 @@ import { RouterLink } from '@angular/router';
       <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
         ✓
       </div>
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Order Received!</h1>
-      <p class="text-slate-500 mb-8">Thank you for your purchase. We'll send you an email with your order details shortly.</p>
+      <h1 class="text-3xl font-bold text-slate-900 mb-2">¡Pedido Recibido!</h1>
+      <p class="text-slate-500 mb-8">Gracias por tu compra. Te enviaremos un correo con los detalles de tu pedido a la brevedad.</p>
       
       <button routerLink="/store" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-colors">
-        Back to Store
+        Volver a la Tienda
       </button>
     </div>
   `,

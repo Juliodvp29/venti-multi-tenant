@@ -1,16 +1,16 @@
 <div class="space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Storefront Builder</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Customize the blocks that appear on your
-                store's frontpage.</p>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Constructor de la Tienda</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Personaliza los bloques que aparecen en la página
+                principal de tu tienda.</p>
         </div>
         <button (click)="saveLayout()" [disabled]="isSaving()"
             class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-sm flex items-center gap-2">
             @if (isSaving()) {
             <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             }
-            {{ isSaving() ? 'Saving...' : 'Save Changes' }}
+            {{ isSaving() ? 'Guardando...' : 'Guardar Cambios' }}
         </button>
     </div>
 
@@ -21,13 +21,13 @@
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm">
                 <div
                     class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between rounded-t-2xl">
-                    <span class="text-xs font-black uppercase tracking-widest text-gray-500">Navigation</span>
+                    <span class="text-xs font-black uppercase tracking-widest text-gray-500">Navegación</span>
                     <button (click)="addNavigationLink()"
                         class="text-indigo-600 hover:text-indigo-700 text-xs font-bold flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        Add
+                        Agregar
                     </button>
                 </div>
 
@@ -35,7 +35,7 @@
                     @for (link of (layout().navigation || []); track $index) {
                     <div class="space-y-2 pb-4 border-b border-gray-50 dark:border-gray-800 last:border-0 last:pb-0">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-black text-gray-400 uppercase">Link {{ $index + 1 }}</span>
+                            <span class="text-[10px] font-black text-gray-400 uppercase">Enlace {{ $index + 1 }}</span>
                             <div class="flex items-center gap-1">
                                 <button (click)="moveNavigationLink($index, 'up')" [disabled]="$index === 0"
                                     class="p-1 hover:text-indigo-600 disabled:opacity-30">
@@ -52,10 +52,10 @@
                             </div>
                         </div>
                         <input type="text" [(ngModel)]="link.label" (ngModelChange)="forceLayoutUpdate()"
-                            placeholder="Label"
+                            placeholder="Etiqueta"
                             class="w-full px-3 py-1.5 text-xs rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <input type="text" [(ngModel)]="link.url" (ngModelChange)="forceLayoutUpdate()"
-                            placeholder="URL (e.g. /store/about-us)"
+                            placeholder="URL (p. ej. /store/sobre-nosotros)"
                             class="w-full px-3 py-1.5 text-xs rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none">
                     </div>
                     }
@@ -65,7 +65,7 @@
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm">
                 <div
                     class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between rounded-t-2xl">
-                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300">Current Sections</span>
+                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300">Secciones Actuales</span>
 
                     <div class="relative group">
                         <button
@@ -79,16 +79,16 @@
                             class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 py-2 hidden group-focus-within:block transition-all animate-in fade-in zoom-in-95">
                             <button (click)="addSection('hero')"
                                 class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"><span>🚩</span>
-                                Hero Banner</button>
+                                Banner Principal</button>
                             <button (click)="addSection('product_grid')"
                                 class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"><span>📦</span>
-                                Product List</button>
+                                Lista de Productos</button>
                             <button (click)="addSection('featured_categories')"
                                 class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"><span>📂</span>
-                                Categories</button>
+                                Categorías</button>
                             <button (click)="addSection('about_us')"
                                 class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"><span>ℹ️</span>
-                                About Us</button>
+                                Sobre Nosotros</button>
                         </div>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                 <div class="divide-y divide-gray-100 dark:divide-gray-800">
                     @if (layout().sections.length === 0) {
                     <div class="p-8 text-center">
-                        <p class="text-sm text-gray-500">No sections added. Start by adding one.</p>
+                        <p class="text-sm text-gray-500">No hay secciones agregadas. Comienza agregando una.</p>
                     </div>
                     }
 
@@ -110,7 +110,7 @@
                             <div>
                                 <p class="text-sm font-bold text-gray-900 dark:text-white capitalize">{{
                                     section.type.replace('_', ' ') }}</p>
-                                <p class="text-xs text-gray-500">{{ section.isActive ? 'Active' : 'Hidden' }}</p>
+                                <p class="text-xs text-gray-500">{{ section.isActive ? 'Activa' : 'Oculta' }}</p>
                             </div>
                         </div>
 
@@ -147,7 +147,7 @@
             @if (!selectedSection()) {
             <div
                 class="bg-gray-50 dark:bg-gray-800/50 border border-dashed border-gray-300 dark:border-gray-700 rounded-2xl h-64 flex items-center justify-center">
-                <p class="text-gray-500 italic">Select a section to edit its content.</p>
+                <p class="text-gray-500 italic">Selecciona una sección para editar su contenido.</p>
             </div>
             }
 
@@ -155,10 +155,10 @@
             <div
                 class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm animate-in fade-in slide-in-from-right-4 duration-300">
                 <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-                    <h4 class="font-bold text-gray-900 dark:text-white capitalize">Edit {{ section.type.replace('_', '
+                    <h4 class="font-bold text-gray-900 dark:text-white capitalize">Editar {{ section.type.replace('_', '
                         ') }}</h4>
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">Status</span>
+                        <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">Estado</span>
                         <input type="checkbox" [(ngModel)]="section.isActive" (ngModelChange)="forceLayoutUpdate()"
                             class="sr-only peer">
                         <div
@@ -172,8 +172,8 @@
                     @if (section.type === 'hero') {
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Banner
-                                Image</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Imagen de
+                                Banner</label>
                             <div class="flex items-center gap-4">
                                 @if (asAny(section.content).backgroundImageUrl) {
                                 <div class="relative w-32 h-20 rounded-xl overflow-hidden group shadow-sm">
@@ -197,16 +197,15 @@
                                         <path
                                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    <span class="text-[10px] font-bold uppercase">Upload</span>
+                                    <span class="text-[10px] font-bold uppercase">Subir</span>
                                     <input type="file" (change)="onHeroBannerUpload($event, section)" class="hidden"
                                         accept="image/*">
                                 </label>
                                 }
 
                                 <div class="flex-1">
-                                    <label
-                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Background
-                                        Color</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Color
+                                        de Fondo</label>
                                     <div class="flex items-center gap-2">
                                         <input type="color" [(ngModel)]="asAny(section.content).backgroundColor"
                                             (ngModelChange)="forceLayoutUpdate()"
@@ -219,29 +218,29 @@
                             </div>
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Main
-                                Title</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título
+                                Principal</label>
                             <input type="text" [(ngModel)]="asAny(section.content).title"
                                 (ngModelChange)="forceLayoutUpdate()"
                                 class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                         </div>
                         <div class="col-span-2">
                             <label
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subtitle</label>
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subtítulo</label>
                             <textarea [(ngModel)]="asAny(section.content).subtitle"
                                 (ngModelChange)="forceLayoutUpdate()" rows="2"
                                 class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Button
-                                Text</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Texto del
+                                Botón</label>
                             <input type="text" [(ngModel)]="asAny(section.content).buttonText"
                                 (ngModelChange)="forceLayoutUpdate()"
                                 class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Button
-                                Link</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Enlace del
+                                Botón</label>
                             <input type="text" [(ngModel)]="asAny(section.content).buttonLink"
                                 (ngModelChange)="forceLayoutUpdate()" placeholder="/products"
                                 class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
@@ -252,24 +251,24 @@
                     <!-- About Us Editor -->
                     @if (section.type === 'about_us') {
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título</label>
                         <input type="text" [(ngModel)]="asAny(section.content).title"
                             (ngModelChange)="forceLayoutUpdate()"
                             class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Content</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contenido</label>
                         <textarea [(ngModel)]="asAny(section.content).content" (ngModelChange)="forceLayoutUpdate()"
                             rows="4"
                             class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"></textarea>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image
-                            Position</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Posición de la
+                            Imagen</label>
                         <select [(ngModel)]="asAny(section.content).imagePosition" (ngModelChange)="forceLayoutUpdate()"
                             class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                            <option value="left">Left</option>
-                            <option value="right">Right</option>
+                            <option value="left">Izquierda</option>
+                            <option value="right">Derecha</option>
                         </select>
                     </div>
                     }
@@ -277,14 +276,14 @@
                     <!-- Product Grid Editor -->
                     @if (section.type === 'product_grid') {
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Section
-                            Title</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título de la
+                            Sección</label>
                         <input type="text" [(ngModel)]="asAny(section.content).title"
                             class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product
-                            Limit</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Límite de
+                            Productos</label>
                         <input type="number" [(ngModel)]="asAny(section.content).limit"
                             (ngModelChange)="forceLayoutUpdate()" min="4" max="20"
                             class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
@@ -293,7 +292,7 @@
 
                     <p
                         class="text-[10px] text-gray-400 font-bold uppercase tracking-widest pt-4 border-t border-gray-50 dark:border-gray-800">
-                        Any changes here will be reflected on your store once you save.</p>
+                        Cualquier cambio aquí se reflejará en tu tienda una vez que guardes.</p>
                 </div>
             </div>
             }

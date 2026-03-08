@@ -29,9 +29,9 @@ export class SettingsBranding {
     ];
 
     readonly layouts = [
-        { id: 'modern', name: 'Modern', icon: 'M4 6h16M4 12h16M4 18h7' },
-        { id: 'classic', name: 'Classic', icon: 'M4 6h16M7 12h10M9 18h6' },
-        { id: 'minimal', name: 'Minimal', icon: 'M4 6h16M4 10h16M4 14h16M4 18h16' },
+        { id: 'modern', name: 'Moderno', icon: 'M4 6h16M4 12h16M4 18h7' },
+        { id: 'classic', name: 'Clásico', icon: 'M4 6h16M7 12h10M9 18h6' },
+        { id: 'minimal', name: 'Minimalista', icon: 'M4 6h16M4 10h16M4 14h16M4 18h16' },
     ];
 
     // Quick-pick color swatches
@@ -83,11 +83,11 @@ export class SettingsBranding {
 
         const file = input.files[0];
         if (!file.type.startsWith('image/')) {
-            this.toastService.error('File must be an image');
+            this.toastService.error('El archivo debe ser una imagen');
             return;
         }
         if (file.size > 2 * 1024 * 1024) {
-            this.toastService.error('Image must not exceed 2MB');
+            this.toastService.error('La imagen no debe exceder los 2MB');
             return;
         }
 
@@ -96,12 +96,12 @@ export class SettingsBranding {
             const result = await this.tenantService.uploadBrandingAsset(file, type);
             if (result.success && result.url) {
                 this.form.patchValue({ [type === 'logo' ? 'logo_url' : 'favicon_url']: result.url });
-                this.toastService.success('Image updated successfully');
+                this.toastService.success('Imagen actualizada exitosamente');
             } else {
-                this.toastService.error(result.error || 'Error uploading image');
+                this.toastService.error(result.error || 'Error al subir la imagen');
             }
         } catch {
-            this.toastService.error('Error uploading image');
+            this.toastService.error('Error al subir la imagen');
         } finally {
             this.isSaving.set(false);
             input.value = '';
@@ -110,7 +110,7 @@ export class SettingsBranding {
 
     async save() {
         if (this.form.invalid) {
-            this.toastService.error('Please correct errors in the form');
+            this.toastService.error('Por favor, corrige los errores en el formulario');
             return;
         }
         this.isSaving.set(true);
@@ -123,13 +123,13 @@ export class SettingsBranding {
                 layout: data.layout as 'modern' | 'classic' | 'minimal',
             });
             if (result.success) {
-                this.toastService.success('Settings saved successfully');
+                this.toastService.success('Configuración guardada exitosamente');
                 this.form.markAsPristine();
             } else {
-                this.toastService.error(result.error || 'Error saving settings');
+                this.toastService.error(result.error || 'Error al guardar la configuración');
             }
         } catch {
-            this.toastService.error('Error saving settings');
+            this.toastService.error('Error al guardar la configuración');
         } finally {
             this.isSaving.set(false);
         }
@@ -147,6 +147,6 @@ export class SettingsBranding {
             });
             this.form.markAsPristine();
         }
-        this.toastService.info('Changes discarded');
+        this.toastService.info('Cambios descartados');
     }
 }

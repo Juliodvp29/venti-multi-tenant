@@ -87,7 +87,7 @@ import { SeoService } from '@core/services/seo';
               </button>
 
               <div class="absolute bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-black/40 backdrop-blur-md text-white/80 text-sm font-medium rounded-full pointer-events-none border border-white/10">
-                Move mouse to pan · Click to close
+                Mueve el ratón para desplazar · Haz clic para cerrar
               </div>
             </div>
           }
@@ -95,7 +95,7 @@ import { SeoService } from '@core/services/seo';
           <!-- Info -->
           <div class="flex flex-col">
             <nav class="flex mb-4 text-sm text-slate-500">
-              <a routerLink="/store" queryParamsHandling="preserve" class="hover:text-slate-900">Store</a>
+              <a routerLink="/store" queryParamsHandling="preserve" class="hover:text-slate-900">Tienda</a>
               <span class="mx-2">/</span>
               <span class="text-slate-900 font-medium">{{ product()?.name }}</span>
             </nav>
@@ -145,9 +145,9 @@ import { SeoService } from '@core/services/seo';
                 </div>
                 <p class="text-sm text-slate-500">
                   @if (selectedVariant()) {
-                    {{ selectedVariant()?.stock_quantity }} available
+                    {{ selectedVariant()?.stock_quantity }} disponibles
                   } @else {
-                    Only {{ product()?.stock_quantity }} available
+                    Solo {{ product()?.stock_quantity }} disponibles
                   }
                 </p>
               </div>
@@ -163,10 +163,10 @@ import { SeoService } from '@core/services/seo';
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                     </svg>
-                    Added to Cart!
+                    ¡Añadido al Carrito!
                   </span>
                 } @else {
-                  {{ isSelectionComplete() ? 'Add to Cart' : 'Select an option' }}
+                  {{ isSelectionComplete() ? 'Añadir al Carrito' : 'Selecciona una opción' }}
                 }
               </button>
             </div>
@@ -177,8 +177,8 @@ import { SeoService } from '@core/services/seo';
         @if (relatedProducts().length > 0) {
           <section class="pt-12 border-t border-slate-100">
             <div class="mb-8">
-              <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Similar Products</h2>
-              <p class="text-slate-500 font-medium">Other products that might interest you.</p>
+              <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Productos Similares</h2>
+              <p class="text-slate-500 font-medium">Otros productos que podrían interesarte.</p>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -195,7 +195,7 @@ import { SeoService } from '@core/services/seo';
             <!-- Sidebar: Rating Summary & Form -->
             <div class="space-y-12">
               <div>
-                <h2 class="text-4xl font-black text-slate-900 tracking-tight mb-4">Reviews</h2>
+                <h2 class="text-4xl font-black text-slate-900 tracking-tight mb-4">Reseñas</h2>
                 <div class="flex items-center gap-4 mb-2">
                   <div class="flex text-amber-400">
                     @for (star of [1,2,3,4,5]; track star) {
@@ -204,18 +204,18 @@ import { SeoService } from '@core/services/seo';
                       </svg>
                     }
                   </div>
-                  <span class="text-2xl font-bold text-slate-900">{{ reviews().length }} Reviews</span>
+                  <span class="text-2xl font-bold text-slate-900">{{ reviews().length }} Reseñas</span>
                 </div>
-                <p class="text-slate-500">Share your experience with other customers.</p>
+                <p class="text-slate-500">Comparte tu experiencia con otros clientes.</p>
               </div>
 
               <!-- Review Form -->
               <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100">
                 @if (reviewStep() === 'form') {
-                  <h3 class="text-xl font-bold text-slate-900 mb-6">Leave a review</h3>
+                  <h3 class="text-xl font-bold text-slate-900 mb-6">Dejar una reseña</h3>
                   <div class="space-y-6">
                     <div>
-                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-3">Your Rating</label>
+                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-3">Tu Valoración</label>
                       <div class="flex gap-2">
                         @for (star of [1,2,3,4,5]; track star) {
                           <button 
@@ -232,20 +232,20 @@ import { SeoService } from '@core/services/seo';
                     </div>
 
                     <div>
-                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Title (Optional)</label>
+                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Título (Opcional)</label>
                       <input 
                         [(ngModel)]="reviewForm().title"
                         type="text" 
-                        placeholder="e.g. I loved it!"
+                        placeholder="p. ej. ¡Me encantó!"
                         class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
                     </div>
 
                     <div>
-                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Review (Optional)</label>
+                      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Reseña (Opcional)</label>
                       <textarea 
                         [(ngModel)]="reviewForm().review"
                         rows="4" 
-                        placeholder="Tell us how you liked the product..."
+                        placeholder="Cuéntanos qué te pareció el producto..."
                         class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"></textarea>
                     </div>
 
@@ -253,7 +253,7 @@ import { SeoService } from '@core/services/seo';
                       (click)="submitReview()"
                       [disabled]="reviewForm().rating === 0 || isSubmittingReview()"
                       class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
-                      {{ isSubmittingReview() ? 'Sending...' : 'Post Review' }}
+                      {{ isSubmittingReview() ? 'Enviando...' : 'Publicar Reseña' }}
                     </button>
                   </div>
                 } @else {
@@ -263,12 +263,12 @@ import { SeoService } from '@core/services/seo';
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Thank you for your review!</h3>
-                    <p class="text-slate-500 mb-6">Your review has been successfully submitted and will be visible as soon as it is approved.</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">¡Gracias por tu reseña!</h3>
+                    <p class="text-slate-500 mb-6">Tu reseña ha sido enviada exitosamente y será visible tan pronto como sea aprobada.</p>
                     <button 
                       (click)="reviewStep.set('form')"
                       class="text-indigo-600 font-bold hover:underline">
-                      Submit another review
+                      Enviar otra reseña
                     </button>
                   </div>
                 }
@@ -289,12 +289,12 @@ import { SeoService } from '@core/services/seo';
                             </svg>
                           }
                         </div>
-                        <h4 class="text-xl font-bold text-slate-900">{{ review.title || 'Untitled' }}</h4>
+                        <h4 class="text-xl font-bold text-slate-900">{{ review.title || 'Sin título' }}</h4>
                       </div>
                       <span class="text-sm text-slate-400 font-medium">{{ review.created_at | date:'mediumDate' }}</span>
                     </div>
 
-                    <p class="text-slate-600 leading-relaxed mb-6">{{ review.review || 'No review.' }}</p>
+                    <p class="text-slate-600 leading-relaxed mb-6">{{ review.review || 'Sin reseña.' }}</p>
 
                     <div class="flex items-center gap-3 border-t border-slate-50 pt-6">
                       <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400 uppercase">
@@ -302,14 +302,14 @@ import { SeoService } from '@core/services/seo';
                       </div>
                       <div>
                         <p class="text-sm font-bold text-slate-900">
-                          {{ review.customer ? (review.customer.first_name + ' ' + (review.customer.last_name || '')) : 'Verified User' }}
+                          {{ review.customer ? (review.customer.first_name + ' ' + (review.customer.last_name || '')) : 'Usuario Verificado' }}
                         </p>
                         @if (review.is_verified_purchase) {
                           <p class="text-[10px] text-green-600 font-black uppercase tracking-widest flex items-center gap-1">
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                             </svg>
-                            Verified Purchase
+                            Compra Verificada
                           </p>
                         }
                       </div>
@@ -323,8 +323,8 @@ import { SeoService } from '@core/services/seo';
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                     </svg>
                   </div>
-                  <h4 class="text-xl font-bold text-slate-900 mb-2">No reviews yet</h4>
-                  <p class="text-slate-500">Be the first to review this product.</p>
+                  <h4 class="text-xl font-bold text-slate-900 mb-2">Aún no hay reseñas</h4>
+                  <p class="text-slate-500">Sé el primero en calificar este producto.</p>
                 </div>
               }
             </div>
@@ -515,7 +515,7 @@ export class ProductDetails implements OnInit {
     if (!p || form.rating === 0 || this.isSubmittingReview()) return;
 
     if (!this.auth.isAuthenticated()) {
-      this.toast.warning('You must log in to post a review.');
+      this.toast.warning('Debes iniciar sesión para publicar una reseña.');
       this.customerAuth.openLogin();
       return;
     }
@@ -535,10 +535,10 @@ export class ProductDetails implements OnInit {
       });
       this.reviewStep.set('success');
       this.reviewForm.set({ rating: 0, title: '', review: '' });
-      this.toast.success('Thank you! Your review has been submitted.');
+      this.toast.success('¡Gracias! Tu reseña ha sido enviada.');
     } catch (error) {
       console.error('Error submitting review:', error);
-      this.toast.error('An error occurred while sending your review.');
+      this.toast.error('Ocurrió un error al enviar tu reseña.');
     } finally {
       this.isSubmittingReview.set(false);
     }

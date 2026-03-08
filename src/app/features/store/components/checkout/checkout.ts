@@ -22,15 +22,15 @@ import { AddressForm } from '../account/address-form/address-form';
       <!-- Form -->
       <div class="lg:col-span-12">
          <nav class="flex mb-8 text-sm text-slate-500">
-          <a routerLink="/store" queryParamsHandling="preserve" class="hover:text-slate-900 transition-colors">Store</a>
+          <a routerLink="/store" queryParamsHandling="preserve" class="hover:text-slate-900 transition-colors">Tienda</a>
           <span class="mx-2">/</span>
-          <span class="text-slate-900 font-medium">Checkout</span>
+          <span class="text-slate-900 font-medium">Pago</span>
         </nav>
       </div>
 
       <div class="lg:col-span-7 space-y-8">
         <section class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/60 shadow-sm relative">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Shipping Information</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Información de Envío</h2>
           
           @if (isLoadingAddresses()) {
             <div class="flex justify-center py-8">
@@ -65,7 +65,7 @@ import { AddressForm } from '../account/address-form/address-form';
                 
                 <button (click)="showNewAddressForm.set(true)" type="button" class="mt-6 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                  Use a different address
+                  Usar una dirección diferente
                 </button>
               } @else {
                 <!-- New Address Form Inline -->
@@ -78,11 +78,11 @@ import { AddressForm } from '../account/address-form/address-form';
         </section>
 
         <section class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/60 shadow-sm">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Payment Method</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Método de Pago</h2>
           <div class="p-5 rounded-2xl border-2 border-indigo-500 bg-indigo-50/50 flex items-center justify-between">
              <div>
-                <p class="font-bold text-indigo-900 text-lg">Cash on Delivery</p>
-                <p class="text-indigo-700 mt-1 text-sm">Pay in cash upon receiving your order.</p>
+                <p class="font-bold text-indigo-900 text-lg">Pago contra entrega</p>
+                <p class="text-indigo-700 mt-1 text-sm">Paga en efectivo al recibir tu pedido.</p>
              </div>
              <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
                 <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,7 +96,7 @@ import { AddressForm } from '../account/address-form/address-form';
       <!-- Summary -->
       <div class="lg:col-span-5">
         <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/60 shadow-sm sticky top-24">
-          <h2 class="text-xl font-bold mb-6">Order Summary</h2>
+          <h2 class="text-xl font-bold mb-6">Resumen del Pedido</h2>
           
           <div class="space-y-4 mb-6 max-h-96 overflow-y-auto pr-2">
             @for (item of cartService.items(); track item.id) {
@@ -126,7 +126,7 @@ import { AddressForm } from '../account/address-form/address-form';
             </div>
             @if (cartService.appliedCoupon()) {
               <div class="flex justify-between text-indigo-600 font-bold bg-indigo-50 px-3 py-2 rounded-lg">
-                <span>Discount ({{ cartService.appliedCoupon()?.code }})</span>
+                <span>Descuento ({{ cartService.appliedCoupon()?.code }})</span>
                 <span>-{{ cartService.discountAmount() | currency }}</span>
               </div>
             }
@@ -135,11 +135,11 @@ import { AddressForm } from '../account/address-form/address-form';
               <span class="font-medium text-slate-900">{{ cartService.tax() | currency }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-500">Shipping</span>
-              <span class="font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-md">Free</span>
+              <span class="text-slate-500">Envío</span>
+              <span class="font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-md">Gratis</span>
             </div>
             <div class="flex justify-between text-xl font-black pt-4 border-t border-slate-100 mt-4 text-slate-900">
-              <span>Total amount</span>
+              <span>Monto total</span>
               <span>{{ cartService.total() | currency }}</span>
             </div>
           </div>
@@ -151,11 +151,11 @@ import { AddressForm } from '../account/address-form/address-form';
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                 </svg>
-                Processing...
+                Procesando...
             } @else if (showNewAddressForm()) {
-                Save address first
+                Guarda la dirección primero
             } @else {
-                Confirm Order
+                Confirmar Pedido
             }
           </button>
         </div>
@@ -223,7 +223,7 @@ export class Checkout implements OnInit {
       }
     } catch (e) {
       console.error(e);
-      this.toast.error('Error loading customer information');
+      this.toast.error('Error al cargar la información del cliente');
       this.showNewAddressForm.set(true);
     } finally {
       this.isLoadingAddresses.set(false);
@@ -235,13 +235,13 @@ export class Checkout implements OnInit {
       const tenantId = this.tenantService.tenantId();
       if (!tenantId) {
         console.error('[Checkout] Cannot save address: Tenant ID is missing');
-        this.toast.error('Session error: The store could not be identified. Please reload the page.');
+        this.toast.error('Error de sesión: No se pudo identificar la tienda. Por favor, recarga la página.');
         return;
       }
 
       this.resolvedCustomer = await this.customerAuth.ensureCustomer();
       if (!this.resolvedCustomer) {
-        this.toast.warning('Log in to save your address and continue');
+        this.toast.warning('Inicia sesión para guardar tu dirección y continuar');
         return;
       }
       this.customerId.set(this.resolvedCustomer.id);
@@ -252,10 +252,10 @@ export class Checkout implements OnInit {
       // Refresh list
       await this.loadCustomerAndAddresses();
       this.selectedAddressId.set(newAddr.id);
-      this.toast.success('Address saved');
+      this.toast.success('Dirección guardada');
     } catch (e) {
       console.error(e);
-      this.toast.error('Could not save the address');
+      this.toast.error('No se pudo guardar la dirección');
     }
   }
 
@@ -263,18 +263,18 @@ export class Checkout implements OnInit {
     if (this.savedAddresses().length > 0) {
       this.showNewAddressForm.set(false);
     } else {
-      this.toast.warning('You need to provide a shipping address');
+      this.toast.warning('Debes proporcionar una dirección de envío');
     }
   }
 
   async placeOrder() {
     if (this.cartService.items().length === 0) {
-      this.toast.error('The cart is empty');
+      this.toast.error('El carrito está vacío');
       return;
     }
 
     if (!this.selectedAddressId()) {
-      this.toast.error('Please select a shipping address');
+      this.toast.error('Por favor, selecciona una dirección de envío');
       return;
     }
 
@@ -286,7 +286,7 @@ export class Checkout implements OnInit {
 
       const customer = this.resolvedCustomer;
       if (!customer) {
-        this.toast.warning('Please log in to continue with the order');
+        this.toast.warning('Por favor, inicia sesión para continuar con el pedido');
         this.isSubmitting.set(false);
         return;
       }
@@ -338,11 +338,11 @@ export class Checkout implements OnInit {
       await this.ordersService.createOrder(orderData, orderItems);
 
       this.cartService.clearCart();
-      this.toast.success('Order received successfully!');
+      this.toast.success('¡Pedido recibido exitosamente!');
       this.router.navigate(['/store/success']);
     } catch (error: any) {
       console.error('Error placing order:', error);
-      const message = error?.message || 'An error occurred while processing your order';
+      const message = error?.message || 'Ocurrió un error al procesar tu pedido';
       this.toast.error(message);
     } finally {
       this.isSubmitting.set(false);

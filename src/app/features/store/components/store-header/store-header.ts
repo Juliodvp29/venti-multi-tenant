@@ -47,7 +47,7 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
                 @if (user()) {
                     <div class="flex items-center gap-3 pl-2">
                         <button (click)="onLogout()" class="hidden md:block text-xs font-black text-slate-400 uppercase tracking-widest hover:text-red-500 transition-colors">
-                            Logout
+                            Cerrar sesión
                         </button>
                         <div class="h-10 w-10 md:h-12 md:w-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-900 border-2 border-slate-50 shadow-sm">
                             <span class="font-black text-sm uppercase">{{ user()?.email?.[0] || 'U' }}</span>
@@ -58,7 +58,7 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        <span class="hidden md:block text-xs font-black uppercase tracking-widest text-slate-900">Login</span>
+                        <span class="hidden md:block text-xs font-black uppercase tracking-widest text-slate-900">Iniciar sesión</span>
                     </button>
                 }
                 

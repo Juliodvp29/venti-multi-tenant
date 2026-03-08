@@ -3,9 +3,9 @@
     <!-- ── Brand Logo ─────────────────────────────────────────── -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Brand Logo</h3>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Logo de la Marca</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Appears on emails and your checkout page.
+                Aparece en los correos electrónicos y en tu página de pago.
             </p>
         </div>
         <div class="md:col-span-2">
@@ -43,13 +43,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                         </svg>
-                        Change Logo
+                        Cambiar Logo
                     </button>
                     <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">JPG, GIF or PNG · Max 2MB</p>
                     @if (form.controls.logo_url.value) {
                     <button type="button" (click)="form.controls.logo_url.setValue('')"
                         class="mt-2 text-xs text-red-500 hover:text-red-600 font-medium transition-colors">
-                        Remove logo
+                        Quitar logo
                     </button>
                     }
                 </div>
@@ -65,7 +65,7 @@
         <div class="md:col-span-1">
             <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Favicon</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Displayed in the browser tab.
+                Se muestra en la pestaña del navegador.
             </p>
         </div>
         <div class="md:col-span-2">
@@ -89,7 +89,7 @@
                 <div class="text-center">
                     <p
                         class="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                        Click to {{ form.controls.favicon_url.value ? 'replace' : 'upload' }} favicon
+                        Haz clic para {{ form.controls.favicon_url.value ? 'reemplazar' : 'subir' }} el favicon
                     </p>
                     <p class="text-xs text-gray-400 mt-0.5">PNG, ICO · Max 2MB · Recommended 32×32px</p>
                 </div>
@@ -97,7 +97,7 @@
                 @if (form.controls.favicon_url.value) {
                 <button type="button" (click)="$event.stopPropagation(); form.controls.favicon_url.setValue('')"
                     class="text-xs text-red-500 hover:text-red-600 font-medium transition-colors">
-                    Remove
+                    Quitar
                 </button>
                 }
             </div>
@@ -111,9 +111,9 @@
     <!-- ── Store Layout ───────────────────────────────────────── -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Store Layout</h3>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Diseño de la Tienda</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Choose how your store header is organized.
+                Elige cómo se organiza el encabezado de tu tienda.
             </p>
         </div>
         <div class="md:col-span-2">
@@ -194,9 +194,9 @@
     <!-- ── Typography ────────────────────────────────────────── -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Typography</h3>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Tipografía</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Choose a typeface that fits your brand's voice.
+                Elige una fuente que se ajuste a la voz de tu marca.
             </p>
         </div>
         <div class="md:col-span-2">
@@ -238,9 +238,9 @@
     <!-- ── Theme Colors ──────────────────────────────────────── -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Theme Colors</h3>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Colores del Tema</h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Customize your store's color palette.
+                Personaliza la paleta de colores de tu tienda.
             </p>
         </div>
         <div class="md:col-span-2 space-y-5">
@@ -258,8 +258,8 @@
 
                     <div class="flex-1">
                         <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Primary
-                            Color</label>
+                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
+                            Primario</label>
                         <div class="flex items-center gap-2">
                             <input type="text" formControlName="primary_color"
                                 class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
@@ -292,8 +292,8 @@
                     </label>
                     <div class="flex-1">
                         <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Secondary
-                            Color</label>
+                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
+                            Secundario</label>
                         <input type="text" formControlName="secondary_color"
                             class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
                             placeholder="#FFFFFF">
@@ -312,8 +312,8 @@
                     </label>
                     <div class="flex-1">
                         <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Accent
-                            Color</label>
+                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
+                            de Acento</label>
                         <div class="flex items-center gap-2">
                             <input type="text" formControlName="accent_color"
                                 class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
@@ -344,7 +344,7 @@
                 <div class="flex-1 transition-colors duration-300"
                     [style.background-color]="form.controls.accent_color.value"></div>
             </div>
-            <p class="text-xs text-gray-400 -mt-2 text-center">Color palette preview</p>
+            <p class="text-xs text-gray-400 -mt-2 text-center">Vista previa de la paleta de colores</p>
 
         </div>
     </div>
@@ -355,14 +355,14 @@
             @if (form.dirty) {
             <span class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                Unsaved changes
+                Cambios sin guardar
             </span>
             }
         </div>
         <div class="flex gap-3">
             <button type="button" (click)="cancel()" [disabled]="!form.dirty || isSaving()"
                 class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
-                Discard
+                Descartar
             </button>
             <button type="submit" [disabled]="!form.dirty || form.invalid || isSaving()"
                 class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all hover:-translate-y-px active:translate-y-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0">
@@ -371,9 +371,9 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                 </svg>
-                Saving…
+                Guardando...
                 } @else {
-                Save Changes
+                Guardar Cambios
                 }
             </button>
         </div>

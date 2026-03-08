@@ -2,8 +2,9 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Shipping & Taxes</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Configure your shipping zones, rates, and tax rules.</p>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Envío e Impuestos</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Configura tus zonas de envío, tarifas y reglas de
+                impuestos.</p>
         </div>
     </div>
 
@@ -15,10 +16,10 @@
     <!-- Shipping Section -->
     <section class="space-y-6">
         <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Shipping Zones</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Zonas de Envío</h3>
             <button (click)="openZoneModal()"
                 class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
-                Add Shipping Zone
+                Agregar Zona de Envío
             </button>
         </div>
 
@@ -32,11 +33,11 @@
                             {{ zone.name }}
                             @if (!zone.is_active) {
                             <span
-                                class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full uppercase">Inactive</span>
+                                class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full uppercase">Inactiva</span>
                             }
                         </h4>
                         <p class="text-sm text-gray-500">
-                            {{ zone.countries?.length ? zone.countries?.join(', ') : 'Rest of the world' }}
+                            {{ zone.countries?.length ? zone.countries?.join(', ') : 'Resto del mundo' }}
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
@@ -64,9 +65,9 @@
                         <thead
                             class="bg-gray-100/50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 font-semibold">
                             <tr>
-                                <th class="px-4 py-3">Shipping Name</th>
-                                <th class="px-4 py-3 text-right">Price</th>
-                                <th class="px-4 py-3 text-right">Actions</th>
+                                <th class="px-4 py-3">Nombre de Envío</th>
+                                <th class="px-4 py-3 text-right">Precio</th>
+                                <th class="px-4 py-3 text-right">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -80,9 +81,9 @@
                                     <div
                                         class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button (click)="updateRate(rate)"
-                                            class="p-1 px-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded">Edit</button>
+                                            class="p-1 px-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded">Editar</button>
                                         <button (click)="deleteRate(rate.id)"
-                                            class="p-1 px-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">Delete</button>
+                                            class="p-1 px-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">Eliminar</button>
                                     </div>
                                 </td>
                             </tr>
@@ -91,12 +92,12 @@
                     </table>
                     <button (click)="addRate(zone.id)"
                         class="w-full py-3 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors uppercase tracking-widest border-t border-gray-100 dark:border-gray-800">
-                        + Add Shipping Rate
+                        + Agregar Tarifa de Envío
                     </button>
                 </div>
             </div>
             } @empty {
-            <div class="px-6 py-12 text-center text-gray-500 italic">No shipping zones configured yet.</div>
+            <div class="px-6 py-12 text-center text-gray-500 italic">Aún no hay zonas de envío configuradas.</div>
             }
         </div>
     </section>
@@ -104,10 +105,10 @@
     <!-- Taxes Section -->
     <section class="space-y-6">
         <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Tax Rules (IVA/VAT)</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Reglas de Impuestos (IVA/VAT)</h3>
             <button (click)="openTaxModal()"
                 class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
-                Add Tax Rate
+                Agregar Tasa de Impuesto
             </button>
         </div>
 
@@ -117,10 +118,10 @@
                 <thead
                     class="bg-gray-50 dark:bg-gray-800/60 text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider text-[10px]">
                     <tr>
-                        <th class="px-6 py-3">Tax Name</th>
-                        <th class="px-6 py-3">Region</th>
-                        <th class="px-6 py-3 text-center">Percentage</th>
-                        <th class="px-6 py-3 text-right">Actions</th>
+                        <th class="px-6 py-3">Nombre del Impuesto</th>
+                        <th class="px-6 py-3">Región</th>
+                        <th class="px-6 py-3 text-center">Porcentaje</th>
+                        <th class="px-6 py-3 text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -156,7 +157,8 @@
                     </tr>
                     } @empty {
                     <tr>
-                        <td colspan="4" class="px-6 py-12 text-center text-gray-500 italic">No tax rules defined yet.
+                        <td colspan="4" class="px-6 py-12 text-center text-gray-500 italic">Aún no hay reglas de
+                            impuestos definidas.
                         </td>
                     </tr>
                     }
@@ -173,8 +175,8 @@
     <div
         class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ editingZone() ? 'Edit' : 'Add' }} Shipping
-                Zone</h3>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ editingZone() ? 'Editar' : 'Agregar' }} Zona
+                de Envío</h3>
             <button (click)="closeModal()" class="text-gray-400 hover:text-gray-500 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -183,25 +185,25 @@
         </div>
         <form [formGroup]="zoneForm" (ngSubmit)="saveZone()" class="p-6 space-y-4">
             <div>
-                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Zone Name</label>
-                <input formControlName="name" type="text" placeholder="e.g. Domestic, International"
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nombre de la Zona</label>
+                <input formControlName="name" type="text" placeholder="p. ej. Nacional, Internacional"
                     class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all">
             </div>
 
             <div class="flex items-center gap-2 pt-2">
                 <input formControlName="is_active" type="checkbox" id="zone-active"
                     class="w-4 h-4 text-indigo-600 rounded">
-                <label for="zone-active" class="text-sm text-gray-700 dark:text-gray-300">Active Zone</label>
+                <label for="zone-active" class="text-sm text-gray-700 dark:text-gray-300">Zona Activa</label>
             </div>
 
             <div class="flex gap-3 pt-4">
                 <button type="button" (click)="closeModal()"
                     class="flex-1 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                    Cancel
+                    Cancelar
                 </button>
                 <button type="submit" [disabled]="isSaving()"
                     class="flex-1 px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
-                    {{ isSaving() ? 'Saving...' : 'Save Zone' }}
+                    {{ isSaving() ? 'Guardando...' : 'Guardar Zona' }}
                 </button>
             </div>
         </form>
@@ -215,7 +217,8 @@
     <div
         class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ editingTax() ? 'Edit' : 'Add' }} Tax Rate
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ editingTax() ? 'Editar' : 'Agregar' }} Tasa
+                de Impuesto
             </h3>
             <button (click)="closeModal()" class="text-gray-400 hover:text-gray-500 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,20 +228,20 @@
         </div>
         <form [formGroup]="taxForm" (ngSubmit)="saveTax()" class="p-6 space-y-4">
             <div>
-                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Tax Name</label>
-                <input formControlName="name" type="text" placeholder="e.g. IVA, Sales Tax"
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nombre del Impuesto</label>
+                <input formControlName="name" type="text" placeholder="p. ej. IVA, Impuesto a las Ventas"
                     class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Percentage (%)</label>
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Porcentaje (%)</label>
                     <input formControlName="rate" type="number" step="0.01" placeholder="e.g. 15"
                         class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Country (ISO)</label>
-                    <input formControlName="country" type="text" placeholder="e.g. MX, US"
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">País (ISO)</label>
+                    <input formControlName="country" type="text" placeholder="p. ej. MX, US"
                         class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
             </div>
@@ -246,17 +249,17 @@
             <div class="flex items-center gap-2 pt-2">
                 <input formControlName="is_active" type="checkbox" id="tax-active"
                     class="w-4 h-4 text-indigo-600 rounded">
-                <label for="tax-active" class="text-sm text-gray-700 dark:text-gray-300">Active Rule</label>
+                <label for="tax-active" class="text-sm text-gray-700 dark:text-gray-300">Regla Activa</label>
             </div>
 
             <div class="flex gap-3 pt-4">
                 <button type="button" (click)="closeModal()"
                     class="flex-1 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                    Cancel
+                    Cancelar
                 </button>
                 <button type="submit" [disabled]="isSaving()"
                     class="flex-1 px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
-                    {{ isSaving() ? 'Saving...' : 'Save Tax Rule' }}
+                    {{ isSaving() ? 'Guardando...' : 'Guardar Regla de Impuesto' }}
                 </button>
             </div>
         </form>

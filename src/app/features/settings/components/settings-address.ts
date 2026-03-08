@@ -45,7 +45,7 @@ export class SettingsAddress {
 
     async save() {
         if (this.form.invalid) {
-            this.toastService.error('Please correct errors in the form');
+            this.toastService.error('Por favor, corrige los errores en el formulario');
             return;
         }
 
@@ -54,14 +54,14 @@ export class SettingsAddress {
         try {
             const result = await this.tenantService.updateAddress(this.form.getRawValue());
             if (result.success) {
-                this.toastService.success('Address saved successfully');
+                this.toastService.success('Dirección guardada exitosamente');
                 this.form.markAsPristine();
             } else {
-                this.toastService.error(result.error || 'Error saving address');
+                this.toastService.error(result.error || 'Error al guardar la dirección');
             }
         } catch (error) {
             console.error('Error saving settings:', error);
-            this.toastService.error('Error saving address');
+            this.toastService.error('Error al guardar la dirección');
         } finally {
             this.isSaving.set(false);
         }
@@ -80,6 +80,6 @@ export class SettingsAddress {
             });
             this.form.markAsPristine();
         }
-        this.toastService.info('Changes discarded');
+        this.toastService.info('Cambios descartados');
     }
 }
