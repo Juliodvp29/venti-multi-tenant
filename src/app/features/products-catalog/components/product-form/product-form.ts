@@ -58,11 +58,11 @@ export class ProductForm implements OnInit, OnDestroy {
     }
     readonly optionDefinitions = signal<ProductOption[]>([]); // UI state for the generator
 
-    readonly statusOptions: { value: ProductStatus; label: string }[] = [
-        { value: ProductStatus.Draft, label: 'Draft' },
-        { value: ProductStatus.Active, label: 'Active' },
-        { value: ProductStatus.Archived, label: 'Archived' },
-        { value: ProductStatus.OutOfStock, label: 'Out of Stock' },
+    readonly statusOptions = [
+        { label: 'Activo', value: ProductStatus.Active },
+        { label: 'Borrador', value: ProductStatus.Draft },
+        { label: 'Archivado', value: ProductStatus.Archived },
+        { label: 'Sin Stock', value: ProductStatus.OutOfStock },
     ];
 
     readonly form = this.fb.nonNullable.group({
@@ -174,9 +174,15 @@ export class ProductForm implements OnInit, OnDestroy {
         this.optionDefinitions.update(prev => [...prev, { name: '', values: [] }]);
     }
 
-    removeOption(index: number) {
-        this.optionDefinitions.update(prev => prev.filter((_, i) => i !== index));
-        this.generateVariantsFromOptions();
+    async removeOption(index: number) {
+        const confirmed = await this.toast.confirm(
+            'Eliminar una opción borrará todas las variantes asociadas. ¿Continuar?',
+            'Eliminar Opción'
+        );
+        if (confirmed) {
+            this.optionDefinitions.update(prev => prev.filter((_, i) => i !== index));
+            this.generateVariantsFromOptions();
+        }
     }
 
     updateOptionName(index: number, name: string) {
@@ -295,7 +301,7 @@ export class ProductForm implements OnInit, OnDestroy {
     async submit() {
         if (this.form.invalid) {
             this.form.markAllAsTouched();
-            this.toast.error('Please correct the errors in the form.');
+            this.toast.error('Por favor, corrige los errores en el formulario.');
             return;
         }
 
@@ -323,14 +329,14 @@ export class ProductForm implements OnInit, OnDestroy {
                     is_featured: raw.is_featured,
                 };
                 result = await this.productsService.updateProduct(this.product()!.id, updateDto);
-                this.toast.success(`Product "${result.name}" updated successfully.`);
+                this.toast.success(`¡Producto "${result.name}" actualizado con éxito!`);
             } else {
                 result = await this.productsService.createProduct(dto);
                 // Upload any pending images for the newly created product
                 if (this.imageUploader) {
                     await this.imageUploader.uploadAllPending(result.id);
                 }
-                this.toast.success(`Product "${result.name}" created successfully.`);
+                this.toast.success(`¡Producto "${result.name}" creado con éxito!`);
             }
 
             // Save category associations
@@ -352,7 +358,7 @@ export class ProductForm implements OnInit, OnDestroy {
             this.selectedCategoryIds.set(new Set());
         } catch (error: any) {
             console.error('Error saving product:', error);
-            this.toast.error(error?.message ?? 'Error saving product.');
+            this.toast.error(error?.message ?? 'Error al guardar el producto.');
         } finally {
             this.isSaving.set(false);
         }

@@ -13,12 +13,12 @@
             </div>
             <div>
                 <p class="text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-                    {{ isEditMode() ? 'Edit' : 'New' }} Product
+                    {{ isEditMode() ? 'Editar' : 'Nuevo' }} Producto
                 </p>
                 <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-                    {{ isEditMode() ? 'Update product' : 'Create new product' }}
+                    {{ isEditMode() ? 'Actualizar producto' : 'Crear nuevo producto' }}
                 </h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Fill in the product information.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Completa la información del producto.</p>
             </div>
         </div>
     </div>
@@ -28,21 +28,21 @@
 
         <!-- Section: Basic Information -->
         <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Basic
-                Information</h3>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Información
+                Básica</h3>
             <div class="space-y-4">
 
                 <!-- Name -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                        Product Name <span class="text-red-500">*</span>
+                        Nombre del Producto <span class="text-red-500">*</span>
                     </label>
                     <input type="text" formControlName="name" (input)="onNameInput($event)"
-                        placeholder="e.g. Premium Cotton T-Shirt"
+                        placeholder="ej. Camiseta de Algodón Premium"
                         class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                         [class.border-red-500]="hasError('name')" [class.focus:ring-red-500]="hasError('name')">
                     @if (hasError('name')) {
-                    <p class="mt-1.5 text-xs text-red-500">Name is required (minimum 2 characters).</p>
+                    <p class="mt-1.5 text-xs text-red-500">El nombre es obligatorio (mínimo 2 caracteres).</p>
                     }
                 </div>
 
@@ -59,7 +59,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                             </svg>
-                            AUTO-GENERATE
+                            AUTO-GENERAR
                         </button>
                     </div>
                     <input type="text" formControlName="slug" (input)="onSlugInput()"
@@ -67,7 +67,7 @@
                         class="block w-full rounded-xl border px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                         [class.border-red-500]="hasError('slug')">
                     @if (hasError('slug')) {
-                    <p class="mt-1.5 text-xs text-red-500">Invalid slug. Only letters, numbers, and hyphens.</p>
+                    <p class="mt-1.5 text-xs text-red-500">Slug no válido. Solo letras, números y guiones.</p>
                     }
                 </div>
 
@@ -81,35 +81,35 @@
                 <!-- Description -->
                 <div>
                     <label
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Description</label>
+                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Descripción</label>
                     <textarea formControlName="description" rows="3"
-                        placeholder="Describe the product for your customers..."
+                        placeholder="Describe el producto para tus clientes..."
                         class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none">
                     </textarea>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                        Status <span class="text-red-500">*</span>
+                        Estado <span class="text-red-500">*</span>
                     </label>
                     <app-dropdown [options]="statusOptions" [value]="form.get('status')?.value"
                         (valueChange)="form.patchValue({ status: $event }); form.get('status')?.markAsTouched()"
-                        placeholder="Select status...">
+                        placeholder="Seleccionar estado...">
                     </app-dropdown>
                 </div>
 
                 <!-- Categories -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Categories
+                        Categorías
                         @if (selectedCategoryIds().size > 0) {
                         <span class="ml-1.5 text-xs font-normal text-indigo-600">({{ selectedCategoryIds().size }}
-                            selected)</span>
+                            seleccionadas)</span>
                         }
                     </label>
                     @if (categories().length === 0) {
-                    <p class="text-xs text-gray-400 dark:text-gray-500 italic">No categories available. Create
-                        categories first.</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 italic">No hay categorías disponibles. Crea
+                        categorías primero.</p>
                     } @else {
                     <div class="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
                         @for (cat of categories(); track cat.id) {
@@ -144,11 +144,11 @@
 
         <!-- Section: Pricing -->
         <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Pricing</h3>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Precios</h3>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                        Price <span class="text-red-500">*</span>
+                        Precio <span class="text-red-500">*</span>
                     </label>
                     <div class="relative">
                         <span
@@ -158,12 +158,12 @@
                             [class.border-red-500]="hasError('price')">
                     </div>
                     @if (hasError('price')) {
-                    <p class="mt-1.5 text-xs text-red-500">Price is required.</p>
+                    <p class="mt-1.5 text-xs text-red-500">El precio es obligatorio.</p>
                     }
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Compare At
-                        Price</label>
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Precio de
+                        comparación</label>
                     <div class="relative">
                         <span
                             class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none">$</span>
@@ -172,7 +172,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Cost</label>
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Costo</label>
                     <div class="relative">
                         <span
                             class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none">$</span>
@@ -188,7 +188,7 @@
 
         <!-- Section: Inventory -->
         <div class="pb-2">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Inventory
+            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Inventario
             </h3>
             <div class="space-y-4">
 
@@ -196,9 +196,9 @@
                 <div
                     class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Track inventory</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Control the available stock for this
-                            product.</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Seguir inventario</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Controla el stock disponible para este
+                            producto.</p>
                     </div>
                     <button type="button"
                         (click)="form.patchValue({ track_inventory: !form.getRawValue().track_inventory })"
@@ -210,13 +210,13 @@
                 <!-- Stock Quantity -->
                 @if (form.getRawValue().track_inventory && !hasVariants()) {
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Stock
-                        Quantity</label>
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Cantidad de
+                        Stock</label>
                     <input type="number" formControlName="stock_quantity" min="0" placeholder="0"
                         class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                         [class.border-red-500]="hasError('stock_quantity')">
                     @if (hasError('stock_quantity')) {
-                    <p class="mt-1.5 text-xs text-red-500">Quantity must be greater than or equal to 0.</p>
+                    <p class="mt-1.5 text-xs text-red-500">La cantidad debe ser mayor o igual a 0.</p>
                     }
                 </div>
                 }
@@ -225,9 +225,9 @@
                 <div
                     class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Featured product</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Appears in special sections of the
-                            store.</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Producto destacado</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Aparece en secciones especiales de la
+                            tienda.</p>
                     </div>
                     <button type="button" (click)="form.patchValue({ is_featured: !form.getRawValue().is_featured })"
                         class="toggle-btn" [class.active]="form.getRawValue().is_featured">
@@ -244,10 +244,10 @@
         <!-- Section: Variants -->
         <div>
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Variants
-                    (Sizes, Colors, etc.)</h3>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Variantes
+                    (Tallas, Colores, etc.)</h3>
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-medium text-gray-500">{{ hasVariants() ? 'Enabled' : 'Disabled'
+                    <span class="text-xs font-medium text-gray-500">{{ hasVariants() ? 'Activado' : 'Desactivado'
                         }}</span>
                     <button type="button" (click)="toggleVariants()" class="toggle-btn scale-90"
                         [class.active]="hasVariants()">
@@ -263,14 +263,14 @@
                 <div
                     class="space-y-4 p-4 rounded-2xl bg-indigo-50/30 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30">
                     <div class="flex items-center justify-between">
-                        <p class="text-sm font-bold text-indigo-900 dark:text-indigo-300">Configure Options</p>
+                        <p class="text-sm font-bold text-indigo-900 dark:text-indigo-300">Configurar Opciones</p>
                         <button type="button" (click)="addOption()"
                             class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 transition-colors flex items-center gap-1">
                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M12 4v16m8-8H4" />
                             </svg>
-                            ADD OPTION
+                            AÑADIR OPCIÓN
                         </button>
                     </div>
 
@@ -278,17 +278,17 @@
                     <div
                         class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700">
                         <div class="sm:col-span-4">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Name</label>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nombre</label>
                             <input type="text" [value]="opt.name" (input)="updateOptionName($index, nameInput.value)"
-                                #nameInput placeholder="e.g. Size"
+                                #nameInput placeholder="ej. Talla"
                                 class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                         <div class="sm:col-span-7">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Values (comma
-                                separated)</label>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Valores (separados
+                                por comas)</label>
                             <input type="text" [value]="opt.values.join(', ')"
                                 (change)="updateOptionValues($index, valInput.value)" #valInput
-                                placeholder="e.g. S, M, L"
+                                placeholder="ej. S, M, L"
                                 class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                         <div class="sm:col-span-1 flex justify-center">
@@ -304,8 +304,8 @@
                     } @empty {
                     <div
                         class="text-center py-6 border-2 border-dashed border-indigo-200 dark:border-indigo-900/50 rounded-xl">
-                        <p class="text-xs text-indigo-900/40 dark:text-indigo-300/40 font-medium">Click "Add
-                            Option" to get started.</p>
+                        <p class="text-xs text-indigo-900/40 dark:text-indigo-300/40 font-medium">Haz clic en "Añadir
+                            Opción" para empezar.</p>
                     </div>
                     }
                 </div>
@@ -313,7 +313,7 @@
                 <!-- Variants Grid -->
                 @if (variants.length > 0) {
                 <div class="space-y-4">
-                    <p class="text-sm font-bold text-gray-900 dark:text-white">Variants Preview ({{
+                    <p class="text-sm font-bold text-gray-900 dark:text-white">Vista Previa de Variantes ({{
                         variants.length }})</p>
                     <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-xl">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -321,13 +321,13 @@
                                 <tr>
                                     <th
                                         class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
-                                        Variant</th>
+                                        Variante</th>
                                     <th
                                         class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
                                         SKU</th>
                                     <th
                                         class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
-                                        Price</th>
+                                        Precio</th>
                                     <th
                                         class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest w-24">
                                         Stock</th>
@@ -374,15 +374,14 @@
                             </tbody>
                         </table>
                     </div>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500 italic">Changes in the generator will
-                        overwrite the fields
-                        above if the options combination changes.</p>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 italic">Los cambios en el generador
+                        sobrescribirán los campos anteriores si la combinación de opciones cambia.</p>
                 </div>
                 }
             </div>
             } @else {
             <div class="p-6 text-center border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl">
-                <p class="text-sm text-gray-400 font-medium">This product has no configured variants.</p>
+                <p class="text-sm text-gray-400 font-medium">Este producto no tiene variantes configuradas.</p>
             </div>
             }
         </div>
@@ -394,7 +393,7 @@
 
     <!-- Section: Images -->
     <div class="px-6 py-5">
-        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Images</h3>
+        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Imágenes</h3>
         <app-product-image-uploader [productId]="isEditMode() ? product()?.id ?? null : null"
             [existingImages]="product()?.images ?? []">
         </app-product-image-uploader>
@@ -405,7 +404,7 @@
         class="flex-shrink-0 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center justify-end gap-3">
         <button type="button" (click)="cancel()"
             class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
-            Cancel
+            Cancelar
         </button>
         <button type="submit" [disabled]="isSaving()"
             class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl transition-all duration-200 shadow-sm">
@@ -414,9 +413,9 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
-            Saving...
+            Guardando...
             } @else {
-            {{ isEditMode() ? 'Update Product' : 'Create Product' }} →
+            {{ isEditMode() ? 'Actualizar Producto' : 'Crear Producto' }} →
             }
         </button>
     </div>

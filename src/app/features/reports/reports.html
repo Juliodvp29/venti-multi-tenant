@@ -2,10 +2,9 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight dark:text-white uppercase italic">Business
-                Intelligence</h1>
-            <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">Advanced analysis of sales, customers, and
-                product performance.</p>
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Inteligencia de Negocios</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Análisis avanzado de ventas, clientes y rendimiento de
+                productos.</p>
         </div>
         <button (click)="loadReports()"
             class="flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100 disabled:opacity-50">
@@ -14,7 +13,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {{ isLoading() ? 'Syncing...' : 'Refresh Data' }}
+            {{ isLoading() ? 'Sincronizando...' : 'Actualizar Datos' }}
         </button>
     </div>
 
@@ -22,7 +21,7 @@
     <div
         class="p-20 flex flex-col items-center justify-center text-slate-400 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
         <div class="w-16 h-16 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin mb-6"></div>
-        <p class="font-black uppercase tracking-[0.2em] text-xs">Analyzing transactions...</p>
+        <p class="font-black uppercase tracking-[0.2em] text-xs">Analizando transacciones...</p>
     </div>
     } @else {
     <!-- Summary Charts Row -->
@@ -46,12 +45,12 @@
             <div class="p-6 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between">
                 <h2 class="font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                     <span class="w-2 h-6 bg-indigo-600 rounded-full"></span>
-                    Top Selling Products
+                    Productos Más Vendidos
                 </h2>
             </div>
             <div class="p-0">
-                <app-dynamic-table [data]="topProducts()" [columns]="productColumns" [pageSize]="5" title=""
-                    description="">
+                <app-dynamic-table [data]="topProducts()" [columns]="productColumns" title="Productos Más Vendidos"
+                    [pageSize]="5">
                 </app-dynamic-table>
             </div>
         </div>
@@ -62,12 +61,12 @@
             <div class="p-6 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between">
                 <h2 class="font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                     <span class="w-2 h-6 bg-amber-500 rounded-full"></span>
-                    Top Customers (LTV)
+                    Mejores Clientes (LTV)
                 </h2>
             </div>
             <div class="p-0">
-                <app-dynamic-table [data]="customerLtv()" [columns]="customerColumns" [pageSize]="5" title=""
-                    description="">
+                <app-dynamic-table [data]="customerLtv()" [columns]="customerColumns" title="Mejores Clientes (LTV)"
+                    [pageSize]="5">
                 </app-dynamic-table>
             </div>
         </div>

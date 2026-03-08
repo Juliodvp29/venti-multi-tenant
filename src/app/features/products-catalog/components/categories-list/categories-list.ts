@@ -46,7 +46,7 @@ export class CategoriesList implements OnInit {
     readonly columns: ColumnDef<Category>[] = [
         {
             key: 'name',
-            label: 'Category',
+            label: 'Categoría',
             sortable: true,
             type: 'text',
         },
@@ -59,34 +59,34 @@ export class CategoriesList implements OnInit {
         },
         {
             key: 'parent_id',
-            label: 'Type',
+            label: 'Tipo',
             type: 'text',
-            formatter: (val) => val ? 'Subcategory' : 'Main',
+            formatter: (val) => val ? 'Subcategoría' : 'Principal',
         },
         {
             key: 'is_active',
-            label: 'Status',
+            label: 'Estado',
             type: 'status',
-            formatter: (val) => val ? 'active' : 'inactive',
+            formatter: (val) => val ? 'activada' : 'inactivada',
         },
     ];
 
     readonly actions: TableAction<Category>[] = [
         {
             id: 'edit',
-            label: 'Edit',
+            label: 'Editar',
             className: 'hover:text-indigo-600 dark:hover:text-indigo-400 font-medium',
             callback: (item) => this.openEdit(item),
         },
         {
             id: 'toggle',
-            label: 'Toggle Status',
+            label: 'Cambiar Estado',
             className: 'hover:text-amber-600 dark:hover:text-amber-400 font-medium',
             callback: (item) => this.toggleStatus(item),
         },
         {
             id: 'delete',
-            label: 'Delete',
+            label: 'Eliminar',
             className: 'hover:text-red-600 dark:hover:text-red-400 font-medium',
             callback: (item) => this.deleteCategory(item),
         },
@@ -103,7 +103,7 @@ export class CategoriesList implements OnInit {
             const data = await this.categoriesService.getCategories(false);
             this.categories.set(data);
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error loading categories.');
+            this.toast.error(error?.message ?? 'Error al cargar las categorías.');
         } finally {
             this.isLoading.set(false);
         }
@@ -112,7 +112,7 @@ export class CategoriesList implements OnInit {
     async openCreate() {
         const canAdd = await this.subscriptionService.canAddResource('categories');
         if (!canAdd) {
-            this.toast.error('You have reached the category limit for your plan. Please upgrade to add more.');
+            this.toast.error('Has alcanzado el límite de categorías para tu plan. Por favor mejora tu plan para añadir más.');
             return;
         }
         this.editingCategory.set(null);
@@ -138,17 +138,17 @@ export class CategoriesList implements OnInit {
                 cats.map(c => c.id === updated.id ? updated : c)
             );
             this.toast.success(
-                `Category "${updated.name}" ${updated.is_active ? 'activated' : 'deactivated'}.`
+                `Categoría "${updated.name}" ${updated.is_active ? 'activada' : 'desactivada'}.`
             );
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error changing status.');
+            this.toast.error(error?.message ?? 'Error al cambiar el estado.');
         }
     }
 
     async deleteCategory(category: Category) {
         const confirmed = await this.toast.confirm(
-            `Delete category "${category.name}"? This action cannot be undone.`,
-            'Delete Category'
+            `¿Eliminar la categoría "${category.name}"? Esta acción no se puede deshacer.`,
+            'Eliminar Categoría'
         );
 
         if (!confirmed) return;
@@ -157,9 +157,9 @@ export class CategoriesList implements OnInit {
         try {
             await this.categoriesService.deleteCategory(category.id);
             this.categories.update(cats => cats.filter(c => c.id !== category.id));
-            this.toast.success(`Category "${category.name}" deleted.`);
+            this.toast.success(`Categoría "${category.name}" eliminada.`);
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error deleting category.');
+            this.toast.error(error?.message ?? 'Error al eliminar la categoría.');
         } finally {
             this.deletingId.set(null);
         }
@@ -197,7 +197,7 @@ export class CategoriesList implements OnInit {
             batches.push(rows.slice(i, i + BATCH_SIZE));
         }
 
-        this.toast.info(`Importing ${total} categor${total > 1 ? 'ies' : 'y'}...`);
+        this.toast.info(`Importando ${total} categorí${total > 1 ? 'as' : 'a'}...`);
 
         for (const batch of batches) {
             const results = await Promise.allSettled(
@@ -235,12 +235,12 @@ export class CategoriesList implements OnInit {
         }
 
         if (created > 0 && failed === 0) {
-            this.toast.success(`✅ ${created} categor${created > 1 ? 'ies' : 'y'} imported successfully.`);
+            this.toast.success(`✅ ${created} categorí${created > 1 ? 'as' : 'a'} importada${created > 1 ? 's' : ''} con éxito.`);
         } else if (created > 0 && failed > 0) {
-            this.toast.warning(`⚠️ ${created} imported, ${failed} with error. Check console.`);
+            this.toast.warning(`⚠️ ${created} importada${created > 1 ? 's' : ''}, ${failed} con error. Revisa la consola.`);
             console.warn('[Import] Errores:', errors);
         } else {
-            this.toast.error(`❌ No categories could be imported. Check the file.`);
+            this.toast.error(`❌ No se pudieron importar categorías. Revisa el archivo.`);
             console.error('[Import] Errores:', errors);
         }
     }

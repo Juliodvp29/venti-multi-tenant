@@ -30,7 +30,7 @@
             </div>
             <div>
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ activeProducts() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Active
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Activos
                 </p>
             </div>
         </div>
@@ -47,7 +47,7 @@
             </div>
             <div>
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ draftProducts() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Drafts
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Borradores
                 </p>
             </div>
         </div>
@@ -64,7 +64,7 @@
             </div>
             <div>
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ lowStockProducts() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Low Stock
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Stock Bajo
                 </p>
             </div>
         </div>
@@ -79,7 +79,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Loading products...</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Cargando productos...</p>
         </div>
     </div>
     }
@@ -88,8 +88,8 @@
     @if (products().length > 0 || !isLoading()) {
     <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
         [class.pointer-events-none]="isLoading()">
-        <app-dynamic-table [data]="filteredProducts()" [columns]="columns" [actions]="actions" title="Products"
-            description="Manage your complete product catalog." searchPlaceholder="Search by name, SKU..."
+        <app-dynamic-table [data]="filteredProducts()" [columns]="columns" [actions]="actions" title="Productos"
+            description="Administra tu catálogo completo de productos." searchPlaceholder="Buscar por nombre, SKU..."
             [allowImport]="true" (importData)="onImportData($event)" [totalItemsOverride]="totalCount()"
             [pageSize]="PAGE_SIZE" (pageChange)="loadProducts($event)" (searchChange)="onSearchChange($event)"
             [hasActiveFilters]="hasActiveFilters()" (clearFilters)="clearFilters()">
@@ -102,7 +102,7 @@
                         stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
-                    New Product
+                    Nuevo Producto
                 </button>
             </div>
 
@@ -110,12 +110,12 @@
             <div filters class="flex items-center gap-2">
                 <!-- Category filter -->
                 <app-dropdown [options]="categoryDropdownOptions()" [value]="categoryFilter()"
-                    (valueChange)="categoryFilter.set($event); loadProducts(1)" width="w-48" placeholder="Category" />
+                    (valueChange)="categoryFilter.set($event); loadProducts(1)" width="w-48" placeholder="Categoría" />
 
                 <!-- Status filter -->
                 <app-dropdown [options]="statusDropdownOptions" [value]="statusFilter()"
-                    (valueChange)="statusFilter.set($event); loadProducts(1)" width="w-44" placeholder="Status" />
-                <app-date-range-picker [(value)]="dateRange" placeholder="Date range"
+                    (valueChange)="statusFilter.set($event); loadProducts(1)" width="w-44" placeholder="Estado" />
+                <app-date-range-picker [(value)]="dateRange" placeholder="Rango de fechas"
                     (rangeChange)="onDateRangeChange($event)" />
             </div>
 
