@@ -33,16 +33,16 @@ export class Login {
   readonly emailError = computed(() => {
     const control = this.loginForm.controls.email;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'Email is required';
-      if (control.errors['email']) return 'Invalid email';
+      if (control.errors['required']) return 'El correo es obligatorio';
+      if (control.errors['email']) return 'Correo inválido';
     }
     return null;
   });
   readonly passwordError = computed(() => {
     const control = this.loginForm.controls.password;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'Password is required';
-      if (control.errors['minlength']) return 'Minimum 6 characters';
+      if (control.errors['required']) return 'La contraseña es obligatoria';
+      if (control.errors['minlength']) return 'Mínimo 6 caracteres';
     }
     return null;
   });
@@ -71,9 +71,9 @@ export class Login {
 
     if (error) {
       this.errorMessage.set(error.message);
-      this.toast.error('Login error', error.message);
+      this.toast.error('Error al iniciar sesión', error.message);
     } else {
-      this.toast.success('Welcome!', 'You have logged in successfully');
+      this.toast.success('¡Bienvenido!', 'Has iniciado sesión correctamente');
 
       if (redirect) {
         this.router.navigateByUrl(decodeURIComponent(redirect));

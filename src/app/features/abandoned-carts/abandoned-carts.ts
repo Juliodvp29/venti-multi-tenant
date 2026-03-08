@@ -34,7 +34,7 @@ export class AbandonedCarts implements OnInit {
       this.carts.set(data);
     } catch (error) {
       console.error('Error loading abandoned carts:', error);
-      this.toast.error('Error loading abandoned carts');
+      this.toast.error('Error al cargar los carritos abandonados');
     } finally {
       this.isLoading.set(false);
     }
@@ -43,9 +43,9 @@ export class AbandonedCarts implements OnInit {
   async sendRecovery(cart: AbandonedCart) {
     const result = await this.cartService.sendRecoveryEmail(cart);
     if (result.success) {
-      this.toast.success(`Recovery email sent to ${cart.customer_name}`);
+      this.toast.success(`Correo de recuperación enviado a ${cart.customer_name}`);
     } else {
-      this.toast.error(result.error || 'Error sending email');
+      this.toast.error(result.error || 'Error al enviar el correo');
     }
   }
 
@@ -55,8 +55,8 @@ export class AbandonedCarts implements OnInit {
     const diffMs = now.getTime() - date.getTime();
     const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
 
-    if (diffHrs < 1) return 'Less than an hour ago';
-    if (diffHrs === 1) return '1 hour ago';
-    return `${diffHrs} hours ago`;
+    if (diffHrs < 1) return 'Hace menos de una hora';
+    if (diffHrs === 1) return 'Hace 1 hora';
+    return `Hace ${diffHrs} horas`;
   }
 }

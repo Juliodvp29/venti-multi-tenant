@@ -52,7 +52,7 @@ export class Members implements OnInit {
   async openInviteModal() {
     const canAdd = await this.subscriptionService.canAddResource('members');
     if (!canAdd) {
-      this.toast.error('You have reached the member limit for your plan. Please upgrade your plan to invite more people.');
+      this.toast.error('Has alcanzado el límite de miembros para tu plan. Por favor, actualiza tu plan para invitar a más personas.');
       return;
     }
     this.showInviteModal.set(true);
@@ -100,35 +100,35 @@ export class Members implements OnInit {
     const email = (event.email ?? '').trim();
     try {
       await this.tenantService.inviteMember(email, event.role);
-      this.toast.success('Invitation sent successfully');
+      this.toast.success('Invitación enviada con éxito');
       this.showInviteModal.set(false);
       await this.loadMembers();
     } catch (error: any) {
-      this.toast.error(error.message || 'Failed to send invitation');
+      this.toast.error(error.message || 'Error al enviar la invitación');
     }
   }
 
   async onMemberRemove(member: TenantMember) {
-    if (confirm(`Are you sure you want to remove this member?`)) {
+    if (confirm(`¿Estás seguro de que quieres eliminar a este miembro?`)) {
       try {
         await this.tenantService.removeMember(member.id);
-        this.toast.success('Member removed');
+        this.toast.success('Miembro eliminado');
         await this.loadMembers();
       } catch (error) {
-        this.toast.error('Failed to remove member');
+        this.toast.error('Error al eliminar el miembro');
       }
     }
   }
 
   async onMemberRoleUpdate(member: TenantMember) {
-    const newRole = prompt('Enter new role (viewer, editor, admin):', member.role) as TenantRole;
+    const newRole = prompt('Ingresa el nuevo rol (viewer, editor, admin):', member.role) as TenantRole;
     if (newRole && Object.values(TenantRole).includes(newRole)) {
       try {
         await this.tenantService.updateMemberRole(member.id, newRole);
-        this.toast.success('Role updated');
+        this.toast.success('Rol actualizado');
         await this.loadMembers();
       } catch (error) {
-        this.toast.error('Failed to update role');
+        this.toast.error('Error al actualizar el rol');
       }
     }
   }

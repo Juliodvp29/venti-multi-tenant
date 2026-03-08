@@ -11,8 +11,8 @@
             </svg>
         </div>
         <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-sky-500 to-purple-600 bg-clip-text text-transparent">
-            Sign In</h2>
-        <p class="text-gray-600 dark:text-gray-400">Welcome back to Venti</p>
+            Iniciar Sesión</h2>
+        <p class="text-gray-600 dark:text-gray-400">Bienvenido de nuevo a Venti</p>
     </div>
 
     <!-- Error Alert -->
@@ -32,7 +32,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
         <!-- Email Field -->
         <div class="flex flex-col gap-2">
-            <label for="email" class="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+            <label for="email" class="text-sm font-medium text-gray-700 dark:text-gray-300">Correo Electrónico</label>
             <div class="relative flex items-center">
                 <div class="absolute left-4 flex items-center pointer-events-none z-10">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -52,7 +52,7 @@
 
         <!-- Password Field -->
         <div class="flex flex-col gap-2">
-            <label for="password" class="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+            <label for="password" class="text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
             <div class="relative flex items-center">
                 <div class="absolute left-4 flex items-center pointer-events-none z-10">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -67,7 +67,7 @@
                 <button type="button"
                     class="absolute right-4 p-2 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
                     (click)="togglePasswordVisibility()"
-                    [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
+                    [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
                     @if (showPassword()) {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5">
@@ -93,7 +93,7 @@
         <div class="flex justify-end -mt-2">
             <a routerLink="/auth/forgot-password"
                 class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline transition-colors">
-                Forgot your password?
+                ¿Olvidaste tu contraseña?
             </a>
         </div>
 
@@ -111,9 +111,9 @@
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                 </path>
             </svg>
-            <span class="relative z-10">Signing in...</span>
+            <span class="relative z-10">Iniciando sesión...</span>
             } @else {
-            <span class="relative z-10">Sign In</span>
+            <span class="relative z-10">Iniciar Sesión</span>
             }
         </button>
     </form>

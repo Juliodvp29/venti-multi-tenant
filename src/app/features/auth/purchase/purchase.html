@@ -38,7 +38,7 @@
             <div>
                 <div
                     class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-10">
-                    Order Summary
+                    Resumen del Pedido
                 </div>
 
                 <h2 class="text-4xl font-black mb-4 dark:text-white tracking-tight">{{ plan()?.name }} Plan</h2>
@@ -63,21 +63,22 @@
 
             <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex justify-between items-end">
-                    <span class="text-gray-500 dark:text-gray-400 font-bold uppercase text-xs tracking-widest">Total due
-                        today</span>
+                    <span class="text-gray-500 dark:text-gray-400 font-bold uppercase text-xs tracking-widest">Total a
+                        pagar
+                        hoy</span>
                     <div class="text-right">
                         <div class="text-4xl font-black dark:text-white tracking-tighter">{{ plan()?.price |
                             currency:'USD' }}</div>
                         <div
                             class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold mt-1">
-                            + Local taxes</div>
+                            + Impuestos locales</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="p-10 md:p-14 relative overflow-hidden bg-white dark:bg-gray-900">
-            <h3 class="text-2xl font-black mb-10 dark:text-white tracking-tight">Payment Method</h3>
+            <h3 class="text-2xl font-black mb-10 dark:text-white tracking-tight">Método de Pago</h3>
 
             @if (isProcessing()) {
             <div
@@ -99,10 +100,10 @@
                     }
                 </div>
                 <h4 class="text-3xl font-black mb-3 dark:text-white tracking-tight">
-                    {{ isSuccess() ? 'Success!' : 'Verifying Card' }}
+                    {{ isSuccess() ? '¡Éxito!' : 'Verificando Tarjeta' }}
                 </h4>
                 <p class="text-gray-500 dark:text-gray-400 font-medium">
-                    {{ isSuccess() ? 'Your store is ready. Redirecting...' : 'Encrypted connection established.' }}
+                    {{ isSuccess() ? 'Tu tienda está lista. Redirigiendo...' : 'Conexión encriptada establecida.' }}
                 </p>
             </div>
             }
@@ -110,16 +111,16 @@
             <form (submit)="onConfirm($event)" class="space-y-8">
                 <div class="space-y-2">
                     <label
-                        class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Cardholder
-                        Name</label>
+                        class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Nombre
+                        del Titular</label>
                     <input type="text" placeholder="John Doe"
                         class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600">
                 </div>
 
                 <div class="space-y-2">
                     <label
-                        class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Card
-                        Number</label>
+                        class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Número
+                        de Tarjeta</label>
                     <div class="relative">
                         <input type="text" placeholder="•••• •••• •••• ••••"
                             class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
@@ -134,8 +135,8 @@
                 <div class="grid grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label
-                            class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Expiry
-                            Date</label>
+                            class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Fecha
+                            de Expiración</label>
                         <input type="text" placeholder="MM/YY" (input)="onExpiryInput($event)" maxlength="5"
                             class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
                     </div>
@@ -150,7 +151,7 @@
                 <div class="pt-6">
                     <button type="submit"
                         class="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-2xl shadow-indigo-500/30 transition-all hover:-translate-y-1 active:scale-[0.98] tracking-tight uppercase">
-                        Start Subscription
+                        Iniciar Suscripción
                     </button>
                     <div
                         class="mt-6 flex items-center justify-center gap-2 text-[9px] text-gray-400 dark:text-gray-600 font-bold uppercase tracking-widest">
@@ -159,7 +160,7 @@
                                 d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
                                 clip-rule="evenodd" />
                         </svg>
-                        Encrypted & Secure Payment
+                        Pago Encriptado y Seguro
                     </div>
                 </div>
             </form>
@@ -168,7 +169,7 @@
 
     <p
         class="mt-8 text-[11px] text-gray-400 dark:text-gray-600 max-w-sm text-center font-medium relative z-10 leading-relaxed">
-        By continuing, you agree to our Terms of Service and Privacy Policy. Your subscription will begin after
-        verification.
+        Al continuar, aceptas nuestros Términos de Servicio y la Política de Privacidad. Tu suscripción comenzará
+        después de la verificación.
     </p>
 </div>

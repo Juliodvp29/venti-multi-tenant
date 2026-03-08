@@ -46,18 +46,18 @@ import { Supabase } from '@core/services/supabase';
                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                 </svg>
              </div>
-             <h2 class="text-3xl font-black mb-4 dark:text-white tracking-tight">Check your email!</h2>
+             <h2 class="text-3xl font-black mb-4 dark:text-white tracking-tight">¡Revisa tu correo!</h2>
              <p class="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-               {{ isInviteFlow() ? 'Your account was created and you have joined the store.' : 'We have sent a verification link to your email. Please confirm it to get started.' }}
+               {{ isInviteFlow() ? 'Tu cuenta ha sido creada y te has unido a la tienda.' : 'Hemos enviado un enlace de verificación a tu correo. Por favor confírmalo para empezar.' }}
              </p>
           </div>
         } @else {
           <div class="mb-10 text-center">
             <h2 class="text-3xl font-black mb-3 dark:text-white tracking-tight">
-              {{ isInviteFlow() ? 'Join the team' : 'Store Creation' }}
+              {{ isInviteFlow() ? 'Únete al equipo' : 'Creación de Tienda' }}
             </h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
-              {{ isInviteFlow() ? 'Complete your registration to join the store.' : 'Set up your admin account for your new store.' }}
+              {{ isInviteFlow() ? 'Completa tu registro para unirte a la tienda.' : 'Configura tu cuenta de administrador para tu nueva tienda.' }}
             </p>
           </div>
 
@@ -73,26 +73,26 @@ import { Supabase } from '@core/services/supabase';
           <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
             @if (!isInviteFlow()) {
               <div class="space-y-2">
-                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Business Name</label>
-                <input type="text" formControlName="businessName" placeholder="My Awesome Shop" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Nombre del Negocio</label>
+                <input type="text" formControlName="businessName" placeholder="Mi Tienda Increíble" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
                 @if (businessNameError()) { <p class="text-[10px] text-red-500 font-bold px-1">{{ businessNameError() }}</p> }
               </div>
             }
 
             <div class="space-y-2">
-              <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Email Address</label>
+              <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Correo Electrónico</label>
               <input type="email" formControlName="email" placeholder="admin@venti.com" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
               @if (emailError()) { <p class="text-[10px] text-red-500 font-bold px-1">{{ emailError() }}</p> }
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2">
-                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Password</label>
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Contraseña</label>
                 <input [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="••••••••" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
                 @if (passwordError()) { <p class="text-[10px] text-red-500 font-bold px-1">{{ passwordError() }}</p> }
               </div>
               <div class="space-y-2">
-                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Confirm</label>
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1">Confirmar</label>
                 <input [type]="showConfirmPassword() ? 'text' : 'password'" formControlName="confirmPassword" placeholder="••••••••" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
                  @if (confirmPasswordError()) { <p class="text-[10px] text-red-500 font-bold px-1">{{ confirmPasswordError() }}</p> }
               </div>
@@ -104,15 +104,15 @@ import { Supabase } from '@core/services/supabase';
                 [disabled]="isLoading()"
                 class="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-2xl shadow-indigo-500/30 transition-all hover:-translate-y-1 active:scale-[0.98] tracking-tight uppercase disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {{ isLoading() ? 'Creating account...' : 'Create My Store' }}
+                {{ isLoading() ? 'Creando cuenta...' : 'Crear Mi Tienda' }}
               </button>
             </div>
           </form>
 
           <div class="mt-10 text-center">
              <p class="text-[11px] text-gray-400 dark:text-gray-500 font-medium tracking-tight">
-               Already have an account? 
-               <a [routerLink]="['/auth/login']" class="text-indigo-600 dark:text-indigo-400 font-black hover:underline ml-1">Log in here</a>
+               ¿Ya tienes una cuenta? 
+               <a [routerLink]="['/auth/login']" class="text-indigo-600 dark:text-indigo-400 font-black hover:underline ml-1">Inicia sesión aquí</a>
              </p>
           </div>
         }
@@ -173,8 +173,8 @@ export class Singup implements OnInit {
   readonly businessNameError = computed(() => {
     const control = this.signupForm.controls.businessName;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'Business name is required';
-      if (control.errors['minlength']) return 'Minimum 2 characters';
+      if (control.errors['required']) return 'El nombre del negocio es obligatorio';
+      if (control.errors['minlength']) return 'Mínimo 2 caracteres';
     }
     return null;
   });
@@ -182,8 +182,8 @@ export class Singup implements OnInit {
   readonly emailError = computed(() => {
     const control = this.signupForm.controls.email;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'Email is required';
-      if (control.errors['email']) return 'Invalid email';
+      if (control.errors['required']) return 'El correo es obligatorio';
+      if (control.errors['email']) return 'Correo inválido';
     }
     return null;
   });
@@ -191,8 +191,8 @@ export class Singup implements OnInit {
   readonly passwordError = computed(() => {
     const control = this.signupForm.controls.password;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'Password is required';
-      if (control.errors['minlength']) return 'Minimum 8 characters';
+      if (control.errors['required']) return 'La contraseña es obligatoria';
+      if (control.errors['minlength']) return 'Mínimo 8 caracteres';
     }
     return null;
   });
@@ -200,8 +200,8 @@ export class Singup implements OnInit {
   readonly confirmPasswordError = computed(() => {
     const control = this.signupForm.controls.confirmPassword;
     if (control.touched) {
-      if (control.errors?.['required']) return 'Confirm your password';
-      if (!this.passwordsMatch()) return 'Passwords do not match';
+      if (control.errors?.['required']) return 'Confirma tu contraseña';
+      if (!this.passwordsMatch()) return 'Las contraseñas no coinciden';
     }
     return null;
   });
@@ -217,9 +217,9 @@ export class Singup implements OnInit {
     if (/\d/.test(password)) strength++;
     if (/[^a-zA-Z0-9]/.test(password)) strength++;
 
-    if (strength <= 2) return { level: 1, text: 'Weak', color: 'var(--color-error-500)' };
-    if (strength <= 3) return { level: 2, text: 'Medium', color: 'var(--color-warning-500)' };
-    return { level: 3, text: 'Strong', color: 'var(--color-success-500)' };
+    if (strength <= 2) return { level: 1, text: 'Débil', color: 'var(--color-error-500)' };
+    if (strength <= 3) return { level: 2, text: 'Media', color: 'var(--color-warning-500)' };
+    return { level: 3, text: 'Fuerte', color: 'var(--color-success-500)' };
   });
 
   ngOnInit(): void {
@@ -244,7 +244,7 @@ export class Singup implements OnInit {
         // businessName is required for new stores (standard Validators already set in fb.group)
       } else {
         // Enforce restricted registration: redirect to login if no token or plan is provided
-        this.toast.warning('Registration restricted', 'To register, you must be invited or select a plan from our landing page.');
+        this.toast.warning('Registro restringido', 'Para registrarte, debes ser invitado o seleccionar un plan de nuestra página de inicio.');
         this.router.navigate(['/auth/login']);
         return;
       }
@@ -290,7 +290,7 @@ export class Singup implements OnInit {
     if (error) {
       this.isLoading.set(false);
       this.errorMessage.set(error.message);
-      this.toast.error('Registration error', error.message);
+      this.toast.error('Error en el registro', error.message);
       return;
     }
 
@@ -307,11 +307,11 @@ export class Singup implements OnInit {
         if (acceptError) {
           console.warn('Could not auto-accept invitation:', acceptError);
           this.toast.warning(
-            'Account created',
-            'Your account was created but there was a problem joining the store. Please try opening the invitation link again.'
+            'Cuenta creada',
+            'Tu cuenta fue creada pero hubo un problema al unirte a la tienda. Por favor intenta abrir el enlace de invitación de nuevo.'
           );
         } else {
-          this.toast.success('Welcome!', 'Your account was created and you have successfully joined the store.');
+          this.toast.success('¡Bienvenido!', 'Tu cuenta fue creada y te has unido exitosamente a la tienda.');
         }
 
         this.isLoading.set(false);
@@ -320,14 +320,14 @@ export class Singup implements OnInit {
       } catch (err: any) {
         console.warn('Invite acceptance error:', err);
         this.isLoading.set(false);
-        this.toast.success('Successful registration!', 'Check your email to confirm your account.');
+        this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta.');
         setTimeout(() => this.router.navigate(['/auth/login']), 3000);
       }
     } else {
       // Normal sign-up flow
       this.isLoading.set(false);
       this.isSuccess.set(true);
-      this.toast.success('Successful registration!', 'Check your email to confirm your account');
+      this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta');
       setTimeout(() => {
         this.router.navigate(['/auth/login']);
       }, 3000);

@@ -61,17 +61,17 @@ export class OrderForm implements OnInit {
     );
 
     readonly statusOptions = [
-        { value: OrderStatus.Pending, label: 'Pending' },
-        { value: OrderStatus.Processing, label: 'Processing' },
-        { value: OrderStatus.Paid, label: 'Paid' },
-        { value: OrderStatus.Shipped, label: 'Shipped' },
-        { value: OrderStatus.Delivered, label: 'Delivered' },
+        { value: OrderStatus.Pending, label: 'Pendiente' },
+        { value: OrderStatus.Processing, label: 'Procesando' },
+        { value: OrderStatus.Paid, label: 'Pagado' },
+        { value: OrderStatus.Shipped, label: 'Enviado' },
+        { value: OrderStatus.Delivered, label: 'Entregado' },
     ];
 
     readonly paymentStatusOptions = [
-        { value: PaymentStatus.Pending, label: 'Pending' },
-        { value: PaymentStatus.Completed, label: 'Completed' },
-        { value: PaymentStatus.Failed, label: 'Failed' },
+        { value: PaymentStatus.Pending, label: 'Pendiente' },
+        { value: PaymentStatus.Completed, label: 'Completado' },
+        { value: PaymentStatus.Failed, label: 'Fallido' },
     ];
 
     readonly form = this.fb.group({
@@ -208,7 +208,7 @@ export class OrderForm implements OnInit {
             }
         } catch (error) {
             console.error('Error fetching product details:', error);
-            this.toast.error('Could not fetch product details.');
+            this.toast.error('No se pudieron obtener los detalles del producto.');
         }
     }
 
@@ -249,7 +249,7 @@ export class OrderForm implements OnInit {
     async submit() {
         if (this.form.invalid || this.items.length === 0) {
             this.form.markAllAsTouched();
-            this.toast.error('Please complete the form and add at least one item.');
+            this.toast.error('Por favor completa el formulario y agrega al menos un ítem.');
             return;
         }
 
@@ -285,7 +285,7 @@ export class OrderForm implements OnInit {
                 this.form.patchValue({ customer_id: customer.id });
             }
 
-            if (!customer) throw new Error('Customer data not found');
+            if (!customer) throw new Error('Datos del cliente no encontrados');
 
             const orderData: Partial<Order> = {
                 customer_id: customer.id,
@@ -318,11 +318,11 @@ export class OrderForm implements OnInit {
             }));
 
             const result = await this.ordersService.createOrder(orderData, itemsData);
-            this.toast.success(`Order #${result.order_number} created successfully.`);
+            this.toast.success(`Orden #${result.order_number} creada con éxito.`);
             this.saved.emit(result);
         } catch (error: any) {
             console.error('Error creating order:', error);
-            this.toast.error(error?.message ?? 'Error creating order.');
+            this.toast.error(error?.message ?? 'Error al crear la orden.');
         } finally {
             this.isSaving.set(false);
         }

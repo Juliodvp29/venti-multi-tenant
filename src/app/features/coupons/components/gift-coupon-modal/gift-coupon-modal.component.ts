@@ -71,10 +71,10 @@ export class GiftCouponModalComponent {
 
             // 2. Prepare variables
             const variables = {
-                customer_name: `${customer.first_name} ${customer.last_name}`.trim() || 'Friend',
-                store_name: 'Our Store', // This could come from tenant settings if available
+                customer_name: `${customer.first_name} ${customer.last_name}`.trim() || 'Amigo/a',
+                store_name: 'Nuestra Tienda', // This could come from tenant settings if available
                 coupon_code: coupon.code,
-                coupon_description: coupon.type === 'percentage' ? `${coupon.value}% off` : `$${coupon.value} off`,
+                coupon_description: coupon.type === 'percentage' ? `${coupon.value}% de descuento` : `$${coupon.value} de descuento`,
                 shop_url: window.location.origin
             };
 
@@ -94,19 +94,19 @@ export class GiftCouponModalComponent {
             });
 
             if (result.success) {
-                this.toast.success(`Coupon sent to ${customer.email}`);
+                this.toast.success(`Cupón enviado a ${customer.email}`);
                 this.close.emit();
                 // Reset state
                 this.selectedCustomerId.set(null);
                 this.searchQuery.set('');
                 this.customers.set([]);
             } else {
-                this.toast.error('Error sending email');
+                this.toast.error('Error al enviar el correo');
             }
 
         } catch (error: any) {
             console.error('Error sending gift coupon:', error);
-            this.toast.error(error?.message || 'Error processing the shipment');
+            this.toast.error(error?.message || 'Error al procesar el envío');
         } finally {
             this.isSending.set(false);
         }

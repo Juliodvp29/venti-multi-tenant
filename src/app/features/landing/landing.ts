@@ -20,16 +20,16 @@ export class Landing implements AfterViewInit, OnDestroy {
 
   readonly footerLinks = [
     {
-      title: 'Product',
-      links: ['Features', 'Pricing', 'Documentation', 'Changelog']
+      title: 'Producto',
+      links: ['Características', 'Precios', 'Documentación', 'Historial de cambios']
     },
     {
-      title: 'Company',
-      links: ['About Us', 'Blog', 'Careers', 'Contact']
+      title: 'Compañía',
+      links: ['Sobre nosotros', 'Blog', 'Carreras', 'Contacto']
     },
     {
       title: 'Legal',
-      links: ['Privacy', 'Terms', 'Cookie Policy', 'SLA']
+      links: ['Privacidad', 'Términos', 'Política de cookies', 'SLA']
     }
   ];
 
@@ -42,9 +42,9 @@ export class Landing implements AfterViewInit, OnDestroy {
     }
 
     this.seo.updateTags({
-      title: 'Venti Shop - The Modern Multi-Tenant Ecommerce Platform',
-      description: 'Launch your SaaS in minutes. Manage products, members, and subscriptions with a beautiful, unified interface.',
-      keywords: ['multi-tenant', 'ecommerce', 'saas', 'angular', 'supabase', 'store builder'],
+      title: 'Venti Shop - La Plataforma de Ecommerce Multi-Tenant Moderna',
+      description: 'Lanza tu SaaS en minutos. Gestiona productos, miembros y suscripciones con una interfaz hermosa y unificada.',
+      keywords: ['multi-tenant', 'ecommerce', 'saas', 'angular', 'supabase', 'constructor de tiendas'],
       type: 'website'
     });
 

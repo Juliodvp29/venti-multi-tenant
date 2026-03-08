@@ -26,8 +26,8 @@ export class ForgotPassword {
   readonly emailError = computed(() => {
     const control = this.forgotPasswordForm.controls.email;
     if (control.touched && control.errors) {
-      if (control.errors['required']) return 'Email is required';
-      if (control.errors['email']) return 'Invalid email';
+      if (control.errors['required']) return 'El correo es obligatorio';
+      if (control.errors['email']) return 'Correo inválido';
     }
     return null;
   });
@@ -52,7 +52,7 @@ export class ForgotPassword {
       this.toast.error('Error', error.message);
     } else {
       this.isSuccess.set(true);
-      this.toast.success('Email sent', 'Check your inbox to reset your password');
+      this.toast.success('Correo enviado', 'Revisa tu bandeja de entrada para restablecer tu contraseña');
     }
   }
 }

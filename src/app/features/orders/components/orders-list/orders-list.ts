@@ -84,33 +84,33 @@ export class OrdersList implements OnInit, AfterViewInit {
     readonly PAGE_SIZE = PAGE_SIZE;
 
     readonly statusDropdownOptions: DropdownOption[] = [
-        { label: 'All statuses', value: '' },
-        { label: 'Pending', value: OrderStatus.Pending },
-        { label: 'Processing', value: OrderStatus.Processing },
-        { label: 'Paid', value: OrderStatus.Paid },
-        { label: 'Shipped', value: OrderStatus.Shipped },
-        { label: 'Delivered', value: OrderStatus.Delivered },
-        { label: 'Cancelled', value: OrderStatus.Cancelled },
-        { label: 'Refunded', value: OrderStatus.Refunded },
+        { label: 'Todos los estados', value: '' },
+        { label: 'Pendiente', value: OrderStatus.Pending },
+        { label: 'Procesando', value: OrderStatus.Processing },
+        { label: 'Pagado', value: OrderStatus.Paid },
+        { label: 'Enviado', value: OrderStatus.Shipped },
+        { label: 'Entregado', value: OrderStatus.Delivered },
+        { label: 'Cancelado', value: OrderStatus.Cancelled },
+        { label: 'Reembolsado', value: OrderStatus.Refunded },
     ];
 
     // Status options for filter
     readonly statusOptions: { value: OrderStatus | ''; label: string }[] = [
-        { value: '', label: 'All statuses' },
-        { value: OrderStatus.Pending, label: 'Pending' },
-        { value: OrderStatus.Processing, label: 'Processing' },
-        { value: OrderStatus.Paid, label: 'Paid' },
-        { value: OrderStatus.Shipped, label: 'Shipped' },
-        { value: OrderStatus.Delivered, label: 'Delivered' },
-        { value: OrderStatus.Cancelled, label: 'Cancelled' },
-        { value: OrderStatus.Refunded, label: 'Refunded' },
+        { value: '', label: 'Todos los estados' },
+        { value: OrderStatus.Pending, label: 'Pendiente' },
+        { value: OrderStatus.Processing, label: 'Procesando' },
+        { value: OrderStatus.Paid, label: 'Pagado' },
+        { value: OrderStatus.Shipped, label: 'Enviado' },
+        { value: OrderStatus.Delivered, label: 'Entregado' },
+        { value: OrderStatus.Cancelled, label: 'Cancelado' },
+        { value: OrderStatus.Refunded, label: 'Reembolsado' },
     ];
 
     readonly dateOptions: { value: '7d' | '30d' | '90d' | 'all'; label: string }[] = [
-        { value: '7d', label: 'Last 7 days' },
-        { value: '30d', label: 'Last 30 days' },
-        { value: '90d', label: 'Last 90 days' },
-        { value: 'all', label: 'All time' },
+        { value: '7d', label: 'Últimos 7 días' },
+        { value: '30d', label: 'Últimos 30 días' },
+        { value: '90d', label: 'Últimos 90 días' },
+        { value: 'all', label: 'Todo el tiempo' },
     ];
 
     // Stats computed
@@ -134,34 +134,34 @@ export class OrdersList implements OnInit, AfterViewInit {
         this.columns.set([
             {
                 key: 'order_number',
-                label: 'Order',
+                label: 'Orden',
                 sortable: true,
                 type: 'text',
                 formatter: (val) => `#${val}`,
             },
             {
                 key: 'customer_email',
-                label: 'Customer',
+                label: 'Cliente',
                 type: 'text',
                 sortable: true,
             },
             {
                 key: 'status',
-                label: 'Status',
+                label: 'Estado',
                 type: 'custom',
                 sortable: true,
                 template: this.statusTemplate,
             },
             {
                 key: 'payment_status',
-                label: 'Payment',
+                label: 'Pago',
                 type: 'custom',
                 sortable: true,
                 template: this.paymentTemplate,
             },
             {
                 key: 'created_at',
-                label: 'Date',
+                label: 'Fecha',
                 type: 'text',
                 sortable: true,
                 formatter: (val) => this.datePipe.transform(val, 'dd MMM yyyy') ?? val,
@@ -204,7 +204,7 @@ export class OrdersList implements OnInit, AfterViewInit {
             this.totalCount.set(count);
             this.currentPage.set(page);
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error loading orders.');
+            this.toast.error(error?.message ?? 'Error al cargar las órdenes.');
         } finally {
             this.isLoading.set(false);
         }

@@ -9,7 +9,7 @@ export interface DashboardTransaction {
   product: string;
   date: string;
   amount: number;
-  status: 'Completed' | 'Pending' | 'Cancelled';
+  status: 'Completada' | 'Pendiente' | 'Cancelada';
 }
 
 @Component({
@@ -19,19 +19,19 @@ export interface DashboardTransaction {
   template: `
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
       <div class="px-6 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
-        <h3 class="text-base font-bold text-gray-900 dark:text-white">Recent Transactions</h3>
-        <a [routerLink]="['/orders']" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">View all</a>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white">Transacciones Recientes</h3>
+        <a [routerLink]="['/orders']" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">Ver todo</a>
       </div>
 
       <div class="overflow-x-auto">
         <table class="w-full text-left">
           <thead>
             <tr class="text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50/50 dark:bg-gray-800/30">
-              <th class="px-6 py-3">Customer</th>
-              <th class="px-6 py-3">Product</th>
-              <th class="px-6 py-3">Date</th>
-              <th class="px-6 py-3">Amount</th>
-              <th class="px-6 py-3 text-center">Status</th>
+              <th class="px-6 py-3">Cliente</th>
+              <th class="px-6 py-3">Producto</th>
+              <th class="px-6 py-3">Fecha</th>
+              <th class="px-6 py-3">Monto</th>
+              <th class="px-6 py-3 text-center">Estado</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -53,9 +53,9 @@ export interface DashboardTransaction {
                     <span 
                       class="px-2.5 py-1 rounded-full text-[10px] font-bold"
                       [ngClass]="{
-                        'bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400': tx.status === 'Completed',
-                        'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400': tx.status === 'Pending',
-                        'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400': tx.status === 'Cancelled'
+                        'bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400': tx.status === 'Completada',
+                        'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400': tx.status === 'Pendiente',
+                        'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400': tx.status === 'Cancelada'
                       }"
                     >
                       {{ tx.status }}

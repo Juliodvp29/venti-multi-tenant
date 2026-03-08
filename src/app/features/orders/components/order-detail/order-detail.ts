@@ -68,13 +68,13 @@ export class OrderDetail implements OnInit {
     });
 
     readonly statusDropdownOptions: DropdownOption[] = [
-        { label: 'Pending', value: OrderStatus.Pending },
-        { label: 'Processing', value: OrderStatus.Processing },
-        { label: 'Paid', value: OrderStatus.Paid },
-        { label: 'Shipped', value: OrderStatus.Shipped },
-        { label: 'Delivered', value: OrderStatus.Delivered },
-        { label: 'Cancelled', value: OrderStatus.Cancelled },
-        { label: 'Refunded', value: OrderStatus.Refunded },
+        { label: 'Pendiente', value: OrderStatus.Pending },
+        { label: 'Procesando', value: OrderStatus.Processing },
+        { label: 'Pagado', value: OrderStatus.Paid },
+        { label: 'Enviado', value: OrderStatus.Shipped },
+        { label: 'Entregado', value: OrderStatus.Delivered },
+        { label: 'Cancelado', value: OrderStatus.Cancelled },
+        { label: 'Reembolsado', value: OrderStatus.Refunded },
     ];
 
     readonly shippingDropdownOptions: DropdownOption[] = [
@@ -84,18 +84,18 @@ export class OrderDetail implements OnInit {
         { label: 'Envia', value: 'Envia' },
         { label: 'Deprisa', value: 'Deprisa' },
         { label: 'TCC', value: 'TCC' },
-        { label: 'Own Delivery', value: 'Own Delivery' },
-        { label: 'In-Store Pickup', value: 'In-Store Pickup' },
+        { label: 'Entrega propia', value: 'Own Delivery' },
+        { label: 'Recogida en tienda', value: 'In-Store Pickup' },
     ];
 
     readonly statusOptions: { value: OrderStatus; label: string }[] = [
-        { value: OrderStatus.Pending, label: 'Pending' },
-        { value: OrderStatus.Processing, label: 'Processing' },
-        { value: OrderStatus.Paid, label: 'Paid' },
-        { value: OrderStatus.Shipped, label: 'Shipped' },
-        { value: OrderStatus.Delivered, label: 'Delivered' },
-        { value: OrderStatus.Cancelled, label: 'Cancelled' },
-        { value: OrderStatus.Refunded, label: 'Refunded' },
+        { value: OrderStatus.Pending, label: 'Pendiente' },
+        { value: OrderStatus.Processing, label: 'Procesando' },
+        { value: OrderStatus.Paid, label: 'Pagado' },
+        { value: OrderStatus.Shipped, label: 'Enviado' },
+        { value: OrderStatus.Delivered, label: 'Entregado' },
+        { value: OrderStatus.Cancelled, label: 'Cancelado' },
+        { value: OrderStatus.Refunded, label: 'Reembolsado' },
     ];
 
     readonly customerFullName = computed(() => {
@@ -176,7 +176,7 @@ export class OrderDetail implements OnInit {
             if (error) throw error;
 
             if (data) {
-                const options: DropdownOption[] = [{ label: 'Unassigned', value: '' }];
+                const options: DropdownOption[] = [{ label: 'Sin asignar', value: '' }];
                 for (const member of data as any[]) {
                     options.push({ label: member.users?.email || member.user_id, value: member.user_id });
                 }
@@ -185,7 +185,7 @@ export class OrderDetail implements OnInit {
         } catch (error) {
             console.error('Failed to load delivery personnel', error);
             // Fallback options if RLS/join fails
-            this.deliveryPersonnelOptions.set([{ label: 'Unassigned', value: '' }]);
+            this.deliveryPersonnelOptions.set([{ label: 'Sin asignar', value: '' }]);
         }
     }
 
@@ -194,7 +194,7 @@ export class OrderDetail implements OnInit {
         try {
             const order = await this.ordersService.getOrder(id);
             if (!order) {
-                this.toast.error('Order not found.');
+                this.toast.error('Orden no encontrada.');
                 this.router.navigate(['/orders']);
                 return;
             }
@@ -206,7 +206,7 @@ export class OrderDetail implements OnInit {
             this.trackingUrl.set(order.tracking_url || '');
             this.deliveryPersonId.set((order as any).delivery_person_id || '');
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error loading order.');
+            this.toast.error(error?.message ?? 'Error al cargar la orden.');
             this.router.navigate(['/orders']);
         } finally {
             this.isLoading.set(false);
@@ -220,9 +220,9 @@ export class OrderDetail implements OnInit {
         try {
             await this.ordersService.updateInternalNote(order.id, this.internalNote());
             this.order.update(o => o ? { ...o, internal_note: this.internalNote() } : o);
-            this.toast.success('Note saved successfully.');
+            this.toast.success('Nota guardada con éxito.');
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error saving note.');
+            this.toast.error(error?.message ?? 'Error al guardar la nota.');
         } finally {
             this.isSavingNote.set(false);
         }
@@ -244,9 +244,9 @@ export class OrderDetail implements OnInit {
                 tracking_number: this.trackingNumber(),
                 tracking_url: this.trackingUrl()
             } : o);
-            this.toast.success('Dispatch info saved.');
+            this.toast.success('Información de despacho guardada.');
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error saving info.');
+            this.toast.error(error?.message ?? 'Error al guardar la información.');
         } finally {
             this.isSavingDispatch.set(false);
         }
@@ -260,9 +260,9 @@ export class OrderDetail implements OnInit {
             const assignTo = this.deliveryPersonId() || null;
             await this.ordersService.assignDeliveryPerson(order.id, assignTo);
             this.order.update(o => o ? { ...o, delivery_person_id: assignTo } as any : o);
-            this.toast.success(assignTo ? 'Delivery person assigned.' : 'Assignment removed.');
+            this.toast.success(assignTo ? 'Repartidor asignado.' : 'Asignación eliminada.');
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error assigning.');
+            this.toast.error(error?.message ?? 'Error al asignar.');
         } finally {
             this.isSavingDispatch.set(false);
         }
@@ -279,9 +279,9 @@ export class OrderDetail implements OnInit {
             this.order.update(o => o ? { ...o, status: newStatus } : o);
             // Reload to get fresh history
             await this.loadOrder(order.id);
-            this.toast.success(`Status updated to "${this.statusOptions.find(s => s.value === newStatus)?.label}".`);
+            this.toast.success(`Estado actualizado a "${this.statusOptions.find(s => s.value === newStatus)?.label}".`);
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error updating status.');
+            this.toast.error(error?.message ?? 'Error al actualizar el estado.');
         } finally {
             this.isUpdatingStatus.set(false);
         }
@@ -321,11 +321,11 @@ export class OrderDetail implements OnInit {
                 this.refundReason(),
                 this.refundReturnToStock()
             );
-            this.toast.success(`Refund of $${amount} processed successfully.`);
+            this.toast.success(`Reembolso de $${amount} procesado con éxito.`);
             this.closeRefundModal();
             await this.loadOrder(order.id);
         } catch (error: any) {
-            this.toast.error(error?.message ?? 'Error processing refund.');
+            this.toast.error(error?.message ?? 'Error al procesar el reembolso.');
         } finally {
             this.isProcessingRefund.set(false);
         }

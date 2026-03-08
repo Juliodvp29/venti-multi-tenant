@@ -29,8 +29,8 @@ export class CustomerDetails implements OnInit {
 
     readonly fullName = computed(() => {
         const c = this.customer();
-        if (!c) return 'Loading...';
-        return `${c.first_name || ''} ${c.last_name || ''}`.trim() || 'Guest';
+        if (!c) return 'Cargando...';
+        return `${c.first_name || ''} ${c.last_name || ''}`.trim() || 'Invitado';
     });
 
     readonly initials = computed(() => {
@@ -54,10 +54,10 @@ export class CustomerDetails implements OnInit {
 
     readonly segment = computed(() => {
         const c = this.customer();
-        if (!c) return 'Loading';
+        if (!c) return 'Cargando';
         if (c.total_spent > 1000) return 'VIP';
-        if (c.total_orders > 1) return 'Returning';
-        return 'New';
+        if (c.total_orders > 1) return 'Recurrente';
+        return 'Nuevo';
     });
 
     async ngOnInit() {
@@ -78,7 +78,7 @@ export class CustomerDetails implements OnInit {
 
         } catch (error) {
             console.error('Error loading customer:', error);
-            this.toast.error('Could not load customer information');
+            this.toast.error('No se pudo cargar la información del cliente');
         } finally {
             this.isLoading.set(false);
         }
@@ -87,7 +87,7 @@ export class CustomerDetails implements OnInit {
     saveNote() {
         if (!this.noteText.trim()) return;
 
-        this.toast.success('Note saved successfully');
+        this.toast.success('Nota guardada con éxito');
         this.noteText = '';
     }
 }

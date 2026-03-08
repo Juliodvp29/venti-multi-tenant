@@ -7,7 +7,7 @@
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
         </svg>
-        <p class="text-sm text-gray-500 dark:text-gray-400">Loading order...</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Cargando orden...</p>
     </div>
 </div>
 }
@@ -21,7 +21,7 @@
     <div
         class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Process Refund</h3>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Procesar Reembolso</h3>
             <button (click)="closeRefundModal()"
                 class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -35,11 +35,11 @@
             <!-- Amount -->
             <div class="space-y-1.5">
                 <div class="flex items-center justify-between">
-                    <label class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Amount to
-                        refund</label>
+                    <label class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Monto a
+                        reembolsar</label>
                     <button (click)="setFullRefund()"
                         class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline uppercase tracking-tight">
-                        Refund full amount
+                        Reembolsar monto total
                     </button>
                 </div>
                 <div class="relative">
@@ -51,10 +51,10 @@
                         [class.ring-red-500]="refundAmount() > availableRefundAmount()" placeholder="0.00" />
                 </div>
                 <div class="flex items-center justify-between px-1">
-                    <p class="text-[10px] text-gray-500 italic">Remaining: {{
+                    <p class="text-[10px] text-gray-500 italic">Restante: {{
                         currencyPipe.transform(availableRefundAmount(), o.currency) }}</p>
                     @if (refundAmount() > availableRefundAmount()) {
-                    <p class="text-[10px] text-red-500 font-bold uppercase">Exceeds available amount</p>
+                    <p class="text-[10px] text-red-500 font-bold uppercase">Excede el monto disponible</p>
                     }
                 </div>
             </div>
@@ -62,10 +62,10 @@
             <!-- Reason -->
             <div class="space-y-1.5">
                 <label
-                    class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Reason</label>
+                    class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Motivo</label>
                 <textarea [value]="refundReason()" (input)="refundReason.set($any($event.target).value)" rows="3"
                     class="w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-950 dark:text-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-600 transition-all resize-none"
-                    placeholder="E.g.: Defective product, customer changed their mind..."></textarea>
+                    placeholder="Ej: Producto defectuoso, el cliente cambió de opinión..."></textarea>
             </div>
 
             <!-- Stock Toggle -->
@@ -81,7 +81,7 @@
                 </div>
                 <span
                     class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                    Return products to inventory
+                    Devolver productos al inventario
                 </span>
             </label>
         </div>
@@ -90,7 +90,7 @@
             class="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t dark:border-gray-700 flex items-center justify-end gap-3">
             <button (click)="closeRefundModal()"
                 class="px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                Cancel
+                Cancelar
             </button>
             <button (click)="processRefund()"
                 [disabled]="isProcessingRefund() || refundAmount() <= 0 || refundAmount() > availableRefundAmount()"
@@ -100,9 +100,9 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                 </svg>
-                Processing...
+                Procesando...
                 } @else {
-                Confirm Refund
+                Confirmar Reembolso
                 }
             </button>
         </div>
@@ -116,7 +116,7 @@
     <div>
         <nav class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-3">
             <button (click)="goBack()" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                Orders
+                Órdenes
             </button>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor">
@@ -127,7 +127,7 @@
 
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Order #{{ o.order_number }}</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Orden #{{ o.order_number }}</h1>
                 <p class="mt-1 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke-width="1.5" stroke="currentColor">
@@ -160,7 +160,7 @@
                 class="bg-white dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
                     <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
-                        Order products</h2>
+                        Productos de la orden</h2>
                 </div>
                 <div class="divide-y divide-gray-100 dark:divide-gray-800">
                     @for (item of o.items ?? []; track item.id) {
@@ -202,7 +202,7 @@
                     }
                     @if ((o.items ?? []).length === 0) {
                     <div class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                        No products registered for this order.
+                        No hay productos registrados para esta orden.
                     </div>
                     }
                 </div>
@@ -215,19 +215,19 @@
                     </div>
                     @if (o.shipping_amount > 0) {
                     <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                        <span>Shipping @if(o.shipping_method){ ({{ o.shipping_method }}) }</span>
+                        <span>Envío @if(o.shipping_method){ ({{ o.shipping_method }}) }</span>
                         <span>{{ currencyPipe.transform(o.shipping_amount, o.currency) }}</span>
                     </div>
                     }
                     @if (o.discount_amount > 0) {
                     <div class="flex items-center justify-between text-sm text-green-600 dark:text-green-400">
-                        <span>Discount</span>
+                        <span>Descuento</span>
                         <span>-{{ currencyPipe.transform(o.discount_amount, o.currency) }}</span>
                     </div>
                     }
                     @if (o.tax_amount > 0) {
                     <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                        <span>Taxes</span>
+                        <span>Impuestos</span>
                         <span>{{ currencyPipe.transform(o.tax_amount, o.currency) }}</span>
                     </div>
                     }
@@ -251,11 +251,12 @@
                             d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                     <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
-                        Status history</h2>
+                        Historial de estados</h2>
                 </div>
                 <div class="px-6 py-4">
                     @if (statusHistory().length === 0) {
-                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No history available.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No hay historial disponible.
+                    </p>
                     } @else {
                     <ol class="relative border-l border-gray-200 dark:border-gray-700 space-y-8 pl-10 ml-3">
                         @for (entry of statusHistory(); track entry.id; let last = $last) {
@@ -275,7 +276,7 @@
                                         <app-order-status-badge [status]="entry.new_status" variant="order" />
                                         <span
                                             class="text-[0.65rem] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-md">
-                                            {{ entry.changed_by ? 'Staff' : 'System' }}
+                                            {{ entry.changed_by ? 'Staff' : 'Sistema' }}
                                         </span>
                                     </div>
                                     @if (entry.note) {
@@ -313,7 +314,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                     </svg>
-                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Customer
+                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Cliente
                     </h2>
                 </div>
                 <div class="px-5 py-4 flex items-start gap-3">
@@ -347,23 +348,25 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25" />
                     </svg>
-                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Dispatch &
-                        Tracking</h2>
+                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Despacho y
+                        Seguimiento</h2>
                 </div>
                 <div class="px-5 py-4 space-y-4">
                     <div class="space-y-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">Shipping method</label>
+                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">Método de envío</label>
                         <app-dropdown [options]="shippingDropdownOptions" [value]="shippingMethod()"
-                            (valueChange)="shippingMethod.set($event)" placeholder="Select a method" />
+                            (valueChange)="shippingMethod.set($event)" placeholder="Selecciona un método" />
                     </div>
                     <div class="space-y-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">Tracking number</label>
+                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">Número de
+                            seguimiento</label>
                         <input type="text" [value]="trackingNumber()"
-                            (input)="trackingNumber.set($any($event.target).value)" placeholder="Optional"
+                            (input)="trackingNumber.set($any($event.target).value)" placeholder="Opcional"
                             class="w-full rounded-xl border-gray-200 py-2 px-3 text-sm text-gray-900 dark:bg-gray-950 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-600 transition-all">
                     </div>
                     <div class="space-y-1">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">Tracking link</label>
+                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">Enlace de
+                            seguimiento</label>
                         <input type="url" [value]="trackingUrl()" (input)="trackingUrl.set($any($event.target).value)"
                             placeholder="https://..."
                             class="w-full rounded-xl border-gray-200 py-2 px-3 text-sm text-gray-900 dark:bg-gray-950 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-600 transition-all">
@@ -371,7 +374,7 @@
                         <div class="mt-2 text-right">
                             <a [href]="o.tracking_url" target="_blank" rel="noopener noreferrer"
                                 class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline uppercase tracking-wide">
-                                Open link
+                                Abrir enlace
                             </a>
                         </div>
                         }
@@ -379,15 +382,14 @@
 
                     <!-- Delivery Person Dropdown -->
                     <div class="space-y-1 pt-3 border-t border-gray-100 dark:border-gray-800">
-                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">Assign Delivery
-                            Person</label>
+                        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">Asignar Repartidor</label>
                         @if (canAssignDelivery()) {
                         <app-dropdown [options]="deliveryPersonnelOptions()" [value]="deliveryPersonId()"
-                            (valueChange)="deliveryPersonId.set($event)" placeholder="Select a delivery person" />
+                            (valueChange)="deliveryPersonId.set($event)" placeholder="Selecciona un repartidor" />
                         } @else {
                         <div
                             class="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 py-2 px-3 text-sm text-gray-900 dark:text-white">
-                            {{ deliveryPersonId() ? 'You are assigned' : 'Unassigned' }}
+                            {{ deliveryPersonId() ? 'Estás asignado' : 'Sin asignar' }}
                         </div>
                         }
                     </div>
@@ -395,7 +397,7 @@
                     @if (o.shipped_at) {
                     <p
                         class="text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800">
-                        Shipped on {{ datePipe.transform(o.shipped_at, 'dd MMM yyyy, HH:mm') }}
+                        Enviado el {{ datePipe.transform(o.shipped_at, 'dd MMM yyyy, HH:mm') }}
                     </p>
                     }
 
@@ -410,9 +412,9 @@
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
                             </path>
                         </svg>
-                        Saving...
+                        Guardando...
                         } @else {
-                        Save dispatch info
+                        Guardar info de despacho
                         }
                     </button>
 
@@ -421,7 +423,7 @@
                     OrderStatus.Delivered) {
                     <button (click)="markAsShipped()" [disabled]="isUpdatingStatus()"
                         class="w-full mt-2 inline-flex items-center justify-center rounded-xl bg-cyan-600 text-white hover:bg-cyan-700 px-4 py-2 text-sm font-bold opacity-90 transition-all duration-200 shadow-sm shadow-cyan-200 dark:shadow-none">
-                        Mark as Shipped
+                        Marcar como Enviado
                     </button>
                     }
                 </div>
@@ -439,17 +441,17 @@
                                 d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
                         </svg>
                         <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
-                            Payments & Refunds</h2>
+                            Pagos y Reembolsos</h2>
                     </div>
                 </div>
                 <div class="px-5 py-4">
                     @if (availableRefundAmount() > 0) {
                     <button (click)="openRefundModal()"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 px-4 py-2.5 text-sm font-semibold transition-all duration-200">
-                        Issue Refund
+                        Emitir Reembolso
                     </button>
                     } @else {
-                    <p class="text-xs text-gray-500 text-center">No amount available for refund.</p>
+                    <p class="text-xs text-gray-500 text-center">No hay monto disponible para reembolso.</p>
                     }
                 </div>
             </div>
@@ -465,8 +467,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25" />
                     </svg>
-                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Shipping
-                        address</h2>
+                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Dirección
+                        de envío</h2>
                 </div>
                 <div class="px-5 py-4 space-y-1">
                     @for (line of shippingAddress()!; track $index) {
@@ -482,7 +484,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                         </svg>
-                        View on map
+                        Ver en el mapa
                     </a>
                     }
                 </div>
@@ -499,7 +501,7 @@
                             d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
                     </svg>
                     <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
-                        Billing</h2>
+                        Facturación</h2>
                 </div>
                 <div class="px-5 py-4">
                     @if (isBillingSameAsShipping()) {
@@ -509,7 +511,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>
-                        Same as shipping address
+                        Igual que la dirección de envío
                     </p>
                     } @else if (o.billing_address_line1) {
                     <div class="space-y-1 text-sm text-gray-700 dark:text-gray-300">
@@ -519,7 +521,7 @@
                         <p>{{ o.billing_country }}</p>
                     </div>
                     } @else {
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Not registered</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">No registrado</p>
                     }
                 </div>
             </div>
@@ -532,12 +534,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                     </svg>
-                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Update
-                        status</h2>
+                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Actualizar
+                        estado</h2>
                 </div>
                 <div class="px-5 py-4 flex flex-col gap-4">
                     <app-dropdown [options]="statusDropdownOptions" [value]="selectedStatus()"
-                        (valueChange)="selectedStatus.set($event)" placeholder="Change status" />
+                        (valueChange)="selectedStatus.set($event)" placeholder="Cambiar estado" />
                     <button (click)="updateStatus()" [disabled]="isUpdatingStatus() || selectedStatus() === o.status"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200">
                         @if (isUpdatingStatus()) {
@@ -549,9 +551,9 @@
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
                             </path>
                         </svg>
-                        Updating...
+                        Actualizando...
                         } @else {
-                        Confirm change
+                        Confirmar cambio
                         }
                     </button>
 
@@ -565,7 +567,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
                         </svg>
-                        Process Refund
+                        Procesar Reembolso
                     </button>
                     }
                 </div>
@@ -580,12 +582,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
                     </svg>
-                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Internal
-                        note</h2>
+                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Nota
+                        interna</h2>
                 </div>
                 <div class="px-5 py-4 space-y-3">
                     <textarea [value]="internalNote()" (input)="internalNote.set($any($event.target).value)" rows="3"
-                        placeholder="Add a private note for the team..."
+                        placeholder="Añade una nota privada para el equipo..."
                         class="w-full rounded-xl border-0 py-2.5 px-3 text-gray-900 dark:text-white text-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 dark:bg-gray-800/50 focus:ring-2 focus:ring-indigo-600 resize-none transition-all placeholder:text-gray-400"></textarea>
                     <button (click)="saveNote()" [disabled]="isSavingNote()"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all duration-200">
@@ -598,9 +600,9 @@
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
                             </path>
                         </svg>
-                        Saving...
+                        Guardando...
                         } @else {
-                        Save note
+                        Guardar nota
                         }
                     </button>
                 </div>

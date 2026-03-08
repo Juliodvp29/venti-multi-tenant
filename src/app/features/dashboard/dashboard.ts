@@ -92,7 +92,7 @@ export class Dashboard {
   private async loadSalesChart() {
     const monthlyData = await this.analytics.getMonthlySales();
     this.salesSeries.set([{
-      name: 'Revenue',
+      name: 'Ingresos',
       data: monthlyData
     }]);
   }
@@ -109,7 +109,7 @@ export class Dashboard {
 
     if (others.length > 0) {
       const othersTotal = others.reduce((sum, item) => sum + item.value, 0);
-      top.push({ name: 'Others', value: othersTotal });
+      top.push({ name: 'Otros', value: othersTotal });
     }
 
     this.categorySeries.set(top.map(d => d.value));
@@ -120,7 +120,7 @@ export class Dashboard {
     const performance = await this.analytics.getProductPerformance();
     this.topProducts.set((performance as any[]).map(p => ({
       id: p.product_id,
-      name: p.product?.name || 'Product',
+      name: p.product?.name || 'Producto',
       category: 'General',
       sales: p.purchases,
       revenue: `$${(p.revenue / 1000).toFixed(1)}k`,
@@ -131,15 +131,15 @@ export class Dashboard {
   private async loadRecentOrders() {
     const { data } = await this.ordersService.getOrders(1, 5);
     this.recentTransactions.set((data as any[]).map(o => {
-      const first = o.customer_first_name || 'Guest';
+      const first = o.customer_first_name || 'Invitado';
       const last = o.customer_last_name || '';
       const fullName = (first + ' ' + last).trim();
 
       return {
         id: o.order_number,
         customerName: fullName,
-        customerInitial: (first?.[0] || 'G') + (last?.[0] || ''),
-        product: 'Multiple items',
+        customerInitial: (first?.[0] || 'I') + (last?.[0] || ''),
+        product: 'Múltiples artículos',
         date: new Date(o.created_at).toLocaleDateString(),
         amount: o.total_amount,
         status: this.mapStatus(o.status)
@@ -147,9 +147,9 @@ export class Dashboard {
     }));
   }
 
-  private mapStatus(status: string): 'Completed' | 'Pending' | 'Cancelled' {
-    if (status === 'delivered' || status === 'shipped') return 'Completed';
-    if (status === 'cancelled' || status === 'refunded') return 'Cancelled';
-    return 'Pending';
+  private mapStatus(status: string): 'Completada' | 'Pendiente' | 'Cancelada' {
+    if (status === 'delivered' || status === 'shipped') return 'Completada';
+    if (status === 'cancelled' || status === 'refunded') return 'Cancelada';
+    return 'Pendiente';
   }
 }

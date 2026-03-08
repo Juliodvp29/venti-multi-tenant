@@ -17,7 +17,8 @@
         </nav>
     </div>
 
-    <app-dynamic-table [title]="'Customer Database'" [description]="'Manage customers and view their purchase history.'"
-        [columns]="columns" [data]="filteredCustomers()" [pageSize]="10"
-        [searchPlaceholder]="'Search by name or email...'" (rowClick)="onCustomerClick($event)"></app-dynamic-table>
+    <app-dynamic-table [title]="'Base de Datos de Clientes'"
+        [description]="'Gestiona clientes y ve su historial de compras.'" [columns]="columns"
+        [data]="filteredCustomers()" [pageSize]="10" [searchPlaceholder]="'Buscar por nombre o correo...'"
+        (rowClick)="onCustomerClick($event)"></app-dynamic-table>
 </div>

@@ -2,22 +2,23 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Discounts & Coupons</h1>
-            <p class="text-gray-500 dark:text-gray-400">Manage promotional codes, flash sales, and customer rewards.</p>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Descuentos y Cupones</h1>
+            <p class="text-gray-500 dark:text-gray-400">Gestiona códigos promocionales, ventas relámpago y recompensas
+                para clientes.</p>
         </div>
         <button (click)="openCouponModal()"
             class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
             <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            Create Coupon
+            Crear Cupón
         </button>
     </div>
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Coupons</p>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Cupones Activos</p>
             <div class="mt-2 flex items-baseline gap-2">
                 <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ activeCount() }}</h3>
                 <span class="text-sm font-medium text-green-600 flex items-center">
@@ -25,13 +26,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
-                    +4 since last week
+                    +4 desde la semana pasada
                 </span>
             </div>
         </div>
 
         <div class="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Redemptions</p>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Canjes Totales</p>
             <div class="mt-2 flex items-baseline gap-2">
                 <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ totalRedemptions() | number }}</h3>
                 <span class="text-sm font-medium text-green-600 flex items-center">
@@ -39,13 +40,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
-                    12% conversion rate
+                    12% tasa de conversión
                 </span>
             </div>
         </div>
 
         <div class="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Discounted</p>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Descontado</p>
             <div class="mt-2 flex items-baseline gap-2">
                 <h3 class="text-3xl font-bold text-gray-900 dark:text-white">{{ totalDiscounted() | currency:'USD' }}
                 </h3>
@@ -54,7 +55,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Net impact on revenue
+                    Impacto neto en los ingresos
                 </span>
             </div>
         </div>
@@ -68,12 +69,12 @@
             class="absolute inset-0 bg-white/50 dark:bg-gray-800/50 backdrop-blur-[2px] z-10 flex items-center justify-center">
             <div class="flex flex-col items-center gap-2">
                 <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                <p class="text-xs font-medium text-gray-500">Loading coupons...</p>
+                <p class="text-xs font-medium text-gray-500">Cargando cupones...</p>
             </div>
         </div>
         }
         <app-dynamic-table [data]="coupons()" [columns]="columns" [actions]="actions" [pageSize]="10"
-            (actionClick)="onAction($event)" title="Coupons List"></app-dynamic-table>
+            (actionClick)="onAction($event)" title="Lista de Cupones"></app-dynamic-table>
     </div>
 </div>
 

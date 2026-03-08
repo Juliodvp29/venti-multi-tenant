@@ -9,8 +9,8 @@ import { ColumnDef, TableAction } from '@core/types/table';
     imports: [CommonModule, DynamicTable],
     template: `
     <app-dynamic-table
-      [title]="'Store Members'"
-      [description]="'Manage your team members and their account permissions.'"
+      [title]="'Miembros de la Tienda'"
+      [description]="'Gestiona los miembros de tu equipo y sus permisos de cuenta.'"
       [data]="members()"
       [columns]="columns()"
       [actions]="actions"
@@ -25,8 +25,8 @@ import { ColumnDef, TableAction } from '@core/types/table';
                      alt="">
             </div>
             <div class="ml-4">
-                <div class="font-semibold text-gray-900 dark:text-white capitalize">{{ (item.email?.split('@')[0] || 'Member').replace('.', ' ') }}</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">{{ item.email || 'No email available' }}</div>
+                <div class="font-semibold text-gray-900 dark:text-white capitalize">{{ (item.email?.split('@')[0] || 'Miembro').replace('.', ' ') }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">{{ item.email || 'No hay correo disponible' }}</div>
             </div>
         </div>
       </ng-template>
@@ -36,7 +36,7 @@ import { ColumnDef, TableAction } from '@core/types/table';
         <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
               [ngClass]="item.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'">
             <span class="h-1.5 w-1.5 rounded-full" [ngClass]="item.is_active ? 'bg-green-500' : 'bg-gray-400'"></span>
-            {{ item.is_active ? 'Active' : 'Inactive' }}
+            {{ item.is_active ? 'Activo' : 'Inactivo' }}
         </span>
       </ng-template>
     </app-dynamic-table>
@@ -59,22 +59,22 @@ export class MembersListComponent {
         return [
             {
                 key: 'email',
-                label: 'Name',
+                label: 'Nombre',
                 template: nameTpl
             },
             {
                 key: 'role',
-                label: 'Role',
+                label: 'Rol',
                 formatter: (val: string) => val ? val.charAt(0).toUpperCase() + val.slice(1) : ''
             },
             {
                 key: 'is_active',
-                label: 'Status',
+                label: 'Estado',
                 template: statusTpl
             },
             {
                 key: 'created_at',
-                label: 'Date Joined',
+                label: 'Fecha de Ingreso',
                 type: 'date'
             }
         ];
@@ -83,13 +83,13 @@ export class MembersListComponent {
     actions: TableAction<TenantMember>[] = [
         {
             id: 'edit',
-            label: 'Edit',
+            label: 'Editar',
             icon: 'edit',
             callback: (item) => this.edit.emit(item)
         },
         {
             id: 'remove',
-            label: 'Remove',
+            label: 'Eliminar',
             className: 'text-red-600 hover:text-red-900',
             callback: (item) => this.remove.emit(item)
         }
