@@ -5,6 +5,8 @@ import { Product } from '@core/models/product';
 import { ProductCard } from '../product-card/product-card';
 import { SeoService } from '@core/services/seo';
 import { TenantService } from '@core/services/tenant';
+import { CategoriesService } from '@core/services/categories';
+import { Category } from '@core/models/category';
 
 @Component({
     selector: 'app-product-grid',
@@ -66,6 +68,50 @@ import { TenantService } from '@core/services/tenant';
         </div>
       </div>
 
+      <!-- Categories Navigation -->
+      @if (categories().length > 0) {
+      <div class="flex flex-wrap gap-2 px-2 pb-6 border-b border-slate-100">
+        <button 
+            (click)="selectCategory(null)"
+            [class.bg-slate-900]="!selectedCategory()"
+            [class.text-white]="!selectedCategory()"
+            [class.bg-white]="selectedCategory()"
+            [class.text-slate-600]="selectedCategory()"
+            class="px-5 py-2.5 rounded-2xl text-sm font-bold shadow-sm transition-all hover:scale-105 active:scale-95">
+            Todo
+        </button>
+        
+        @for (cat of categories(); track cat.id) {
+            <button 
+                (click)="selectCategory(cat)"
+                [class.bg-slate-900]="isCategoryActive(cat)"
+                [class.text-white]="isCategoryActive(cat)"
+                [class.bg-white]="!isCategoryActive(cat)"
+                [class.text-slate-600]="!isCategoryActive(cat)"
+                class="px-5 py-2.5 rounded-2xl text-sm font-bold shadow-sm transition-all hover:scale-105 active:scale-95">
+                {{ cat.name }}
+            </button>
+        }
+      </div>
+      
+      <!-- Subcategories Navigation -->
+      @if (selectedCategory() && selectedCategory()!.children && selectedCategory()!.children!.length > 0) {
+      <div class="flex flex-wrap gap-2 px-6 py-4 bg-slate-50/50 rounded-3xl border border-slate-100 animate-in fade-in slide-in-from-top-2 duration-500">
+        @for (sub of selectedCategory()!.children; track sub.id) {
+             <button 
+                (click)="selectCategory(sub)"
+                [class.bg-white]="selectedCategoryId() === sub.id"
+                [class.text-indigo-600]="selectedCategoryId() === sub.id"
+                [class.font-black]="selectedCategoryId() === sub.id"
+                [class.text-slate-500]="selectedCategoryId() !== sub.id"
+                class="px-4 py-1.5 rounded-xl text-xs font-bold transition-all hover:text-indigo-600">
+                {{ sub.name }}
+            </button>
+        }
+      </div>
+      }
+      }
+
       <!-- Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
         @for (product of products(); track product.id) {
@@ -97,15 +143,25 @@ import { TenantService } from '@core/services/tenant';
 })
 export class ProductGrid {
     private readonly productsService = inject(ProductsService);
+    private readonly categoriesService = inject(CategoriesService);
     private readonly seo = inject(SeoService);
     private readonly tenantService = inject(TenantService);
 
     readonly products = signal<Product[]>([]);
+    readonly allCategories = signal<Category[]>([]);
+    readonly categories = signal<Category[]>([]); // Tree-ready or flat for nav
     readonly isLoading = signal(true);
     readonly sortBy = signal('popular');
     readonly search = signal('');
+    readonly selectedCategoryId = signal<string | null>(null);
     readonly limit = input<number>(0);
     readonly isSortMenuOpen = signal(false);
+
+    readonly selectedCategory = computed(() => {
+        const id = this.selectedCategoryId();
+        if (!id) return null;
+        return this.findCategoryInTree(id, this.categories());
+    });
 
     readonly sortOptions = [
         { label: 'Más Populares', value: 'popular' },
@@ -120,12 +176,22 @@ export class ProductGrid {
     });
 
     constructor() {
+        // Load categories once on initialization
+        effect(() => {
+            const tenantId = this.tenantService.tenantId();
+            const initialized = this.tenantService.initialized();
+            if (initialized && tenantId) {
+                this.loadCategories();
+            }
+        }, { allowSignalWrites: true });
+
         // Re-load products whenever any dependency changes
         effect(() => {
             const tenantId = this.tenantService.tenantId();
             const initialized = this.tenantService.initialized();
             const sort = this.sortBy();
             const search = this.search();
+            const categoryId = this.selectedCategoryId();
 
             if (initialized && tenantId) {
                 this.loadProducts();
@@ -140,9 +206,22 @@ export class ProductGrid {
         try {
             this.isLoading.set(true);
             const limit = this.limit();
+            const categoryId = this.selectedCategoryId();
+
+            let categoryFilter: string | string[] | undefined = categoryId || undefined;
+
+            // If category is selected, also include all its subcategories
+            if (categoryId) {
+                const descendantIds = this.categoriesService.getAllDescendantIds(categoryId, this.allCategories());
+                if (descendantIds.length > 0) {
+                    categoryFilter = [categoryId, ...descendantIds];
+                }
+            }
+
             const { data } = await this.productsService.getProducts(1, limit > 0 ? limit : 40, {
                 sortBy: this.sortBy(),
-                search: this.search()
+                search: this.search(),
+                categoryId: categoryFilter
             });
             this.products.set(data);
             this.updateSeo();
@@ -164,6 +243,43 @@ export class ProductGrid {
         this.sortBy.set(value);
         this.isSortMenuOpen.set(false);
         // loadProducts is now called automatically by the effect
+    }
+
+    async loadCategories() {
+        try {
+            const flatCategories = await this.categoriesService.getCategories(false);
+            this.allCategories.set(flatCategories);
+
+            // Build tree for navigation (only roots)
+            const tree = await this.categoriesService.getCategories(true);
+            this.categories.set(tree);
+        } catch (error) {
+            console.error('Error loading categories:', error);
+        }
+    }
+
+    selectCategory(category: Category | null) {
+        this.selectedCategoryId.set(category?.id || null);
+    }
+
+    isCategoryActive(cat: Category): boolean {
+        const selectedId = this.selectedCategoryId();
+        if (!selectedId) return false;
+        if (selectedId === cat.id) return true;
+
+        // If subcategory is selected, parent should be active
+        return !!cat.children?.some(child => child.id === selectedId);
+    }
+
+    private findCategoryInTree(id: string, tree: Category[]): Category | null {
+        for (const cat of tree) {
+            if (cat.id === id) return cat;
+            if (cat.children && cat.children.length > 0) {
+                const found = this.findCategoryInTree(id, cat.children);
+                if (found) return found;
+            }
+        }
+        return null;
     }
 
     private updateSeo() {

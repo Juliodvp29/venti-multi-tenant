@@ -33,7 +33,12 @@ export class ProductsService {
             .range((page - 1) * pageSize, page * pageSize - 1);
 
         if (filters?.['categoryId']) {
-            query = query.eq('product_categories.category_id', filters['categoryId']);
+            const categoryId = filters['categoryId'];
+            if (Array.isArray(categoryId)) {
+                query = query.in('product_categories.category_id', categoryId);
+            } else {
+                query = query.eq('product_categories.category_id', categoryId);
+            }
         }
 
         const sortBy = filters?.['sortBy'] || 'newest';

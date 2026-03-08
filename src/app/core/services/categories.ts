@@ -100,4 +100,21 @@ export class CategoriesService {
 
         return roots;
     }
+
+    /**
+     * Helper to get all descendant IDs for a given category.
+     */
+    getAllDescendantIds(categoryId: string, categories: Category[]): string[] {
+        const descendantIds: string[] = [];
+        const findChildren = (parentId: string) => {
+            categories
+                .filter(c => c.parent_id === parentId)
+                .forEach(child => {
+                    descendantIds.push(child.id);
+                    findChildren(child.id);
+                });
+        };
+        findChildren(categoryId);
+        return descendantIds;
+    }
 }
