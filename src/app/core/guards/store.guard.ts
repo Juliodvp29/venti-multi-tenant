@@ -6,32 +6,29 @@ export const storeGuard: CanActivateFn = async (route, state) => {
     const tenantService = inject(TenantService);
     const router = inject(Router);
 
-    // Get current hostname
     const hostname = window.location.hostname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const sParam = urlParams.get('s');
 
-    // 1. Local development handling
+    // 1. Check for query parameter fallback (works in local and prod)
+    if (sParam) {
+        const subdomain = sParam.split('=')[0].split('?')[0];
+        const resolved = await tenantService.resolveTenantBySubdomain(subdomain);
+        if (resolved) return true;
+    }
+
+    // 2. Local development fallback (if no ?s= and no subdomain)
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        const urlParams = new URLSearchParams(window.location.search);
-        const sParam = urlParams.get('s');
-        if (sParam) {
-            const subdomain = sParam.split('=')[0].split('?')[0];
-            const resolved = await tenantService.resolveTenantBySubdomain(subdomain);
-            return resolved;
-        }
-
-        // Fallback for local testing if no ?s=
         if (tenantService.tenantId()) return true;
-
         // Default seed store for easy local dev
         await tenantService.resolveTenantBySubdomain('jd-store');
         return true;
     }
 
-    // 2. Production handling
+    // 3. Production Handling
     const parts = hostname.split('.');
 
     // Check for custom domain first (e.g., store.com)
-    // If it's a 2-part domain or more, it could be a custom domain.
     if (parts.length >= 2) {
         const resolvedByDomain = await tenantService.resolveTenantByDomain(hostname);
         if (resolvedByDomain) return true;
@@ -40,11 +37,14 @@ export const storeGuard: CanActivateFn = async (route, state) => {
     // Check for subdomain (e.g., tenant.platform.com or tenant.vercel.app)
     if (parts.length >= 3) {
         const subdomain = parts[0];
-        const resolvedBySubdomain = await tenantService.resolveTenantBySubdomain(subdomain);
-        if (resolvedBySubdomain) return true;
+        // Ensure we don't try to resolve the platform domain itself
+        if (!['venti-multi-tenant', 'venti'].includes(subdomain)) {
+            const resolvedBySubdomain = await tenantService.resolveTenantBySubdomain(subdomain);
+            if (resolvedBySubdomain) return true;
+        }
     }
 
-    // 3. Fallback / Not found
+    // 4. Final Fallback / Not found
     if (tenantService.tenantId()) {
         return true;
     }

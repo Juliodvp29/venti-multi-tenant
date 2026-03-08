@@ -65,7 +65,7 @@ export class TenantService {
     if (!tenant) return '/store';
     // For local development, we need to pass the subdomain as a query parameter
     // if we are not using custom local domains.
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('vercel.app')) {
       return `/store?s=${tenant.subdomain}`;
     }
     return `/store`;
