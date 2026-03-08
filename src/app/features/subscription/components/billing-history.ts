@@ -16,11 +16,11 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-gray-50/50 dark:bg-gray-800/50">
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Date</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Fecha</th>
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Plan</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Amount</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Status</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 text-right">Action</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Monto</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Estado</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 text-right">Acción</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -52,7 +52,7 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
                 </td>
                 <td class="px-6 py-4 text-right">
                   <button class="text-sm font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 transition-colors">
-                    View Invoice
+                    Ver Factura
                   </button>
                 </td>
               </tr>
@@ -63,7 +63,7 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
                     <svg class="w-10 h-10 text-gray-300 dark:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span>No invoices recorded yet.</span>
+                    <span>No hay facturas registradas aún.</span>
                   </div>
                 </td>
               </tr>

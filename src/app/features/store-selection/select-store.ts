@@ -32,10 +32,10 @@ import { AuthService } from '@core/services/auth';
             </svg>
         </div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-          Select a Store
+          Seleccionar Tienda
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          You have access to multiple stores. Please pick one to continue.
+          Selecciona una tienda para continuar.
         </p>
       </div>
 
@@ -72,7 +72,7 @@ import { AuthService } from '@core/services/auth';
 
               @if (stores().length === 0) {
                  <div class="text-center py-6">
-                    <p class="text-gray-500 dark:text-gray-400 mb-4">You do not have any active store memberships.</p>
+                    <p class="text-gray-500 dark:text-gray-400 mb-4">No tienes tiendas activas.</p>
                  </div>
               }
             </div>

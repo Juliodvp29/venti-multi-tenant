@@ -17,7 +17,7 @@ import { BillingPlan } from '@core/models/billing.model';
       <!-- Recommended Badge -->
       @if (plan.isRecommended) {
         <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-lg">
-          Recommended
+          Recomendado
         </div>
       }
 

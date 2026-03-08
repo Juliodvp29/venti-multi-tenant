@@ -32,10 +32,10 @@ import { ToastService } from '@core/services/toast';
             </svg>
         </div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-          Join Store Team
+          Únete al equipo de la tienda
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Accept your invitation to collaborate.
+          Acepta tu invitación para colaborar.
         </p>
       </div>
 
@@ -53,14 +53,14 @@ import { ToastService } from '@core/services/toast';
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
-                <h3 class="mt-4 text-lg font-bold text-gray-900 dark:text-white">Invalid Invitation</h3>
+                <h3 class="mt-4 text-lg font-bold text-gray-900 dark:text-white">Invitación inválida</h3>
                 <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ errorMsg() }}</p>
                 <div class="mt-6">
                   <button
                     (click)="goToDashboard()"
                     class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
-                    Go Back
+                    Volver
                   </button>
                 </div>
             </div>
@@ -73,9 +73,9 @@ import { ToastService } from '@core/services/toast';
                 </div>
                 
                 <div>
-                   <h3 class="text-xl font-bold text-gray-900 dark:text-white">You've Been Invited!</h3>
+                   <h3 class="text-xl font-bold text-gray-900 dark:text-white">¡Has sido invitado!</h3>
                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                     You have been invited to join a Venti Store as a <span class="font-bold capitalize">{{ inviteDetails()?.role }}</span>.
+                     Has sido invitado a unirte a una tienda Venti como <span class="font-bold capitalize">{{ inviteDetails()?.role }}</span>.
                    </p>
                 </div>
 
@@ -85,7 +85,7 @@ import { ToastService } from '@core/services/toast';
                     [disabled]="isSubmitting()"
                     class="flex-1 flex justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
-                    Decline
+                    Rechazar
                   </button>
                   <button
                     (click)="accept()"
@@ -157,13 +157,13 @@ export class AcceptInviteComponent implements OnInit {
       });
 
       if (error) {
-        this.toast.error(error.message || 'Failed to accept invitation');
+        this.toast.error(error.message || 'No se pudo aceptar la invitación');
       } else {
-        this.toast.success('You have successfully joined the store!');
+        this.toast.success('¡Has sido agregado a la tienda!');
         this.router.navigate(['/select-store']);
       }
     } catch (err: any) {
-      this.toast.error(err.message || 'Something went wrong');
+      this.toast.error(err.message || 'Algo salió mal');
     } finally {
       this.isSubmitting.set(false);
     }
@@ -177,14 +177,14 @@ export class AcceptInviteComponent implements OnInit {
         .update({ status: 'declined' })
         .eq('token', this.token());
 
-      this.toast.info('Invitation declined');
-      this.router.navigate(['/dashboard']);
+      this.toast.info('Invitación rechazada');
+      this.router.navigate(['/auth/login']);
     } finally {
       this.isSubmitting.set(false);
     }
   }
 
   goToDashboard() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/auth/login']);
   }
 }

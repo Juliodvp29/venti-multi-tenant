@@ -3,21 +3,21 @@
     <header class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <nav class="flex mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-                <span>Platform</span>
+                <span>Plataforma</span>
                 <span class="mx-2 text-gray-300 dark:text-gray-700">/</span>
-                <span class="text-gray-900 dark:text-white">Billing</span>
+                <span class="text-gray-900 dark:text-white">Facturación</span>
             </nav>
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">My Subscription</h1>
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Mi Suscripción</h1>
             <p class="mt-2 text-gray-500 dark:text-gray-400 max-w-2xl">
-                Manage your Venti plan, configure your payment methods, and check your invoices.
+                Administra tu plan de Venti, configura tus métodos de pago y revisa tus facturas.
             </p>
         </div>
 
         @if (currentTenant()) {
         <div
             class="bg-indigo-50 dark:bg-indigo-500/10 px-6 py-4 rounded-2xl border border-indigo-100 dark:border-indigo-500/20">
-            <div class="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1">Current
-                Plan</div>
+            <div class="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1">Plan
+                Actual</div>
             <div class="flex items-center gap-3">
                 <span class="text-xl font-bold text-indigo-900 dark:text-indigo-100 capitalize">{{ currentTenant()?.plan
                     }}</span>
@@ -28,7 +28,7 @@
             </div>
             @if (currentTenant()?.subscription_ends_at) {
             <div class="mt-2 text-xs text-indigo-600/70 dark:text-indigo-400/70">
-                Expires on {{ currentTenant()?.subscription_ends_at | date:'longDate' }}
+                Expira el {{ currentTenant()?.subscription_ends_at | date:'longDate' }}
             </div>
             }
         </div>
@@ -39,16 +39,16 @@
     <section>
         <div class="flex items-center justify-between mb-8">
             <div>
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Available Plans</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Choose the plan that best fits your business.</p>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Planes Disponibles</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Elige el plan que mejor se adapte a tu negocio.</p>
             </div>
 
             <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
                 <button
-                    class="px-4 py-1.5 text-xs font-bold rounded-lg bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white">Monthly</button>
+                    class="px-4 py-1.5 text-xs font-bold rounded-lg bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white">Mensual</button>
                 <button
                     class="px-4 py-1.5 text-xs font-bold rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors flex items-center gap-1.5">
-                    Annual
+                    Anual
                     <span
                         class="px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 text-[10px]">-20%</span>
                 </button>
@@ -71,15 +71,16 @@
                 class="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Payment Method</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Manage your cards and billing address.</p>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Método de Pago</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Administra tus tarjetas y dirección de
+                            facturación.</p>
                     </div>
                     <button
                         class="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-bold text-gray-900 dark:text-white rounded-xl border border-gray-200 dark:border-gray-700 transition-all">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        Add Card
+                        Agregar tarjeta
                     </button>
                 </div>
 
@@ -91,14 +92,14 @@
                     </div>
                     <div class="flex-1">
                         <div class="text-sm font-bold text-gray-900 dark:text-white">Visa ending in 4429</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Expires 12/26 • Primary payment method
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Expira 12/26 • Método de pago principal
                         </div>
                     </div>
                     <div class="flex gap-4">
                         <button
-                            class="text-xs font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 uppercase tracking-widest transition-colors">Edit</button>
+                            class="text-xs font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 uppercase tracking-widest transition-colors">Editar</button>
                         <button
-                            class="text-xs font-bold text-red-400 hover:text-red-500 uppercase tracking-widest transition-colors">Delete</button>
+                            class="text-xs font-bold text-red-400 hover:text-red-500 uppercase tracking-widest transition-colors">Eliminar</button>
                     </div>
                 </div>
 
@@ -106,8 +107,8 @@
                     class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 pt-8 border-t border-gray-100 dark:border-gray-800">
                     <div>
                         <label
-                            class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">Billing
-                            Email</label>
+                            class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">Email
+                            de Facturación</label>
                         <div
                             class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
                             <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">{{
@@ -122,8 +123,8 @@
                     </div>
                     <div>
                         <label
-                            class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">Next
-                            Invoice</label>
+                            class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">Próxima
+                            Factura</label>
                         <div
                             class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
                             <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">
@@ -139,11 +140,11 @@
         <div class="lg:col-span-1">
             <div
                 class="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm h-full">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Resource Usage</h3>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Uso de Recursos</h3>
 
                 <div class="space-y-8">
                     @if (activePlan()) {
-                    <app-usage-progress label="Products" [used]="usage().products"
+                    <app-usage-progress label="Productos" [used]="usage().products"
                         [limit]="activePlan()!.limitations.products" />
                     <app-usage-progress label="Members" [used]="usage().members"
                         [limit]="activePlan()!.limitations.members" />
@@ -160,9 +161,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        If you reach the limit, your customers will still be able to buy, but you won't be able to add
-                        new
-                        resources until you upgrade your plan.
+                        Si alcanzas el límite, tus clientes aún podrán comprar, pero no podrás agregar nuevos
+                        recursos hasta que actualices tu plan.
                     </p>
                 </div>
             </div>
@@ -176,7 +176,7 @@
     <!-- Footer Note -->
     <footer class="text-center pt-8 border-t border-gray-100 dark:border-gray-800">
         <p class="text-xs text-gray-400 dark:text-gray-500">
-            © 2026 Venti Commerce Inc. • Terms • Privacy • Help Center
+            © 2026 Venti Commerce Inc. • Términos • Privacidad • Centro de Ayuda
         </p>
     </footer>
 </div>

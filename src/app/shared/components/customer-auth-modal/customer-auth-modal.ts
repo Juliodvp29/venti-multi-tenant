@@ -51,7 +51,7 @@ export class CustomerAuthModal {
 
         await this.auth.getOrCreateCustomer(tenantId);
 
-        this.toast.success('¡Welcome back!');
+        this.toast.success('¡Bienvenido de nuevo!');
         this.authenticated.emit();
         this.close.emit();
       } else {
@@ -63,11 +63,11 @@ export class CustomerAuthModal {
         if (error) throw error;
 
         this.needsVerification.set(true);
-        this.toast.success('¡Almost ready! Check your email.');
+        this.toast.success('¡Casi listo! Revisa tu correo electrónico.');
       }
     } catch (error: any) {
       console.error('Auth error:', error);
-      this.toast.error(error.message || 'Authentication error');
+      this.toast.error(error.message || 'Error de autenticación');
     } finally {
       this.loading.set(false);
     }

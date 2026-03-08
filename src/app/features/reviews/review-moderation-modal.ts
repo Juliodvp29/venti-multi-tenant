@@ -15,7 +15,7 @@ import { ToastService } from '@core/services/toast';
         <div class="p-8 border-b border-slate-100 flex justify-between items-start">
           <div>
             <div class="flex items-center gap-3 mb-2">
-              <h2 class="text-2xl font-black text-slate-900">Review moderation</h2>
+              <h2 class="text-2xl font-black text-slate-900">Moderación de reseñas</h2>
               <span [class]="statusClasses()" class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">
                 {{ review().status }}
               </span>
@@ -34,7 +34,7 @@ import { ToastService } from '@core/services/toast';
           <div class="grid grid-cols-2 gap-8 mb-8">
             <!-- Reviewer -->
             <div class="space-y-3">
-              <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Customer</p>
+              <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Cliente</p>
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-lg">
                   {{ review().customer?.first_name?.[0] || 'U' }}
@@ -46,7 +46,7 @@ import { ToastService } from '@core/services/toast';
                       <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                       </svg>
-                      Verified Purchase
+                      Compra verificada
                     </p>
                   }
                 </div>
@@ -55,7 +55,7 @@ import { ToastService } from '@core/services/toast';
 
             <!-- Product -->
             <div class="space-y-3">
-              <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Product</p>
+              <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Producto</p>
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 overflow-hidden">
                   <img [src]="primaryImage()" class="w-full h-full object-cover">
@@ -88,15 +88,15 @@ import { ToastService } from '@core/services/toast';
             <!-- Context Info -->
             <div class="grid grid-cols-3 gap-4">
               <div class="bg-slate-50 p-4 rounded-2xl">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Order ID</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">ID de Orden</p>
                 <p class="font-bold text-slate-900">#{{ (review().order_id?.split('-') || [])[0] || 'N/A' }}</p>
               </div>
               <div class="bg-slate-50 p-4 rounded-2xl">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Fecha</p>
                 <p class="font-bold text-slate-900">{{ review().created_at | date:'mediumDate' }}</p>
               </div>
               <div class="bg-slate-50 p-4 rounded-2xl">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Estado</p>
                 <p class="font-bold text-slate-900 capitalize">{{ review().status }}</p>
               </div>
             </div>
@@ -106,19 +106,19 @@ import { ToastService } from '@core/services/toast';
         <!-- Footer Actions -->
         <div class="p-8 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
           <button class="text-slate-400 font-bold hover:text-slate-600 transition-colors uppercase tracking-widest text-xs">
-            Mark for Review
+            Marcar para revisión
           </button>
           
           <div class="flex gap-4">
             <button 
               (click)="onAction('rejected')"
               class="px-8 py-4 bg-white border-2 border-slate-200 text-slate-600 rounded-2xl font-black hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-all active:scale-[0.98]">
-              Reject Review
+              Rechazar reseña
             </button>
             <button 
               (click)="onAction('approved')"
               class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-[0.98]">
-              Approve Review
+              Aprobar reseña
             </button>
           </div>
         </div>
@@ -152,12 +152,12 @@ export class ReviewModerationModal {
   async onAction(status: 'approved' | 'rejected') {
     try {
       await this.reviewsService.updateReviewStatus(this.review().id, status);
-      this.toast.success(status === 'approved' ? 'Review approved successfully' : 'Review rejected');
+      this.toast.success(status === 'approved' ? 'Reseña aprobada exitosamente' : 'Reseña rechazada');
       this.updated.emit();
       this.close.emit();
     } catch (error) {
       console.error('Error updating review:', error);
-      this.toast.error('Error updating review');
+      this.toast.error('Error al actualizar la reseña');
     }
   }
 }
