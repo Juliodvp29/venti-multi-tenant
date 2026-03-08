@@ -5,19 +5,21 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AiAssistantService } from '@core/services/ai-assistant';
 import { MarkdownPipe } from '../../pipes/markdown.pipe';
+import { ToastService } from '@core/services/toast';
 
 @Component({
     selector: 'app-ai-assistant',
     imports: [CommonModule, FormsModule, MarkdownPipe],
     templateUrl: './ai-assistant.html',
     styleUrl: './ai-assistant.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
 export class AiAssistantComponent implements OnInit, AfterViewChecked {
     private readonly aiService = inject(AiAssistantService);
     private readonly router = inject(Router);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly toast = inject(ToastService);
 
     @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
@@ -40,7 +42,7 @@ export class AiAssistantComponent implements OnInit, AfterViewChecked {
     }
 
     toggleChat() {
-        this.isOpen = !this.isOpen;
+        this.toast.info('This function is not available at the moment.');
     }
 
     async sendMessage() {

@@ -14,6 +14,13 @@
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Orders</h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage and review your store's orders.</p>
         </div>
+        <button (click)="openCreate()"
+            class="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 transition-all active:scale-95">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Create Order
+        </button>
     </div>
 
     <!-- Stats Cards -->
@@ -137,5 +144,17 @@
         </app-dynamic-table>
     </div>
     }
+
+    <!-- Side Drawer -->
+    <div *ngIf="showDrawer()" class="fixed inset-0 z-50 flex justify-end">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" (click)="closeDrawer()"></div>
+
+        <!-- Panel -->
+        <div
+            class="relative w-full max-w-2xl bg-white dark:bg-gray-900 shadow-2xl h-full transform transition-transform duration-300 ease-out translate-x-0">
+            <app-order-form (saved)="onOrderCreated($event)" (cancelled)="closeDrawer()" />
+        </div>
+    </div>
 
 </div>

@@ -22,12 +22,13 @@ import { OrderStatusBadge } from '@shared/components/order-status-badge/order-st
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 import { ColumnDef } from '@core/types/table';
 import { TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
+import { OrderForm } from '../order-form/order-form';
 
 const PAGE_SIZE = 20;
 
 @Component({
     selector: 'app-orders-list',
-    imports: [CommonModule, DynamicTable, DateRangePicker, OrderStatusBadge, Dropdown],
+    imports: [CommonModule, DynamicTable, DateRangePicker, OrderStatusBadge, Dropdown, OrderForm],
     templateUrl: './orders-list.html',
     styleUrl: './orders-list.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,6 +71,7 @@ export class OrdersList implements OnInit, AfterViewInit {
     readonly currentPage = signal(1);
     readonly stats = signal<OrderStats | null>(null);
     readonly columns = signal<ColumnDef<Order>[]>([]);
+    readonly showDrawer = signal(false);
 
     @ViewChild('statusTemplate') statusTemplate!: TemplateRef<any>;
     @ViewChild('paymentTemplate') paymentTemplate!: TemplateRef<any>;
@@ -242,5 +244,19 @@ export class OrdersList implements OnInit, AfterViewInit {
 
     onRowClick(order: Order) {
         this.router.navigate(['/orders', order.id]);
+    }
+
+    openCreate() {
+        this.showDrawer.set(true);
+    }
+
+    closeDrawer() {
+        this.showDrawer.set(false);
+    }
+
+    onOrderCreated(order: Order) {
+        this.loadOrders(1);
+        this.loadStats();
+        this.closeDrawer();
     }
 }

@@ -31,7 +31,9 @@ import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assista
       </div>
 
       <!-- AI Assistant (Only shown in Main Layout) -->
+      @if(false){
       <app-ai-assistant />
+      }
     </div>
   `,
 })
