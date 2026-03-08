@@ -9,39 +9,46 @@ export const storeGuard: CanActivateFn = async (route, state) => {
     // Get current hostname
     const hostname = window.location.hostname;
 
-    let subdomain: string | null = null;
-
+    // 1. Local development handling
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
         const urlParams = new URLSearchParams(window.location.search);
         const sParam = urlParams.get('s');
         if (sParam) {
-            subdomain = sParam.split('=')[0].split('?')[0];
-        } else {
-            if (tenantService.tenantId()) {
-                return true;
-            }
-            subdomain = 'jd-store';
+            const subdomain = sParam.split('=')[0].split('?')[0];
+            const resolved = await tenantService.resolveTenantBySubdomain(subdomain);
+            return resolved;
         }
-    } else {
-        const parts = hostname.split('.');
-        if (parts.length >= 3) {
-            subdomain = parts[0];
-        }
-    }
 
-    if (!subdomain) {
+        // Fallback for local testing if no ?s=
+        if (tenantService.tenantId()) return true;
+
+        // Default seed store for easy local dev
+        await tenantService.resolveTenantBySubdomain('jd-store');
         return true;
     }
 
-    const resolved = await tenantService.resolveTenantBySubdomain(subdomain);
+    // 2. Production handling
+    const parts = hostname.split('.');
 
-    if (!resolved) {
-        if (tenantService.tenantId()) {
-            return true;
-        }
-        router.navigate(['/404']);
-        return false;
+    // Check for custom domain first (e.g., store.com)
+    // If it's a 2-part domain or more, it could be a custom domain.
+    if (parts.length >= 2) {
+        const resolvedByDomain = await tenantService.resolveTenantByDomain(hostname);
+        if (resolvedByDomain) return true;
     }
 
-    return true;
+    // Check for subdomain (e.g., tenant.platform.com or tenant.vercel.app)
+    if (parts.length >= 3) {
+        const subdomain = parts[0];
+        const resolvedBySubdomain = await tenantService.resolveTenantBySubdomain(subdomain);
+        if (resolvedBySubdomain) return true;
+    }
+
+    // 3. Fallback / Not found
+    if (tenantService.tenantId()) {
+        return true;
+    }
+
+    router.navigate(['/404']);
+    return false;
 };

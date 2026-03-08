@@ -324,6 +324,40 @@ export class TenantService {
     }
   }
 
+  async resolveTenantByDomain(domain: string): Promise<boolean> {
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const { data, error } = await this.supabase.client
+        .from('tenants')
+        .select('*')
+        .eq('custom_domain', domain)
+        .is('deleted_at', null)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!data) {
+        this._state.update(s => ({ ...s, loading: false, currentTenant: null }));
+        return false;
+      }
+
+      this._state.update(s => ({
+        ...s,
+        currentTenant: data as any,
+        loading: false,
+        initialized: true
+      }));
+
+      await this.loadTenantSettings(data.id);
+      return true;
+    } catch (error) {
+      console.error('Error resolving tenant by domain:', error);
+      this._state.update(s => ({ ...s, loading: false, error: 'Store not found' }));
+      return false;
+    }
+  }
+
   async setCurrentTenant(tenantId: string): Promise<void> {
     const tenant = this._state().tenants.find((t) => t.id === tenantId);
     if (!tenant) return;
