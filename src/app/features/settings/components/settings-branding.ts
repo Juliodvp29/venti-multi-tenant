@@ -36,16 +36,26 @@ export class SettingsBranding {
 
     // Quick-pick color swatches
     readonly primarySwatches = ['#000000', '#18181b', '#1e3a5f', '#7c3aed', '#dc2626', '#059669'];
+    readonly backgroundSwatches = ['#ffffff', '#f8fafc', '#f1f5f9', '#f3f4f6', '#fffbeb', '#f0fdf4'];
     readonly accentSwatches = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#ef4444'];
 
     readonly form = this.fb.nonNullable.group({
         primary_color: ['#000000', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
         secondary_color: ['#ffffff', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
+        background_color: ['#ffffff', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
+        header_color: ['#ffffff', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
+        footer_color: ['#ffffff', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
         accent_color: ['#3b82f6', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
         font_family: ['"Inter", sans-serif', [Validators.required]],
         layout: ['modern', [Validators.required]],
         logo_url: [''],
         favicon_url: [''],
+        social_links: this.fb.group({
+            whatsapp: [''],
+            facebook: [''],
+            instagram: [''],
+            tiktok: [''],
+        }),
     });
 
     constructor() {
@@ -56,11 +66,20 @@ export class SettingsBranding {
                 this.form.patchValue({
                     primary_color: tenant.primary_color,
                     secondary_color: tenant.secondary_color,
+                    background_color: tenant.background_color || '#ffffff',
+                    header_color: tenant.header_color || '#ffffff',
+                    footer_color: tenant.footer_color || '#ffffff',
                     accent_color: tenant.accent_color,
                     font_family: tenant.font_family || '"Inter", sans-serif',
                     layout: tenant.layout || 'modern',
                     logo_url: tenant.logo_url || '',
                     favicon_url: tenant.favicon_url || '',
+                    social_links: {
+                        whatsapp: tenant.social_links?.whatsapp || '',
+                        facebook: tenant.social_links?.facebook || '',
+                        instagram: tenant.social_links?.instagram || '',
+                        tiktok: tenant.social_links?.tiktok || '',
+                    },
                 }, { emitEvent: false });
                 this.form.markAsPristine();
                 this.emitBranding();
@@ -121,6 +140,12 @@ export class SettingsBranding {
                 logo_url: data.logo_url || null,
                 favicon_url: data.favicon_url || null,
                 layout: data.layout as 'modern' | 'classic' | 'minimal',
+                social_links: {
+                    whatsapp: data.social_links.whatsapp || undefined,
+                    facebook: data.social_links.facebook || undefined,
+                    instagram: data.social_links.instagram || undefined,
+                    tiktok: data.social_links.tiktok || undefined,
+                }
             });
             if (result.success) {
                 this.toastService.success('Configuración guardada exitosamente');
@@ -141,9 +166,18 @@ export class SettingsBranding {
             this.form.patchValue({
                 primary_color: tenant.primary_color,
                 secondary_color: tenant.secondary_color,
+                background_color: tenant.background_color || '#ffffff',
+                header_color: tenant.header_color || '#ffffff',
+                footer_color: tenant.footer_color || '#ffffff',
                 accent_color: tenant.accent_color,
                 logo_url: tenant.logo_url || '',
                 favicon_url: tenant.favicon_url || '',
+                social_links: {
+                    whatsapp: tenant.social_links?.whatsapp || '',
+                    facebook: tenant.social_links?.facebook || '',
+                    instagram: tenant.social_links?.instagram || '',
+                    tiktok: tenant.social_links?.tiktok || '',
+                },
             });
             this.form.markAsPristine();
         }

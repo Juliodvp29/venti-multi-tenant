@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks } from '@core/models';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
 import { TenantRole } from '@core/enums';
@@ -130,6 +130,12 @@ export class TenantService {
     )
   );
 
+  readonly isAdminOrOwner = computed(() =>
+    [TenantRole.Owner, TenantRole.Admin].includes(
+      this._state().memberInfo?.role?.toLowerCase() as TenantRole
+    )
+  );
+
   readonly branding = computed<Nullable<TenantBranding>>(() => {
     const t = this._state().currentTenant;
     if (!t) return null;
@@ -142,7 +148,11 @@ export class TenantService {
       secondary_color: t.secondary_color,
       accent_color: t.accent_color,
       font_family: t.font_family,
+      background_color: t.background_color,
+      header_color: t.header_color,
+      footer_color: t.footer_color,
       layout: t.layout,
+      social_links: t.social_links,
     };
   });
 
@@ -483,7 +493,11 @@ export class TenantService {
     logo_url?: string | null;
     favicon_url?: string | null;
     font_family?: string;
+    background_color?: string;
+    header_color?: string;
+    footer_color?: string;
     layout?: 'modern' | 'classic' | 'minimal';
+    social_links?: SocialLinks;
   }): Promise<{ success: boolean; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) {

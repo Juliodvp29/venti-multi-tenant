@@ -42,6 +42,9 @@ export class StoreComponent {
       '--primary-color': branding.primary_color || '#4f46e5',
       '--secondary-color': branding.secondary_color || '#1e293b',
       '--accent-color': branding.accent_color || '#f59e0b',
+      '--background-color': branding.background_color || '#f8fafc',
+      '--header-color': branding.header_color || '#ffffff',
+      '--footer-color': branding.footer_color || '#ffffff',
       'font-family': branding.font_family || 'Inter, sans-serif'
     };
   });

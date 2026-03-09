@@ -7,7 +7,18 @@ export interface TenantBranding {
     secondary_color: string;
     accent_color: string;
     font_family: string;
+    background_color: string;
+    header_color: string;
+    footer_color: string;
     layout: 'modern' | 'classic' | 'minimal';
+    social_links?: SocialLinks;
+}
+
+export interface SocialLinks {
+    whatsapp?: string;
+    facebook?: string;
+    instagram?: string;
+    tiktok?: string;
 }
 
 export interface TenantAddress {
@@ -92,7 +103,11 @@ export interface Tenant {
     secondary_color: string;
     accent_color: string;
     font_family: string;
+    background_color: string;
+    header_color: string;
+    footer_color: string;
     layout: 'modern' | 'classic' | 'minimal';
+    social_links?: SocialLinks;
 
     address_line1: string | null;
     address_line2: string | null;
@@ -119,7 +134,11 @@ export interface UpdateTenantDto {
     secondary_color?: string;
     accent_color?: string;
     font_family?: string;
+    background_color?: string;
+    header_color?: string;
+    footer_color?: string;
     layout?: 'modern' | 'classic' | 'minimal';
+    social_links?: SocialLinks;
     address_line1?: string | null;
     address_line2?: string | null;
     city?: string | null;

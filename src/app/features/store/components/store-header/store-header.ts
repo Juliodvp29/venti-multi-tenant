@@ -12,7 +12,8 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, RouterLink, CustomerAuthModal],
     template: `
-    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 transition-all duration-300">
+    <header [style.backgroundColor]="branding()?.header_color || 'rgba(255, 255, 255, 0.8)'" 
+            class="backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
             <!-- Logo & Title -->
             <a routerLink="/store" queryParamsHandling="preserve" class="flex items-center gap-3 group">
