@@ -9,7 +9,7 @@ import { OrdersService } from '@core/services/orders';
 import { CustomerAuthService } from '@core/services/customer-auth';
 import { CustomersService } from '@core/services/customers';
 import { ToastService } from '@core/services/toast';
-import { OrderStatus, PaymentStatus } from '@core/enums';
+import { OrderStatus, PaymentStatus, PaymentMethod } from '@core/enums';
 import { CustomerAddress } from '@core/models/customer';
 import { AddressForm } from '../account/address-form/address-form';
 
@@ -79,16 +79,27 @@ import { AddressForm } from '../account/address-form/address-form';
 
         <section class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/60 shadow-sm">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Método de Pago</h2>
-          <div class="p-5 rounded-2xl border-2 border-indigo-500 bg-indigo-50/50 flex items-center justify-between">
-             <div>
-                <p class="font-bold text-indigo-900 text-lg">Pago contra entrega</p>
-                <p class="text-indigo-700 mt-1 text-sm">Paga en efectivo al recibir tu pedido.</p>
-             </div>
-             <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
-                <svg class="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-             </div>
+          <div class="grid grid-cols-1 gap-4">
+            @for (method of paymentMethods; track method.id) {
+              <label class="flex items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all"
+                     [ngClass]="selectedPaymentMethod() === method.id ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'">
+                <div class="flex items-center gap-4">
+                  <input type="radio" name="paymentMethod" [value]="method.id"
+                         [checked]="selectedPaymentMethod() === method.id"
+                         (change)="selectedPaymentMethod.set(method.id)"
+                         class="h-4 w-4 text-indigo-600 focus:ring-indigo-600 border-gray-300">
+                  <div>
+                    <p class="font-bold text-lg" [ngClass]="selectedPaymentMethod() === method.id ? 'text-indigo-900' : 'text-slate-900'">{{ method.label }}</p>
+                    <p class="mt-1 text-sm" [ngClass]="selectedPaymentMethod() === method.id ? 'text-indigo-700' : 'text-slate-500'">{{ method.description }}</p>
+                  </div>
+                </div>
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm" [ngClass]="{'border border-indigo-100': selectedPaymentMethod() === method.id}">
+                  <svg class="w-6 h-6" [ngClass]="selectedPaymentMethod() === method.id ? 'text-indigo-600' : 'text-slate-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="method.icon" />
+                  </svg>
+                </div>
+              </label>
+            }
           </div>
         </section>
       </div>
@@ -180,6 +191,34 @@ export class Checkout implements OnInit {
 
   readonly isSubmitting = signal(false);
   readonly isLoadingAddresses = signal(true);
+  readonly selectedPaymentMethod = signal<PaymentMethod>(PaymentMethod.CashOnDelivery);
+
+  readonly paymentMethods = [
+    {
+      id: PaymentMethod.CashOnDelivery,
+      label: 'Pago contra entrega',
+      description: 'Paga en efectivo al recibir tu pedido.',
+      icon: 'M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+    },
+    {
+      id: PaymentMethod.BankTransfer,
+      label: 'Transferencia bancaria',
+      description: 'Realiza tu pago vía transferencia directa.',
+      icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4'
+    },
+    {
+      id: PaymentMethod.PSE,
+      label: 'PSE',
+      description: 'Pago seguro en línea desde tu banco.',
+      icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'
+    },
+    {
+      id: PaymentMethod.CreditCard,
+      label: 'Tarjeta débito y crédito',
+      description: 'Paga con Visa, Mastercard o American Express.',
+      icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'
+    }
+  ];
 
   private customerId = signal<string | null>(null);
   private resolvedCustomer: any = null;
@@ -307,6 +346,7 @@ export class Checkout implements OnInit {
         shipping_amount: 0,
         total_amount: this.cartService.total(),
         currency: 'USD',
+        payment_method: this.selectedPaymentMethod(),
         customer_email: customer.email,
         customer_first_name: customer.first_name || address.first_name,
         customer_last_name: customer.last_name || address.last_name,
