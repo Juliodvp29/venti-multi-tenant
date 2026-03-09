@@ -51,6 +51,7 @@ export class InventoryHistory implements OnInit {
             key: 'quantity_change',
             label: 'Cantidad',
             formatter: (val) => {
+                if (val === 0) return '<span class="text-gray-400 dark:text-gray-500">N/D</span>';
                 const color = val > 0 ? 'text-emerald-600' : 'text-red-600';
                 return `<span class="font-mono font-bold ${color}">${val > 0 ? '+' : ''}${val}</span>`;
             }
@@ -58,7 +59,10 @@ export class InventoryHistory implements OnInit {
         {
             key: 'new_quantity',
             label: 'Stock Final',
-            formatter: (val) => `<span class="font-mono font-bold">${val}</span>`
+            formatter: (val, item) => {
+                if (item.type === 'sale') return '<span class="text-gray-400 dark:text-gray-500">N/D</span>';
+                return `<span class="font-mono font-bold">${val}</span>`;
+            }
         },
         {
             key: 'user_email',

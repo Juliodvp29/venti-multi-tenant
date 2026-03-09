@@ -77,11 +77,11 @@ export class CategoryChart {
               },
               value: {
                 show: true,
-                fontSize: '24px',
+                fontSize: '20px',
                 fontWeight: 'bold',
                 offsetY: -20,
                 color: dark ? '#ffffff' : '#111827',
-                formatter: (val: string) => this.currencyFormat(Number(val))
+                formatter: (val: string) => this.compactCurrencyFormat(Number(val))
               },
               total: {
                 show: true,
@@ -89,7 +89,7 @@ export class CategoryChart {
                 color: dark ? '#94a3b8' : '#64748b',
                 formatter: (w: any) => {
                   const total = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
-                  return this.currencyFormat(total);
+                  return this.compactCurrencyFormat(total);
                 }
               }
             }
@@ -103,5 +103,14 @@ export class CategoryChart {
 
   currencyFormat(val: number): string {
     return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'USD' }).format(val);
+  }
+
+  compactCurrencyFormat(val: number): string {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'USD',
+      notation: 'compact',
+      maximumFractionDigits: 1
+    }).format(val);
   }
 }
