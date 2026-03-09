@@ -67,7 +67,6 @@
         </header>
 
         <main class="flex-1 overflow-y-auto">
-            @if (data().storefront_layout.sections.length > 0) {
             <!-- DYNAMIC SECTIONS PREVIEW -->
             @for (section of data().storefront_layout.sections; track section.id) {
             @if (section.isActive) {
@@ -140,51 +139,7 @@
             }
             }
             }
-            } @else {
-            <!-- DEFAULT FALLBACK PREVIEW -->
-            <section class="relative h-[250px] bg-slate-100 overflow-hidden flex flex-col md:flex-row items-center"
-                [class.md:flex-row-reverse]="data().layout === 'classic'"
-                [class.bg-white]="data().layout === 'minimal'">
-                <div class="p-8 md:w-1/2 z-10" [class.text-center]="data().layout === 'minimal'">
-                    <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider mb-2"
-                        [style.background-color]="data().secondary_color" [style.color]="data().primary_color">
-                        Summer '24
-                    </span>
-                    <h2 class="text-3xl font-bold mb-4 leading-tight text-slate-900">Redefine your style.</h2>
-                    <button
-                        class="px-5 py-2 rounded-lg text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105"
-                        [style.background-color]="data().primary_color">
-                        Shop Collection
-                    </button>
-                </div>
-                <div class="absolute inset-0 md:relative md:w-1/2 h-full">
-                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800"
-                        alt="Hero" class="w-full h-full object-cover">
-                </div>
-            </section>
 
-            <section class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-sm font-bold text-slate-900 tracking-tight">Featured Products</h3>
-                    <a href="#" (click)="preventDefault($event)"
-                        class="text-[10px] font-bold uppercase tracking-wider underline underline-offset-4"
-                        [style.color]="data().primary_color">View all</a>
-                </div>
-                <div class="grid gap-3" [class.grid-cols-3]="data().viewMode === 'desktop'"
-                    [class.grid-cols-2]="data().viewMode === 'mobile'">
-                    @for (product of mockProducts.slice(0, 3); track product.name) {
-                    <div class="group flex flex-col">
-                        <div
-                            class="aspect-square rounded-xl bg-slate-50 overflow-hidden mb-2 ring-1 ring-slate-200/50 shadow-sm">
-                            <img [src]="product.image" class="w-full h-full object-cover">
-                        </div>
-                        <h4 class="text-[10px] font-bold text-slate-800 truncate">{{ product.name }}</h4>
-                        <p class="text-[10px] font-medium text-slate-500">{{ product.price }}</p>
-                    </div>
-                    }
-                </div>
-            </section>
-            }
 
             <footer class="p-10 text-center border-t border-slate-50 mt-10">
                 <span class="text-[10px] text-slate-300 font-medium tracking-widest uppercase">© 2026 {{

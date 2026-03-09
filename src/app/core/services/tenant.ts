@@ -111,7 +111,7 @@ export class TenantService {
 
     return {
       ...layout,
-      sections: layout.sections?.length > 0 ? layout.sections : defaultLayout.sections,
+      sections: layout.sections !== undefined ? layout.sections : defaultLayout.sections,
       navigation: layout.navigation || defaultLayout.navigation
     };
   });

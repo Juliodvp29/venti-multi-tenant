@@ -146,7 +146,8 @@
     }
 
     <!-- Side Drawer -->
-    <div *ngIf="showDrawer()" class="fixed inset-0 z-50 flex justify-end">
+    @if (showDrawer()) {
+    <div class="fixed inset-0 z-50 flex justify-end">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" (click)="closeDrawer()"></div>
 
@@ -156,5 +157,5 @@
             <app-order-form (saved)="onOrderCreated($event)" (cancelled)="closeDrawer()" />
         </div>
     </div>
-
+    }
 </div>

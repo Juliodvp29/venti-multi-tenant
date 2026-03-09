@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, effect, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, effect, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductsService } from '@core/services/products';
 import { Product } from '@core/models/product';
@@ -16,12 +16,14 @@ import { Category } from '@core/models/category';
     <div class="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <!-- Header Area -->
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+        @if (!hideHeaderContent()) {
         <div>
             <h2 class="text-4xl font-black text-slate-900 tracking-tight mb-2">Descubre lo Nuevo</h2>
             <p class="text-slate-500 font-medium">Explora nuestra selección de productos destacados para ti.</p>
         </div>
+        }
         
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3" [class.ml-auto]="hideHeaderContent()">
              <div class="relative">
                 <input 
                     type="text" 
@@ -155,7 +157,9 @@ export class ProductGrid {
     readonly search = signal('');
     readonly selectedCategoryId = signal<string | null>(null);
     readonly limit = input<number>(0);
+    readonly hideHeaderContent = input(false);
     readonly isSortMenuOpen = signal(false);
+    readonly hasProducts = output<boolean>();
 
     readonly selectedCategory = computed(() => {
         const id = this.selectedCategoryId();
@@ -224,10 +228,12 @@ export class ProductGrid {
                 categoryId: categoryFilter
             });
             this.products.set(data);
+            this.hasProducts.emit(data.length > 0);
             this.updateSeo();
         } catch (error) {
             console.error('Error loading products:', error);
             this.products.set([]);
+            this.hasProducts.emit(false);
         } finally {
             this.isLoading.set(false);
         }
