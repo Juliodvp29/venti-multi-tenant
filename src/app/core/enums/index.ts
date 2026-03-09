@@ -45,6 +45,7 @@ export enum PaymentMethod {
   Stripe = 'stripe',
   BankTransfer = 'bank_transfer',
   CashOnDelivery = 'cash_on_delivery',
+  PSE = 'pse',
 }
 
 export enum ProductStatus {
