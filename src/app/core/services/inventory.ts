@@ -19,7 +19,7 @@ export class InventoryService {
             .from('audit_logs')
             .select('*', { count: 'exact' })
             .eq('tenant_id', tenantId)
-            .in('resource_type', ['products', 'orders'])
+            .in('resource_type', ['products', 'order_items'])
             .order('created_at', { ascending: false })
             .range((page - 1) * pageSize, page * pageSize - 1);
 
@@ -54,20 +54,26 @@ export class InventoryService {
                 qtyChange = newVal.stock_quantity || 0;
                 newQty = qtyChange;
             } else if (log.action === 'update') {
-                const oldStock = oldVal?.stock_quantity ?? 0;
-                const newStock = newVal?.stock_quantity ?? 0;
-                if (oldStock === newStock) return null; // No stock change
+                const oldStock = oldVal?.stock_quantity;
+                const newStock = newVal?.stock_quantity;
+
+                // If oldStock is missing (due to DB trigger design) or no change occurred
+                if (newStock === undefined || oldStock === newStock) return null;
 
                 type = 'adjustment';
-                qtyChange = newStock - oldStock;
+                // If we don't have oldStock, we cannot definitively show the delta.
+                qtyChange = oldStock !== undefined ? newStock - oldStock : 0;
                 newQty = newStock;
             }
             productName = newVal.name || oldVal?.name || 'Producto Desconocido';
-        } else if (log.resource_type === 'orders') {
-
-
-            if (log.description?.includes('order') || log.description?.includes('sale')) {
+        } else if (log.resource_type === 'order_items') {
+            if (log.action === 'create') {
                 type = 'sale';
+                qtyChange = -(newVal.quantity || 0); // Sales deduct stock
+                newQty = 0; // We don't have the final stock in order_items easily
+                productName = newVal.product_name || 'Producto Vendido';
+                variantName = newVal.variant_name;
+                referenceId = newVal.order_id;
             } else {
                 return null;
             }
