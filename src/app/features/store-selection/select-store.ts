@@ -101,7 +101,13 @@ export class SelectStoreComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      const stores = await this.getAllUserStores();
+      this.isLoading.set(true);
+      // Ensure the tenant service has loaded the user's tenants
+      if (!this.tenantService.initialized()) {
+        await this.tenantService.loadUserTenants();
+      }
+
+      const stores = this.tenantService.tenants();
       this.stores.set(stores);
 
       if (stores.length === 1) {
@@ -112,15 +118,6 @@ export class SelectStoreComponent implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
-  }
-
-  async getAllUserStores() {
-    const { data, error } = await this.tenantService['supabase'].client
-      .from('tenants')
-      .select('id, business_name, slug');
-
-    if (error) throw error;
-    return data || [];
   }
 
   selectStore(tenantId: string) {
