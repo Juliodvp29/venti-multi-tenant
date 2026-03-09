@@ -14,10 +14,12 @@ import { AnalyticsService } from '@core/services/analytics';
         <!-- Image Area -->
         <div class="aspect-[4/5] bg-slate-50 relative overflow-hidden">
             @if (product.images?.[0]?.url) {
-                <img [src]="product.images?.[0]?.url" 
-                     [alt]="product.name" 
-                     loading="lazy"
-                     class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700">
+                <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve" class="block w-full h-full cursor-pointer">
+                    <img [src]="product.images?.[0]?.url" 
+                         [alt]="product.name" 
+                         loading="lazy"
+                         class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700">
+                </a>
             }
             
             @if (product.compare_at_price) {

@@ -36,12 +36,13 @@
     <!-- PRODUCT GRID SECTION -->
     @if (section.type === 'product_grid') {
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        @if (hasFeaturedProducts()) {
         <div class="mb-10 flex items-end justify-between">
             <div>
-                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ asAny(section.content).title }}
+                <h2 class="text-3xl font-extrabold text-gray-900">{{ asAny(section.content).title }}
                 </h2>
                 @if (asAny(section.content).description) {
-                <p class="mt-2 text-gray-500 dark:text-gray-400">{{ asAny(section.content).description }}</p>
+                <p class="mt-2 text-gray-500">{{ asAny(section.content).description }}</p>
                 }
             </div>
             <a routerLink="/store/productos" queryParamsHandling="preserve"
@@ -51,19 +52,21 @@
                 </svg>
             </a>
         </div>
-        <app-product-grid [limit]="asAny(section.content).limit || 8" />
+        }
+        <app-product-grid [limit]="asAny(section.content).limit || 8" [hideHeaderContent]="true"
+            (hasProducts)="onProductsLoaded($event)" />
     </section>
     }
 
     <!-- ABOUT US SECTION -->
     @if (section.type === 'about_us') {
-    <section class="bg-gray-50 dark:bg-gray-800/50 py-20">
+    <section class="bg-gray-50 py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div [class.md:order-2]="asAny(section.content).imagePosition === 'right'">
-                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ asAny(section.content).title }}
+                    <h2 class="text-3xl font-extrabold text-gray-900">{{ asAny(section.content).title }}
                     </h2>
-                    <div class="mt-6 text-lg text-gray-500 dark:text-gray-400 prose dark:prose-invert">
+                    <div class="mt-6 text-lg text-gray-500 prose">
                         {{ asAny(section.content).content }}
                     </div>
                 </div>
@@ -79,29 +82,25 @@
 
     <!-- FEATURED CATEGORIES (Placeholder for now) -->
     @if (section.type === 'featured_categories') {
-    <section class="py-16 bg-white dark:bg-gray-900">
+    <section class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ asAny(section.content).title }}</h2>
+            <h2 class="text-3xl font-extrabold text-gray-900">{{ asAny(section.content).title }}</h2>
             <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div
-                    class="p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all cursor-pointer group">
+                <div class="p-8 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all cursor-pointer group">
                     <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">✨</span>
-                    <span class="font-bold text-gray-900 dark:text-white">Nuevo</span>
+                    <span class="font-bold text-gray-900">Nuevo</span>
                 </div>
-                <div
-                    class="p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all cursor-pointer group">
+                <div class="p-8 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all cursor-pointer group">
                     <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">🔥</span>
-                    <span class="font-bold text-gray-900 dark:text-white">Tendencia</span>
+                    <span class="font-bold text-gray-900">Tendencia</span>
                 </div>
-                <div
-                    class="p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all cursor-pointer group">
+                <div class="p-8 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all cursor-pointer group">
                     <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">💎</span>
-                    <span class="font-bold text-gray-900 dark:text-white">Exclusivo</span>
+                    <span class="font-bold text-gray-900">Exclusivo</span>
                 </div>
-                <div
-                    class="p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all cursor-pointer group">
+                <div class="p-8 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all cursor-pointer group">
                     <span class="text-4xl block mb-4 group-hover:scale-110 transition-transform">🎁</span>
-                    <span class="font-bold text-gray-900 dark:text-white">Ofertas</span>
+                    <span class="font-bold text-gray-900">Ofertas</span>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, computed, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TenantService } from '@core/services/tenant';
 import { ProductGrid } from '../product-grid/product-grid';
@@ -18,6 +18,12 @@ export class StoreHome {
     readonly activeSections = computed(() =>
         this.layout().sections.filter((s: StorefrontSection) => s.isActive)
     );
+
+    readonly hasFeaturedProducts = signal(true);
+
+    onProductsLoaded(hasProducts: boolean) {
+        this.hasFeaturedProducts.set(hasProducts);
+    }
 
     asAny(val: any): any { return val; }
 }
