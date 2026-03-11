@@ -350,7 +350,7 @@ export class Singup implements OnInit {
       } catch (err: any) {
         console.warn('Invite acceptance error:', err);
         this.isLoading.set(false);
-        this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta.');
+        //this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta.');
         setTimeout(() => this.router.navigate(['/auth/login']), 3000);
       }
     } else {

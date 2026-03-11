@@ -78,6 +78,26 @@
         </div>
 
         <div class="p-10 md:p-14 relative overflow-hidden bg-white dark:bg-gray-900">
+            <!-- Test Step Note -->
+            <div
+                class="mb-8 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 rounded-2xl flex items-start gap-3 animate-pulse-subtle">
+                <div class="mt-1 shrink-0 text-amber-600 dark:text-amber-500">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider mb-1">
+                        Paso de Prueba</h4>
+                    <p class="text-[11px] text-amber-700/80 dark:text-amber-500/70 font-medium leading-relaxed">
+                        Este es un entorno de simulación. No se realizarán cargos reales. Puedes ingresar datos
+                        ficticios
+                        para completar el proceso.
+                    </p>
+                </div>
+            </div>
+
             <h3 class="text-2xl font-black mb-10 dark:text-white tracking-tight">Método de Pago</h3>
 
             @if (isProcessing()) {
