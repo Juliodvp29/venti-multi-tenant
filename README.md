@@ -2,7 +2,7 @@
 
 <br />
 
-# 🛍️ Venti Shop — Multi-Tenant SaaS eCommerce Platform
+# ðŸ›ï¸ Venti Shop â€” Multi-Tenant SaaS eCommerce Platform
 
 **A modern, full-featured eCommerce management platform built for merchants who need power without complexity.**
 
@@ -16,64 +16,66 @@
 
 ---
 
-## 📖 Table of Contents
+## ðŸ“– Table of Contents
 
 1. [What is Venti Shop?](#-what-is-venti-shop)
 2. [Key Features](#-key-features)
 3. [Technology Stack](#-technology-stack)
-4. [Architecture Overview](#️-architecture-overview)
+4. [Architecture Overview](#ï¸-architecture-overview)
 5. [Project Structure](#-project-structure)
 6. [Feature Modules](#-feature-modules)
-7. [Core System Layer](#️-core-system-layer)
+7. [Core System Layer](#ï¸-core-system-layer)
 8. [Shared Components & Utilities](#-shared-components--utilities)
-9. [Database Design](#️-database-design)
+9. [Database Design](#ï¸-database-design)
 10. [Security & Multi-Tenancy](#-security--multi-tenancy)
 11. [AI Assistant Integration](#-ai-assistant-integration)
 12. [Storefront Engine](#-storefront-engine)
 13. [Getting Started](#-getting-started)
-14. [Configuration](#️-configuration)
+14. [Configuration](#ï¸-configuration)
+15. [Roadmap](#-roadmap)
+
 
 ---
 
-## 🎯 What is Venti Shop?
+## ðŸŽ¯ What is Venti Shop?
 
-**Venti Shop** is a SaaS (Software as a Service) eCommerce platform designed on a **multi-tenant architecture**. This means that a single deployed instance can serve multiple independent stores simultaneously — each with its own isolated data, custom branding, team members, products, and customers.
+**Venti Shop** is a SaaS (Software as a Service) eCommerce platform designed on a **multi-tenant architecture**. This means that a single deployed instance can serve multiple independent stores simultaneously â€” each with its own isolated data, custom branding, team members, products, and customers.
 
-Think of it as giving every merchant their own complete store management system, backed by the same powerful infrastructure. A store owner registers, creates their store (tenant), invites their team, and starts managing products, orders, and customers — all from a clean, modern dashboard. Simultaneously, their store is live as a public-facing **storefront** that customers can browse and shop from.
+Think of it as giving every merchant their own complete store management system, backed by the same powerful infrastructure. A store owner registers, creates their store (tenant), invites their team, and starts managing products, orders, and customers â€” all from a clean, modern dashboard. Simultaneously, their store is live as a public-facing **storefront** that customers can browse and shop from.
 
 The platform is built with scalability and developer experience in mind, using the latest Angular 21 APIs, a fully managed Supabase backend (PostgreSQL + Auth + Storage), and an embedded AI assistant powered by Google Gemini.
 
 ---
 
-## ✨ Key Features
+## âœ¨ Key Features
 
 ### For Store Owners & Managers
-- 📊 **Real-time Dashboard** — Live sales metrics, revenue charts, order activity, and inventory alerts at a glance
-- 🛒 **Product Catalog Management** — Full CRUD for products, variants (size/color), categories (with hierarchy), images, and SKU tracking
-- 📦 **Order Management** — Full order lifecycle from pending to delivered, with status history, internal notes, and tracking
-- 👥 **Customer Management** — Customer profiles, address books, order history, and marketing consent
-- 🎟️ **Coupons & Discounts** — Percentage, fixed-amount, and free-shipping coupon codes with usage limits and validity periods
-- ⭐ **Review Moderation** — Approve, reject, and manage customer product reviews
-- 📉 **Abandoned Cart Recovery** — Track and recover sessions where customers left without completing checkout
-- 📊 **Reports** — Sales reports and analytics with chart exports
-- 👤 **Team Members** — Invite team members by email with role-based access control
-- 💳 **Subscription Management** — Plan management with billing history
+- ðŸ“Š **Real-time Dashboard** â€” Live sales metrics, revenue charts, order activity, and inventory alerts at a glance
+- ðŸ›’ **Product Catalog Management** â€” Full CRUD for products, variants (size/color), categories (with hierarchy), images, and SKU tracking
+- ðŸ“¦ **Order Management** â€” Full order lifecycle from pending to delivered, with status history, internal notes, and tracking
+- ðŸ‘¥ **Customer Management** â€” Customer profiles, address books, order history, and marketing consent
+- ðŸŽŸï¸ **Coupons & Discounts** â€” Percentage, fixed-amount, and free-shipping coupon codes with usage limits and validity periods
+- â­ **Review Moderation** â€” Approve, reject, and manage customer product reviews
+- ðŸ“‰ **Abandoned Cart Recovery** â€” Track and recover sessions where customers left without completing checkout
+- ðŸ“Š **Reports** â€” Sales reports and analytics with chart exports
+- ðŸ‘¤ **Team Members** â€” Invite team members by email with role-based access control
+- ðŸ’³ **Subscription Management** â€” Plan management with billing history
 
 ### For the Platform (System-wide)
-- 🏢 **Multi-Tenancy** — Strict data isolation per store via Row Level Security (RLS)
-- 🔐 **Role-Based Access Control** — Owner, Admin, Editor, Viewer, and Delivery Driver roles
-- 🌐 **Subdomain-based Storefront Routing** — Each store gets its own public storefront
-- 🤖 **AI Assistant (Gemini)** — Conversational assistant with tool-calling to query real store data
-- 🎨 **Per-Tenant Branding** — Custom logo, favicon, colors, fonts, and storefront layout
-- 📩 **Email Invitation System** — Supabase Edge Functions to send branded invitation emails
-- 🗃️ **File Storage** — Image uploads for products and branding via Supabase Storage
-- 📋 **Audit Logs** — Comprehensive trail of all important actions
-- 🔔 **Webhook Support** — Event-driven integrations with external services
-- 📝 **Inventory History** — Track all stock changes over time
+- ðŸ¢ **Multi-Tenancy** â€” Strict data isolation per store via Row Level Security (RLS)
+- ðŸ” **Role-Based Access Control** â€” Owner, Admin, Editor, Viewer, and Delivery Driver roles
+- ðŸŒ **Subdomain-based Storefront Routing** â€” Each store gets its own public storefront
+- ðŸ¤– **AI Assistant (Gemini)** â€” Conversational assistant with tool-calling to query real store data
+- ðŸŽ¨ **Per-Tenant Branding** â€” Custom logo, favicon, colors, fonts, and storefront layout
+- ðŸ“© **Email Invitation System** â€” Supabase Edge Functions to send branded invitation emails
+- ðŸ—ƒï¸ **File Storage** â€” Image uploads for products and branding via Supabase Storage
+- ðŸ“‹ **Audit Logs** â€” Comprehensive trail of all important actions
+- ðŸ”” **Webhook Support** â€” Event-driven integrations with external services
+- ðŸ“ **Inventory History** â€” Track all stock changes over time
 
 ---
 
-## 🛠 Technology Stack
+## ðŸ›  Technology Stack
 
 | Layer | Technology | Version | Purpose |
 |---|---|---|---|
@@ -89,48 +91,48 @@ The platform is built with scalability and developer experience in mind, using t
 | **Package Manager** | bun | 1.3.10 | Dependency management |
 | **Build Tool** | Angular CLI / @angular/build | 21.x | Bundling, optimization, dev server |
 | **Testing** | Vitest | 4.x | Fast unit testing |
-| **Code Style** | Prettier | — | Consistent code formatting |
+| **Code Style** | Prettier | â€” | Consistent code formatting |
 
 
 ---
 
-## 🏛️ Architecture Overview
+## ðŸ›ï¸ Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        VENTI SHOP PLATFORM                          │
-│                                                                     │
-│  ┌─────────────────┐           ┌──────────────────────────────────┐ │
-│  │   Admin Panel   │           │      Public Storefront           │ │
-│  │  (Authenticated)│           │  (/store?s={subdomain} or        │ │
-│  │                 │           │   subdomain.venti.com)           │ │
-│  │  /dashboard     │           │                                  │ │
-│  │  /products      │           │  /store (home)                   │ │
-│  │  /orders        │           │  /store/productos                │ │
-│  │  /customers     │           │  /store/product/:slug            │ │
-│  │  /coupons       │           │  /store/cart                     │ │
-│  │  /reports       │           │  /store/checkout                 │ │
-│  │  /members       │           │  /store/my-orders                │ │
-│  │  /settings      │           │                                  │ │
-│  └────────┬────────┘           └───────────────┬──────────────────┘ │
-│           │                                   │                     │
-│           └────────────────┬──────────────────┘                     │
-│                            │                                        │
-│                  ┌─────────▼──────────┐                             │
-│                  │   Angular SPA       │                             │
-│                  │   Core Services     │                             │
-│                  │   Signal State      │                             │
-│                  └─────────┬──────────┘                             │
-│                            │                                        │
-│           ┌────────────────┼──────────────────────┐                 │
-│           │                │                      │                 │
-│   ┌───────▼──────┐ ┌───────▼──────┐ ┌────────────▼─────────┐       │
-│   │  Supabase    │ │ Supabase     │ │   Google Gemini AI   │       │
-│   │  PostgreSQL  │ │  Auth +      │ │  (Function Calling)  │       │
-│   │  (RLS)       │ │  Storage     │ │                      │       │
-│   │              │ │  + Edge Fns  │ │                      │       │
-│   └──────────────┘ └──────────────┘ └──────────────────────┘       │
-└─────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                        VENTI SHOP PLATFORM                          â”‚
+â”‚                                                                     â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”           â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚
+â”‚  â”‚   Admin Panel   â”‚           â”‚      Public Storefront           â”‚ â”‚
+â”‚  â”‚  (Authenticated)â”‚           â”‚  (/store?s={subdomain} or        â”‚ â”‚
+â”‚  â”‚                 â”‚           â”‚   subdomain.venti.com)           â”‚ â”‚
+â”‚  â”‚  /dashboard     â”‚           â”‚                                  â”‚ â”‚
+â”‚  â”‚  /products      â”‚           â”‚  /store (home)                   â”‚ â”‚
+â”‚  â”‚  /orders        â”‚           â”‚  /store/productos                â”‚ â”‚
+â”‚  â”‚  /customers     â”‚           â”‚  /store/product/:slug            â”‚ â”‚
+â”‚  â”‚  /coupons       â”‚           â”‚  /store/cart                     â”‚ â”‚
+â”‚  â”‚  /reports       â”‚           â”‚  /store/checkout                 â”‚ â”‚
+â”‚  â”‚  /members       â”‚           â”‚  /store/my-orders                â”‚ â”‚
+â”‚  â”‚  /settings      â”‚           â”‚                                  â”‚ â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”˜           â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚
+â”‚           â”‚                                   â”‚                     â”‚
+â”‚           â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                     â”‚
+â”‚                            â”‚                                        â”‚
+â”‚                  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                             â”‚
+â”‚                  â”‚   Angular SPA       â”‚                             â”‚
+â”‚                  â”‚   Core Services     â”‚                             â”‚
+â”‚                  â”‚   Signal State      â”‚                             â”‚
+â”‚                  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                             â”‚
+â”‚                            â”‚                                        â”‚
+â”‚           â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                 â”‚
+â”‚           â”‚                â”‚                      â”‚                 â”‚
+â”‚   â”Œâ”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”       â”‚
+â”‚   â”‚  Supabase    â”‚ â”‚ Supabase     â”‚ â”‚   Google Gemini AI   â”‚       â”‚
+â”‚   â”‚  PostgreSQL  â”‚ â”‚  Auth +      â”‚ â”‚  (Function Calling)  â”‚       â”‚
+â”‚   â”‚  (RLS)       â”‚ â”‚  Storage     â”‚ â”‚                      â”‚       â”‚
+â”‚   â”‚              â”‚ â”‚  + Edge Fns  â”‚ â”‚                      â”‚       â”‚
+â”‚   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜       â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### Multi-Tenancy Strategy
@@ -146,73 +148,73 @@ This design keeps infrastructure costs low, simplifies deployments, and still pr
 
 ---
 
-## 📁 Project Structure
+## ðŸ“ Project Structure
 
 ```
 src/
-└── app/
-    ├── app.routes.ts          # Root route definitions with lazy loading
-    ├── app.config.ts          # Application bootstrap configuration
-    │
-    ├── core/                  # Application-wide infrastructure
-    │   ├── guards/            # Route access control
-    │   ├── interceptors/      # HTTP request/response pipeline
-    │   ├── layouts/           # Shell layout components
-    │   ├── models/            # TypeScript interfaces (data contracts)
-    │   ├── services/          # Business logic & data access (26 services)
-    │   ├── enums/             # Shared application enumerations
-    │   └── types/             # Utility type definitions
-    │
-    ├── features/              # Feature modules (each is a lazy-loaded route)
-    │   ├── auth/              # Login, registration, password reset
-    │   ├── dashboard/         # Overview metrics and quick actions
-    │   ├── products-catalog/  # Product & category management
-    │   ├── orders/            # Order list and detail views
-    │   ├── customers/         # Customer CRM
-    │   ├── coupons/           # Discount code management
-    │   ├── reviews/           # Product review moderation
-    │   ├── members/           # Team member & invitation management
-    │   ├── settings/          # Store configuration & branding
-    │   ├── subscription/      # Plan & billing management
-    │   ├── reports/           # Analytics and reports view
-    │   ├── inventory-history/ # Stock change log
-    │   ├── abandoned-carts/   # Abandoned session recovery
-    │   ├── store/             # Public-facing storefront
-    │   ├── store-selection/   # Store picker & invitation acceptance
-    │   └── landing/           # Public landing page
-    │
-    └── shared/                # Reusable building blocks
-        ├── components/        # Presentational components
-        │   ├── ai-assistant/         # Floating AI chatbot widget
-        │   ├── customer-auth-modal/  # Storefront login/register modal
-        │   ├── date-picker/          # Calendar date selector
-        │   ├── date-range-picker/    # Date range selector
-        │   ├── dropdown/             # Reusable accessible dropdown
-        │   ├── dynamic-table/        # Configurable data table
-        │   ├── not-found/            # 404 page
-        │   ├── order-status-badge/   # Visual order status indicator
-        │   ├── toast/                # Toast notification system
-        │   └── usage-progress/       # Subscription usage bar
-        ├── directives/        # Custom Angular directives
-        └── pipes/             # Data transformation pipes
+â””â”€â”€ app/
+    â”œâ”€â”€ app.routes.ts          # Root route definitions with lazy loading
+    â”œâ”€â”€ app.config.ts          # Application bootstrap configuration
+    â”‚
+    â”œâ”€â”€ core/                  # Application-wide infrastructure
+    â”‚   â”œâ”€â”€ guards/            # Route access control
+    â”‚   â”œâ”€â”€ interceptors/      # HTTP request/response pipeline
+    â”‚   â”œâ”€â”€ layouts/           # Shell layout components
+    â”‚   â”œâ”€â”€ models/            # TypeScript interfaces (data contracts)
+    â”‚   â”œâ”€â”€ services/          # Business logic & data access (26 services)
+    â”‚   â”œâ”€â”€ enums/             # Shared application enumerations
+    â”‚   â””â”€â”€ types/             # Utility type definitions
+    â”‚
+    â”œâ”€â”€ features/              # Feature modules (each is a lazy-loaded route)
+    â”‚   â”œâ”€â”€ auth/              # Login, registration, password reset
+    â”‚   â”œâ”€â”€ dashboard/         # Overview metrics and quick actions
+    â”‚   â”œâ”€â”€ products-catalog/  # Product & category management
+    â”‚   â”œâ”€â”€ orders/            # Order list and detail views
+    â”‚   â”œâ”€â”€ customers/         # Customer CRM
+    â”‚   â”œâ”€â”€ coupons/           # Discount code management
+    â”‚   â”œâ”€â”€ reviews/           # Product review moderation
+    â”‚   â”œâ”€â”€ members/           # Team member & invitation management
+    â”‚   â”œâ”€â”€ settings/          # Store configuration & branding
+    â”‚   â”œâ”€â”€ subscription/      # Plan & billing management
+    â”‚   â”œâ”€â”€ reports/           # Analytics and reports view
+    â”‚   â”œâ”€â”€ inventory-history/ # Stock change log
+    â”‚   â”œâ”€â”€ abandoned-carts/   # Abandoned session recovery
+    â”‚   â”œâ”€â”€ store/             # Public-facing storefront
+    â”‚   â”œâ”€â”€ store-selection/   # Store picker & invitation acceptance
+    â”‚   â””â”€â”€ landing/           # Public landing page
+    â”‚
+    â””â”€â”€ shared/                # Reusable building blocks
+        â”œâ”€â”€ components/        # Presentational components
+        â”‚   â”œâ”€â”€ ai-assistant/         # Floating AI chatbot widget
+        â”‚   â”œâ”€â”€ customer-auth-modal/  # Storefront login/register modal
+        â”‚   â”œâ”€â”€ date-picker/          # Calendar date selector
+        â”‚   â”œâ”€â”€ date-range-picker/    # Date range selector
+        â”‚   â”œâ”€â”€ dropdown/             # Reusable accessible dropdown
+        â”‚   â”œâ”€â”€ dynamic-table/        # Configurable data table
+        â”‚   â”œâ”€â”€ not-found/            # 404 page
+        â”‚   â”œâ”€â”€ order-status-badge/   # Visual order status indicator
+        â”‚   â”œâ”€â”€ toast/                # Toast notification system
+        â”‚   â””â”€â”€ usage-progress/       # Subscription usage bar
+        â”œâ”€â”€ directives/        # Custom Angular directives
+        â””â”€â”€ pipes/             # Data transformation pipes
 ```
 
 ---
 
-## 🧩 Feature Modules
+## ðŸ§© Feature Modules
 
-Each feature module is **lazy-loaded** — it is only downloaded by the browser when the user navigates to that route. This keeps the initial bundle small and app startup fast.
+Each feature module is **lazy-loaded** â€” it is only downloaded by the browser when the user navigates to that route. This keeps the initial bundle small and app startup fast.
 
-### 🏠 Landing
+### ðŸ  Landing
 The public marketing page, accessible without authentication. Introduces the platform and encourages registration.
 
-### 🔐 Authentication (`/auth`)
+### ðŸ” Authentication (`/auth`)
 Handles the complete authentication flow: login, registration, and password recovery. Protected by the `guestGuard` so authenticated users are automatically redirected to the dashboard. Uses Supabase GoTrue auth under the hood.
 
-### 🏪 Store Selection (`/select-store`)
+### ðŸª Store Selection (`/select-store`)
 After login, if a user belongs to multiple stores, they land here to choose which store context to work in. The selected store is persisted in `localStorage` for seamless future logins. Also hosts the **Accept Invite** page, where new members click their invitation link and join a store.
 
-### 📊 Dashboard (`/dashboard`)
+### ðŸ“Š Dashboard (`/dashboard`)
 The central command center. Shows:
 - Revenue summary and trend charts (ApexCharts)
 - Recent orders feed
@@ -222,7 +224,7 @@ The central command center. Shows:
 
 Access is limited to Owner, Admin, and Viewer roles. Delivery drivers are automatically redirected to the Orders module.
 
-### 📦 Products Catalog (`/products`)
+### ðŸ“¦ Products Catalog (`/products`)
 Full product management interface supporting:
 - **Products**: name, description, price, compare-at price, cost price, SKU, weight, dimensions, status (`draft`, `active`, `archived`, `out_of_stock`), featured flag, SEO metadata
 - **Categories**: hierarchical parent-child category structure with images and SEO fields
@@ -231,41 +233,41 @@ Full product management interface supporting:
 - **Tags**: flexible tagging system
 - Real-time stock level display and low-stock indicators
 
-### 📋 Orders (`/orders`)
+### ðŸ“‹ Orders (`/orders`)
 Complete order management:
 - Filterable and sortable order list with status, date, and customer search
 - Order detail view with full customer info, line items, pricing breakdown
-- **Status History** — every status change is logged with who changed it and when
+- **Status History** â€” every status change is logged with who changed it and when
 - Internal notes for staff communication
 - Payment and shipping tracking info
 - Customer notification suppression control
 
-### 👥 Customers (`/customers`)
+### ðŸ‘¥ Customers (`/customers`)
 CRM-style customer management:
 - Customer list with search and spend sorting
 - Customer profile: personal info, order history, total spent
 - Address management (shipping and billing addresses)
 - Guest vs. authenticated customer distinction
 
-### 🎟️ Coupons (`/coupons`)
+### ðŸŽŸï¸ Coupons (`/coupons`)
 Promotion engine:
-- **Percentage discounts** — "20% off"
-- **Fixed-amount discounts** — "$10 off"
+- **Percentage discounts** â€” "20% off"
+- **Fixed-amount discounts** â€” "$10 off"
 - **Free shipping** codes
 - Usage limits (total and per-customer)
 - Product and category applicability targeting
 - Validity period (start/end dates)
 - Usage tracking dashboard
 
-### ⭐ Reviews (`/reviews`)
+### â­ Reviews (`/reviews`)
 Product review moderation queue:
 - List of all reviews with status (`pending`, `approved`, `rejected`)
-- Rating display (1–5 stars)
+- Rating display (1â€“5 stars)
 - Approve/reject actions
 - Verified purchase badge
 - Review detail with customer info and associated order
 
-### 👤 Members (`/members`)
+### ðŸ‘¤ Members (`/members`)
 Team management for the Admin and Owner roles:
 - Current member list with roles
 - **Invite by email**: enter an address, assign a role, send. A Supabase Edge Function fires an invitation email with a secure token link.
@@ -273,7 +275,7 @@ Team management for the Admin and Owner roles:
 - Role update and member removal
 - RBAC roles: `owner`, `admin`, `editor`, `viewer`, `delivery`
 
-### ⚙️ Settings (`/settings`)
+### âš™ï¸ Settings (`/settings`)
 Multi-section store configuration:
 - **Business Info**: store name, contact email, phone
 - **Branding**: logo, favicon upload, primary/secondary/accent colors, font family, layout style
@@ -282,25 +284,25 @@ Multi-section store configuration:
 - **Tax Rates**: VAT/sales tax configuration by country and state
 - **Shipping Zones & Rates**: zone definitions and flat/weight/price-based shipping rates
 
-### 💳 Subscription (`/subscription`)
+### ðŸ’³ Subscription (`/subscription`)
 Billing and plan management:
 - Current plan display (Free, Basic, Professional, Enterprise)
 - Plan comparison and upgrade options
 - Billing history
 
-### 📊 Reports (`/reports`)
+### ðŸ“Š Reports (`/reports`)
 Analytics interface:
 - Sales reports with date range filtering
 - Revenue and order count charts (ApexCharts)
 - Export to Excel (xlsx)
 
-### 📉 Inventory History (`/inventory-history`)
+### ðŸ“‰ Inventory History (`/inventory-history`)
 Chronological log of all stock changes, helping store managers understand why inventory levels changed over time.
 
-### 🛒 Abandoned Carts (`/abandoned-carts`)
-Recovery tool showing sessions where shoppers added items to their cart but never completed checkout — a critical conversion optimization feature.
+### ðŸ›’ Abandoned Carts (`/abandoned-carts`)
+Recovery tool showing sessions where shoppers added items to their cart but never completed checkout â€” a critical conversion optimization feature.
 
-### 🌐 Store (Public Storefront — `/store`)
+### ðŸŒ Store (Public Storefront â€” `/store`)
 The customer-facing shopping experience, served under the same Angular SPA but behind a `storeGuard` that resolves the correct tenant from the subdomain or `?s=` query parameter:
 - **Home page**: configurable sections (hero banner, product grids)
 - **Products page**: browseable product listing with category filtering
@@ -313,7 +315,7 @@ The customer-facing shopping experience, served under the same Angular SPA but b
 
 ---
 
-## ⚙️ Core System Layer
+## âš™ï¸ Core System Layer
 
 The `core/` directory holds the infrastructure that every feature depends on. It is eagerly loaded and available across the entire application.
 
@@ -334,7 +336,7 @@ The `core/` directory holds the infrastructure that every feature depends on. It
 
 | Service | Responsibility |
 |---|---|
-| `TenantService` | Central tenant state management — loading, switching, settings, branding, members, invitations |
+| `TenantService` | Central tenant state management â€” loading, switching, settings, branding, members, invitations |
 | `AuthService` | Authentication state (login, logout, registration, session management via Supabase Auth) |
 | `AiAssistantService` | AI chatbot with Gemini function-calling to query live store data |
 | `ProductsService` | Product CRUD, image management, variant handling, category assignment |
@@ -383,14 +385,14 @@ HTTP interceptors handle cross-cutting concerns like:
 
 ---
 
-## 🧱 Shared Components & Utilities
+## ðŸ§± Shared Components & Utilities
 
 These components are designed to be generic and reusable across any feature module.
 
 | Component | Description |
 |---|---|
 | `app-dropdown` | Accessible, style-consistent dropdown replacing native `<select>`. Emits typed `DropdownOption` values. |
-| `app-dynamic-table` | Configurable data table with sortable columns, pagination, and action slots — used in orders, customers, products, and more |
+| `app-dynamic-table` | Configurable data table with sortable columns, pagination, and action slots â€” used in orders, customers, products, and more |
 | `app-date-picker` | Single-date calendar picker with custom styling |
 | `app-date-range-picker` | Two-date range picker for report filtering |
 | `app-toast` | Animated toast notification queue (success, error, warning, info) |
@@ -402,20 +404,20 @@ These components are designed to be generic and reusable across any feature modu
 
 ---
 
-## 🗄️ Database Design
+## ðŸ—„ï¸ Database Design
 
 The database schema, defined in `main.sql`, is a fully normalized PostgreSQL schema with **30+ tables**, **9 custom ENUM types**, **comprehensive indexing**, and **Row Level Security on every table**.
 
 ### Entity Groups
 
-#### 🏢 Tenant & Membership
+#### ðŸ¢ Tenant & Membership
 | Table | Description |
 |---|---|
 | `tenants` | Core store entity. Holds business info, branding (colors, logo), subscription plan, and JSONB settings for storefront layout |
 | `tenant_members` | Links users to tenants with a role assignment. Supports multi-store membership. |
 | `subscription_history` | Complete history of all plan changes and billing events per tenant |
 
-#### 📦 Product Catalog
+#### ðŸ“¦ Product Catalog
 | Table | Description |
 |---|---|
 | `products` | Core product: name, slug, pricing (sale vs. compare-at vs. cost), inventory, weight, SEO, status lifecycle |
@@ -426,36 +428,36 @@ The database schema, defined in `main.sql`, is a fully normalized PostgreSQL sch
 | `product_tags` | Flexible tagging, unique per tenant |
 | `product_tag_associations` | Many-to-many join between products and tags |
 
-#### 🛒 Orders & Payments
+#### ðŸ›’ Orders & Payments
 | Table | Description |
 |---|---|
 | `customers` | Buyer profiles, supporting both authenticated users and guests. Tracks `total_orders` and `total_spent`. |
 | `customer_addresses` | Saved addresses per customer (shipping/billing defaults) |
-| `orders` | Full order record with **address and product snapshots** — data is copied at order time so historical accuracy is preserved even if the customer or product changes later |
+| `orders` | Full order record with **address and product snapshots** â€” data is copied at order time so historical accuracy is preserved even if the customer or product changes later |
 | `order_items` | Line items with quantity, pricing, discount, and a `product_snapshot` JSONB for full fidelity |
 | `order_status_history` | Every status transition is recorded with timestamp, actor, and optional note |
 | `payments` | Payment transaction records linked to payment gateway responses |
 | `refunds` | Refund records with authorization tracking |
 
-#### 🎟️ Discounts
+#### ðŸŽŸï¸ Discounts
 | Table | Description |
 |---|---|
 | `discount_codes` | Configurable coupon codes. Supports percentage, fixed, and free-shipping types with product/category targeting |
 | `discount_usage` | Audit log of every time a coupon was applied, by whom, and how much was discounted |
 
-#### ⭐ Reviews
+#### â­ Reviews
 | Table | Description |
 |---|---|
 | `product_reviews` | Customer reviews with 1-5 star rating, moderation status, and verified-purchase flag |
 
-#### 📊 Analytics
+#### ðŸ“Š Analytics
 | Table | Description |
 |---|---|
 | `analytics_events` | Raw event stream: page views, product views, add-to-cart events with session context |
 | `daily_sales_summary` | Pre-aggregated daily sales figures for fast dashboard queries without scanning raw orders |
 | `product_performance` | Aggregated views, cart adds, purchases, and revenue per product per period |
 
-#### 🗃️ Media & Integrations
+#### ðŸ—ƒï¸ Media & Integrations
 | Table | Description |
 |---|---|
 | `media_library` | Centralized file store with folder organization, tag arrays, and usage tracking |
@@ -463,16 +465,16 @@ The database schema, defined in `main.sql`, is a fully normalized PostgreSQL sch
 | `email_logs` | History of all sent emails with delivery status |
 | `webhook_endpoints` | Configurable outbound webhook URLs with HMAC secret signing |
 | `webhook_deliveries` | Delivery attempt logs with retry logic |
-| `audit_logs` | Comprehensive audit trail: who did what, to which resource, when — with before/after values |
+| `audit_logs` | Comprehensive audit trail: who did what, to which resource, when â€” with before/after values |
 
-#### 🚚 Shipping & Tax
+#### ðŸšš Shipping & Tax
 | Table | Description |
 |---|---|
 | `shipping_zones` | Geographic zones defined by countries, states, or postal codes |
-| `shipping_rates` | Rates per zone — flat, weight-based, or order-value-based |
+| `shipping_rates` | Rates per zone â€” flat, weight-based, or order-value-based |
 | `tax_rates` | VAT/sales tax rates per country/state |
 
-#### ⚙️ Settings
+#### âš™ï¸ Settings
 | Table | Description |
 |---|---|
 | `tenant_settings` | Key-value store for arbitrary tenant settings (typed JSONB values) |
@@ -501,7 +503,7 @@ The schema is heavily indexed for common query patterns:
 
 ---
 
-## 🔐 Security & Multi-Tenancy
+## ðŸ” Security & Multi-Tenancy
 
 ### Row Level Security (RLS)
 
@@ -515,16 +517,16 @@ Key RLS helper functions:
 
 ```sql
 -- Returns all tenant IDs the current user belongs to
-user_tenant_ids() → UUID[]
+user_tenant_ids() â†’ UUID[]
 
 -- Checks if the current user owns a specific tenant
-is_tenant_owner(check_tenant_id UUID) → BOOLEAN
+is_tenant_owner(check_tenant_id UUID) â†’ BOOLEAN
 
 -- Checks if the current user is a platform superadmin
-is_superadmin() → BOOLEAN
+is_superadmin() â†’ BOOLEAN
 
 -- Returns the current user's role within a specific tenant
-user_tenant_role(check_tenant_id UUID) → TEXT
+user_tenant_role(check_tenant_id UUID) â†’ TEXT
 ```
 
 ### Role-Based Access Control (RBAC)
@@ -553,9 +555,9 @@ Tenants, products, and other key entities implement **soft deletion** using a `d
 
 ---
 
-## 🤖 AI Assistant Integration
+## ðŸ¤– AI Assistant Integration
 
-One of the platform's standout features is an embedded AI assistant powered by **Google Gemini (`gemini-3-flash-preview`)** with **function calling** — the model doesn't just generate text, it can invoke tools that query the real store database.
+One of the platform's standout features is an embedded AI assistant powered by **Google Gemini (`gemini-3-flash-preview`)** with **function calling** â€” the model doesn't just generate text, it can invoke tools that query the real store database.
 
 ### Architecture
 
@@ -587,11 +589,11 @@ This loop can repeat (multi-turn tool calling) until Gemini has all the informat
 
 ### Persistence
 
-Chat history is saved in `localStorage` with a 24-hour expiration — so conversations persist across page reloads but are automatically reset the next day.
+Chat history is saved in `localStorage` with a 24-hour expiration â€” so conversations persist across page reloads but are automatically reset the next day.
 
 ---
 
-## 🌐 Storefront Engine
+## ðŸŒ Storefront Engine
 
 The public storefront is served as part of the same Angular SPA but is entirely separate from the admin panel in terms of routing, guards, and components.
 
@@ -615,11 +617,11 @@ The `TenantService.storefrontLayout` computed signal provides a strongly-typed `
 
 ### Customer Authentication
 
-Storefront customers can create accounts and log in without leaving the shopping experience, via the `customer-auth-modal` shared component. This is separate from the merchant/staff authentication flow — storefront customers are regular `auth.users` entries in Supabase but are associated with customer records in the `customers` table.
+Storefront customers can create accounts and log in without leaving the shopping experience, via the `customer-auth-modal` shared component. This is separate from the merchant/staff authentication flow â€” storefront customers are regular `auth.users` entries in Supabase but are associated with customer records in the `customers` table.
 
 ---
 
-## ⚙️ Configuration
+## âš™ï¸ Configuration
 
 ### Supabase Storage Buckets
 
@@ -654,28 +656,15 @@ The project uses TypeScript path aliases configured in `tsconfig.json` for clean
 
 ---
 
-## �️ Roadmap
+## 🗺️ Roadmap
 
-The platform is actively under development. Here's what's planned for upcoming releases:
+Puedes ver el plan detallado de desarrollo, las próximas funcionalidades y las fases del proyecto en nuestro archivo dedicado:
 
-### 💳 Payments & Checkout
-- [ ] **Stripe integration** — real payment processing for the storefront checkout
-- [ ] **Invoice generation** — PDF invoice creation and download for completed orders
-
-### 🔔 Notifications & Communication
-- [ ] **Order status email notifications** — automatic transactional emails to customers on status changes
-- [ ] **Abandoned cart recovery emails** — scheduled emails to recover incomplete checkouts
-- [ ] **In-app notification center** — real-time alerts for new orders, low stock, and reviews
-
-
-### ⚙️ Platform & DevOps
-- [ ] **Subdomain routing in production** — proper `{slug}.venti.com` DNS routing for storefronts
-- [ ] **Webhook delivery UI** — configure and monitor outbound webhooks from the settings panel
-- [ ] **Webhook retry logic** — automatic retry on failed deliveries with exponential backoff
+👉 **[Ver ROADMAP.md](ROADMAP.md)**
 
 ---
 
-## �📝 License
+## ï¿½ðŸ“ ## 📝 License
 
 This project is open source and available under the [MIT License](LICENSE).
 
@@ -683,6 +672,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 <div align="center">
 
-**Built with ❤️**
+**Built with â¤ï¸**
 
 </div>
