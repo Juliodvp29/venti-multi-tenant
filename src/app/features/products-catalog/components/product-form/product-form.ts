@@ -123,7 +123,27 @@ export class ProductForm implements OnInit, OnDestroy {
                 this.selectedCategoryIds.set(new Set());
             }
         });
+
+        // Dynamic Validations: Inventory Tracking
+        this.form.get('track_inventory')?.valueChanges.subscribe(checked => {
+            const stockControl = this.form.get('stock_quantity');
+            if (checked) {
+                stockControl?.setValidators([Validators.required, Validators.min(0)]);
+            } else {
+                stockControl?.setValidators([Validators.min(0)]);
+            }
+            stockControl?.updateValueAndValidity();
+        });
+
+        // Dynamic Validations: Price vs Compare At Price
+        this.form.get('compare_at_price')?.valueChanges.subscribe(comparePrice => {
+            const price = this.form.get('price')?.value;
+            if (comparePrice && price && comparePrice <= price) {
+                this.toast.info('El precio de oferta suele ser menor al precio original');
+            }
+        });
     }
+
 
     ngOnInit() {
         this.aiService.hide();

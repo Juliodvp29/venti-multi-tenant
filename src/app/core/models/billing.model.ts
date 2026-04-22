@@ -36,45 +36,45 @@ export interface SubscriptionHistoryEntry extends BaseModel {
 export const BILLING_PLANS: BillingPlan[] = [
     {
         id: 'free',
-        name: 'Free',
+        name: 'Gratis',
         price: 0,
-        currency: 'USD',
+        currency: 'COP',
         interval: 'month',
-        description: 'Perfect to start and test all basic functions.',
-        features: ['Up to 50 Products', '5 Categories', '2 Team members', 'Community support'],
+        description: 'Todo lo que necesitas para lanzar tu primera tienda.',
+        features: ['Hasta 50 Productos', 'Categorías Básicas', '1 Miembro de equipo', 'Soporte Comunitario'],
         limitations: {
             products: 50,
             categories: 5,
-            members: 2,
+            members: 1,
             custom_domain: false,
-            transaction_fee: 5
-        }
-    },
-    {
-        id: 'basic',
-        name: 'Basic',
-        price: 15,
-        currency: 'USD',
-        interval: 'month',
-        description: 'The most affordable option to launch your professional brand.',
-        features: ['Up to 1,000 Products', 'Unlimited Categories', '5 Team members', 'Custom domain'],
-        isRecommended: true,
-        limitations: {
-            products: 1000,
-            categories: 9999,
-            members: 5,
-            custom_domain: true,
             transaction_fee: 2
         }
     },
     {
-        id: 'professional',
-        name: 'Pro',
-        price: 79,
-        currency: 'USD',
+        id: 'basic',
+        name: 'Emprendedor',
+        price: 23900,
+        currency: 'COP',
         interval: 'month',
-        description: 'Optimized for high volume and scaling brands.',
-        features: ['Up to 25,000 Products', 'Unlimited members', '24/7 Priority support', 'API access'],
+        description: 'La opción perfecta para profesionalizar tu marca en crecimiento.',
+        features: ['Hasta 1,000 Productos', 'Categorías Ilimitadas', '3 Miembros de equipo', 'Dominio Personalizado'],
+        isRecommended: true,
+        limitations: {
+            products: 1000,
+            categories: 9999,
+            members: 3,
+            custom_domain: true,
+            transaction_fee: 1
+        }
+    },
+    {
+        id: 'professional',
+        name: 'Negocio',
+        price: 60900,
+        currency: 'COP',
+        interval: 'month',
+        description: 'Optimizado para alto volumen y marcas en escala.',
+        features: ['Hasta 25,000 Productos', 'Miembros ilimitados', 'Soporte Prioritario 24/7', 'Acceso a API'],
         limitations: {
             products: 25000,
             categories: 9999,
@@ -85,12 +85,12 @@ export const BILLING_PLANS: BillingPlan[] = [
     },
     {
         id: 'enterprise',
-        name: 'Enterprise',
-        price: 299,
-        currency: 'USD',
+        name: 'Corporativo',
+        price: 199900,
+        currency: 'COP',
         interval: 'month',
-        description: 'Maximum performance for corporate operations.',
-        features: ['Unlimited products', 'Dedicated infrastructure', 'Account Manager', 'Guaranteed SLA'],
+        description: 'Máximo rendimiento para operaciones a gran escala.',
+        features: ['Productos Ilimitados', 'Infraestructura Dedicada', 'Account Manager', 'SLA Garantizado'],
         limitations: {
             products: 999999,
             categories: 999999,
@@ -100,3 +100,4 @@ export const BILLING_PLANS: BillingPlan[] = [
         }
     }
 ];
+

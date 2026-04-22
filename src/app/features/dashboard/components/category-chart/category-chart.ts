@@ -102,13 +102,13 @@ export class CategoryChart {
   });
 
   currencyFormat(val: number): string {
-    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'USD' }).format(val);
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(val);
   }
 
   compactCurrencyFormat(val: number): string {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat('es-CO', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'COP',
       notation: 'compact',
       maximumFractionDigits: 1
     }).format(val);

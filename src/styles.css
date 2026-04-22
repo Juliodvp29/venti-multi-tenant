@@ -172,13 +172,15 @@
      ═══════════════════════════════════════════════════════════ */
 
     /* Form Inputs */
-    --input-bg: white;
-    --input-border: var(--color-gray-300);
-    --input-border-focus: var(--color-primary-500);
+    --input-bg: #ffffff;
+    --input-border: #e2e8f0; /* slate-200 for a cleaner look */
+    --input-border-hover: #cbd5e1; /* slate-300 */
+    --input-border-focus: var(--color-primary-600);
     --input-text: var(--color-gray-900);
     --input-placeholder: var(--color-gray-400);
-    --input-disabled-bg: var(--color-gray-100);
-    --input-disabled-text: var(--color-gray-500);
+    --input-disabled-bg: var(--color-gray-50);
+    --input-disabled-text: var(--color-gray-400);
+    --input-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 
     /* Buttons */
     --button-primary-bg: var(--color-primary-600);
@@ -200,35 +202,18 @@
     --auth-gradient-to: var(--color-secondary-500);
 }
 
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* Form Inputs - Dark Mode */
-        --input-bg: var(--color-gray-800);
-        --input-border: var(--color-gray-700);
-        --input-border-focus: var(--color-primary-400);
-        --input-text: var(--color-gray-100);
-        --input-placeholder: var(--color-gray-500);
-        --input-disabled-bg: var(--color-gray-900);
-        --input-disabled-text: var(--color-gray-600);
-
-        /* Buttons - Dark Mode */
-        --button-primary-bg: var(--color-primary-500);
-        --button-primary-hover: var(--color-primary-600);
-        --button-secondary-bg: var(--color-gray-700);
-        --button-secondary-hover: var(--color-gray-600);
-        --button-secondary-text: var(--color-gray-100);
-
-        /* Cards - Dark Mode */
-        --card-bg: var(--color-gray-800);
-        --card-border: var(--color-gray-700);
-        --card-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
-
-        /* Auth Specific - Dark Mode */
-        --auth-bg: var(--color-gray-950);
-        --auth-card-bg: var(--color-gray-900);
-    }
+/* Dark Mode - We will only use this if the user explicitly wants a dark theme via a class, 
+   but for now let's ensure inputs are light and clear as requested. */
+:root {
+    /* Ensure inputs are always light and premium by default */
+    --input-bg: #ffffff;
+    --input-border: #cbd5e1; /* slate-300 for better visibility */
+    --input-border-hover: #94a3b8; /* slate-400 */
+    --input-border-focus: var(--color-primary-600);
+    --input-text: #0f172a; /* slate-900 for sharp text */
+    --input-placeholder: #94a3b8;
 }
+
 
 html,
 body {
@@ -241,6 +226,53 @@ body {
 /* Smooth Scrolling */
 * {
     scroll-behavior: smooth;
+}
+
+/* Global Form Styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="url"],
+input[type="date"],
+textarea,
+select {
+    background-color: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border: 1px solid var(--input-border) !important;
+    box-shadow: var(--input-shadow);
+    transition: all var(--transition-base);
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="tel"]:hover,
+input[type="number"]:hover,
+textarea:hover,
+select:hover {
+    border-color: var(--input-border-hover) !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--input-border-focus) !important;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--input-border-focus);
+}
+
+input[readonly],
+input[disabled] {
+    background-color: var(--input-disabled-bg) !important;
+    color: var(--input-disabled-text) !important;
+    cursor: not-allowed;
+    border-color: var(--input-border) !important;
 }
 
 /* Focus Styles */
