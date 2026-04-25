@@ -214,6 +214,17 @@
     --input-placeholder: #94a3b8;
 }
 
+/* Scoped utility for inputs on dark backgrounds (like tables) */
+.dark-inputs {
+    --input-bg: #1e293b; /* gray-800 */
+    --input-text: #f8fafc; /* slate-50 */
+    --input-border: #334155; /* slate-700 */
+    --input-border-hover: #475569; /* slate-600 */
+    --input-border-focus: var(--color-primary-500);
+    --input-placeholder: #64748b; /* slate-500 */
+}
+
+
 
 html,
 body {
