@@ -7,10 +7,11 @@ import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { ReviewModerationModal } from './review-moderation-modal';
 import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
+import { Dropdown } from '@shared/components/dropdown/dropdown';
 
 @Component({
   selector: 'app-reviews',
-  imports: [CommonModule, DynamicTable, ReviewModerationModal, FormsModule],
+  imports: [CommonModule, DynamicTable, ReviewModerationModal, FormsModule, Dropdown],
   templateUrl: './reviews.html',
   styleUrl: './reviews.css',
 })
@@ -18,8 +19,20 @@ export class Reviews {
   private readonly reviewsService = inject(ReviewsService);
   private readonly tenantService = inject(TenantService);
 
+  readonly statusOptions = [
+    { label: 'Todos los estados', value: 'all' },
+    { label: 'Pendientes', value: 'pending' },
+    { label: 'Aprobadas', value: 'approved' },
+    { label: 'Rechazadas', value: 'rejected' },
+  ];
+
   reviews = signal<ProductReview[]>([]);
-  stats = signal<{ average: number; total: number; pending: number; averageTrend: number }>({ average: 0, total: 0, pending: 0, averageTrend: 0 });
+  stats = signal<{ average: number; total: number; pending: number; averageTrend: number }>({
+    average: 0,
+    total: 0,
+    pending: 0,
+    averageTrend: 0,
+  });
   isLoading = signal(true);
   totalItems = signal(0);
   currentPage = signal(1);
@@ -42,34 +55,34 @@ export class Reviews {
     {
       key: 'product',
       label: 'Producto',
-      formatter: (val, item) => item.product?.name || 'Producto eliminado'
+      formatter: (val, item) => item.product?.name || 'Producto eliminado',
     },
     {
       key: 'customer',
       label: 'Cliente',
-      formatter: (val, item) => `${item.customer?.first_name} ${item.customer?.last_name || ''}`
+      formatter: (val, item) => `${item.customer?.first_name} ${item.customer?.last_name || ''}`,
     },
     {
       key: 'rating',
       label: 'Valoración',
       type: 'text',
-      formatter: (val) => '⭐'.repeat(val as number)
+      formatter: (val) => '⭐'.repeat(val as number),
     },
     {
       key: 'review',
       label: 'Contenido',
-      formatter: (val) => (val as string)?.substring(0, 50) + '...'
+      formatter: (val) => (val as string)?.substring(0, 50) + '...',
     },
     {
       key: 'status',
       label: 'Estado',
-      type: 'text'
+      type: 'text',
     },
     {
       key: 'created_at',
       label: 'Fecha',
-      type: 'date'
-    }
+      type: 'date',
+    },
   ];
 
   actions: TableAction<ProductReview>[] = [
@@ -77,10 +90,9 @@ export class Reviews {
       id: 'moderate',
       label: 'Moderar',
       icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>',
-      callback: (item) => this.selectedReview.set(item)
-    }
+      callback: (item) => this.selectedReview.set(item),
+    },
   ];
-
 
   async loadData() {
     this.isLoading.set(true);
@@ -89,7 +101,7 @@ export class Reviews {
       const { data, count } = await this.reviewsService.getAdminReviews(
         this.currentPage(),
         this.pageSize(),
-        this.statusFilter()
+        this.statusFilter(),
       );
       this.reviews.set(data);
       this.totalItems.set(count);
