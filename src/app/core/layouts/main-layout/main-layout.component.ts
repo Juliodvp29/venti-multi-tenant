@@ -19,7 +19,12 @@ import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assista
       }
 
       <!-- Sidebar -->
-      <app-sidebar [isOpen]="isSidebarOpen()" />
+      <app-sidebar 
+        [isOpen]="isSidebarOpen()" 
+        [isCollapsed]="isSidebarCollapsed()"
+        (toggleCollapse)="toggleCollapse()"
+      />
+
 
       <!-- Content area -->
       <div class="flex-1 flex flex-col overflow-hidden w-full">
@@ -39,12 +44,18 @@ import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assista
 })
 export class MainLayoutComponent {
   readonly isSidebarOpen = signal(false);
+  readonly isSidebarCollapsed = signal(false);
 
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);
+  }
+
+  toggleCollapse() {
+    this.isSidebarCollapsed.update(v => !v);
   }
 
   closeSidebar() {
     this.isSidebarOpen.set(false);
   }
 }
+

@@ -7,19 +7,15 @@ import { StatCard } from './components/stat-card/stat-card';
 import { SalesChart } from './components/sales-chart/sales-chart';
 import { CategoryChart } from './components/category-chart/category-chart';
 import { TopProducts, DashboardProduct } from './components/top-products/top-products';
-import { RecentTransactions, DashboardTransaction } from './components/recent-transactions/recent-transactions';
+import {
+  RecentTransactions,
+  DashboardTransaction,
+} from './components/recent-transactions/recent-transactions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  imports: [
-    CommonModule,
-    StatCard,
-    SalesChart,
-    CategoryChart,
-    TopProducts,
-    RecentTransactions
-  ],
+  imports: [CommonModule, StatCard, SalesChart, CategoryChart, TopProducts, RecentTransactions],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -68,7 +64,7 @@ export class Dashboard {
       this.loadSalesChart(),
       this.loadCategories(),
       this.loadTopProducts(),
-      this.loadRecentOrders()
+      this.loadRecentOrders(),
     ]);
   }
 
@@ -91,10 +87,12 @@ export class Dashboard {
 
   private async loadSalesChart() {
     const monthlyData = await this.analytics.getMonthlySales();
-    this.salesSeries.set([{
-      name: 'Ingresos',
-      data: monthlyData
-    }]);
+    this.salesSeries.set([
+      {
+        name: 'Ingresos',
+        data: monthlyData,
+      },
+    ]);
   }
 
   private async loadCategories() {
@@ -112,39 +110,45 @@ export class Dashboard {
       top.push({ name: 'Otros', value: othersTotal });
     }
 
-    this.categorySeries.set(top.map(d => d.value));
-    this.categoryLabels.set(top.map(d => d.name));
+    this.categorySeries.set(top.map((d) => d.value));
+    this.categoryLabels.set(top.map((d) => d.name));
   }
 
   private async loadTopProducts() {
     const performance = await this.analytics.getProductPerformance();
-    this.topProducts.set((performance as any[]).map(p => ({
-      id: p.product_id,
-      name: p.product?.name || 'Producto',
-      category: 'General',
-      sales: p.purchases,
-      revenue: `$${(p.revenue / 1000).toFixed(1)}k`,
-      image: p.product?.product_images?.find((img: any) => img.is_primary)?.url || p.product?.product_images?.[0]?.url
-    })));
+    this.topProducts.set(
+      (performance as any[]).map((p) => ({
+        id: p.product_id,
+        name: p.product?.name || 'Producto',
+        category: 'General',
+        sales: p.purchases,
+        revenue: `$${(p.revenue / 1000).toFixed(1)}k`,
+        image:
+          p.product?.product_images?.find((img: any) => img.is_primary)?.url ||
+          p.product?.product_images?.[0]?.url,
+      })),
+    );
   }
 
   private async loadRecentOrders() {
     const { data } = await this.ordersService.getOrders(1, 5);
-    this.recentTransactions.set((data as any[]).map(o => {
-      const first = o.customer_first_name || 'Invitado';
-      const last = o.customer_last_name || '';
-      const fullName = (first + ' ' + last).trim();
+    this.recentTransactions.set(
+      (data as any[]).map((o) => {
+        const first = o.customer_first_name || 'Invitado';
+        const last = o.customer_last_name || '';
+        const fullName = (first + ' ' + last).trim();
 
-      return {
-        id: o.order_number,
-        customerName: fullName,
-        customerInitial: (first?.[0] || 'I') + (last?.[0] || ''),
-        product: 'Múltiples artículos',
-        date: new Date(o.created_at).toLocaleDateString(),
-        amount: o.total_amount,
-        status: this.mapStatus(o.status)
-      };
-    }));
+        return {
+          id: o.order_number,
+          customerName: fullName,
+          customerInitial: (first?.[0] || 'I') + (last?.[0] || ''),
+          product: 'Múltiples artículos',
+          date: new Date(o.created_at).toLocaleDateString(),
+          amount: o.total_amount,
+          status: this.mapStatus(o.status),
+        };
+      }),
+    );
   }
 
   private mapStatus(status: string): 'Completada' | 'Pendiente' | 'Cancelada' {
