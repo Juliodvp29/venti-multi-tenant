@@ -101,8 +101,8 @@ import { SeoService } from '@core/services/seo';
             </nav>
 
             <h1 class="text-4xl font-bold text-slate-900 mb-2">{{ product()?.name }}</h1>
-            <div class="flex items-center gap-4 mb-6">
-              <span class="text-3xl font-bold" [style.color]="'var(--primary-color)'">{{ displayPrice() | currency }}</span>
+            <div class="flex items-center gap-4 mb-6 text-slate-900">
+              <span class="text-3xl font-bold">{{ displayPrice() | currency }}</span>
               @if (displayComparePrice()) {
                 <span class="text-xl text-slate-400 line-through">{{ displayComparePrice() | currency }}</span>
               }
