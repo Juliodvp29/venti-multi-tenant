@@ -193,6 +193,8 @@ export interface AuditLog {
 
 export * from './storefront.model';
 
+export * from './commission';
+
 export interface ApiResponse<T> {
   data: T | null;
   error: ApiError | null;
