@@ -17,7 +17,8 @@ export type AppModule =
     | 'reports'
     | 'reviews'
     | 'subscription'
-    | 'settings';
+    | 'settings'
+    | 'commissions';
 
 /**
  * Permission matrix — defines which roles can access each module.
@@ -36,6 +37,7 @@ const ROLE_PERMISSIONS: Record<AppModule, TenantRole[]> = {
     reviews: [TenantRole.Owner, TenantRole.Admin, TenantRole.Editor],
     subscription: [TenantRole.Owner, TenantRole.Admin],
     settings: [TenantRole.Owner, TenantRole.Admin],
+    commissions: [TenantRole.Owner, TenantRole.Admin],
 };
 
 @Injectable({
