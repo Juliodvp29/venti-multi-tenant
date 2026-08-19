@@ -11,11 +11,12 @@ import {
   RecentTransactions,
   DashboardTransaction,
 } from './components/recent-transactions/recent-transactions';
+import { CommissionSummaryCard } from './components/commission-summary-card/commission-summary-card';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  imports: [CommonModule, StatCard, SalesChart, CategoryChart, TopProducts, RecentTransactions],
+  imports: [CommonModule, StatCard, SalesChart, CategoryChart, TopProducts, RecentTransactions, CommissionSummaryCard],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
