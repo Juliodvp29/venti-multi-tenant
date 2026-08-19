@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ElementRef, AfterViewInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +17,7 @@ export class Landing implements AfterViewInit, OnDestroy {
   private readonly seo = inject(SeoService);
   private observer: IntersectionObserver | null = null;
   readonly plans = BILLING_PLANS;
+  readonly mobileMenuOpen = signal(false);
 
   readonly footerLinks = [
     {
@@ -89,6 +90,7 @@ export class Landing implements AfterViewInit, OnDestroy {
   }
 
   scrollToSection(id: string) {
+    this.mobileMenuOpen.set(false);
     const element = document.getElementById(id);
     if (element) {
       const offset = 80;
