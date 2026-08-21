@@ -1,0 +1,98 @@
+<div class="space-y-6">
+  <div>
+    <h2 class="text-2xl font-semibold text-gray-900">Comisiones por Venta</h2>
+    <p class="text-gray-500 mt-1">
+      La tasa de comisión se determina automáticamente según tu plan de suscripción actual. No es configurable.
+    </p>
+  </div>
+
+  <!-- Current Plan Commission Card -->
+  <div class="card p-6 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border-indigo-200 dark:border-indigo-800">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182C9.464 5.781 10.232 6 11 6c.776 0 1.579-.22 2.243-.659.855-.558 1.873-.659 2.756-.275a48.215 48.215 0 015.111 5.5" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tu plan actual</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white capitalize">{{ currentPlan()?.plan || 'Free' }}</p>
+        </div>
+      </div>
+      <div class="text-center md:text-right">
+        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Comisión por venta</p>
+        <p class="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">{{ currentPlanCommission() }}%</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Se descuenta automáticamente de cada transacción</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Plans Reference Table -->
+  <div class="card overflow-hidden">
+    <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Tasas por Plan</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Referencia de comisiones según el plan de suscripción</p>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50 dark:bg-gray-900/50">
+          <tr class="border-b border-gray-200 dark:border-gray-800">
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comisión por Venta</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Tu Plan</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+          @for (p of plansInfo; track p.plan) {
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50" [class.bg-indigo-50]="p.plan === currentPlan()?.plan" [class.dark:bg-indigo-900/10]="p.plan === currentPlan()?.plan">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-3 py-1 text-xs font-medium rounded-full"
+                      [class.bg-blue-100]="p.plan === 'free'"
+                      [class.text-blue-800]="p.plan === 'free'"
+                      [class.bg-green-100]="p.plan === 'basic'"
+                      [class.text-green-800]="p.plan === 'basic'"
+                      [class.bg-purple-100]="p.plan === 'professional'"
+                      [class.text-purple-800]="p.plan === 'professional'"
+                      [class.bg-yellow-100]="p.plan === 'enterprise'"
+                      [class.text-yellow-800]="p.plan === 'enterprise'">
+                  {{ p.label }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap  text-gray-500 dark:text-gray-400">
+                <span class="font-semibold text-lg">{{ p.commissionRate }}%</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ p.description }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                @if (p.plan === currentPlan()?.plan) {
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400">
+                    ✓ Actual
+                  </span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Info Note -->
+  <div class="card p-4 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+    <div class="flex gap-3">
+      <svg class="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <div>
+        <p class="text-sm font-medium text-amber-800 dark:text-amber-200">Cómo funciona</p>
+        <ul class="mt-2 text-sm text-amber-700 dark:text-amber-300 space-y-1 list-disc list-inside">
+          <li>La comisión se calcula sobre el monto total de cada transacción exitosa</li>
+          <li>Se descuenta automáticamente al procesar el pago (webhook)</li>
+          <li>Al cambiar de plan, la nueva tasa aplica a transacciones futuras</li>
+          <li>Puedes ver el detalle de comisiones en <a href="/commissions" class="underline hover:text-amber-600 dark:hover:text-amber-400">Reportes → Comisiones</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

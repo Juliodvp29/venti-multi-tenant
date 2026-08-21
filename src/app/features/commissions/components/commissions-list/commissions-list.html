@@ -1,0 +1,176 @@
+<div class="space-y-6 pb-24">
+    <!-- Status Templates -->
+    <ng-template #statusTemplate let-status>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="getStatusClass(status)">
+            {{ formatStatus(status) }}
+        </span>
+    </ng-template>
+
+    <ng-template #gatewayTemplate let-gateway>
+        <span class="font-medium text-sm text-gray-900 dark:text-white">{{ gateway.toUpperCase() }}</span>
+    </ng-template>
+
+    <ng-template #rateTemplate let-rate>
+        <span class="font-medium text-gray-900 dark:text-white">{{ rate }}%</span>
+    </ng-template>
+
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Comisiones</h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Historial de comisiones generadas por transacciones procesadas.</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
+            <div
+                class="flex-shrink-0 w-10 h-10 rounded-xl bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 dark:text-yellow-400" fill="none"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </div>
+            <div>
+                @if (isLoading()) {
+                    <div class="h-7 w-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                } @else {
+                    <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ totalPending() }}</p>
+                }
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Pendientes</p>
+            </div>
+        </div>
+
+        <div
+            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
+            <div
+                class="flex-shrink-0 w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 dark:text-green-400" fill="none"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                </svg>
+            </div>
+            <div>
+                @if (isLoading()) {
+                    <div class="h-7 w-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                } @else {
+                    <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ totalPaid() }}</p>
+                }
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Pagadas</p>
+            </div>
+        </div>
+
+        <div
+            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
+            <div
+                class="flex-shrink-0 w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800/30 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+                </svg>
+            </div>
+            <div>
+                @if (isLoading()) {
+                    <div class="h-7 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                } @else {
+                    <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ totalAmount() | currency:'USD':'symbol':'1.0-0' }}</p>
+                }
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Total Histórico</p>
+            </div>
+        </div>
+
+        <div
+            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
+            <div
+                class="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182C9.464 5.781 10.232 6 11 6c.776 0 1.579-.22 2.243-.659.855-.558 1.873-.659 2.756-.275a48.215 48.215 0 015.111 5.5" />
+                </svg>
+            </div>
+            <div>
+                @if (isLoading()) {
+                    <div class="h-7 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                } @else {
+                    <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ thisMonthAmount() | currency:'USD':'symbol':'1.0-0' }}</p>
+                }
+                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Este Mes</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State (initial load only) -->
+    @if (isLoading() && commissions().length === 0) {
+        <div class="flex items-center justify-center py-20">
+            <div class="flex flex-col items-center gap-3">
+                <svg class="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Cargando comisiones...</p>
+            </div>
+        </div>
+    }
+
+    <!-- Table -->
+    @if (commissions().length > 0 || !isLoading()) {
+        <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
+            [class.pointer-events-none]="isLoading()">
+            <app-dynamic-table
+                [data]="commissions()"
+                [columns]="columns()"
+                [title]="'Comisiones'"
+                [description]="'Gestiona y revisa las comisiones de tu tienda.'"
+                searchPlaceholder="Buscar por Transacción ID o Pago ID..."
+                [totalItemsOverride]="totalCount()"
+                [pageSize]="PAGE_SIZE"
+                (pageChange)="loadData($event)"
+                (searchChange)="onSearchChange($event)">
+
+                <!-- Filters Slot -->
+                <div filters class="flex items-center gap-2">
+                    <!-- Status filter -->
+                    <app-dropdown
+                        [options]="statusDropdownOptions"
+                        [value]="statusFilter()"
+                        (valueChange)="onStatusFilterChange($event)"
+                        width="w-44"
+                        placeholder="Estado" />
+
+                    <!-- Gateway filter -->
+                    <app-dropdown
+                        [options]="gatewayDropdownOptions()"
+                        [value]="''"
+                        (valueChange)="onGatewayFilterChange($event)"
+                        width="w-44"
+                        placeholder="Gateway" />
+
+                    <!-- Date range picker -->
+                    <app-date-range-picker
+                        [(value)]="dateRange"
+                        placeholder="Rango de fechas"
+                        (rangeChange)="onDateRangeChange($event)" />
+                </div>
+
+            </app-dynamic-table>
+        </div>
+    }
+
+    <!-- Empty State -->
+    @if (commissions().length === 0 && !isLoading()) {
+        <div class="card p-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No se encontraron comisiones</h3>
+            <p class="mt-1 text-sm text-gray-500">Intenta ajustar los filtros o espera a que se procesen transacciones.</p>
+        </div>
+    }
+</div>

@@ -100,6 +100,11 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () => import('@features/reports/reports').then((m) => m.Reports),
       },
+      {
+        path: 'commissions',
+        canActivate: [adminGuard],
+        loadChildren: () => import('@features/commissions/commissions.routes').then((m) => m.COMMISSIONS_ROUTES),
+      },
     ],
   },
   {
