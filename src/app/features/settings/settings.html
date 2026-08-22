@@ -1,5 +1,21 @@
-Comisiones por Venta<div
-    class="max-w-[1600px] mx-auto h-screen overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-gray-950 transition-colors duration-300">
+<div
+    class="relative max-w-[1600px] mx-auto h-screen overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-gray-950 transition-colors duration-300">
+
+    @if (!tenant() && isTenantLoading()) {
+    <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/90 p-6 backdrop-blur-sm dark:bg-gray-950/90">
+        <div class="w-full max-w-md space-y-4">
+            <div class="h-7 w-56 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-800"></div>
+            <div class="h-4 w-80 max-w-full animate-pulse rounded bg-gray-200 dark:bg-gray-800"></div>
+            <div class="mt-8 grid grid-cols-3 gap-3">
+                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
+                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
+                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
+            </div>
+            <div class="h-48 animate-pulse rounded-2xl bg-gray-100 dark:bg-gray-900"></div>
+            <p class="pt-2 text-center text-sm font-medium text-gray-500 dark:text-gray-400">Preparando la configuración...</p>
+        </div>
+    </div>
+    }
 
     <div
         class="flex-1 lg:max-w-2xl xl:max-w-3xl border-r border-gray-100 dark:border-gray-800 flex flex-col h-full overflow-hidden">
@@ -83,16 +99,19 @@ Comisiones por Venta<div
             }
 
             <!-- Tabs -->
-            <nav class="-mb-px flex space-x-1 mt-6 overflow-x-auto scrollbar-thin" aria-label="Secciones de configuración" role="tablist">
+            <nav class="-mb-px mt-8 flex items-start gap-5 border-t border-gray-100 pt-4 overflow-x-auto scrollbar-thin dark:border-gray-800" aria-label="Secciones de configuración" role="tablist">
                 @for (group of tabGroups; track group.label) {
-                <div class="mr-4 flex shrink-0 items-center gap-1 border-r border-gray-200 pr-4 last:border-0 last:pr-0 dark:border-gray-800">
-                    <span class="mr-2 hidden text-[10px] font-bold uppercase tracking-wider text-gray-400 xl:inline">{{ group.label }}</span>
+                <div class="flex shrink-0 flex-col gap-1.5 border-r border-gray-200 pr-5 last:border-0 last:pr-0 dark:border-gray-800">
+                    <span class="px-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ group.label }}</span>
+                    <div class="flex items-center gap-1">
                 @for (tab of group.tabs; track tab.id) {
                 <button type="button" (click)="setActiveTab(tab.id)" role="tab" [attr.aria-selected]="activeTab() === tab.id"
                     [attr.aria-controls]="'settings-panel-' + tab.id" [id]="'settings-tab-' + tab.id"
-                    class="inline-flex items-center gap-1.5 whitespace-nowrap border-b-2 py-3.5 px-1 mr-6 text-sm font-semibold transition-all"
+                    class="inline-flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-lg border-b-2 px-3 text-sm font-semibold transition-all"
                     [class.border-indigo-500]="activeTab() === tab.id" [class.text-indigo-600]="activeTab() === tab.id"
                     [class.dark:text-indigo-400]="activeTab() === tab.id"
+                    [class.bg-indigo-50]="activeTab() === tab.id"
+                    [class.dark:bg-indigo-900\/20]="activeTab() === tab.id"
                     [class.border-transparent]="activeTab() !== tab.id" [class.text-gray-500]="activeTab() !== tab.id"
                     [class.hover:text-gray-700]="activeTab() !== tab.id"
                     [class.dark:hover:text-gray-300]="activeTab() !== tab.id">
@@ -100,6 +119,7 @@ Comisiones por Venta<div
                     {{ tab.label }}
                 </button>
                 }
+                    </div>
                 </div>
                 }
             </nav>
@@ -182,7 +202,8 @@ Comisiones por Venta<div
 
             <!-- Viewport toggle -->
             <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg gap-0.5">
-                <button (click)="setViewMode('desktop')"
+                <button type="button" (click)="setViewMode('desktop')" aria-label="Vista previa de escritorio"
+                    [attr.aria-pressed]="viewMode() === 'desktop'" title="Vista de escritorio"
                     class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
                     [class.bg-white]="viewMode() === 'desktop'" [class.dark:bg-gray-700]="viewMode() === 'desktop'"
                     [class.shadow-sm]="viewMode() === 'desktop'" [class.text-gray-900]="viewMode() === 'desktop'"
@@ -192,7 +213,8 @@ Comisiones por Venta<div
                             d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                 </button>
-                <button (click)="setViewMode('mobile')"
+                <button type="button" (click)="setViewMode('mobile')" aria-label="Vista previa móvil"
+                    [attr.aria-pressed]="viewMode() === 'mobile'" title="Vista móvil"
                     class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
                     [class.bg-white]="viewMode() === 'mobile'" [class.dark:bg-gray-700]="viewMode() === 'mobile'"
                     [class.shadow-sm]="viewMode() === 'mobile'" [class.text-gray-900]="viewMode() === 'mobile'"

@@ -47,6 +47,7 @@ export class Settings {
   readonly viewMode = signal<'desktop' | 'mobile'>('desktop');
   readonly showMobilePreview = signal(false);
   readonly tenant = this.tenantService.currentTenant;
+  readonly isTenantLoading = this.tenantService.loading;
   readonly storeUrl = this.tenantService.storeUrl;
   readonly hasUnsavedChanges = signal(false);
   readonly brandingSection = viewChild(SettingsBranding);
