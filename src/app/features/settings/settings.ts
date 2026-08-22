@@ -11,6 +11,7 @@ import { SettingsStorefront } from './components/settings-storefront/settings-st
 import { SettingsCommissions } from './components/settings-commissions/settings-commissions';
 import { SettingsTheme } from './components/settings-theme/settings-theme';
 import { ToastService } from '@core/services/toast';
+import { PreviewSyncService } from '@core/services/preview-sync.service';
 
 import { StorefrontLayout, ThemeTokens } from '@core/models';
 
@@ -55,6 +56,9 @@ type Tab = 'general' | 'theme' | 'branding' | 'address' | 'shipping-taxes' | 'st
 export class Settings {
   private readonly tenantService = inject(TenantService);
   private readonly toastService = inject(ToastService);
+  private readonly previewSyncService = inject(PreviewSyncService);
+
+  readonly isPopoutOpen = this.previewSyncService.isPopoutOpen;
 
   readonly activeTab = signal<Tab>('theme');
   readonly viewMode = signal<'desktop' | 'mobile'>('desktop');
@@ -220,6 +224,16 @@ export class Settings {
     this.viewMode.set('mobile');
   }
 
+  openPreviewPopout(): void {
+    // Seed the service with current data before opening
+    this.previewSyncService.broadcastPreview(this.fullPreviewData());
+    this.previewSyncService.openPopout();
+  }
+
+  closePreviewPopout(): void {
+    this.previewSyncService.closePopout();
+  }
+
   async copyStoreUrl() {
     try {
       const storeUrl = this.storeUrl();
@@ -245,13 +259,20 @@ export class Settings {
       font_family: tokens.font_heading,
       themeTokens: tokens
     }));
+    this.broadcastCurrentPreview();
   }
 
   updatePreview(branding: any) {
     this.previewData.update(prev => ({ ...prev, ...branding }));
+    this.broadcastCurrentPreview();
   }
 
   updateStorefrontPreview(layout: StorefrontLayout) {
     this.previewData.update(prev => ({ ...prev, storefront_layout: layout }));
+    this.broadcastCurrentPreview();
+  }
+
+  private broadcastCurrentPreview(): void {
+    this.previewSyncService.broadcastPreview(this.fullPreviewData());
   }
 }

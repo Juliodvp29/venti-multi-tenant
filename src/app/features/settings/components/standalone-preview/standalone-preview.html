@@ -1,0 +1,69 @@
+<div class="flex flex-col h-screen w-screen bg-slate-100 dark:bg-gray-950">
+
+    <!-- Top Bar -->
+    <div class="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0">
+
+        <!-- Left: Status -->
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+                <span class="text-sm font-bold text-gray-900 dark:text-white">Vista Previa de Tienda</span>
+            </div>
+
+            @if (isConnected()) {
+            <div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                En vivo · Sincronizando
+            </div>
+            } @else {
+            <div class="flex items-center gap-1.5 text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                Esperando conexión...
+            </div>
+            }
+        </div>
+
+        <!-- Center: Viewport toggle -->
+        <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg gap-0.5">
+            <button type="button" (click)="setViewMode('desktop')" aria-label="Vista de escritorio"
+                class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
+                [class.bg-white]="viewMode() === 'desktop'" [class.dark:bg-gray-700]="viewMode() === 'desktop'"
+                [class.shadow-sm]="viewMode() === 'desktop'" [class.text-gray-900]="viewMode() === 'desktop'"
+                [class.dark:text-white]="viewMode() === 'desktop'">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+            </button>
+            <button type="button" (click)="setViewMode('mobile')" aria-label="Vista móvil"
+                class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
+                [class.bg-white]="viewMode() === 'mobile'" [class.dark:bg-gray-700]="viewMode() === 'mobile'"
+                [class.shadow-sm]="viewMode() === 'mobile'" [class.text-gray-900]="viewMode() === 'mobile'"
+                [class.dark:text-white]="viewMode() === 'mobile'">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Right: Info -->
+        <div class="flex items-center gap-3">
+            @if (lastUpdate(); as date) {
+            <span class="text-[10px] font-medium text-gray-400 dark:text-gray-500">
+                Última actualización: {{ date | date:'HH:mm:ss' }}
+            </span>
+            }
+            <span class="text-[10px] text-gray-400 dark:text-gray-500">
+                Powered by <span class="font-bold text-indigo-500">Venti</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Preview Area -->
+    <div class="flex-1 min-h-0 overflow-hidden">
+        <app-store-preview [data]="previewData()" />
+    </div>
+</div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
+import { PreviewSyncService } from '@core/services/preview-sync.service';
 import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption } from '@core/models';
 import { THEME_PRESETS, AVAILABLE_FONTS } from '@core/constants/theme-presets';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
@@ -17,6 +18,9 @@ import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 export class SettingsTheme {
     private readonly tenantService = inject(TenantService);
     private readonly toastService = inject(ToastService);
+    private readonly previewSyncService = inject(PreviewSyncService);
+
+    readonly isPopoutOpen = this.previewSyncService.isPopoutOpen;
 
     readonly themeChange = output<ThemeTokens>();
     readonly dirtyChange = output<boolean>();

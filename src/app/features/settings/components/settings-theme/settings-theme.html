@@ -132,7 +132,12 @@
 
     <!-- TAB 1: PRESET SELECTION GRID -->
     @if (activeCustomizerTab() === 'preset') {
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid gap-4"
+             [class.grid-cols-1]="true"
+             [class.md:grid-cols-2]="!isPopoutOpen()"
+             [class.sm:grid-cols-2]="isPopoutOpen()"
+             [class.lg:grid-cols-3]="isPopoutOpen()"
+             [class.xl:grid-cols-4]="isPopoutOpen()">
             @for (preset of presets; track preset.id) {
                 <div 
                     (click)="selectPreset(preset.id)"
@@ -212,7 +217,9 @@
         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
             <h3 class="font-bold text-slate-900 dark:text-white text-base">Paleta de Colores por Tienda</h3>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+                 [class.lg:grid-cols-4]="isPopoutOpen()"
+                 [class.xl:grid-cols-5]="isPopoutOpen()">
                 <!-- Primary Color -->
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color Primario</label>
@@ -389,7 +396,9 @@
         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
             <h3 class="font-bold text-slate-900 dark:text-white text-base">Estilo de Sombras & Profundidad</h3>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+                 [class.lg:grid-cols-4]="isPopoutOpen()"
+                 [class.xl:grid-cols-5]="isPopoutOpen()">
                 @for (shadow of shadowStyles; track shadow.value) {
                     <div 
                         (click)="updateToken('shadow_style', shadow.value)"
@@ -443,7 +452,9 @@
                 <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1">Ancho Máximo del Contenido</h3>
                 <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Determina el ancho máximo de la cuadrícula de productos y contenidos en monitores grandes.</p>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                     [class.md:grid-cols-2]="!isPopoutOpen()"
+                     [class.md:grid-cols-4]="isPopoutOpen()">
                     @for (width of maxContentWidths; track width.value) {
                         <div 
                             (click)="updateToken('max_content_width', width.value)"
@@ -501,7 +512,9 @@
         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
             <h3 class="font-bold text-slate-900 dark:text-white text-base">Tarjetas de Producto y Header</h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                 [class.lg:grid-cols-3]="isPopoutOpen()"
+                 [class.xl:grid-cols-4]="isPopoutOpen()">
                 <app-dropdown 
                     label="Estilo de Tarjeta de Producto"
                     [options]="cardStyleDropdownOptions" 
