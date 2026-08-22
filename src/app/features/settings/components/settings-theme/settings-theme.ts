@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { PreviewSyncService } from '@core/services/preview-sync.service';
-import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption } from '@core/models';
-import { THEME_PRESETS, AVAILABLE_FONTS } from '@core/constants/theme-presets';
+import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, CardOrientationOption, CardBorderStyleOption, CardCartButtonOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption, FooterColumnsOption, FooterThemeModeOption, FooterAlignmentOption, FooterPaymentMethod, FooterLegalLink } from '@core/models';
+import { THEME_PRESETS, AVAILABLE_FONTS, TYPOGRAPHY_PAIRINGS } from '@core/constants/theme-presets';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 
 @Component({
@@ -27,16 +27,73 @@ export class SettingsTheme {
 
     readonly presets = Object.values(THEME_PRESETS).filter(p => p.id !== 'custom');
     readonly fonts = AVAILABLE_FONTS;
+    readonly typographyPairings = TYPOGRAPHY_PAIRINGS;
 
     readonly fontOptions: DropdownOption[] = AVAILABLE_FONTS.map(f => ({
         label: `${f.name} (${f.category})`,
         value: f.family
     }));
 
+    readonly fontWeightOptions: DropdownOption[] = [
+        { label: 'Normal (400)', value: '400' },
+        { label: 'Medio (500)', value: '500' },
+        { label: 'Semibold (600)', value: '600' },
+        { label: 'Bold / Negrita (700)', value: '700' },
+        { label: 'Extra Bold (800)', value: '800' },
+        { label: 'Black / Pesado (900)', value: '900' },
+    ];
+
+    readonly baseFontSizeOptions: DropdownOption[] = [
+        { label: 'Compacto (14px)', value: '14px' },
+        { label: 'Sutil (15px)', value: '15px' },
+        { label: 'Estándar (16px)', value: '16px' },
+        { label: 'Grande (18px)', value: '18px' },
+    ];
+
+    readonly lineHeightOptions: DropdownOption[] = [
+        { label: 'Ajustado (1.2)', value: '1.2' },
+        { label: 'Equilibrado (1.4)', value: '1.4' },
+        { label: 'Estándar (1.5)', value: '1.5' },
+        { label: 'Holgado (1.6)', value: '1.6' },
+        { label: 'Amplio (1.8)', value: '1.8' },
+    ];
+
+    readonly letterSpacingOptions: DropdownOption[] = [
+        { label: 'Estrecho (-0.03em)', value: '-0.03em' },
+        { label: 'Normal (0em)', value: '0em' },
+        { label: 'Sutil (0.03em)', value: '0.03em' },
+        { label: 'Separado (0.08em)', value: '0.08em' },
+    ];
+
+    readonly logoPositionOptions: { label: string; value: LogoPositionOption; icon: string; description: string }[] = [
+        { label: 'Izquierda', value: 'left',   icon: '◀', description: 'Logo y nombre alineados a la izquierda (clásico)' },
+        { label: 'Centro',    value: 'center', icon: '●', description: 'Logo centrado con menú dividido a ambos lados' },
+        { label: 'Derecha',   value: 'right',  icon: '▶', description: 'Acciones a la izquierda, logo a la derecha' },
+    ];
+
+    readonly navAlignOptions: { label: string; value: NavAlignOption; icon: string; description: string }[] = [
+        { label: 'Izquierda', value: 'left',   icon: '◀', description: 'Menú junto al logo' },
+        { label: 'Centro',    value: 'center', icon: '●', description: 'Menú horizontalmente centrado' },
+        { label: 'Derecha',   value: 'right',  icon: '▶', description: 'Menú hacia los elementos de acción' },
+    ];
+
+    readonly logoSizeOptions: DropdownOption[] = [
+        { label: 'Pequeño (24px)',      value: 'sm' },
+        { label: 'Mediano (32px)',      value: 'md' },
+        { label: 'Grande (40px)',       value: 'lg' },
+        { label: 'Extra Grande (56px)', value: 'xl' },
+    ];
+
+    readonly navSpacingOptions: DropdownOption[] = [
+        { label: 'Estrecho (16px)', value: 'tight' },
+        { label: 'Normal (32px)',   value: 'normal' },
+        { label: 'Amplio (48px)',   value: 'wide' },
+    ];
+
     readonly tokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly savedTokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly isSaving = signal(false);
-    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards'>('preset');
+    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards' | 'header' | 'footer'>('preset');
 
     readonly spacingDensities: { label: string; value: SpacingDensityOption; description: string }[] = [
         { label: 'Compacto', value: 'compact', description: 'Menor espaciado, mayor densidad de productos en pantalla' },
@@ -148,6 +205,25 @@ export class SettingsTheme {
         { label: 'Panorámico (16/9)', value: '16/9' },
     ];
 
+    readonly cardOrientationDropdownOptions: DropdownOption[] = [
+        { label: 'Vertical (Estándar)', value: 'vertical' },
+        { label: 'Horizontal (Fila / Lista)', value: 'horizontal' },
+    ];
+
+    readonly cardBorderStyleDropdownOptions: DropdownOption[] = [
+        { label: 'Borde definido', value: 'bordered' },
+        { label: 'Sin borde (Limpio)', value: 'borderless' },
+        { label: 'Sombra elevada', value: 'shadow' },
+        { label: 'Plano (Flat)', value: 'flat' },
+    ];
+
+    readonly cardCartButtonDropdownOptions: DropdownOption[] = [
+        { label: 'Hover (Al pasar el cursor)', value: 'hover' },
+        { label: 'Siempre visible', value: 'always' },
+        { label: 'Solo ícono flotante', value: 'icon_only' },
+        { label: 'Ocultar botón de compra rápida', value: 'none' },
+    ];
+
     readonly headerStyles: { label: string; value: HeaderStyleOption }[] = [
         { label: 'Minimalista limpio', value: 'minimal' },
         { label: 'Clásico con separador', value: 'classic' },
@@ -172,6 +248,67 @@ export class SettingsTheme {
         { label: 'Pantalla Completa', value: 'full' },
     ];
 
+    readonly footerColumnOptions: { label: string; value: FooterColumnsOption; icon: string; description: string }[] = [
+        { label: '1 Columna', value: '1', icon: '▐', description: 'Centrado simple, ideal para tiendas pequeñas' },
+        { label: '2 Columnas', value: '2', icon: '▐▐', description: 'Logo + Navegación, limpio y equilibrado' },
+        { label: '3 Columnas', value: '3', icon: '▐▐▐', description: 'Estándar: Logo, Navegación y Contacto' },
+        { label: '4 Columnas', value: '4', icon: '▐▐▐▐', description: 'Completo con Newsletter integrado' },
+    ];
+
+    readonly footerThemeModeOptions: { label: string; value: FooterThemeModeOption; description: string }[] = [
+        { label: 'Automático', value: 'auto', description: 'Usa el color de footer del tema activo' },
+        { label: 'Claro', value: 'light', description: 'Fondo blanco o gris claro, texto oscuro' },
+        { label: 'Oscuro', value: 'dark', description: 'Fondo oscuro o negro, texto claro' },
+        { label: 'Personalizado', value: 'custom', description: 'Elige el color exacto del fondo' },
+    ];
+
+    readonly footerAlignmentOptions: { label: string; value: FooterAlignmentOption; description: string }[] = [
+        { label: 'Izquierda', value: 'left', description: 'Contenido alineado al margen izquierdo' },
+        { label: 'Centrado', value: 'center', description: 'Contenido centrado horizontalmente' },
+    ];
+
+    readonly footerPaymentMethodOptions: { id: FooterPaymentMethod; label: string }[] = [
+        { id: 'visa', label: 'Visa' },
+        { id: 'mastercard', label: 'Mastercard' },
+        { id: 'amex', label: 'American Express' },
+        { id: 'paypal', label: 'PayPal' },
+        { id: 'mercadopago', label: 'Mercado Pago' },
+        { id: 'nequi', label: 'Nequi' },
+        { id: 'pse', label: 'PSE' },
+        { id: 'cash', label: 'Efectivo/Contraentrega' },
+    ];
+
+    isPaymentMethodEnabled(method: FooterPaymentMethod): boolean {
+        const methods = this.tokens().footer_payment_methods || ['visa', 'mastercard'];
+        return methods.includes(method);
+    }
+
+    togglePaymentMethod(method: FooterPaymentMethod) {
+        const current = this.tokens().footer_payment_methods || ['visa', 'mastercard'];
+        const updated = current.includes(method)
+            ? current.filter(m => m !== method)
+            : [...current, method];
+        this.updateToken('footer_payment_methods', updated);
+    }
+
+    addLegalLink() {
+        const current = this.tokens().footer_legal_links || [];
+        this.updateToken('footer_legal_links', [
+            ...current,
+            { id: Date.now().toString(), label: 'Nuevo Enlace', url: '#' }
+        ]);
+    }
+
+    removeLegalLink(id: string) {
+        const current = this.tokens().footer_legal_links || [];
+        this.updateToken('footer_legal_links', current.filter(l => l.id !== id));
+    }
+
+    updateLegalLink(id: string, field: 'label' | 'url', value: string) {
+        const current = this.tokens().footer_legal_links || [];
+        this.updateToken('footer_legal_links', current.map(l => l.id === id ? { ...l, [field]: value } : l));
+    }
+
     constructor() {
         effect(() => {
             const current = this.tenantService.themeTokens();
@@ -191,6 +328,20 @@ export class SettingsTheme {
         this.tokens.set(newTokens);
         this.emitChanges();
         this.toastService.info(`Tema "${preset.name}" aplicado. Puedes guardar o seguir personalizando.`);
+    }
+
+    applyTypographyPairing(pairing: TypographyPairing) {
+        this.tokens.update(t => ({
+            ...t,
+            theme_id: 'custom',
+            theme_name: 'Personalizado',
+            font_heading: pairing.font_heading,
+            font_body: pairing.font_body,
+            font_button: pairing.font_button,
+            font_weight_heading: pairing.font_weight_heading,
+        }));
+        this.emitChanges();
+        this.toastService.info(`Combinación tipográfica "${pairing.name}" aplicada.`);
     }
 
     updateColor(key: keyof ThemeTokens['colors'], value: string) {

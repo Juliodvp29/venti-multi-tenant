@@ -1,4 +1,4 @@
-import { ThemePreset, ThemeTokens, ThemePresetId, FontOption } from '@core/models';
+import { ThemePreset, ThemeTokens, ThemePresetId, FontOption, TypographyPairing } from '@core/models';
 
 export const AVAILABLE_FONTS: FontOption[] = [
     { name: 'Inter', family: '"Inter", sans-serif', category: 'sans-serif', googleFontUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap' },
@@ -12,6 +12,59 @@ export const AVAILABLE_FONTS: FontOption[] = [
     { name: 'Plus Jakarta Sans', family: '"Plus Jakarta Sans", sans-serif', category: 'sans-serif', googleFontUrl: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap' },
     { name: 'Roboto', family: '"Roboto", sans-serif', category: 'sans-serif', googleFontUrl: 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap' },
     { name: 'Cinzel', family: '"Cinzel", serif', category: 'serif', googleFontUrl: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap' },
+];
+
+export const TYPOGRAPHY_PAIRINGS: TypographyPairing[] = [
+    {
+        id: 'elegant',
+        name: 'Elegante',
+        tagline: 'Lujo, romance y sofisticación',
+        description: 'Combinación distinguida entre Playfair Display para encabezados y Outfit para cuerpo y botones.',
+        font_heading: '"Playfair Display", serif',
+        font_body: '"Outfit", sans-serif',
+        font_button: '"Outfit", sans-serif',
+        font_weight_heading: '700',
+    },
+    {
+        id: 'modern',
+        name: 'Moderna',
+        tagline: 'Limpia, directa y contemporánea',
+        description: 'Combinación versátil con Plus Jakarta Sans en títulos y botones junto con la legibilidad de Inter.',
+        font_heading: '"Plus Jakarta Sans", sans-serif',
+        font_body: '"Inter", sans-serif',
+        font_button: '"Plus Jakarta Sans", sans-serif',
+        font_weight_heading: '800',
+    },
+    {
+        id: 'editorial',
+        name: 'Editorial',
+        tagline: 'Estilo prensa, calidez y lectura atemporal',
+        description: 'Inspirada en periódicos y revistas con Merriweather en títulos y cuerpo, equilibrada con botones en Inter.',
+        font_heading: '"Merriweather", serif',
+        font_body: '"Merriweather", serif',
+        font_button: '"Inter", sans-serif',
+        font_weight_heading: '900',
+    },
+    {
+        id: 'geometric',
+        name: 'Geométrica',
+        tagline: 'Vanguardista, audaz y estructurada',
+        description: 'Trazos geométricos modernos usando Space Grotesk en títulos y botones con Poppins en texto principal.',
+        font_heading: '"Space Grotesk", sans-serif',
+        font_body: '"Poppins", sans-serif',
+        font_button: '"Space Grotesk", sans-serif',
+        font_weight_heading: '700',
+    },
+    {
+        id: 'classic',
+        name: 'Clásica',
+        tagline: 'Herencia, sobriedad y distinción tradicional',
+        description: 'Cormorant Garamond en títulos combinada con la neutralidad funcional de Roboto para cuerpo y acciones.',
+        font_heading: '"Cormorant Garamond", serif',
+        font_body: '"Roboto", sans-serif',
+        font_button: '"Roboto", sans-serif',
+        font_weight_heading: '600',
+    },
 ];
 
 export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
@@ -538,6 +591,11 @@ export function themeTokensToCssVars(tokens: ThemeTokens): Record<string, string
     return {
         '--store-font-heading': tokens.font_heading || '"Inter", sans-serif',
         '--store-font-body': tokens.font_body || '"Inter", sans-serif',
+        '--store-font-button': tokens.font_button || tokens.font_body || '"Inter", sans-serif',
+        '--store-font-weight-heading': tokens.font_weight_heading || '700',
+        '--store-font-size-base': tokens.font_size_base || '16px',
+        '--store-line-height': tokens.line_height || '1.5',
+        '--store-letter-spacing': tokens.letter_spacing || '0em',
         '--store-radius': radiusMap[tokens.border_radius || 'lg'],
         '--store-radius-card': radiusMap[tokens.border_radius_card || tokens.border_radius || 'lg'],
         '--store-radius-btn': radiusMap[tokens.border_radius_button || tokens.border_radius || 'lg'],
@@ -561,8 +619,11 @@ export function themeTokensToCssVars(tokens: ThemeTokens): Record<string, string
 
         // Extended theme color variables
         '--store-color-primary': tokens.colors.primary,
+        '--store-color-primary-contrast': getContrastColor(tokens.colors.primary),
         '--store-color-secondary': tokens.colors.secondary,
+        '--store-color-secondary-contrast': getContrastColor(tokens.colors.secondary),
         '--store-color-accent': tokens.colors.accent,
+        '--store-color-accent-contrast': getContrastColor(tokens.colors.accent),
         '--store-color-bg': tokens.colors.background,
         '--store-color-surface': tokens.colors.surface || '#ffffff',
         '--store-color-header': tokens.colors.header,
@@ -570,5 +631,25 @@ export function themeTokensToCssVars(tokens: ThemeTokens): Record<string, string
         '--store-color-text': tokens.colors.text_primary || '#0a0a0a',
         '--store-color-muted': tokens.colors.text_muted || '#737373',
         '--store-color-border': tokens.colors.border || '#e5e5e5',
+        '--store-color-btn-text': getContrastColor(tokens.colors.primary),
     };
+}
+
+/**
+ * Computes high-contrast text color (white or dark) based on background hex color luminance
+ */
+export function getContrastColor(hexColor: string | null | undefined, defaultDark = '#0f172a', defaultLight = '#ffffff'): string {
+    if (!hexColor) return defaultLight;
+    let hex = hexColor.replace('#', '').trim();
+    if (hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
+    }
+    if (hex.length !== 6) return defaultLight;
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    if (isNaN(r) || isNaN(g) || isNaN(b)) return defaultLight;
+    // YIQ formula for perceived luminance
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 150 ? defaultDark : defaultLight;
 }

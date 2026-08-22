@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks, ThemeTokens, ThemePresetId } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks, ThemeTokens, ThemePresetId, StorePageId, PageLayoutConfig, DEFAULT_PAGE_LAYOUTS, getDefaultPageLayout } from '@core/models';
 import { THEME_PRESETS } from '@core/constants/theme-presets';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
@@ -81,63 +81,104 @@ export class TenantService {
     const settings = this._state().currentTenant?.settings as any;
     const layout = settings?.storefront_layout as StorefrontLayout;
 
-    const defaultLayout: StorefrontLayout = {
-      sections: [
-        {
-          id: 'default-hero',
-          type: 'hero',
-          isActive: true,
-          content: {
-            title: 'Bienvenido a nuestra tienda',
-            subtitle: 'Descubre nuestras últimas novedades y colecciones exclusivas.',
-            buttonText: 'Comprar ahora',
-            buttonLink: '/store/productos',
-            alignment: 'center',
-            overlayOpacity: 40
-          }
-        },
-        {
-          id: 'default-products',
-          type: 'product_grid',
-          isActive: true,
-          content: {
-            title: 'Productos Destacados',
-            description: 'Descubre nuestros productos más populares.',
-            limit: 8
-          }
+    const defaultHomeSections = [
+      {
+        id: 'default-hero',
+        type: 'hero' as const,
+        isActive: true,
+        content: {
+          title: 'Bienvenido a nuestra tienda',
+          subtitle: 'Descubre nuestras últimas novedades y colecciones exclusivas.',
+          buttonText: 'Comprar ahora',
+          buttonLink: '/store/productos',
+          alignment: 'center' as const,
+          overlayOpacity: 40
         }
-      ],
-      navigation: [
-        { label: 'Productos', url: '/store/productos' },
-        { label: 'Colecciones', url: '/store/collections' },
-        { label: 'Sobre Nosotros', url: '/store/about-us' }
-      ]
-    };
+      },
+      {
+        id: 'default-products',
+        type: 'product_grid' as const,
+        isActive: true,
+        content: {
+          title: 'Productos Destacados',
+          description: 'Descubre nuestros productos más populares.',
+          limit: 8
+        }
+      }
+    ];
 
-    if (!layout) return defaultLayout;
+    const defaultNavigation = [
+      { label: 'Productos', url: '/store/productos' },
+      { label: 'Sobre Nosotros', url: '/store/nosotros' },
+      { label: 'Contacto', url: '/store/contacto' }
+    ];
+
+    const homeSections = layout?.sections && layout.sections.length > 0 ? layout.sections : defaultHomeSections;
+    const navigation = layout?.navigation || defaultNavigation;
+
+    const pageKeys: StorePageId[] = ['home', 'catalog', 'product_detail', 'cart', 'checkout', 'contact', 'about'];
+    const mergedPages: Partial<Record<StorePageId, PageLayoutConfig>> = {};
+
+    for (const key of pageKeys) {
+      const savedPage = layout?.pages?.[key];
+      const defaultPage = getDefaultPageLayout(key, homeSections);
+      if (savedPage) {
+        mergedPages[key] = {
+          ...defaultPage,
+          ...savedPage,
+          styles: {
+            ...defaultPage.styles,
+            ...(savedPage.styles || {})
+          },
+          sections: savedPage.sections !== undefined ? savedPage.sections : defaultPage.sections
+        };
+      } else {
+        mergedPages[key] = defaultPage;
+      }
+    }
+
+    // Keep home sections synchronized
+    if (mergedPages.home) {
+      mergedPages.home.sections = homeSections;
+    }
 
     return {
-      ...layout,
-      sections: layout.sections !== undefined ? layout.sections : defaultLayout.sections,
-      navigation: layout.navigation || defaultLayout.navigation
+      sections: homeSections,
+      navigation,
+      pages: mergedPages
     };
   });
 
   readonly themeTokens = computed<ThemeTokens>(() => {
     const settings = this._state().currentTenant?.settings as any;
-    const savedTokens = settings?.theme_config as ThemeTokens;
-    if (savedTokens) return savedTokens;
-
-    const t = this._state().currentTenant;
     const presetId = (settings?.theme_id as ThemePresetId) || 'minimalist';
     const baseTokens = THEME_PRESETS[presetId]?.tokens || THEME_PRESETS.minimalist.tokens;
+    const savedTokens = settings?.theme_config as ThemeTokens;
 
+    if (savedTokens) {
+      return {
+        ...baseTokens,
+        ...savedTokens,
+        font_button: savedTokens.font_button || savedTokens.font_body || baseTokens.font_button || baseTokens.font_body || '"Inter", sans-serif',
+        font_weight_heading: savedTokens.font_weight_heading || baseTokens.font_weight_heading || '700',
+        font_size_base: savedTokens.font_size_base || baseTokens.font_size_base || '16px',
+        line_height: savedTokens.line_height || baseTokens.line_height || '1.5',
+        letter_spacing: savedTokens.letter_spacing || baseTokens.letter_spacing || '0em',
+      };
+    }
+
+    const t = this._state().currentTenant;
     if (!t) return baseTokens;
 
     return {
       ...baseTokens,
       font_heading: t.font_family || baseTokens.font_heading,
       font_body: t.font_family || baseTokens.font_body,
+      font_button: t.font_family || baseTokens.font_button || baseTokens.font_body,
+      font_weight_heading: baseTokens.font_weight_heading || '700',
+      font_size_base: baseTokens.font_size_base || '16px',
+      line_height: baseTokens.line_height || '1.5',
+      letter_spacing: baseTokens.letter_spacing || '0em',
       colors: {
         ...baseTokens.colors,
         primary: t.primary_color || baseTokens.colors.primary,
@@ -629,6 +670,30 @@ export class TenantService {
     }
   }
 
+  getPageLayout(pageId: StorePageId): PageLayoutConfig {
+    const layout = this.storefrontLayout();
+    if (layout?.pages?.[pageId]) {
+      return layout.pages[pageId]!;
+    }
+    return getDefaultPageLayout(pageId, layout?.sections);
+  }
+
+  async updatePageLayout(pageId: StorePageId, pageConfig: PageLayoutConfig): Promise<{ success: boolean; error?: string }> {
+    const currentLayout = this.storefrontLayout();
+    const updatedPages = {
+      ...(currentLayout.pages || {}),
+      [pageId]: pageConfig
+    };
+
+    const updatedLayout: StorefrontLayout = {
+      ...currentLayout,
+      pages: updatedPages,
+      sections: pageId === 'home' ? pageConfig.sections : currentLayout.sections
+    };
+
+    return this.updateStorefrontLayout(updatedLayout);
+  }
+
   /**
    * Update theme tokens and preset configuration in settings and tenant columns
    */
@@ -659,26 +724,12 @@ export class TenantService {
         settings: updatedSettings
       };
 
-      const { data, error } = await this.supabase.client
-        .from('tenants')
-        .update(brandingUpdates as any)
-        .eq('id', tenantId)
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      this._state.update(s => ({
-        ...s,
-        currentTenant: data as any,
-        settings: updatedSettings,
-        loading: false
-      }));
-
+      await this.updateTenant(tenantId, brandingUpdates as any);
+      this._state.update(s => ({ ...s, loading: false }));
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating theme tokens:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update theme tokens';
+      const errorMessage = error?.message || error?.details || (typeof error === 'string' ? error : 'Failed to update theme tokens');
       this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }

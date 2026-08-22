@@ -8,8 +8,10 @@ import { ReviewsService } from '@core/services/reviews';
 import { AuthService } from '@core/services/auth';
 import { CustomerAuthService } from '@core/services/customer-auth';
 import { ToastService } from '@core/services/toast';
+import { TenantService } from '@core/services/tenant';
 import { Product, ProductVariant } from '@core/models/product';
 import { ProductReview } from '@core/models/review';
+import { StorefrontSection } from '@core/models';
 import { ProductCard } from '../product-card/product-card';
 import { FormsModule } from '@angular/forms';
 import { SeoService } from '@core/services/seo';
@@ -330,6 +332,24 @@ import { SeoService } from '@core/services/seo';
             </div>
           </div>
         </section>
+
+        <!-- Product Detail Configured Sections (e.g. Benefits) -->
+        @for (section of sections(); track section.id) {
+          @if (section.isActive && section.type === 'benefits') {
+            <div class="py-12 border-t border-slate-100">
+              <h3 class="text-xl font-bold text-center text-slate-900 mb-8">{{ asAny(section.content).title }}</h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @for (item of (asAny(section.content).items || []); track item.id) {
+                  <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100 text-center space-y-2">
+                    <span class="text-3xl block">{{ item.icon || '🛡️' }}</span>
+                    <h4 class="text-sm font-bold text-slate-900">{{ item.title }}</h4>
+                    <p class="text-xs text-slate-500">{{ item.description }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
       </div>
     } @else {
       <div class="h-96 flex items-center justify-center">
@@ -339,6 +359,7 @@ import { SeoService } from '@core/services/seo';
   `,
 })
 export class ProductDetails implements OnInit {
+  asAny(val: any): any { return val; }
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
   private readonly reviewsService = inject(ReviewsService);
@@ -347,7 +368,11 @@ export class ProductDetails implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly customerAuth = inject(CustomerAuthService);
   private readonly seo = inject(SeoService);
+  private readonly tenantService = inject(TenantService);
   protected readonly toast = inject(ToastService);
+
+  readonly pageConfig = computed(() => this.tenantService.getPageLayout('product_detail'));
+  readonly sections = computed<StorefrontSection[]>(() => this.pageConfig()?.sections || []);
 
   readonly product = signal<Product | null>(null);
   readonly relatedProducts = signal<Product[]>([]);

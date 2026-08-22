@@ -19,6 +19,18 @@ export const STORE_ROUTES: Routes = [
                 loadComponent: () => import('./components/product-details/product-details').then(m => m.ProductDetails)
             },
             {
+                path: 'carrito',
+                loadComponent: () => import('./pages/store-cart/store-cart').then(m => m.StoreCart)
+            },
+            {
+                path: 'contacto',
+                loadComponent: () => import('./pages/store-contact/store-contact').then(m => m.StoreContact)
+            },
+            {
+                path: 'nosotros',
+                loadComponent: () => import('./pages/store-about/store-about').then(m => m.StoreAbout)
+            },
+            {
                 path: 'checkout',
                 loadComponent: () => import('./components/checkout/checkout').then(m => m.Checkout)
             },
