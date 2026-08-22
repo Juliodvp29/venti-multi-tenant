@@ -48,6 +48,25 @@ export class Dashboard {
 
   readonly recentTransactions = signal<DashboardTransaction[]>([]);
 
+  formatCurrency(value: number): string {
+    const currency = this.tenantService.currentTenant()?.settings?.['currency'];
+    return new Intl.NumberFormat('es', {
+      style: 'currency',
+      currency: typeof currency === 'string' ? currency : 'USD',
+      maximumFractionDigits: 2,
+    }).format(value);
+  }
+
+  formatCompactCurrency(value: number): string {
+    const currency = this.tenantService.currentTenant()?.settings?.['currency'];
+    return new Intl.NumberFormat('es', {
+      style: 'currency',
+      currency: typeof currency === 'string' ? currency : 'USD',
+      notation: 'compact',
+      maximumFractionDigits: 1,
+    }).format(value);
+  }
+
   constructor() {
     // Wait for tenant to be ready before fetching data
     effect(() => {
@@ -122,7 +141,7 @@ export class Dashboard {
         name: p.product?.name || 'Producto',
         category: 'General',
         sales: p.purchases,
-        revenue: `$${(p.revenue / 1000).toFixed(1)}k`,
+        revenue: this.formatCompactCurrency(p.revenue),
         image:
           p.product?.product_images?.find((img: any) => img.is_primary)?.url ||
           p.product?.product_images?.[0]?.url,

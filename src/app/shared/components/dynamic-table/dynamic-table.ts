@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { ColumnDef, TableAction, TableSort } from '@core/types/table';
 import { ToastService } from '@core/services/toast';
 import { FileProcessorService } from '@core/services/file-processor';
+import { TenantService } from '@core/services/tenant';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -30,6 +31,7 @@ export class DynamicTable<T extends Record<string, any>> {
   private readonly currencyPipe = inject(CurrencyPipe);
   private readonly datePipe = inject(DatePipe);
   private readonly fileProcessor = inject(FileProcessorService);
+  private readonly tenantService = inject(TenantService);
 
   fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
@@ -299,11 +301,21 @@ export class DynamicTable<T extends Record<string, any>> {
 
     switch (col.type) {
       case 'currency':
-        return this.currencyPipe.transform(value, 'USD', 'symbol', '1.2-2');
+        return this.currencyPipe.transform(value, this.currencyCode, 'symbol', '1.2-2', 'es');
       case 'date':
-        return this.datePipe.transform(value, 'mediumDate');
+        return this.datePipe.transform(value, 'mediumDate', this.timezone, 'es');
       default:
         return value;
     }
+  }
+
+  private get currencyCode(): string {
+    const currency = this.tenantService.currentTenant()?.settings?.['currency'];
+    return typeof currency === 'string' && currency.length === 3 ? currency : 'USD';
+  }
+
+  private get timezone(): string {
+    const timezone = this.tenantService.currentTenant()?.settings?.['timezone'];
+    return typeof timezone === 'string' && timezone ? timezone : 'UTC';
   }
 }

@@ -5,9 +5,11 @@ import {
   input,
   signal,
   viewChild,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgApexchartsModule, ChartComponent } from 'ng-apexcharts';
+import { TenantService } from '@core/services/tenant';
 
 @Component({
   selector: 'app-sales-chart',
@@ -62,6 +64,7 @@ import { NgApexchartsModule, ChartComponent } from 'ng-apexcharts';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SalesChart {
+  private readonly tenantService = inject(TenantService);
   series = input.required<any[]>();
   categories = input<string[]>([
     'Ene',
@@ -132,7 +135,7 @@ export class SalesChart {
       yaxis: {
         labels: {
           style: { colors: dark ? '#94a3b8' : '#64748b', fontSize: '12px' },
-          formatter: (val: number) => `$${val.toLocaleString()}`,
+          formatter: (val: number) => this.formatCurrency(val),
         },
       },
       markers: {
@@ -146,9 +149,18 @@ export class SalesChart {
         theme: dark ? 'dark' : 'light',
         x: { show: false },
         y: {
-          formatter: (val: number) => `$${val.toLocaleString()}`,
+          formatter: (val: number) => this.formatCurrency(val),
         },
       },
     };
   });
+
+  formatCurrency(value: number): string {
+    const currency = this.tenantService.currentTenant()?.settings?.['currency'];
+    return new Intl.NumberFormat('es', {
+      style: 'currency',
+      currency: typeof currency === 'string' ? currency : 'USD',
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
 }

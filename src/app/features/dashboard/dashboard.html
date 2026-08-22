@@ -13,7 +13,7 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <app-stat-card
       label="Ventas Totales"
-      [value]="revenueTotal() | currency"
+      [value]="formatCurrency(revenueTotal())"
       [trend]="{ value: revenueTrend() }"
       iconBgClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 dark:border-emerald-500/10"
     >
@@ -59,7 +59,7 @@
 
     <app-stat-card
       label="Valor Promedio"
-      [value]="avgOrderValue() | currency"
+      [value]="formatCurrency(avgOrderValue())"
       [trend]="{ value: avgOrderTrend() }"
       iconBgClass="bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 dark:border-violet-500/10"
     >

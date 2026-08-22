@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { TenantService } from '@core/services/tenant';
 
 @Component({
   selector: 'app-category-chart',
@@ -53,6 +54,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryChart {
+  private readonly tenantService = inject(TenantService);
   series = input.required<number[]>();
   labels = input.required<string[]>();
 
@@ -114,15 +116,23 @@ export class CategoryChart {
   });
 
   currencyFormat(val: number): string {
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(val);
+    return new Intl.NumberFormat('es', {
+      style: 'currency',
+      currency: this.currencyCode,
+    }).format(val);
   }
 
   compactCurrencyFormat(val: number): string {
-    return new Intl.NumberFormat('es-CO', {
+    return new Intl.NumberFormat('es', {
       style: 'currency',
-      currency: 'COP',
+      currency: this.currencyCode,
       notation: 'compact',
       maximumFractionDigits: 1,
     }).format(val);
+  }
+
+  private get currencyCode(): string {
+    const currency = this.tenantService.currentTenant()?.settings?.['currency'];
+    return typeof currency === 'string' ? currency : 'USD';
   }
 }
