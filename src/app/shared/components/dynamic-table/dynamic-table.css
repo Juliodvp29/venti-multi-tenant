@@ -30,6 +30,17 @@ tr:hover td {
     border-color: rgba(99, 102, 241, 0.1);
 }
 
+.actions-menu-button.is-open {
+    opacity: 1;
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.dark .actions-menu-button.is-open {
+    background-color: #1f2937;
+    color: #9ca3af;
+}
+
 /* Fade in for table rows */
 @keyframes fadeIn {
     from {

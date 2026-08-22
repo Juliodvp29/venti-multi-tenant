@@ -208,10 +208,8 @@
                     <td class="whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm">
                         <div class="relative inline-block">
                             <button type="button" (click)="toggleMenu($event, item)"
-                                class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
-                                [class.!opacity-100]="openMenuId() === item['id']"
-                                [class.!text-gray-600]="openMenuId() === item['id']"
-                                [class.!bg-gray-100]="openMenuId() === item['id']">
+                                class="actions-menu-button inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
+                                [class.is-open]="openMenuId() === item['id']">
                                 <!-- Horizontal dots -->
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path

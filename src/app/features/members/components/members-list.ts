@@ -84,7 +84,6 @@ export class MembersListComponent {
         {
             id: 'edit',
             label: 'Editar',
-            icon: 'edit',
             callback: (item) => this.edit.emit(item)
         },
         {
