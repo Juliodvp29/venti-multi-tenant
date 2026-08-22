@@ -282,7 +282,241 @@ export interface NavigationLink {
     isExternal?: boolean;
 }
 
+export type StorePageId =
+    | 'home'
+    | 'catalog'
+    | 'product_detail'
+    | 'cart'
+    | 'checkout'
+    | 'contact'
+    | 'about';
+
+export type PageHeaderStyle = 'default' | 'transparent' | 'minimal' | 'hidden';
+export type PageFooterStyle = 'default' | 'compact' | 'hidden';
+
+export interface PageStylesConfig {
+    backgroundColor?: string;
+    backgroundImageUrl?: string;
+    headerStyle?: PageHeaderStyle;
+    footerStyle?: PageFooterStyle;
+    fontHeading?: string;
+    fontBody?: string;
+    paddingTop?: SpacingSizeOption;
+    paddingBottom?: SpacingSizeOption;
+    containerWidth?: ContainerWidthOption;
+}
+
+export interface PageLayoutConfig {
+    pageId: StorePageId;
+    title: string;
+    isEnabled: boolean;
+    styles: PageStylesConfig;
+    sections: StorefrontSection[];
+}
+
 export interface StorefrontLayout {
     sections: StorefrontSection[];
     navigation?: NavigationLink[];
+    pages?: Partial<Record<StorePageId, PageLayoutConfig>>;
+}
+
+export const DEFAULT_PAGE_LAYOUTS: Record<StorePageId, PageLayoutConfig> = {
+    home: {
+        pageId: 'home',
+        title: 'Página de Inicio',
+        isEnabled: true,
+        styles: {
+            headerStyle: 'default',
+            footerStyle: 'default',
+            containerWidth: 'boxed',
+            paddingTop: 'none',
+            paddingBottom: 'lg',
+        },
+        sections: [],
+    },
+    catalog: {
+        pageId: 'catalog',
+        title: 'Catálogo de Productos',
+        isEnabled: true,
+        styles: {
+            headerStyle: 'default',
+            footerStyle: 'default',
+            containerWidth: 'boxed',
+            paddingTop: 'md',
+            paddingBottom: 'xl',
+        },
+        sections: [
+            {
+                id: 'catalog-promo',
+                type: 'promo_banner',
+                isActive: true,
+                content: {
+                    badge: 'Temporada',
+                    title: 'Explora nuestra colección exclusiva',
+                    subtitle: 'Encuentra las mejores ofertas y productos con envíos garantizados.',
+                },
+            },
+        ],
+    },
+    product_detail: {
+        pageId: 'product_detail',
+        title: 'Detalle de Producto',
+        isEnabled: true,
+        styles: {
+            headerStyle: 'default',
+            footerStyle: 'default',
+            containerWidth: 'boxed',
+            paddingTop: 'md',
+            paddingBottom: 'xl',
+        },
+        sections: [
+            {
+                id: 'product-benefits',
+                type: 'benefits',
+                isActive: true,
+                content: {
+                    title: 'Garantía y Confianza en tu Compra',
+                    items: [
+                        { id: '1', icon: '🚚', title: 'Envío Rápido', description: 'Entregas a todo el país en 24 a 48 horas.' },
+                        { id: '2', icon: '🔒', title: 'Pago Seguro', description: 'Tus transacciones están 100% protegidas y encriptadas.' },
+                        { id: '3', icon: '🔄', title: 'Garantía de Devolución', description: '30 días de satisfacción o reembolso directo.' },
+                    ],
+                },
+            },
+        ],
+    },
+    cart: {
+        pageId: 'cart',
+        title: 'Carrito de Compras',
+        isEnabled: true,
+        styles: {
+            headerStyle: 'default',
+            footerStyle: 'default',
+            containerWidth: 'boxed',
+            paddingTop: 'lg',
+            paddingBottom: 'xl',
+        },
+        sections: [
+            {
+                id: 'cart-benefits',
+                type: 'benefits',
+                isActive: true,
+                content: {
+                    title: 'Beneficios de Comprar con Nosotros',
+                    items: [
+                        { id: '1', icon: '⚡', title: 'Despacho Inmediato', description: 'Procesamiento en menos de 24 horas.' },
+                        { id: '2', icon: '🛡️', title: 'Compra Protegida', description: 'Garantía extendida en todos los productos.' },
+                    ],
+                },
+            },
+        ],
+    },
+    checkout: {
+        pageId: 'checkout',
+        title: 'Pasarela de Pago / Checkout',
+        isEnabled: true,
+        styles: {
+            headerStyle: 'minimal',
+            footerStyle: 'compact',
+            containerWidth: 'boxed',
+            paddingTop: 'md',
+            paddingBottom: 'lg',
+        },
+        sections: [],
+    },
+    contact: {
+        pageId: 'contact',
+        title: 'Contacto y Ubicación',
+        isEnabled: true,
+        styles: {
+            headerStyle: 'default',
+            footerStyle: 'default',
+            containerWidth: 'boxed',
+            paddingTop: 'lg',
+            paddingBottom: 'xl',
+        },
+        sections: [
+            {
+                id: 'contact-map',
+                type: 'map_location',
+                isActive: true,
+                content: {
+                    title: 'Encuéntranos o Escríbenos',
+                    address: 'Av. Principal #123, Centro Comercial',
+                    cityState: 'Ciudad Comercial, País',
+                    phone: '+1 (555) 123-4567',
+                    email: 'contacto@mitienda.com',
+                    hours: 'Lunes a Sábado: 9:00 AM - 8:00 PM',
+                },
+            },
+            {
+                id: 'contact-faq',
+                type: 'faq',
+                isActive: true,
+                content: {
+                    title: 'Preguntas Frecuentes',
+                    subtitle: 'Resolvemos tus dudas más habituales sobre pedidos y envíos',
+                    items: [
+                        { id: '1', question: '¿Cómo realizo un seguimiento de mi pedido?', answer: 'Te enviaremos un número de guía a tu correo electrónico al despachar tu compra.' },
+                        { id: '2', question: '¿Qué métodos de pago aceptan?', answer: 'Aceptamos tarjetas de crédito/débito, transferencias bancarias y pago contra entrega según tu ubicación.' },
+                    ],
+                },
+            },
+        ],
+    },
+    about: {
+        pageId: 'about',
+        title: 'Sobre Nosotros',
+        isEnabled: true,
+        styles: {
+            headerStyle: 'default',
+            footerStyle: 'default',
+            containerWidth: 'boxed',
+            paddingTop: 'lg',
+            paddingBottom: 'xl',
+        },
+        sections: [
+            {
+                id: 'about-main',
+                type: 'about_us',
+                isActive: true,
+                content: {
+                    badge: 'Nuestra Historia',
+                    title: 'Pasión por la calidad y el diseño excepcional',
+                    content: 'Nacimos con la misión de ofrecer productos auténticos y duraderos. Cada detalle de nuestra tienda está pensado para brindarte la mejor experiencia.',
+                    imagePosition: 'right',
+                    imageUrl: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
+                    stats: [
+                        { label: 'Clientes Felices', value: '+10,000' },
+                        { label: 'Años de Experiencia', value: '5+' },
+                        { label: 'Productos Únicos', value: '+200' },
+                    ],
+                },
+            },
+            {
+                id: 'about-testimonials',
+                type: 'testimonials',
+                isActive: true,
+                content: {
+                    title: 'Lo que dicen nuestros clientes',
+                    subtitle: 'Historias reales de personas que confían en nosotros',
+                    items: [
+                        { id: '1', name: 'Laura Gómez', role: 'Cliente Frecuente', content: 'Excelente atención y los productos llegaron antes de lo esperado en perfecto estado.', rating: 5 },
+                        { id: '2', name: 'Carlos Ruiz', role: 'Diseñador', content: 'Calidad superior en cada detalle. Totalmente recomendados.', rating: 5 },
+                    ],
+                },
+            },
+        ],
+    },
+};
+
+export function getDefaultPageLayout(pageId: StorePageId, homeSections?: StorefrontSection[]): PageLayoutConfig {
+    const base = DEFAULT_PAGE_LAYOUTS[pageId] || DEFAULT_PAGE_LAYOUTS.home;
+    if (pageId === 'home' && homeSections && homeSections.length > 0) {
+        return {
+            ...base,
+            sections: homeSections,
+        };
+    }
+    return structuredClone(base);
 }

@@ -1,0 +1,160 @@
+<div class="space-y-12">
+    <!-- Header Title -->
+    <div class="text-center max-w-2xl mx-auto space-y-2">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white" [style.font-family]="'var(--store-font-heading)'">
+            Tu Carrito de Compras
+        </h1>
+        <p class="text-xs sm:text-sm text-gray-500">
+            Revisa tus artículos seleccionados antes de proceder al pago seguro.
+        </p>
+    </div>
+
+    @if (items().length === 0) {
+        <!-- Empty State -->
+        <div class="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xs max-w-md mx-auto space-y-4">
+            <span class="text-5xl block">🛒</span>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Tu carrito está vacío</h3>
+            <p class="text-xs text-gray-500">Aún no has agregado ningún producto a tu pedido.</p>
+            <a routerLink="/store/productos"
+                class="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                Explorar Catálogo de Productos
+            </a>
+        </div>
+    } @else {
+        <!-- Active Cart Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
+            <!-- Items Table Left -->
+            <div class="lg:col-span-8 space-y-4">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-xs">
+                    <div class="p-4 bg-gray-50/70 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        Productos ({{ items().length }})
+                    </div>
+
+                    <div class="divide-y divide-gray-100 dark:divide-gray-800">
+                        @for (item of items(); track item.id) {
+                            <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="flex items-center gap-4 min-w-0 flex-1">
+                                    <img [src]="item.imageUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=200'"
+                                        [alt]="item.name" class="w-16 h-16 rounded-xl object-cover border border-gray-100 dark:border-gray-800 shrink-0">
+                                    
+                                    <div class="min-w-0 flex-1">
+                                        <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ item.name }}</h4>
+                                        <p class="text-xs font-semibold text-indigo-600 mt-0.5">
+                                            {{ item.price | currency: (currency() || 'USD') }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Quantity Controls -->
+                                <div class="flex items-center gap-4 shrink-0">
+                                    <div class="flex items-center border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
+                                        <button (click)="cartService.updateQuantity(item.id, item.quantity - 1)"
+                                            class="px-3 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                            -
+                                        </button>
+                                        <span class="px-3 py-1 text-xs font-bold text-gray-900 dark:text-white">{{ item.quantity }}</span>
+                                        <button (click)="cartService.updateQuantity(item.id, item.quantity + 1)"
+                                            class="px-3 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                            +
+                                        </button>
+                                    </div>
+
+                                    <span class="text-sm font-bold text-gray-900 dark:text-white w-20 text-right">
+                                        {{ (item.price * item.quantity) | currency: (currency() || 'USD') }}
+                                    </span>
+
+                                    <button (click)="cartService.removeFromCart(item.id)"
+                                        class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="Eliminar">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary Right -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-xs space-y-5">
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white pb-3 border-b border-gray-100 dark:border-gray-800">
+                        Resumen del Pedido
+                    </h3>
+
+                    <!-- Coupon Code Input -->
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-gray-700 dark:text-gray-300 block">¿Tienes un cupón de descuento?</label>
+                        <div class="flex gap-2">
+                            <input type="text" [(ngModel)]="couponCode" placeholder="CUPÓN"
+                                class="flex-1 px-3 py-2 text-xs uppercase font-mono rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none">
+                            <button (click)="applyCoupon()" [disabled]="isApplyingCoupon() || !couponCode()"
+                                class="px-4 py-2 bg-slate-900 dark:bg-indigo-600 text-white rounded-xl text-xs font-bold disabled:opacity-40 cursor-pointer">
+                                Aplicar
+                            </button>
+                        </div>
+
+                        @if (coupon()) {
+                            <div class="flex items-center justify-between text-xs px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 rounded-xl border border-emerald-100 dark:border-emerald-800">
+                                <span>🎉 Cupón: <b>{{ coupon()?.code }}</b></span>
+                                <button (click)="removeCoupon()" class="text-xs text-red-500 font-bold hover:underline">Quitar</button>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Totals Breakdown -->
+                    <div class="space-y-2.5 pt-3 border-t border-gray-100 dark:border-gray-800 text-xs">
+                        <div class="flex justify-between text-gray-500">
+                            <span>Subtotal</span>
+                            <span>{{ subtotal() | currency: (currency() || 'USD') }}</span>
+                        </div>
+
+                        @if (discount() > 0) {
+                            <div class="flex justify-between text-emerald-600 font-bold">
+                                <span>Descuento</span>
+                                <span>-{{ discount() | currency: (currency() || 'USD') }}</span>
+                            </div>
+                        }
+
+                        <div class="flex justify-between text-gray-500">
+                            <span>Envío</span>
+                            <span class="text-emerald-600 font-bold">Calculado en checkout</span>
+                        </div>
+
+                        <div class="flex justify-between text-base font-extrabold text-gray-900 dark:text-white pt-3 border-t border-gray-100 dark:border-gray-800">
+                            <span>Total Estimado</span>
+                            <span>{{ total() | currency: (currency() || 'USD') }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Checkout CTA -->
+                    <a routerLink="/store/checkout"
+                        class="w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold text-center block transition-all shadow-md">
+                        Proceder al Checkout Seguro 🔒
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Page Specific Sections (e.g. Benefits) -->
+    @for (section of sections(); track section.id) {
+        @if (section.isActive) {
+            @if (section.type === 'benefits') {
+                <div class="max-w-5xl mx-auto pt-8 border-t border-gray-100 dark:border-gray-800">
+                    <h3 class="text-base font-bold text-center text-gray-900 dark:text-white mb-6">
+                        {{ asAny(section.content).title }}
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        @for (item of (asAny(section.content).items || []); track item.id) {
+                            <div class="p-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center space-y-2">
+                                <span class="text-2xl block">{{ item.icon || '🛡️' }}</span>
+                                <h4 class="text-xs font-bold text-gray-900 dark:text-white">{{ item.title }}</h4>
+                                <p class="text-[11px] text-gray-500">{{ item.description }}</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>

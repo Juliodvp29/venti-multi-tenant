@@ -8,7 +8,14 @@ import {
     SectionType,
     SectionUniversalStyles,
     SpacingSizeOption,
-    ContainerWidthOption
+    ContainerWidthOption,
+    StorePageId,
+    PageLayoutConfig,
+    PageStylesConfig,
+    PageHeaderStyle,
+    PageFooterStyle,
+    DEFAULT_PAGE_LAYOUTS,
+    getDefaultPageLayout
 } from '@core/models';
 import { ToastService } from '@core/services/toast';
 import { StorageService } from '@core/services/storage';
@@ -19,6 +26,14 @@ export interface SectionMeta {
     description: string;
     icon: string;
     category: 'Hero & Cabecera' | 'Catálogo & Ventas' | 'Confianza & Marca' | 'Contenido & Contacto';
+}
+
+export interface PageMeta {
+    id: StorePageId;
+    label: string;
+    icon: string;
+    description: string;
+    path: string;
 }
 
 @Component({
@@ -45,9 +60,55 @@ export class SettingsStorefront {
     readonly isAddModalOpen = signal(false);
     readonly addCategoryFilter = signal<string>('all');
 
-    readonly selectedSection = computed(() =>
-        this.layout().sections.find(s => s.id === this.selectedSectionId())
+    // Page Management Signals
+    readonly activePageId = signal<StorePageId>('home');
+    readonly activePageTab = signal<'sections' | 'styles'>('sections');
+
+    readonly pagesList: PageMeta[] = [
+        { id: 'home', label: 'Inicio', icon: '🏠', description: 'Página principal de tu tienda', path: '/store' },
+        { id: 'catalog', label: 'Catálogo', icon: '📦', description: 'Explorador y grilla de productos', path: '/store/productos' },
+        { id: 'product_detail', label: 'Detalle Producto', icon: '🔍', description: 'Ficha individual del producto', path: '/store/product/:id' },
+        { id: 'cart', label: 'Carrito', icon: '🛒', description: 'Página y resumen del carrito', path: '/store/carrito' },
+        { id: 'checkout', label: 'Checkout', icon: '💳', description: 'Pasarela de pago y finalización', path: '/store/checkout' },
+        { id: 'contact', label: 'Contacto', icon: '✉️', description: 'Formulario, mapa y atención', path: '/store/contacto' },
+        { id: 'about', label: 'Sobre Nosotros', icon: '👥', description: 'Historia, misión y testimonios', path: '/store/nosotros' },
+    ];
+
+    readonly activePageMeta = computed(() =>
+        this.pagesList.find(p => p.id === this.activePageId()) || this.pagesList[0]
     );
+
+    readonly activePageConfig = computed<PageLayoutConfig>(() => {
+        const pageId = this.activePageId();
+        const pages = this.layout().pages;
+        if (pages && pages[pageId]) {
+            return pages[pageId]!;
+        }
+        return getDefaultPageLayout(pageId, this.layout().sections);
+    });
+
+    readonly activeSections = computed<StorefrontSection[]>(() =>
+        this.activePageConfig()?.sections || []
+    );
+
+    readonly selectedSection = computed(() => {
+        const id = this.selectedSectionId();
+        if (!id) return null;
+        return this.activeSections().find(s => s.id === id) || null;
+    });
+
+    readonly pageHeaderStyleOptions: { label: string; value: PageHeaderStyle; description: string }[] = [
+        { label: 'Estándar', value: 'default', description: 'Barra de navegación completa de la tienda' },
+        { label: 'Transparente', value: 'transparent', description: 'Fondo transparente flotante sobre el banner' },
+        { label: 'Minimalista', value: 'minimal', description: 'Solo logo y enlace de retorno' },
+        { label: 'Ocultar Cabecera', value: 'hidden', description: 'Sin barra superior' },
+    ];
+
+    readonly pageFooterStyleOptions: { label: string; value: PageFooterStyle; description: string }[] = [
+        { label: 'Estándar', value: 'default', description: 'Pie de página completo con redes y datos' },
+        { label: 'Compacto', value: 'compact', description: 'Pie de página simplificado con copyright' },
+        { label: 'Ocultar Pie de Página', value: 'hidden', description: 'Sin pie de página' },
+    ];
 
     readonly sectionCatalog: SectionMeta[] = [
         // Hero & Cabecera
@@ -98,74 +159,74 @@ export class SettingsStorefront {
 
         // Confianza & Marca
         {
-            type: 'benefits',
-            name: 'Beneficios de la Tienda',
-            description: 'Puntos clave de confianza: envío gratis, pagos seguros, soporte 24/7 y garantías.',
-            icon: '🛡️',
-            category: 'Confianza & Marca'
-        },
-        {
             type: 'testimonials',
-            name: 'Testimonios de Clientes',
-            description: 'Citas y valoraciones de clientes satisfechos con avatares y estrellas.',
+            name: 'Testimonios',
+            description: 'Citas y recomendaciones de clientes satisfechos.',
             icon: '💬',
             category: 'Confianza & Marca'
         },
         {
             type: 'reviews',
-            name: 'Reseñas & Calificaciones',
-            description: 'Métricas de satisfacción (ej. 4.9/5) y listado de opiniones verificadas.',
+            name: 'Reseñas & Puntuación',
+            description: 'Puntuación global y comentarios verificados de compradores.',
             icon: '⭐',
             category: 'Confianza & Marca'
         },
         {
-            type: 'about_us',
-            name: 'Sobre Nosotros',
-            description: 'Historia de la marca, valores de la empresa, estadísticas e imagen representativa.',
-            icon: 'ℹ️',
+            type: 'benefits',
+            name: 'Beneficios de la Tienda',
+            description: 'Tarjetas destacando envíos gratis, pagos seguros, soporte 24/7 y garantías.',
+            icon: '🛡️',
             category: 'Confianza & Marca'
         },
         {
             type: 'brand_logos',
             name: 'Logos de Marcas',
-            description: 'Tira horizontal de marcas distribuidas, clientes o menciones en prensa.',
-            icon: '🏷️',
+            description: 'Muestra los logos de las marcas o aliados comerciales con los que trabajas.',
+            icon: '🏢',
             category: 'Confianza & Marca'
         },
 
         // Contenido & Contacto
         {
+            type: 'about_us',
+            name: 'Sobre Nosotros',
+            description: 'Historia de la marca, foto institucional y estadísticas de la empresa.',
+            icon: '📖',
+            category: 'Contenido & Contacto'
+        },
+        {
             type: 'image_gallery',
             name: 'Galería de Imágenes',
-            description: 'Lookbook visual o galería de fotos para exhibir tus productos en contexto.',
+            description: 'Muro visual o lookbook con fotografías de alta calidad.',
             icon: '🖼️',
             category: 'Contenido & Contacto'
         },
         {
             type: 'newsletter',
             name: 'Suscripción Newsletter',
-            description: 'Captura de correos con incentivos como cupones de descuento para nuevos miembros.',
-            icon: '📬',
+            description: 'Caja de captura de correos para construir tu base de clientes.',
+            icon: '📧',
             category: 'Contenido & Contacto'
         },
         {
             type: 'faq',
             name: 'Preguntas Frecuentes',
-            description: 'Acordeón con respuestas a dudas habituales sobre envíos, pagos y devoluciones.',
+            description: 'Acordeón con respuestas a las dudas más comunes de tus compradores.',
             icon: '❓',
             category: 'Contenido & Contacto'
         },
         {
             type: 'social_feed',
-            name: 'Redes Sociales / Instagram',
-            description: 'Mosaico de fotos simulando feed de Instagram con botón de seguir perfil.',
+            name: 'Feed de Redes Sociales',
+            description: 'Publicaciones simuladas de Instagram con botón de seguir perfil.',
             icon: '📸',
             category: 'Contenido & Contacto'
         },
         {
             type: 'map_location',
-            name: 'Mapa y Ubicación',
-            description: 'Información de tienda física, dirección, horarios, teléfono y mapa de acceso.',
+            name: 'Mapa & Ubicación',
+            description: 'Dirección física, mapa interactivo, horarios y teléfonos de atención.',
             icon: '📍',
             category: 'Contenido & Contacto'
         }
@@ -205,6 +266,70 @@ export class SettingsStorefront {
         });
     }
 
+    switchPage(pageId: StorePageId) {
+        this.activePageId.set(pageId);
+        this.selectedSectionId.set(null);
+    }
+
+    updatePageStyle<K extends keyof PageStylesConfig>(key: K, value: PageStylesConfig[K]) {
+        const pageId = this.activePageId();
+        this.layout.update(l => {
+            const pages = { ...(l.pages || {}) };
+            const currentPage = pages[pageId] || getDefaultPageLayout(pageId, l.sections);
+            
+            pages[pageId] = {
+                ...currentPage,
+                styles: {
+                    ...currentPage.styles,
+                    [key]: value
+                }
+            };
+
+            return {
+                ...l,
+                pages
+            };
+        });
+        this.dirtyChange.emit(true);
+    }
+
+    togglePageEnabled(enabled: boolean) {
+        const pageId = this.activePageId();
+        this.layout.update(l => {
+            const pages = { ...(l.pages || {}) };
+            const currentPage = pages[pageId] || getDefaultPageLayout(pageId, l.sections);
+            pages[pageId] = {
+                ...currentPage,
+                isEnabled: enabled
+            };
+            return { ...l, pages };
+        });
+        this.dirtyChange.emit(true);
+    }
+
+    private updateActivePageSections(updater: (sections: StorefrontSection[]) => StorefrontSection[]) {
+        const pageId = this.activePageId();
+        const currentSections = this.activeSections();
+        const newSections = updater([...currentSections]);
+
+        this.layout.update(l => {
+            const pages = { ...(l.pages || {}) };
+            const currentPage = pages[pageId] || getDefaultPageLayout(pageId, l.sections);
+            
+            pages[pageId] = {
+                ...currentPage,
+                sections: newSections
+            };
+
+            return {
+                ...l,
+                sections: pageId === 'home' ? newSections : l.sections,
+                pages
+            };
+        });
+        this.dirtyChange.emit(true);
+    }
+
     addSection(type: SectionType) {
         const newSection: StorefrontSection = {
             id: crypto.randomUUID(),
@@ -220,18 +345,14 @@ export class SettingsStorefront {
             content: this.getDefaultContentForType(type)
         };
 
-        this.layout.update(l => ({
-            ...l,
-            sections: [...l.sections, newSection]
-        }));
-        this.dirtyChange.emit(true);
+        this.updateActivePageSections(sections => [...sections, newSection]);
         this.selectedSectionId.set(newSection.id);
         this.isAddModalOpen.set(false);
-        this.toast.success(`Sección "${this.getSectionName(type)}" agregada.`);
+        this.toast.success(`Sección "${this.getSectionName(type)}" agregada a ${this.activePageMeta().label}.`);
     }
 
     duplicateSection(id: string) {
-        const sections = [...this.layout().sections];
+        const sections = this.activeSections();
         const index = sections.findIndex(s => s.id === id);
         if (index === -1) return;
 
@@ -242,19 +363,18 @@ export class SettingsStorefront {
             titleCustom: source.titleCustom ? `${source.titleCustom} (Copia)` : `${this.getSectionName(source.type)} (Copia)`
         };
 
-        sections.splice(index + 1, 0, cloned);
-        this.layout.update(l => ({ ...l, sections }));
+        this.updateActivePageSections(list => {
+            const copy = [...list];
+            copy.splice(index + 1, 0, cloned);
+            return copy;
+        });
+
         this.selectedSectionId.set(cloned.id);
-        this.dirtyChange.emit(true);
         this.toast.success('Sección duplicada correctamente.');
     }
 
     removeSection(id: string) {
-        this.layout.update(l => ({
-            ...l,
-            sections: l.sections.filter(s => s.id !== id)
-        }));
-        this.dirtyChange.emit(true);
+        this.updateActivePageSections(list => list.filter(s => s.id !== id));
         if (this.selectedSectionId() === id) {
             this.selectedSectionId.set(null);
         }
@@ -262,26 +382,25 @@ export class SettingsStorefront {
     }
 
     toggleSectionActive(id: string) {
-        this.layout.update(l => ({
-            ...l,
-            sections: l.sections.map(s => s.id === id ? { ...s, isActive: !s.isActive } : s)
-        }));
-        this.dirtyChange.emit(true);
+        this.updateActivePageSections(list =>
+            list.map(s => s.id === id ? { ...s, isActive: !s.isActive } : s)
+        );
     }
 
     moveSection(id: string, direction: 'up' | 'down') {
-        const sections = [...this.layout().sections];
+        const sections = this.activeSections();
         const index = sections.findIndex(s => s.id === id);
         if (index === -1) return;
 
-        if (direction === 'up' && index > 0) {
-            [sections[index], sections[index - 1]] = [sections[index - 1], sections[index]];
-        } else if (direction === 'down' && index < sections.length - 1) {
-            [sections[index], sections[index + 1]] = [sections[index + 1], sections[index]];
-        }
-
-        this.layout.update(l => ({ ...l, sections }));
-        this.dirtyChange.emit(true);
+        this.updateActivePageSections(list => {
+            const copy = [...list];
+            if (direction === 'up' && index > 0) {
+                [copy[index], copy[index - 1]] = [copy[index - 1], copy[index]];
+            } else if (direction === 'down' && index < copy.length - 1) {
+                [copy[index], copy[index + 1]] = [copy[index + 1], copy[index]];
+            }
+            return copy;
+        });
     }
 
     getSectionMeta(type: SectionType): SectionMeta | undefined {

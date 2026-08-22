@@ -1,0 +1,106 @@
+<div class="space-y-16">
+    <!-- Header Hero Banner of About Page -->
+    <div class="text-center max-w-3xl mx-auto space-y-4">
+        <span class="text-xs font-bold uppercase tracking-widest text-indigo-600 px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 rounded-full border border-indigo-100 dark:border-indigo-800">
+            Nuestra Esencia
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight" [style.font-family]="'var(--store-font-heading)'">
+            Pasión por crear experiencias extraordinarias
+        </h1>
+        <p class="text-base text-gray-500 dark:text-gray-400">
+            {{ branding()?.description || 'Dedicados a seleccionar y elaborar productos que combinan elegancia, calidad y funcionalidad para tu día a día.' }}
+        </p>
+    </div>
+
+    <!-- Values & Pillars Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xs space-y-3">
+            <span class="text-3xl block">💎</span>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">Calidad Inquebrantable</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                Cada pieza y producto es sometido a rigurosos estándares de inspección para asegurar una durabilidad superior.
+            </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xs space-y-3">
+            <span class="text-3xl block">🤝</span>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">Compromiso con el Cliente</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                Nuestra mayor satisfacción es tu alegría al recibir tu compra. Te acompañamos en cada etapa de tu pedido.
+            </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xs space-y-3">
+            <span class="text-3xl block">🌱</span>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">Innovación Sostenible</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                Priorizamos procesos amigables con el medio ambiente y empaques reciclables para cuidar nuestro entorno.
+            </p>
+        </div>
+    </div>
+
+    <!-- Dynamic Sections Configured for About Page (Story, Stats, Testimonials, Brand Logos) -->
+    @for (section of sections(); track section.id) {
+        @if (section.isActive) {
+            @if (section.type === 'about_us') {
+                <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 sm:p-12 shadow-sm max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-6 space-y-4">
+                            @if (asAny(section.content).badge) {
+                                <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">
+                                    {{ asAny(section.content).badge }}
+                                </span>
+                            }
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
+                                {{ asAny(section.content).title }}
+                            </h2>
+                            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {{ asAny(section.content).content }}
+                            </p>
+
+                            <!-- Stats -->
+                            @if (asAny(section.content).stats) {
+                                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                                    @for (stat of asAny(section.content).stats; track stat.label) {
+                                        <div>
+                                            <span class="text-xl sm:text-2xl font-black text-indigo-600 block">{{ stat.value }}</span>
+                                            <span class="text-[11px] text-gray-400 font-medium">{{ stat.label }}</span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <div class="lg:col-span-6">
+                            @if (asAny(section.content).imageUrl) {
+                                <img [src]="asAny(section.content).imageUrl" alt="About us" class="rounded-2xl w-full h-80 object-cover shadow-md">
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (section.type === 'testimonials') {
+                <div class="max-w-5xl mx-auto space-y-6">
+                    <div class="text-center space-y-1">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ asAny(section.content).title }}</h3>
+                        <p class="text-xs text-gray-400">{{ asAny(section.content).subtitle }}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        @for (item of (asAny(section.content).items || []); track item.id) {
+                            <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xs space-y-3">
+                                <div class="text-amber-400 text-sm">★★★★★</div>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 italic">"{{ item.content }}"</p>
+                                <div>
+                                    <h4 class="text-xs font-bold text-gray-900 dark:text-white">{{ item.name }}</h4>
+                                    <span class="text-[10px] text-gray-400">{{ item.role }}</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>

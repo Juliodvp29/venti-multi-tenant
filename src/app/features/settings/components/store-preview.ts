@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StorefrontLayout, ThemeTokens } from '@core/models';
+import { StorefrontLayout, ThemeTokens, StorePageId, PageLayoutConfig, PageHeaderStyle, PageFooterStyle, StorefrontSection, getDefaultPageLayout } from '@core/models';
 import { themeTokensToCssVars, THEME_PRESETS } from '@core/constants/theme-presets';
 
 export interface PreviewData {
@@ -49,6 +49,43 @@ export interface PreviewData {
 })
 export class StorePreview {
     readonly data = input.required<PreviewData>();
+
+    readonly previewPage = signal<StorePageId>('home');
+
+    readonly pageOptions: { id: StorePageId; label: string; icon: string }[] = [
+        { id: 'home', label: 'Inicio', icon: '🏠' },
+        { id: 'catalog', label: 'Catálogo', icon: '📦' },
+        { id: 'product_detail', label: 'Detalle', icon: '🔍' },
+        { id: 'cart', label: 'Carrito', icon: '🛒' },
+        { id: 'checkout', label: 'Checkout', icon: '💳' },
+        { id: 'contact', label: 'Contacto', icon: '✉️' },
+        { id: 'about', label: 'Nosotros', icon: '👥' },
+    ];
+
+    readonly activePageConfig = computed<PageLayoutConfig>(() => {
+        const pageId = this.previewPage();
+        const layout = this.data().storefront_layout;
+        if (layout?.pages?.[pageId]) {
+            return layout.pages[pageId]!;
+        }
+        return getDefaultPageLayout(pageId, layout?.sections);
+    });
+
+    readonly activeSections = computed<StorefrontSection[]>(() => {
+        return this.activePageConfig()?.sections || [];
+    });
+
+    readonly pageHeaderStyle = computed<PageHeaderStyle>(() => {
+        return this.activePageConfig()?.styles?.headerStyle || 'default';
+    });
+
+    readonly pageFooterStyle = computed<PageFooterStyle>(() => {
+        return this.activePageConfig()?.styles?.footerStyle || 'default';
+    });
+
+    readonly pageBgColor = computed<string>(() => {
+        return this.activePageConfig()?.styles?.backgroundColor || this.data().background_color || '#ffffff';
+    });
 
     readonly mockProducts = [
         { 
