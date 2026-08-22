@@ -19,6 +19,7 @@ export class SettingsBranding {
     readonly isSaving = signal(false);
     readonly tenant = this.tenantService.tenant;
     readonly brandingChange = output<any>();
+    readonly dirtyChange = output<boolean>();
 
     readonly fonts = [
         { name: 'Inter', value: '"Inter", sans-serif' },
@@ -89,6 +90,7 @@ export class SettingsBranding {
         // Live-preview on change
         this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
             this.emitBranding();
+            this.dirtyChange.emit(this.form.dirty);
         });
     }
 
@@ -150,6 +152,7 @@ export class SettingsBranding {
             if (result.success) {
                 this.toastService.success('Configuración guardada exitosamente');
                 this.form.markAsPristine();
+                this.dirtyChange.emit(false);
             } else {
                 this.toastService.error(result.error || 'Error al guardar la configuración');
             }
@@ -180,6 +183,7 @@ export class SettingsBranding {
                 },
             });
             this.form.markAsPristine();
+            this.dirtyChange.emit(false);
         }
         this.toastService.info('Cambios descartados');
     }

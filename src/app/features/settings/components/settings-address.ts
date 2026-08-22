@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
@@ -16,6 +16,7 @@ export class SettingsAddress {
 
     readonly isSaving = signal(false);
     readonly tenant = this.tenantService.tenant;
+    readonly dirtyChange = output<boolean>();
 
     readonly form = this.fb.nonNullable.group({
         address_line1: ['', [Validators.required]],
@@ -41,6 +42,8 @@ export class SettingsAddress {
                 this.form.markAsPristine();
             }
         });
+
+        this.form.valueChanges.subscribe(() => this.dirtyChange.emit(this.form.dirty));
     }
 
     async save() {
@@ -56,6 +59,7 @@ export class SettingsAddress {
             if (result.success) {
                 this.toastService.success('Dirección guardada exitosamente');
                 this.form.markAsPristine();
+                this.dirtyChange.emit(false);
             } else {
                 this.toastService.error(result.error || 'Error al guardar la dirección');
             }
@@ -79,6 +83,7 @@ export class SettingsAddress {
                 country: tenant.country || 'US',
             });
             this.form.markAsPristine();
+            this.dirtyChange.emit(false);
         }
         this.toastService.info('Cambios descartados');
     }

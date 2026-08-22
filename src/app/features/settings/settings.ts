@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, computed, inject, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, computed, inject, effect, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SettingsGeneral } from './components/settings-general';
 import { SettingsBranding } from './components/settings-branding';
@@ -9,6 +9,7 @@ import { TenantService } from '@core/services/tenant';
 import { SettingsShippingTaxes } from './components/settings-shipping-taxes';
 import { SettingsStorefront } from './components/settings-storefront/settings-storefront';
 import { SettingsCommissions } from './components/settings-commissions/settings-commissions';
+import { ToastService } from '@core/services/toast';
 
 import { StorefrontLayout } from '@core/models';
 
@@ -18,6 +19,11 @@ export interface PreviewData {
   primary_color: string;
   secondary_color: string;
   accent_color: string;
+  background_color: string;
+  header_color: string;
+  footer_color: string;
+  currency: string;
+  timezone: string;
   font_family: string;
   layout: 'modern' | 'classic' | 'minimal';
   viewMode: 'desktop' | 'mobile';
@@ -34,8 +40,19 @@ type Tab = 'general' | 'branding' | 'address' | 'shipping-taxes' | 'storefront' 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Settings {
+  private readonly tenantService = inject(TenantService);
+  private readonly toastService = inject(ToastService);
+
   readonly activeTab = signal<Tab>('branding');
   readonly viewMode = signal<'desktop' | 'mobile'>('desktop');
+  readonly showMobilePreview = signal(false);
+  readonly tenant = this.tenantService.currentTenant;
+  readonly storeUrl = this.tenantService.storeUrl;
+  readonly hasUnsavedChanges = signal(false);
+  readonly brandingSection = viewChild(SettingsBranding);
+  readonly generalSection = viewChild(SettingsGeneral);
+  readonly addressSection = viewChild(SettingsAddress);
+  readonly storefrontSection = viewChild(SettingsStorefront);
 
   readonly tabs: { id: Tab; label: string; icon: string }[] = [
     {
@@ -76,6 +93,11 @@ export class Settings {
     primary_color: '#000000',
     secondary_color: '#ffffff',
     accent_color: '#3b82f6',
+    background_color: '#ffffff',
+    header_color: '#ffffff',
+    footer_color: '#ffffff',
+    currency: 'USD',
+    timezone: 'America/New_York',
     font_family: '"Inter", sans-serif',
     layout: 'modern',
     viewMode: 'desktop',
@@ -83,11 +105,9 @@ export class Settings {
   });
 
   constructor() {
-    const tenantService = inject(TenantService);
-
     // Sync preview data when tenant or layout changes
     effect(() => {
-      const t = tenantService.tenant();
+      const t = this.tenantService.tenant();
       if (t) {
         this.previewData.update(prev => ({
           ...prev,
@@ -96,9 +116,14 @@ export class Settings {
           primary_color: t.primary_color,
           secondary_color: t.secondary_color,
           accent_color: t.accent_color,
+          background_color: t.background_color,
+          header_color: t.header_color,
+          footer_color: t.footer_color,
+          currency: String(t.settings?.['currency'] || 'USD'),
+          timezone: String(t.settings?.['timezone'] || 'America/New_York'),
           font_family: t.font_family,
           layout: t.layout || 'modern',
-          storefront_layout: tenantService.storefrontLayout()
+          storefront_layout: this.tenantService.storefrontLayout()
         }));
       }
     });
@@ -113,8 +138,61 @@ export class Settings {
     viewMode: this.viewMode(),
   }));
 
-  setActiveTab(tab: Tab) { this.activeTab.set(tab); }
+  async setActiveTab(tab: Tab) {
+    if (tab === this.activeTab()) return;
+    if (this.hasUnsavedChanges()) {
+      const confirmed = await this.toastService.confirm(
+        'Tienes cambios sin guardar. ¿Quieres descartarlos y cambiar de sección?',
+        'Cambios sin guardar'
+      );
+      if (!confirmed) return;
+    }
+    this.hasUnsavedChanges.set(false);
+    this.activeTab.set(tab);
+  }
+
+  onDirtyChange(isDirty: boolean) {
+    this.hasUnsavedChanges.set(isDirty);
+  }
+
+  async saveChanges() {
+    switch (this.activeTab()) {
+      case 'branding': await this.brandingSection()?.save(); break;
+      case 'general': await this.generalSection()?.save(); break;
+      case 'address': await this.addressSection()?.save(); break;
+      case 'storefront': await this.storefrontSection()?.saveLayout(); break;
+    }
+  }
+
+  discardChanges() {
+    switch (this.activeTab()) {
+      case 'branding': this.brandingSection()?.cancel(); break;
+      case 'general': this.generalSection()?.cancel(); break;
+      case 'address': this.addressSection()?.cancel(); break;
+      case 'storefront': this.storefrontSection()?.discardLayout(); break;
+    }
+    this.hasUnsavedChanges.set(false);
+  }
+
   setViewMode(mode: 'desktop' | 'mobile') { this.viewMode.set(mode); }
+  toggleMobilePreview() {
+    this.showMobilePreview.update(isVisible => !isVisible);
+    this.viewMode.set('mobile');
+  }
+
+  async copyStoreUrl() {
+    try {
+      const storeUrl = this.storeUrl();
+      const fullUrl = storeUrl.startsWith('http://') || storeUrl.startsWith('https://')
+        ? storeUrl
+        : `${window.location.origin}${storeUrl}`;
+      await navigator.clipboard.writeText(fullUrl);
+      this.toastService.success('URL copiada al portapapeles');
+    } catch {
+      // Clipboard access can be unavailable outside a secure browser context.
+    }
+  }
+
   updatePreview(branding: any) {
     this.previewData.update(prev => ({ ...prev, ...branding }));
   }

@@ -1,6 +1,6 @@
-<div class="flex items-center justify-center bg-slate-50 p-4 md:p-8 min-h-[600px] transition-all duration-300">
-    <div [class]="containerClass" class="bg-white transition-all duration-500 relative flex flex-col"
-        [style]="fontStyle">
+<div class="flex h-full min-h-0 items-center justify-center bg-slate-50 p-4 md:p-8 transition-all duration-300">
+    <div [class]="containerClass" class="min-h-0 transition-all duration-500 relative flex flex-col"
+        [style]="fontStyle" [style.background-color]="data().background_color">
 
         @if (data().viewMode === 'desktop') {
         <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 flex items-center space-x-2">
@@ -24,7 +24,8 @@
 
         <!-- Store Header -->
         <header
-            class="p-4 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10"
+            class="p-4 border-b border-slate-100 flex items-center justify-between sticky top-0 backdrop-blur-md z-10"
+            [style.background-color]="data().header_color"
             [class.flex-col]="data().layout === 'classic'" [class.gap-4]="data().layout === 'classic'">
             <div class="flex items-center space-x-3">
                 @if (data().logo_url) {
@@ -39,11 +40,20 @@
             @if (data().viewMode === 'desktop') {
             <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600"
                 [class.order-last]="data().layout === 'classic'">
+                @if (data().storefront_layout.navigation?.length) {
+                @for (link of data().storefront_layout.navigation; track $index) {
+                <a [href]="link.url || '#'" (click)="preventDefault($event)"
+                    class="hover:text-slate-900 transition-colors">
+                    {{ link.label || 'Sin título' }}
+                </a>
+                }
+                } @else {
                 <a href="#" (click)="preventDefault($event)" class="hover:text-slate-900 transition-colors">New
                     Arrivals</a>
                 <a href="#" (click)="preventDefault($event)"
                     class="hover:text-slate-900 transition-colors">Collections</a>
                 <a href="#" (click)="preventDefault($event)" class="hover:text-slate-900 transition-colors">About</a>
+                }
             </nav>
             }
 
@@ -66,7 +76,7 @@
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto">
+        <main class="min-h-0 flex-1 overflow-y-auto">
             <!-- DYNAMIC SECTIONS PREVIEW -->
             @for (section of data().storefront_layout.sections; track section.id) {
             @if (section.isActive) {
@@ -101,8 +111,12 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     @for (p of mockProducts.slice(0, 4); track p.name) {
-                    <div class="aspect-square rounded-lg bg-slate-50 overflow-hidden mb-1 ring-1 ring-slate-200/50">
-                        <img [src]="p.image" class="w-full h-full object-cover">
+                    <div>
+                        <div class="aspect-square rounded-lg bg-slate-50 overflow-hidden mb-1 ring-1 ring-slate-200/50">
+                            <img [src]="p.image" [alt]="p.name" class="w-full h-full object-cover">
+                        </div>
+                        <p class="truncate text-[10px] font-semibold text-slate-900">{{ p.name }}</p>
+                        <p class="text-[10px] text-slate-500">{{ formatPrice(p.price) }}</p>
                     </div>
                     }
                 </div>
@@ -141,9 +155,11 @@
             }
 
 
-            <footer class="p-10 text-center border-t border-slate-50 mt-10">
+            <footer class="p-10 text-center border-t border-slate-50 mt-10"
+                [style.background-color]="data().footer_color">
                 <span class="text-[10px] text-slate-300 font-medium tracking-widest uppercase">© 2026 {{
                     data().business_name }}</span>
+                <span class="block mt-2 text-[9px] text-slate-400">Vista previa · {{ formatCurrentDate() }}</span>
             </footer>
         </main>
     </div>

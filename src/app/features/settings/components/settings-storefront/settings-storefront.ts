@@ -19,8 +19,10 @@ export class SettingsStorefront {
     private readonly storage = inject(StorageService);
 
     readonly layoutChange = output<StorefrontLayout>();
+    readonly dirtyChange = output<boolean>();
 
     readonly layout = signal<StorefrontLayout>(this.tenantService.storefrontLayout());
+    readonly savedLayout = signal<StorefrontLayout>(structuredClone(this.tenantService.storefrontLayout()));
     readonly isSaving = signal(false);
     readonly selectedSectionId = signal<string | null>(null);
 
@@ -46,6 +48,7 @@ export class SettingsStorefront {
             ...l,
             sections: [...l.sections, newSection]
         }));
+        this.dirtyChange.emit(true);
 
         this.selectedSectionId.set(newSection.id);
     }
@@ -55,6 +58,7 @@ export class SettingsStorefront {
             ...l,
             sections: l.sections.filter(s => s.id !== id)
         }));
+        this.dirtyChange.emit(true);
         if (this.selectedSectionId() === id) {
             this.selectedSectionId.set(null);
         }
@@ -72,6 +76,7 @@ export class SettingsStorefront {
         }
 
         this.layout.update(l => ({ ...l, sections }));
+        this.dirtyChange.emit(true);
     }
 
     addNavigationLink() {
@@ -80,6 +85,7 @@ export class SettingsStorefront {
             ...l,
             navigation: [...(l.navigation || []), link]
         }));
+        this.dirtyChange.emit(true);
     }
 
     removeNavigationLink(index: number) {
@@ -87,6 +93,7 @@ export class SettingsStorefront {
             ...l,
             navigation: (l.navigation || []).filter((_, i) => i !== index)
         }));
+        this.dirtyChange.emit(true);
     }
 
     moveNavigationLink(index: number, direction: 'up' | 'down') {
@@ -97,6 +104,7 @@ export class SettingsStorefront {
             [links[index], links[index + 1]] = [links[index + 1], links[index]];
         }
         this.layout.update(l => ({ ...l, navigation: links }));
+        this.dirtyChange.emit(true);
     }
 
     async onHeroBannerUpload(event: Event, section: StorefrontSection) {
@@ -130,7 +138,9 @@ export class SettingsStorefront {
         try {
             const result = await this.tenantService.updateStorefrontLayout(this.layout());
             if (result.success) {
+                this.savedLayout.set(structuredClone(this.layout()));
                 this.toast.success('Diseño de la tienda actualizado exitosamente');
+                this.dirtyChange.emit(false);
             } else {
                 this.toast.error(result.error || 'Error al actualizar el diseño');
             }
@@ -148,5 +158,11 @@ export class SettingsStorefront {
 
     forceLayoutUpdate() {
         this.layout.update(l => ({ ...l }));
+        this.dirtyChange.emit(true);
+    }
+
+    discardLayout() {
+        this.layout.set(structuredClone(this.savedLayout()));
+        this.dirtyChange.emit(false);
     }
 }

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { ShippingService } from '@core/services/shipping';
 import { ToastService } from '@core/services/toast';
-import { ShippingZone, TaxRate } from '@core/models';
+import { TenantService } from '@core/services/tenant';
+import { ShippingRate, ShippingZone, TaxRate } from '@core/models';
 import { ShippingRateType } from '@core/enums';
 
 @Component({
@@ -16,9 +17,11 @@ export class SettingsShippingTaxes implements OnInit {
     private readonly fb = inject(FormBuilder);
     private readonly shippingService = inject(ShippingService);
     private readonly toastService = inject(ToastService);
+    private readonly tenantService = inject(TenantService);
 
     readonly isLoading = signal(true);
     readonly isSaving = signal(false);
+    readonly loadError = signal<string | null>(null);
     readonly shippingZones = signal<ShippingZone[]>([]);
     readonly taxRates = signal<TaxRate[]>([]);
 
@@ -34,7 +37,15 @@ export class SettingsShippingTaxes implements OnInit {
 
     async loadData() {
         this.isLoading.set(true);
+        if (!this.tenantService.tenantId()) {
+            this.shippingZones.set([]);
+            this.taxRates.set([]);
+            this.isLoading.set(false);
+            return;
+        }
+
         try {
+            this.loadError.set(null);
             const [zones, taxes] = await Promise.all([
                 this.shippingService.getShippingZones(),
                 this.shippingService.getTaxRates(),
@@ -43,16 +54,18 @@ export class SettingsShippingTaxes implements OnInit {
             this.taxRates.set(taxes);
         } catch (error) {
             console.error('Error loading shipping/taxes:', error);
-            this.toastService.error('Error al cargar la configuración');
+            this.loadError.set('No pudimos cargar las zonas de envío y los impuestos.');
         } finally {
             this.isLoading.set(false);
         }
     }
 
     // ── Modal State ───────────────────────────────────────────
-    readonly activeModal = signal<'zone' | 'tax' | null>(null);
+    readonly activeModal = signal<'zone' | 'tax' | 'rate' | null>(null);
     readonly editingZone = signal<ShippingZone | null>(null);
     readonly editingTax = signal<TaxRate | null>(null);
+    readonly editingRate = signal<ShippingRate | null>(null);
+    readonly activeRateZoneId = signal<string | null>(null);
 
     // ── Forms ────────────────────────────────────────────────
     readonly zoneForm = this.fb.nonNullable.group({
@@ -66,6 +79,15 @@ export class SettingsShippingTaxes implements OnInit {
         rate: [0, [Validators.required, Validators.min(0)]],
         country: ['', Validators.required],
         state: [''],
+        is_active: [true],
+    });
+
+    readonly rateForm = this.fb.nonNullable.group({
+        name: ['', Validators.required],
+        rate_amount: [0, [Validators.required, Validators.min(0)]],
+        rate_type: [ShippingRateType.FlatRate, Validators.required],
+        estimated_days_min: [1, [Validators.required, Validators.min(1)]],
+        estimated_days_max: [5, [Validators.required, Validators.min(1)]],
         is_active: [true],
     });
 
@@ -150,7 +172,11 @@ export class SettingsShippingTaxes implements OnInit {
     }
 
     async deleteZone(id: string) {
-        if (!confirm('¿Estás seguro de que deseas eliminar esta zona?')) return;
+        const confirmed = await this.toastService.confirm(
+            '¿Estás seguro de que deseas eliminar esta zona y sus tarifas?',
+            'Eliminar zona de envío'
+        );
+        if (!confirmed) return;
         try {
             await this.shippingService.deleteShippingZone(id);
             this.toastService.success('Zona eliminada');
@@ -161,7 +187,11 @@ export class SettingsShippingTaxes implements OnInit {
     }
 
     async deleteTax(id: string) {
-        if (!confirm('¿Estás seguro de que deseas eliminar esta tasa de impuesto?')) return;
+        const confirmed = await this.toastService.confirm(
+            '¿Estás seguro de que deseas eliminar esta tasa de impuesto?',
+            'Eliminar tasa de impuesto'
+        );
+        if (!confirmed) return;
         try {
             await this.shippingService.deleteTaxRate(id);
             this.toastService.success('Tasa de impuesto eliminada');
@@ -173,46 +203,56 @@ export class SettingsShippingTaxes implements OnInit {
 
     // ── Rates Management ─────────────────────────────────────
 
-    async addRate(zoneId: string) {
-        const name = prompt('Nombre de la tarifa (p. ej. Envío Estándar)');
-        if (!name) return;
-        const amountStr = prompt('Precio (p. ej. 5.00)');
-        if (amountStr === null) return;
-        const amount = parseFloat(amountStr);
-
-        try {
-            await this.shippingService.createShippingRate({
-                shipping_zone_id: zoneId,
-                name,
-                rate_amount: amount,
-                rate_type: ShippingRateType.FlatRate,
-                is_active: true
-            });
-            this.toastService.success('Tarifa agregada');
-            await this.loadData();
-        } catch (error) {
-            this.toastService.error('Error al agregar la tarifa');
-        }
+    openRateModal(zoneId: string, rate?: ShippingRate) {
+        this.activeRateZoneId.set(zoneId);
+        this.editingRate.set(rate || null);
+        this.rateForm.reset(rate ? {
+            name: rate.name,
+            rate_amount: rate.rate_amount,
+            rate_type: rate.rate_type,
+            estimated_days_min: rate.estimated_days_min || 1,
+            estimated_days_max: rate.estimated_days_max || 5,
+            is_active: rate.is_active,
+        } : {
+            name: '',
+            rate_amount: 0,
+            rate_type: ShippingRateType.FlatRate,
+            estimated_days_min: 1,
+            estimated_days_max: 5,
+            is_active: true,
+        });
+        this.activeModal.set('rate');
     }
 
-    async updateRate(rate: any) {
-        const amountStr = prompt(`Actualizar precio para ${rate.name}`, rate.rate_amount.toString());
-        if (amountStr === null) return;
-        const amount = parseFloat(amountStr);
-
+    async saveRate() {
+        if (this.rateForm.invalid || !this.activeRateZoneId()) return;
+        this.isSaving.set(true);
         try {
-            await this.shippingService.updateShippingRate(rate.id, {
-                rate_amount: amount
-            });
-            this.toastService.success('Tarifa actualizada');
+            const value = this.rateForm.getRawValue();
+            if (this.editingRate()) {
+                await this.shippingService.updateShippingRate(this.editingRate()!.id, value);
+            } else {
+                await this.shippingService.createShippingRate({
+                    ...value,
+                    shipping_zone_id: this.activeRateZoneId()!,
+                });
+            }
+            this.toastService.success(this.editingRate() ? 'Tarifa actualizada' : 'Tarifa agregada');
             await this.loadData();
+            this.closeModal();
         } catch (error) {
-            this.toastService.error('Error al actualizar la tarifa');
+            this.toastService.error(this.editingRate() ? 'Error al actualizar la tarifa' : 'Error al agregar la tarifa');
+        } finally {
+            this.isSaving.set(false);
         }
     }
 
     async deleteRate(rateId: string) {
-        if (!confirm('¿Eliminar esta tarifa?')) return;
+        const confirmed = await this.toastService.confirm(
+            '¿Estás seguro de que deseas eliminar esta tarifa de envío?',
+            'Eliminar tarifa de envío'
+        );
+        if (!confirmed) return;
         try {
             await this.shippingService.deleteShippingRate(rateId);
             this.toastService.success('Tarifa eliminada');

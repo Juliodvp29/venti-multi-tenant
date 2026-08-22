@@ -64,6 +64,79 @@
 
     <hr class="border-gray-100 dark:border-gray-800" />
 
+    <!-- Custom Domain -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-1">
+            <label for="custom_domain" class="block text-sm font-semibold text-gray-900 dark:text-white">
+                Dominio personalizado
+            </label>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Usa tu propio dominio para que tus clientes visiten la tienda.
+            </p>
+        </div>
+        <div class="md:col-span-2">
+            <div class="flex items-center gap-3">
+                <input id="custom_domain" type="text" formControlName="custom_domain"
+                    class="block min-w-0 flex-1 rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+                    placeholder="www.mitienda.com" />
+                @if (form.controls.custom_domain.value) {
+                <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
+                    <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                    Pendiente
+                </span>
+                }
+            </div>
+            @if (form.controls.custom_domain.touched && form.controls.custom_domain.hasError('pattern')) {
+            <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">
+                Introduce un dominio válido, por ejemplo: www.mitienda.com
+            </p>
+            }
+            <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">
+                Guarda el dominio y completa la configuración DNS con tu proveedor.
+            </p>
+        </div>
+    </div>
+
+    <hr class="border-gray-100 dark:border-gray-800" />
+
+    <!-- Regional Preferences -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-1">
+            <label class="block text-sm font-semibold text-gray-900 dark:text-white">
+                Preferencias regionales
+            </label>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Define cómo se muestran precios y horarios en tu tienda.
+            </p>
+        </div>
+        <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label for="currency" class="block text-xs font-medium text-gray-500 mb-1">Moneda</label>
+                <select id="currency" formControlName="currency"
+                    class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700">
+                    <option value="USD">USD - Dólar estadounidense</option>
+                    <option value="MXN">MXN - Peso mexicano</option>
+                    <option value="COP">COP - Peso colombiano</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="CAD">CAD - Dólar canadiense</option>
+                </select>
+            </div>
+            <div>
+                <label for="timezone" class="block text-xs font-medium text-gray-500 mb-1">Zona horaria</label>
+                <select id="timezone" formControlName="timezone"
+                    class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700">
+                    <option value="America/New_York">Nueva York (ET)</option>
+                    <option value="America/Mexico_City">Ciudad de México (CT)</option>
+                    <option value="America/Bogota">Bogotá (COT)</option>
+                    <option value="America/Los_Angeles">Los Ángeles (PT)</option>
+                    <option value="Europe/Madrid">Madrid (CET)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <hr class="border-gray-100 dark:border-gray-800" />
+
     <!-- Contact Information -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="md:col-span-1">

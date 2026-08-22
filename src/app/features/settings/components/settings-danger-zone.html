@@ -14,7 +14,7 @@
                 Una vez que elimines una tienda, no hay vuelta atrás. Por favor, asegúrate.
             </p>
             <div class="mt-4">
-                <button type="button" (click)="deleteStore()" [disabled]="isDeleting()"
+                <button type="button" (click)="openDeleteModal()" [disabled]="isDeleting()"
                     class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:opacity-50 disabled:cursor-not-allowed">
                     @if (isDeleting()) {
                     Eliminando...
@@ -26,3 +26,41 @@
         </div>
     </div>
 </div>
+
+@if (showDeleteModal(); as isOpen) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-2xl border border-red-200 bg-white p-6 shadow-2xl dark:border-red-900/50 dark:bg-gray-900">
+        <div class="flex items-start gap-3">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m0 3h.008M10.29 3.86 2.82 17.25A1.5 1.5 0 0 0 4.13 19.5h15.74a1.5 1.5 0 0 0 1.31-2.25L13.71 3.86a1.95 1.95 0 0 0-3.42 0Z" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Eliminar tienda definitivamente</h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Se eliminarán la tienda, sus productos, pedidos y configuraciones. Esta acción no se puede deshacer.</p>
+            </div>
+        </div>
+
+        <label for="delete-confirmation" class="mt-5 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Escribe <span class="font-bold text-red-600 dark:text-red-400">{{ tenant()?.business_name }}</span> para confirmar
+        </label>
+        <input id="delete-confirmation" type="text" [ngModel]="confirmationName()"
+            (ngModelChange)="confirmationName.set($event)" autocomplete="off"
+            class="mt-2 block w-full rounded-xl border-0 bg-gray-50 px-4 py-3 text-sm text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-red-500 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+            placeholder="Nombre exacto de la tienda">
+
+        <div class="mt-6 flex justify-end gap-3">
+            <button type="button" (click)="closeDeleteModal()" [disabled]="isDeleting()"
+                class="rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+                Cancelar
+            </button>
+            <button type="button" (click)="deleteStore()"
+                [disabled]="isDeleting() || confirmationName().trim() !== tenant()?.business_name?.trim()"
+                class="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50">
+                {{ isDeleting() ? 'Eliminando...' : 'Eliminar definitivamente' }}
+            </button>
+        </div>
+    </div>
+</div>
+}
