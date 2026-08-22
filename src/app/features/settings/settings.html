@@ -20,6 +20,14 @@ Comisiones por Venta<div
                         Define tu identidad de marca y previsualiza cómo los clientes ven tu tienda.
                     </p>
                 </div>
+                <button type="button" (click)="toggleMobilePreview()"
+                    class="inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 lg:hidden">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    {{ showMobilePreview() ? 'Ocultar preview' : 'Ver preview' }}
+                </button>
             </div>
 
             <!-- Store summary -->
@@ -75,9 +83,10 @@ Comisiones por Venta<div
             }
 
             <!-- Tabs -->
-            <nav class="-mb-px flex space-x-1 mt-6" aria-label="Tabs">
+            <nav class="-mb-px flex space-x-1 mt-6 overflow-x-auto scrollbar-thin" aria-label="Secciones de configuración" role="tablist">
                 @for (tab of tabs; track tab.id) {
-                <button (click)="setActiveTab(tab.id)"
+                <button type="button" (click)="setActiveTab(tab.id)" role="tab" [attr.aria-selected]="activeTab() === tab.id"
+                    [attr.aria-controls]="'settings-panel-' + tab.id" [id]="'settings-tab-' + tab.id"
                     class="inline-flex items-center gap-1.5 whitespace-nowrap border-b-2 py-3.5 px-1 mr-6 text-sm font-semibold transition-all"
                     [class.border-indigo-500]="activeTab() === tab.id" [class.text-indigo-600]="activeTab() === tab.id"
                     [class.dark:text-indigo-400]="activeTab() === tab.id"
@@ -111,7 +120,8 @@ Comisiones por Venta<div
         }
 
         <!-- Scrollable content -->
-        <div class="flex-1 overflow-y-auto px-6 md:px-10 py-8">
+        <div class="flex-1 overflow-y-auto px-6 md:px-10 py-8" role="tabpanel"
+            [attr.aria-labelledby]="'settings-tab-' + activeTab()" [id]="'settings-panel-' + activeTab()">
             <div class="max-w-2xl pb-20">
                 @switch (activeTab()) {
                 @case ('branding') { <app-settings-branding (brandingChange)="updatePreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
@@ -126,6 +136,26 @@ Comisiones por Venta<div
                 <div class="mt-16 pt-10 border-t border-red-100 dark:border-red-900/30">
                     <app-settings-danger-zone />
                 </div>
+
+                @if (showMobilePreview()) {
+                <section class="mt-10 border-t border-gray-200 pt-8 dark:border-gray-800 lg:hidden">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Vista previa móvil</h2>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Así verán tu tienda tus clientes desde un teléfono.</p>
+                        </div>
+                        <button type="button" (click)="toggleMobilePreview()" aria-label="Ocultar preview móvil"
+                            class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="h-180 overflow-hidden rounded-2xl border border-gray-200 bg-slate-50 dark:border-gray-800">
+                        <app-store-preview [data]="fullPreviewData()" />
+                    </div>
+                </section>
+                }
             </div>
         </div>
 
@@ -133,7 +163,7 @@ Comisiones por Venta<div
 
 
     <div
-        class="hidden lg:flex flex-col flex-1 bg-slate-50 dark:bg-gray-900/50 min-h-screen sticky top-0 max-h-screen overflow-hidden min-w-0">
+        class="hidden lg:flex flex-col flex-1 bg-slate-50 dark:bg-gray-900/50 min-h-0 sticky top-0 max-h-screen overflow-hidden min-w-0">
 
         <!-- Preview Toolbar -->
         <div
@@ -176,7 +206,7 @@ Comisiones por Venta<div
         </div>
 
         <!-- Preview Area -->
-        <div class="flex-1 overflow-hidden">
+        <div class="flex-1 min-h-0 overflow-hidden">
             <app-store-preview [data]="fullPreviewData()" />
         </div>
     </div>

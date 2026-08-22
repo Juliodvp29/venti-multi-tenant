@@ -63,6 +63,12 @@ export class TenantService {
   readonly storeUrl = computed(() => {
     const tenant = this.currentTenant();
     if (!tenant) return '/store';
+    if (tenant.custom_domain) {
+      const domain = tenant.custom_domain.trim();
+      return domain.startsWith('http://') || domain.startsWith('https://')
+        ? domain
+        : `https://${domain}`;
+    }
     // For local development, we need to pass the subdomain as a query parameter
     // if we are not using custom local domains.
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('vercel.app')) {

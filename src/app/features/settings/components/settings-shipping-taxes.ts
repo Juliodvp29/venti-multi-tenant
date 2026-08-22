@@ -172,7 +172,11 @@ export class SettingsShippingTaxes implements OnInit {
     }
 
     async deleteZone(id: string) {
-        if (!confirm('¿Estás seguro de que deseas eliminar esta zona?')) return;
+        const confirmed = await this.toastService.confirm(
+            '¿Estás seguro de que deseas eliminar esta zona y sus tarifas?',
+            'Eliminar zona de envío'
+        );
+        if (!confirmed) return;
         try {
             await this.shippingService.deleteShippingZone(id);
             this.toastService.success('Zona eliminada');
@@ -183,7 +187,11 @@ export class SettingsShippingTaxes implements OnInit {
     }
 
     async deleteTax(id: string) {
-        if (!confirm('¿Estás seguro de que deseas eliminar esta tasa de impuesto?')) return;
+        const confirmed = await this.toastService.confirm(
+            '¿Estás seguro de que deseas eliminar esta tasa de impuesto?',
+            'Eliminar tasa de impuesto'
+        );
+        if (!confirmed) return;
         try {
             await this.shippingService.deleteTaxRate(id);
             this.toastService.success('Tasa de impuesto eliminada');
@@ -240,7 +248,11 @@ export class SettingsShippingTaxes implements OnInit {
     }
 
     async deleteRate(rateId: string) {
-        if (!confirm('¿Eliminar esta tarifa?')) return;
+        const confirmed = await this.toastService.confirm(
+            '¿Estás seguro de que deseas eliminar esta tarifa de envío?',
+            'Eliminar tarifa de envío'
+        );
+        if (!confirmed) return;
         try {
             await this.shippingService.deleteShippingRate(rateId);
             this.toastService.success('Tarifa eliminada');

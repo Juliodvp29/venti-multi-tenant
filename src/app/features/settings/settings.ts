@@ -22,6 +22,8 @@ export interface PreviewData {
   background_color: string;
   header_color: string;
   footer_color: string;
+  currency: string;
+  timezone: string;
   font_family: string;
   layout: 'modern' | 'classic' | 'minimal';
   viewMode: 'desktop' | 'mobile';
@@ -43,6 +45,7 @@ export class Settings {
 
   readonly activeTab = signal<Tab>('branding');
   readonly viewMode = signal<'desktop' | 'mobile'>('desktop');
+  readonly showMobilePreview = signal(false);
   readonly tenant = this.tenantService.currentTenant;
   readonly storeUrl = this.tenantService.storeUrl;
   readonly hasUnsavedChanges = signal(false);
@@ -93,6 +96,8 @@ export class Settings {
     background_color: '#ffffff',
     header_color: '#ffffff',
     footer_color: '#ffffff',
+    currency: 'USD',
+    timezone: 'America/New_York',
     font_family: '"Inter", sans-serif',
     layout: 'modern',
     viewMode: 'desktop',
@@ -114,6 +119,8 @@ export class Settings {
           background_color: t.background_color,
           header_color: t.header_color,
           footer_color: t.footer_color,
+          currency: String(t.settings?.['currency'] || 'USD'),
+          timezone: String(t.settings?.['timezone'] || 'America/New_York'),
           font_family: t.font_family,
           layout: t.layout || 'modern',
           storefront_layout: this.tenantService.storefrontLayout()
@@ -168,10 +175,18 @@ export class Settings {
   }
 
   setViewMode(mode: 'desktop' | 'mobile') { this.viewMode.set(mode); }
+  toggleMobilePreview() {
+    this.showMobilePreview.update(isVisible => !isVisible);
+    this.viewMode.set('mobile');
+  }
 
   async copyStoreUrl() {
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}${this.storeUrl()}`);
+      const storeUrl = this.storeUrl();
+      const fullUrl = storeUrl.startsWith('http://') || storeUrl.startsWith('https://')
+        ? storeUrl
+        : `${window.location.origin}${storeUrl}`;
+      await navigator.clipboard.writeText(fullUrl);
       this.toastService.success('URL copiada al portapapeles');
     } catch {
       // Clipboard access can be unavailable outside a secure browser context.
