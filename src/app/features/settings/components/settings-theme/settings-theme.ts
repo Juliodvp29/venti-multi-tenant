@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
-import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption } from '@core/models';
+import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption } from '@core/models';
 import { THEME_PRESETS, AVAILABLE_FONTS } from '@core/constants/theme-presets';
+import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 
 @Component({
     selector: 'app-settings-theme',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, Dropdown],
     templateUrl: './settings-theme.html',
     styleUrl: './settings-theme.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,10 +24,28 @@ export class SettingsTheme {
     readonly presets = Object.values(THEME_PRESETS).filter(p => p.id !== 'custom');
     readonly fonts = AVAILABLE_FONTS;
 
+    readonly fontOptions: DropdownOption[] = AVAILABLE_FONTS.map(f => ({
+        label: `${f.name} (${f.category})`,
+        value: f.family
+    }));
+
     readonly tokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly savedTokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly isSaving = signal(false);
-    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'buttons' | 'cards'>('preset');
+    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards'>('preset');
+
+    readonly spacingDensities: { label: string; value: SpacingDensityOption; description: string }[] = [
+        { label: 'Compacto', value: 'compact', description: 'Menor espaciado, mayor densidad de productos en pantalla' },
+        { label: 'Normal', value: 'normal', description: 'Espaciado equilibrado estándar' },
+        { label: 'Espacioso', value: 'spacious', description: 'Diseño editorial con respiración generosa' },
+    ];
+
+    readonly maxContentWidths: { label: string; value: MaxContentWidthOption; description: string }[] = [
+        { label: 'Compacto (1024px)', value: '1024px', description: 'Diseño estrecho enfocado' },
+        { label: 'Estándar (1280px)', value: '1280px', description: 'Ancho tradicional para la mayoría de tiendas' },
+        { label: 'Amplio (1440px)', value: '1440px', description: 'Layout moderno aprovechando pantallas grandes' },
+        { label: 'Pantalla Completa (100%)', value: '100%', description: 'Diseño fluido sin márgenes rígidos' },
+    ];
 
     readonly borderRadii: { label: string; value: BorderRadiusOption }[] = [
         { label: 'Recto (0px)', value: 'none' },
@@ -38,7 +57,23 @@ export class SettingsTheme {
         { label: 'Píldora (9999px)', value: 'full' },
     ];
 
+    readonly borderRadiusDropdownOptions: DropdownOption[] = [
+        { label: 'Recto (0px)', value: 'none' },
+        { label: 'Sutil (4px)', value: 'sm' },
+        { label: 'Medio (8px)', value: 'md' },
+        { label: 'Redondeado (12px)', value: 'lg' },
+        { label: 'Pronunciado (16px)', value: 'xl' },
+        { label: 'Súper redondo (24px)', value: '2xl' },
+        { label: 'Píldora (9999px)', value: 'full' },
+    ];
+
     readonly borderWidths: { label: string; value: BorderWidthOption }[] = [
+        { label: 'Sin borde (0px)', value: '0px' },
+        { label: 'Fino (1px)', value: '1px' },
+        { label: 'Grueso (2px)', value: '2px' },
+    ];
+
+    readonly borderWidthDropdownOptions: DropdownOption[] = [
         { label: 'Sin borde (0px)', value: '0px' },
         { label: 'Fino (1px)', value: '1px' },
         { label: 'Grueso (2px)', value: '2px' },
@@ -59,11 +94,29 @@ export class SettingsTheme {
         { label: 'Píldora', value: 'pill' },
     ];
 
+    readonly buttonShapeDropdownOptions: DropdownOption[] = [
+        { label: 'Rectangular', value: 'sharp' },
+        { label: 'Redondeado', value: 'rounded' },
+        { label: 'Píldora', value: 'pill' },
+    ];
+
     readonly buttonStyles: { label: string; value: ButtonStyleOption }[] = [
         { label: 'Relleno', value: 'filled' },
         { label: 'Contorno (Outline)', value: 'outline' },
         { label: 'Relieve', value: 'elevated' },
         { label: 'Suave (Soft)', value: 'soft' },
+    ];
+
+    readonly buttonStyleDropdownOptions: DropdownOption[] = [
+        { label: 'Relleno', value: 'filled' },
+        { label: 'Contorno (Outline)', value: 'outline' },
+        { label: 'Relieve', value: 'elevated' },
+        { label: 'Suave (Soft)', value: 'soft' },
+    ];
+
+    readonly buttonTransformDropdownOptions: DropdownOption[] = [
+        { label: 'Normal (Ej. Añadir al Carrito)', value: 'none' },
+        { label: 'Mayúsculas (Ej. AÑADIR AL CARRITO)', value: 'uppercase' },
     ];
 
     readonly cardStyles: { label: string; value: CardStyleOption; description: string }[] = [
@@ -75,12 +128,44 @@ export class SettingsTheme {
         { label: 'Playful Juguetón', value: 'playful', description: 'Súper redondeado e interactivo' },
     ];
 
+    readonly cardStyleDropdownOptions: DropdownOption[] = [
+        { label: 'Minimalista sin borde', value: 'minimal' },
+        { label: 'Borde definido', value: 'bordered' },
+        { label: 'Elevada con sombra', value: 'elevated' },
+        { label: 'Glassmorphism', value: 'glass' },
+        { label: 'Editorial Magazine', value: 'magazine' },
+        { label: 'Playful Juguetón', value: 'playful' },
+    ];
+
+    readonly cardImageAspectDropdownOptions: DropdownOption[] = [
+        { label: 'Cuadrado (1:1)', value: '1/1' },
+        { label: 'Retrato (4:5)', value: '4/5' },
+        { label: 'Moda Alargada (3:4)', value: '3/4' },
+        { label: 'Panorámico (16/9)', value: '16/9' },
+    ];
+
     readonly headerStyles: { label: string; value: HeaderStyleOption }[] = [
         { label: 'Minimalista limpio', value: 'minimal' },
         { label: 'Clásico con separador', value: 'classic' },
         { label: 'Logo centrado masthead', value: 'centered' },
         { label: 'Flotante con blur', value: 'floating' },
         { label: 'Audaz (Bold fill)', value: 'bold' },
+    ];
+
+    readonly headerStyleDropdownOptions: DropdownOption[] = [
+        { label: 'Minimalista limpio', value: 'minimal' },
+        { label: 'Clásico con separador', value: 'classic' },
+        { label: 'Logo centrado masthead', value: 'centered' },
+        { label: 'Flotante con blur', value: 'floating' },
+        { label: 'Audaz (Bold fill)', value: 'bold' },
+    ];
+
+    readonly heroStyleDropdownOptions: DropdownOption[] = [
+        { label: 'Centrado Clásico', value: 'centered' },
+        { label: 'Alineado a la Izquierda', value: 'left' },
+        { label: 'Dividido en 2 Columnas', value: 'split' },
+        { label: 'Minimalista Fino', value: 'minimal' },
+        { label: 'Pantalla Completa', value: 'full' },
     ];
 
     constructor() {

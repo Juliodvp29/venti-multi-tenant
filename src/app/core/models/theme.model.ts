@@ -20,6 +20,9 @@ export type CardStyleOption = 'minimal' | 'bordered' | 'elevated' | 'glass' | 'm
 export type HeaderStyleOption = 'minimal' | 'classic' | 'centered' | 'floating' | 'bold';
 export type HeroStyleOption = 'centered' | 'split' | 'left' | 'minimal' | 'full';
 
+export type SpacingDensityOption = 'compact' | 'normal' | 'spacious';
+export type MaxContentWidthOption = '1024px' | '1280px' | '1440px' | '100%';
+
 export interface ThemeColors {
     primary: string;
     secondary: string;
@@ -51,6 +54,10 @@ export interface ThemeTokens {
 
     // Sombras
     shadow_style: ShadowStyleOption;
+
+    // Espaciado y Distribución
+    spacing_density: SpacingDensityOption;
+    max_content_width: MaxContentWidthOption;
 
     // Botones
     button_shape: ButtonShapeOption;

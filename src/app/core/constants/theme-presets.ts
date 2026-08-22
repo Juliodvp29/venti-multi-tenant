@@ -35,6 +35,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'none',
             border_width: '1px',
             shadow_style: 'none',
+            spacing_density: 'normal',
+            max_content_width: '1280px',
             button_shape: 'sharp',
             button_style: 'filled',
             button_transform: 'uppercase',
@@ -77,6 +79,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'sm',
             border_width: '1px',
             shadow_style: 'subtle',
+            spacing_density: 'spacious',
+            max_content_width: '1280px',
             button_shape: 'rounded',
             button_style: 'outline',
             button_transform: 'none',
@@ -119,6 +123,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'full',
             border_width: '1px',
             shadow_style: 'none',
+            spacing_density: 'spacious',
+            max_content_width: '1440px',
             button_shape: 'sharp',
             button_style: 'outline',
             button_transform: 'uppercase',
@@ -161,6 +167,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'md',
             border_width: '1px',
             shadow_style: 'glow',
+            spacing_density: 'compact',
+            max_content_width: '1440px',
             button_shape: 'rounded',
             button_style: 'filled',
             button_transform: 'none',
@@ -203,6 +211,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'full',
             border_width: '1px',
             shadow_style: 'elevated',
+            spacing_density: 'normal',
+            max_content_width: '1280px',
             button_shape: 'pill',
             button_style: 'filled',
             button_transform: 'none',
@@ -245,6 +255,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'md',
             border_width: '1px',
             shadow_style: 'subtle',
+            spacing_density: 'normal',
+            max_content_width: '1024px',
             button_shape: 'rounded',
             button_style: 'filled',
             button_transform: 'none',
@@ -287,6 +299,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'none',
             border_width: '1px',
             shadow_style: 'elevated',
+            spacing_density: 'spacious',
+            max_content_width: '1280px',
             button_shape: 'sharp',
             button_style: 'outline',
             button_transform: 'uppercase',
@@ -329,6 +343,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'full',
             border_width: '2px',
             shadow_style: 'hard',
+            spacing_density: 'compact',
+            max_content_width: '1440px',
             button_shape: 'rounded',
             button_style: 'filled',
             button_transform: 'uppercase',
@@ -371,6 +387,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'full',
             border_width: '1px',
             shadow_style: 'glow',
+            spacing_density: 'normal',
+            max_content_width: '1440px',
             button_shape: 'rounded',
             button_style: 'filled',
             button_transform: 'none',
@@ -413,6 +431,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'full',
             border_width: '2px',
             shadow_style: 'colored',
+            spacing_density: 'normal',
+            max_content_width: '1280px',
             button_shape: 'pill',
             button_style: 'filled',
             button_transform: 'none',
@@ -455,6 +475,8 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
             border_radius_badge: 'md',
             border_width: '1px',
             shadow_style: 'subtle',
+            spacing_density: 'normal',
+            max_content_width: '1280px',
             button_shape: 'rounded',
             button_style: 'filled',
             button_transform: 'none',
@@ -501,6 +523,18 @@ export function themeTokensToCssVars(tokens: ThemeTokens): Record<string, string
         colored: '0 10px 20px -5px rgba(99, 102, 241, 0.25)',
     };
 
+    const gridGapMap: Record<string, string> = {
+        compact: '1rem',
+        normal: '1.5rem',
+        spacious: '2.5rem',
+    };
+
+    const sectionPyMap: Record<string, string> = {
+        compact: '2.5rem',
+        normal: '4rem',
+        spacious: '6rem',
+    };
+
     return {
         '--store-font-heading': tokens.font_heading || '"Inter", sans-serif',
         '--store-font-body': tokens.font_body || '"Inter", sans-serif',
@@ -511,6 +545,11 @@ export function themeTokensToCssVars(tokens: ThemeTokens): Record<string, string
         '--store-border-width': tokens.border_width || '1px',
         '--store-shadow': shadowMap[tokens.shadow_style || 'subtle'],
         '--store-btn-transform': tokens.button_transform || 'none',
+
+        // Layout Tokens
+        '--store-max-width': tokens.max_content_width || '1280px',
+        '--store-grid-gap': gridGapMap[tokens.spacing_density || 'normal'],
+        '--store-section-py': sectionPyMap[tokens.spacing_density || 'normal'],
 
         // Legacy compatibility variables
         '--primary-color': tokens.colors.primary,

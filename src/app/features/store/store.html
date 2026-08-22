@@ -6,7 +6,10 @@
     <app-store-header (openCart)="isCartOpen.set(true)"></app-store-header>
 
     <!-- Content -->
-    <main class="max-w-7xl mx-auto py-8 px-4">
+    <main class="mx-auto px-4"
+          [style.maxWidth]="'var(--store-max-width, 1280px)'"
+          [style.paddingTop]="'var(--store-grid-gap, 1.5rem)'"
+          [style.paddingBottom]="'var(--store-section-py, 4rem)'">
         <router-outlet></router-outlet>
     </main>
 
@@ -18,7 +21,7 @@
     <!-- Footer -->
     <footer [style.backgroundColor]="'var(--store-color-footer, #ffffff)'"
         class="border-t border-slate-200/50 py-12">
-        <div class="max-w-7xl mx-auto px-4">
+        <div class="mx-auto px-4" [style.maxWidth]="'var(--store-max-width, 1280px)'">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <!-- Branding -->
                 <div class="text-center md:text-left">

@@ -1,21 +1,21 @@
 <div class="space-y-8 animate-in fade-in duration-300">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-gray-800">
         <div>
-            <h2 class="text-xl font-bold text-white-900 flex items-center gap-2">
-                Temas Visuales Prediseñados
-                <span class="text-xs px-2.5 py-1 bg-indigo-50 text-indigo-700 font-bold rounded-full border border-indigo-100">
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                Sistema de Diseño por Tienda
+                <span class="text-xs px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-bold rounded-full border border-indigo-100 dark:border-indigo-800">
                     {{ tokens().theme_name }}
                 </span>
             </h2>
-            <p class="text-sm text-slate-500 mt-1">
-                Selecciona un tema base para transformar automáticamente tipografías, bordes, radios, sombras, botones y tarjetas. Después puedes personalizar cada detalle.
+            <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">
+                Configura tokens visuales para darle una identidad única a tu tienda: paleta de colores completa, fuentes, radios, sombras, espaciado y ancho máximo de contenido.
             </p>
         </div>
         
         <button 
             (click)="resetToPreset()"
-            class="px-3.5 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">
+            class="px-3.5 py-2 text-xs font-bold text-slate-600 dark:text-gray-300 bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-xl transition-all flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
@@ -24,74 +24,108 @@
     </div>
 
     <!-- Sub-navigation tabs for Theme Customizer -->
-    <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+    <div class="flex flex-wrap gap-2 border-b border-slate-200 dark:border-gray-800 pb-3">
         <button 
             (click)="activeCustomizerTab.set('preset')"
             [class.bg-slate-900]="activeCustomizerTab() === 'preset'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'preset'"
             [class.text-white]="activeCustomizerTab() === 'preset'"
             [class.bg-slate-100]="activeCustomizerTab() !== 'preset'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'preset'"
             [class.text-slate-700]="activeCustomizerTab() !== 'preset'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'preset'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
             <span>🎨 Temas Base (10)</span>
         </button>
         
         <button 
             (click)="activeCustomizerTab.set('colors')"
             [class.bg-slate-900]="activeCustomizerTab() === 'colors'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'colors'"
             [class.text-white]="activeCustomizerTab() === 'colors'"
             [class.bg-slate-100]="activeCustomizerTab() !== 'colors'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'colors'"
             [class.text-slate-700]="activeCustomizerTab() !== 'colors'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
-            <span>💧 Colores</span>
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'colors'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>💧 Paleta de Colores (10)</span>
         </button>
 
         <button 
             (click)="activeCustomizerTab.set('typography')"
             [class.bg-slate-900]="activeCustomizerTab() === 'typography'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'typography'"
             [class.text-white]="activeCustomizerTab() === 'typography'"
             [class.bg-slate-100]="activeCustomizerTab() !== 'typography'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'typography'"
             [class.text-slate-700]="activeCustomizerTab() !== 'typography'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'typography'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
             <span>🔤 Tipografías</span>
         </button>
 
         <button 
             (click)="activeCustomizerTab.set('borders')"
             [class.bg-slate-900]="activeCustomizerTab() === 'borders'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'borders'"
             [class.text-white]="activeCustomizerTab() === 'borders'"
             [class.bg-slate-100]="activeCustomizerTab() !== 'borders'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'borders'"
             [class.text-slate-700]="activeCustomizerTab() !== 'borders'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'borders'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
             <span>📐 Bordes y Radios</span>
         </button>
 
         <button 
             (click)="activeCustomizerTab.set('shadows')"
             [class.bg-slate-900]="activeCustomizerTab() === 'shadows'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'shadows'"
             [class.text-white]="activeCustomizerTab() === 'shadows'"
             [class.bg-slate-100]="activeCustomizerTab() !== 'shadows'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'shadows'"
             [class.text-slate-700]="activeCustomizerTab() !== 'shadows'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'shadows'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
             <span>☁️ Sombras</span>
+        </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('spacing')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'spacing'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'spacing'"
+            [class.text-white]="activeCustomizerTab() === 'spacing'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'spacing'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'spacing'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'spacing'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'spacing'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>📏 Espaciado y Ancho</span>
         </button>
 
         <button 
             (click)="activeCustomizerTab.set('buttons')"
             [class.bg-slate-900]="activeCustomizerTab() === 'buttons'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'buttons'"
             [class.text-white]="activeCustomizerTab() === 'buttons'"
             [class.bg-slate-100]="activeCustomizerTab() !== 'buttons'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'buttons'"
             [class.text-slate-700]="activeCustomizerTab() !== 'buttons'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'buttons'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
             <span>🔘 Botones</span>
         </button>
 
         <button 
             (click)="activeCustomizerTab.set('cards')"
             [class.bg-slate-900]="activeCustomizerTab() === 'cards'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'cards'"
             [class.text-white]="activeCustomizerTab() === 'cards'"
             [class.bg-slate-100]="activeCustomizerTab() !== 'cards'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'cards'"
             [class.text-slate-700]="activeCustomizerTab() !== 'cards'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5">
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'cards'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
             <span>🛍️ Tarjetas y Header</span>
         </button>
     </div>
@@ -106,13 +140,17 @@
                     [class.ring-2]="tokens().theme_id === preset.id"
                     [class.ring-indigo-600]="tokens().theme_id === preset.id"
                     [class.border-indigo-600]="tokens().theme_id === preset.id"
+                    [class.dark:border-indigo-500]="tokens().theme_id === preset.id"
                     [class.bg-indigo-50\/20]="tokens().theme_id === preset.id"
+                    [class.dark:bg-indigo-950\/30]="tokens().theme_id === preset.id"
                     [class.border-slate-200]="tokens().theme_id !== preset.id"
-                    [class.bg-white]="tokens().theme_id !== preset.id">
+                    [class.dark:border-gray-800]="tokens().theme_id !== preset.id"
+                    [class.bg-white]="tokens().theme_id !== preset.id"
+                    [class.dark:bg-gray-900]="tokens().theme_id !== preset.id">
 
                     <div>
                         <!-- Header Preview Swatch -->
-                        <div class="h-24 rounded-xl mb-4 overflow-hidden border border-slate-200/60 relative p-3 flex flex-col justify-between"
+                        <div class="h-24 rounded-xl mb-4 overflow-hidden border border-slate-200/60 dark:border-gray-700 relative p-3 flex flex-col justify-between"
                              [style.background-color]="preset.tokens.colors.background">
                             
                             <div class="flex items-center justify-between">
@@ -145,24 +183,24 @@
                         </div>
 
                         <div class="flex items-center justify-between mb-1">
-                            <h3 class="font-bold text-slate-900 text-base group-hover:text-indigo-600 transition-colors">
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                 {{ preset.name }}
                             </h3>
                             @if (tokens().theme_id === preset.id) {
-                                <span class="text-xs font-bold text-indigo-600 bg-indigo-100 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/40 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                                     ✓ Activo
                                 </span>
                             }
                         </div>
 
-                        <p class="text-xs text-slate-500 mb-3 leading-relaxed">
+                        <p class="text-xs text-slate-500 dark:text-gray-400 mb-3 leading-relaxed">
                             {{ preset.description }}
                         </p>
                     </div>
 
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                    <div class="pt-3 border-t border-slate-100 dark:border-gray-800 flex items-center justify-between text-[11px] text-slate-400 dark:text-gray-500 font-medium">
                         <span>Recomendado: {{ preset.category }}</span>
-                        <span class="text-slate-600 font-bold group-hover:translate-x-1 transition-transform">Usar este tema →</span>
+                        <span class="text-slate-600 dark:text-gray-300 font-bold group-hover:translate-x-1 transition-transform">Usar este tema →</span>
                     </div>
                 </div>
             }
@@ -171,80 +209,97 @@
 
     <!-- TAB 2: COLOR CUSTOMIZATION -->
     @if (activeCustomizerTab() === 'colors') {
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
-            <h3 class="font-bold text-slate-900 text-base">Paleta de Colores por Tienda</h3>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Paleta de Colores por Tienda</h3>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                <!-- Color items -->
+                <!-- Primary Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Color Primario</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color Primario</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
 
+                <!-- Secondary Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Color Secundario</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color Secundario</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
 
+                <!-- Accent Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Color de Acento / Badges</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Acento / Ofertas</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
 
+                <!-- Background Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Fondo General de Página</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Fondo General de Página</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
 
+                <!-- Surface / Card Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Superficie de Tarjetas</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Fondo de Tarjetas de Producto</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
 
+                <!-- Header Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Fondo del Header</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color del Header</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
 
+                <!-- Footer Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Fondo del Footer</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color del Footer</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
 
+                <!-- Primary Text Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Texto Principal</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Texto Principal</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
 
+                <!-- Secondary / Muted Text Color -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">Texto Atenuado / Secundario</label>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Texto Secundario</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200">
-                        <input type="text" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 uppercase">
+                        <input type="color" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Border Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Bordes y Líneas</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.border" (ngModelChange)="updateColor('border', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.border" (ngModelChange)="updateColor('border', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
                     </div>
                 </div>
             </div>
@@ -253,37 +308,37 @@
 
     <!-- TAB 3: TYPOGRAPHY CUSTOMIZATION -->
     @if (activeCustomizerTab() === 'typography') {
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
-            <h3 class="font-bold text-slate-900 text-base">Combinación Tipográfica</h3>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Combinación Tipográfica</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-3">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Fuente de Títulos y Banner</label>
-                    <select [ngModel]="tokens().font_heading" (ngModelChange)="updateToken('font_heading', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500">
-                        @for (f of fonts; track f.name) {
-                            <option [value]="f.family">{{ f.name }} ({{ f.category }})</option>
-                        }
-                    </select>
+                    <app-dropdown 
+                        label="Fuente de Títulos y Banner"
+                        [options]="fontOptions" 
+                        [value]="tokens().font_heading" 
+                        (valueChange)="updateToken('font_heading', $event)">
+                    </app-dropdown>
                     
-                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60 mt-2">
-                        <p class="text-xs text-slate-400 mb-1">Muestra de Título:</p>
-                        <p class="text-2xl font-bold text-slate-900 leading-tight" [style.font-family]="tokens().font_heading">
+                    <div class="p-4 bg-slate-50 dark:bg-gray-800/60 rounded-xl border border-slate-200/60 dark:border-gray-700 mt-2">
+                        <p class="text-xs text-slate-400 dark:text-gray-500 mb-1">Muestra de Título:</p>
+                        <p class="text-2xl font-bold leading-tight" [style.color]="tokens().colors.text_primary" [style.font-family]="tokens().font_heading">
                             Diseño Exclusivo para Tu Tienda
                         </p>
                     </div>
                 </div>
 
                 <div class="space-y-3">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Fuente de Cuerpo y Botones</label>
-                    <select [ngModel]="tokens().font_body" (ngModelChange)="updateToken('font_body', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500">
-                        @for (f of fonts; track f.name) {
-                            <option [value]="f.family">{{ f.name }} ({{ f.category }})</option>
-                        }
-                    </select>
+                    <app-dropdown 
+                        label="Fuente de Cuerpo y Botones"
+                        [options]="fontOptions" 
+                        [value]="tokens().font_body" 
+                        (valueChange)="updateToken('font_body', $event)">
+                    </app-dropdown>
 
-                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60 mt-2">
-                        <p class="text-xs text-slate-400 mb-1">Muestra de Párrafo:</p>
-                        <p class="text-sm text-slate-600 leading-relaxed" [style.font-family]="tokens().font_body">
+                    <div class="p-4 bg-slate-50 dark:bg-gray-800/60 rounded-xl border border-slate-200/60 dark:border-gray-700 mt-2">
+                        <p class="text-xs text-slate-400 dark:text-gray-500 mb-1">Muestra de Párrafo:</p>
+                        <p class="text-sm leading-relaxed" [style.color]="tokens().colors.text_muted" [style.font-family]="tokens().font_body">
                             Explora nuestras colecciones destacadas y disfruta de una experiencia de compra personalizada.
                         </p>
                     </div>
@@ -294,53 +349,45 @@
 
     <!-- TAB 4: BORDERS & RADIUSES -->
     @if (activeCustomizerTab() === 'borders') {
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
-            <h3 class="font-bold text-slate-900 text-base">Bordes y Geometría de Componentes</h3>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Bordes y Geometría de Componentes</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Radio de Botones</label>
-                    <select [ngModel]="tokens().border_radius_button" (ngModelChange)="updateToken('border_radius_button', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        @for (r of borderRadii; track r.value) {
-                            <option [value]="r.value">{{ r.label }}</option>
-                        }
-                    </select>
-                </div>
+                <app-dropdown 
+                    label="Radio de Botones"
+                    [options]="borderRadiusDropdownOptions" 
+                    [value]="tokens().border_radius_button" 
+                    (valueChange)="updateToken('border_radius_button', $event)">
+                </app-dropdown>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Radio de Tarjetas de Producto</label>
-                    <select [ngModel]="tokens().border_radius_card" (ngModelChange)="updateToken('border_radius_card', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        @for (r of borderRadii; track r.value) {
-                            <option [value]="r.value">{{ r.label }}</option>
-                        }
-                    </select>
-                </div>
+                <app-dropdown 
+                    label="Radio de Tarjetas de Producto"
+                    [options]="borderRadiusDropdownOptions" 
+                    [value]="tokens().border_radius_card" 
+                    (valueChange)="updateToken('border_radius_card', $event)">
+                </app-dropdown>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Grosor de Bordes</label>
-                    <select [ngModel]="tokens().border_width" (ngModelChange)="updateToken('border_width', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        @for (w of borderWidths; track w.value) {
-                            <option [value]="w.value">{{ w.label }}</option>
-                        }
-                    </select>
-                </div>
+                <app-dropdown 
+                    label="Grosor de Bordes"
+                    [options]="borderWidthDropdownOptions" 
+                    [value]="tokens().border_width" 
+                    (valueChange)="updateToken('border_width', $event)">
+                </app-dropdown>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Radio de Badges / Etiquetas</label>
-                    <select [ngModel]="tokens().border_radius_badge" (ngModelChange)="updateToken('border_radius_badge', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        @for (r of borderRadii; track r.value) {
-                            <option [value]="r.value">{{ r.label }}</option>
-                        }
-                    </select>
-                </div>
+                <app-dropdown 
+                    label="Radio de Badges / Etiquetas"
+                    [options]="borderRadiusDropdownOptions" 
+                    [value]="tokens().border_radius_badge" 
+                    (valueChange)="updateToken('border_radius_badge', $event)">
+                </app-dropdown>
             </div>
         </div>
     }
 
     <!-- TAB 5: SHADOWS -->
     @if (activeCustomizerTab() === 'shadows') {
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
-            <h3 class="font-bold text-slate-900 text-base">Estilo de Sombras & Profundidad</h3>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Estilo de Sombras & Profundidad</h3>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 @for (shadow of shadowStyles; track shadow.value) {
@@ -348,96 +395,140 @@
                         (click)="updateToken('shadow_style', shadow.value)"
                         class="p-4 rounded-xl border transition-all cursor-pointer hover:border-indigo-500"
                         [class.border-indigo-600]="tokens().shadow_style === shadow.value"
+                        [class.dark:border-indigo-500]="tokens().shadow_style === shadow.value"
                         [class.bg-indigo-50\/30]="tokens().shadow_style === shadow.value"
-                        [class.border-slate-200]="tokens().shadow_style !== shadow.value">
+                        [class.dark:bg-indigo-950\/30]="tokens().shadow_style === shadow.value"
+                        [class.border-slate-200]="tokens().shadow_style !== shadow.value"
+                        [class.dark:border-gray-800]="tokens().shadow_style !== shadow.value"
+                        [class.bg-white]="tokens().shadow_style !== shadow.value"
+                        [class.dark:bg-gray-900]="tokens().shadow_style !== shadow.value">
                         
-                        <p class="font-bold text-slate-900 text-sm mb-1">{{ shadow.label }}</p>
-                        <p class="text-xs text-slate-500">{{ shadow.description }}</p>
+                        <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ shadow.label }}</p>
+                        <p class="text-xs text-slate-500 dark:text-gray-400">{{ shadow.description }}</p>
                     </div>
                 }
             </div>
         </div>
     }
 
-    <!-- TAB 6: BUTTONS -->
-    @if (activeCustomizerTab() === 'buttons') {
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
-            <h3 class="font-bold text-slate-900 text-base">Personalización de Botones</h3>
+    <!-- TAB 6: SPACING & MAX CONTENT WIDTH -->
+    @if (activeCustomizerTab() === 'spacing') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-8">
+            <div>
+                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1">Densidad de Espacios de la Tienda</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Controla la respiración y distancia entre secciones y elementos en la pantalla.</p>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Forma del Botón</label>
-                    <select [ngModel]="tokens().button_shape" (ngModelChange)="updateToken('button_shape', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        @for (shape of buttonShapes; track shape.value) {
-                            <option [value]="shape.value">{{ shape.label }}</option>
-                        }
-                    </select>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @for (density of spacingDensities; track density.value) {
+                        <div 
+                            (click)="updateToken('spacing_density', density.value)"
+                            class="p-4 rounded-xl border transition-all cursor-pointer hover:border-indigo-500"
+                            [class.border-indigo-600]="tokens().spacing_density === density.value"
+                            [class.dark:border-indigo-500]="tokens().spacing_density === density.value"
+                            [class.bg-indigo-50\/30]="tokens().spacing_density === density.value"
+                            [class.dark:bg-indigo-950\/30]="tokens().spacing_density === density.value"
+                            [class.border-slate-200]="tokens().spacing_density !== density.value"
+                            [class.dark:border-gray-800]="tokens().spacing_density !== density.value"
+                            [class.bg-white]="tokens().spacing_density !== density.value"
+                            [class.dark:bg-gray-900]="tokens().spacing_density !== density.value">
+                            
+                            <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ density.label }}</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">{{ density.description }}</p>
+                        </div>
+                    }
                 </div>
+            </div>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Estilo Visual</label>
-                    <select [ngModel]="tokens().button_style" (ngModelChange)="updateToken('button_style', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        @for (style of buttonStyles; track style.value) {
-                            <option [value]="style.value">{{ style.label }}</option>
-                        }
-                    </select>
-                </div>
+            <div class="pt-6 border-t border-slate-100 dark:border-gray-800">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1">Ancho Máximo del Contenido</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Determina el ancho máximo de la cuadrícula de productos y contenidos en monitores grandes.</p>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Transformación de Texto</label>
-                    <select [ngModel]="tokens().button_transform" (ngModelChange)="updateToken('button_transform', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        <option value="none">Normal (Ej. Añadir al Carrito)</option>
-                        <option value="uppercase">Mayúsculas (Ej. AÑADIR AL CARRITO)</option>
-                    </select>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    @for (width of maxContentWidths; track width.value) {
+                        <div 
+                            (click)="updateToken('max_content_width', width.value)"
+                            class="p-4 rounded-xl border transition-all cursor-pointer hover:border-indigo-500"
+                            [class.border-indigo-600]="tokens().max_content_width === width.value"
+                            [class.dark:border-indigo-500]="tokens().max_content_width === width.value"
+                            [class.bg-indigo-50\/30]="tokens().max_content_width === width.value"
+                            [class.dark:bg-indigo-950\/30]="tokens().max_content_width === width.value"
+                            [class.border-slate-200]="tokens().max_content_width !== width.value"
+                            [class.dark:border-gray-800]="tokens().max_content_width !== width.value"
+                            [class.bg-white]="tokens().max_content_width !== width.value"
+                            [class.dark:bg-gray-900]="tokens().max_content_width !== width.value">
+                            
+                            <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ width.label }}</p>
+                            <p class="text-[11px] text-slate-500 dark:text-gray-400 leading-relaxed">{{ width.description }}</p>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     }
 
-    <!-- TAB 7: CARDS & HEADER -->
+    <!-- TAB 7: BUTTONS -->
+    @if (activeCustomizerTab() === 'buttons') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Personalización de Botones</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <app-dropdown 
+                    label="Forma del Botón"
+                    [options]="buttonShapeDropdownOptions" 
+                    [value]="tokens().button_shape" 
+                    (valueChange)="updateToken('button_shape', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Estilo Visual"
+                    [options]="buttonStyleDropdownOptions" 
+                    [value]="tokens().button_style" 
+                    (valueChange)="updateToken('button_style', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Transformación de Texto"
+                    [options]="buttonTransformDropdownOptions" 
+                    [value]="tokens().button_transform" 
+                    (valueChange)="updateToken('button_transform', $event)">
+                </app-dropdown>
+            </div>
+        </div>
+    }
+
+    <!-- TAB 8: CARDS & HEADER -->
     @if (activeCustomizerTab() === 'cards') {
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
-            <h3 class="font-bold text-slate-900 text-base">Tarjetas de Producto y Header</h3>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Tarjetas de Producto y Header</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Estilo de Tarjeta de Producto</label>
-                    <select [ngModel]="tokens().card_style" (ngModelChange)="updateToken('card_style', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        @for (card of cardStyles; track card.value) {
-                            <option [value]="card.value">{{ card.label }} - {{ card.description }}</option>
-                        }
-                    </select>
-                </div>
+                <app-dropdown 
+                    label="Estilo de Tarjeta de Producto"
+                    [options]="cardStyleDropdownOptions" 
+                    [value]="tokens().card_style" 
+                    (valueChange)="updateToken('card_style', $event)">
+                </app-dropdown>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Proporción de Imagen de Producto</label>
-                    <select [ngModel]="tokens().card_image_aspect" (ngModelChange)="updateToken('card_image_aspect', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        <option value="1/1">Cuadrado (1:1)</option>
-                        <option value="4/5">Retrato (4:5)</option>
-                        <option value="3/4">Moda Alargada (3:4)</option>
-                        <option value="16/9">Panorámico (16:9)</option>
-                    </select>
-                </div>
+                <app-dropdown 
+                    label="Proporción de Imagen de Producto"
+                    [options]="cardImageAspectDropdownOptions" 
+                    [value]="tokens().card_image_aspect" 
+                    (valueChange)="updateToken('card_image_aspect', $event)">
+                </app-dropdown>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Estilo de Navegación del Header</label>
-                    <select [ngModel]="tokens().header_style" (ngModelChange)="updateToken('header_style', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        @for (h of headerStyles; track h.value) {
-                            <option [value]="h.value">{{ h.label }}</option>
-                        }
-                    </select>
-                </div>
+                <app-dropdown 
+                    label="Estilo de Navegación del Header"
+                    [options]="headerStyleDropdownOptions" 
+                    [value]="tokens().header_style" 
+                    (valueChange)="updateToken('header_style', $event)">
+                </app-dropdown>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Disposición del Hero Banner</label>
-                    <select [ngModel]="tokens().hero_style" (ngModelChange)="updateToken('hero_style', $event)" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm">
-                        <option value="centered">Centrado Clásico</option>
-                        <option value="left">Alineado a la Izquierda</option>
-                        <option value="split">Dividido en 2 Columnas</option>
-                        <option value="minimal">Minimalista Fino</option>
-                        <option value="full">Pantalla Completa</option>
-                    </select>
-                </div>
+                <app-dropdown 
+                    label="Disposición del Hero Banner"
+                    [options]="heroStyleDropdownOptions" 
+                    [value]="tokens().hero_style" 
+                    (valueChange)="updateToken('hero_style', $event)">
+                </app-dropdown>
             </div>
         </div>
     }
