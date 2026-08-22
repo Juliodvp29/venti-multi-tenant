@@ -359,6 +359,25 @@ export class SettingsStorefront {
         }
     }
 
+    async onHeroSplitImageUpload(event: Event, section: StorefrontSection) {
+        const input = event.target as HTMLInputElement;
+        if (!input.files?.length) return;
+
+        const file = input.files[0];
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) return;
+
+        try {
+            const result = await this.storage.uploadImage('products', file, `tenants/${tenantId}/storefront`);
+            section.content.splitImageUrl = result.url;
+            this.forceLayoutUpdate();
+            this.toast.success('Imagen de la composición subida correctamente');
+        } catch (error) {
+            console.error('Error uploading split image:', error);
+            this.toast.error('Error al subir la imagen');
+        }
+    }
+
     async onSectionBgUpload(event: Event, section: StorefrontSection) {
         const input = event.target as HTMLInputElement;
         if (!input.files?.length) return;
@@ -573,11 +592,19 @@ export class SettingsStorefront {
                     subtitle: 'Descubre piezas exclusivas diseñadas con la máxima atención al detalle y acabados premium.',
                     buttonText: 'Comprar ahora',
                     buttonLink: '/store/productos',
-                    secondaryButtonText: 'Ver colecciones',
+                    secondaryButtonText: 'Ver catálogo',
                     secondaryButtonLink: '/store/productos',
                     alignment: 'center',
+                    badgeText: 'NUEVA COLECCIÓN ✨',
+                    height: 'medium',
+                    textSize: 'large',
+                    compositionStyle: 'full-banner',
+                    splitImagePosition: 'right',
+                    splitImageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000',
+                    animation: 'fade-in',
                     overlayOpacity: 40,
-                    badgeText: 'Edición Limitada'
+                    overlayColor: '#000000',
+                    backgroundImageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1600'
                 };
 
             case 'promo_banner':

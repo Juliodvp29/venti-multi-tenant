@@ -6,48 +6,195 @@
             <!-- 1. HERO -->
             @if (section.type === 'hero') {
                 <section [ngStyle]="getSectionStyle(section)"
-                    class="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden"
+                    class="relative overflow-hidden flex items-center justify-center transition-all duration-300"
                     [class]="getSectionPaddingClass(section)"
+                    [class.min-h-\[400px\]]="asAny(section.content).height === 'compact'"
+                    [class.md:min-h-\[480px\]]="asAny(section.content).height === 'compact'"
+                    [class.min-h-\[500px\]]="asAny(section.content).height === 'medium' || !asAny(section.content).height"
+                    [class.md:min-h-\[600px\]]="asAny(section.content).height === 'medium' || !asAny(section.content).height"
+                    [class.min-h-\[650px\]]="asAny(section.content).height === 'tall'"
+                    [class.md:min-h-\[780px\]]="asAny(section.content).height === 'tall'"
+                    [class.min-h-screen]="asAny(section.content).height === 'full'"
                     [style.backgroundColor]="asAny(section.content).backgroundColor || section.styles?.backgroundColor || 'var(--store-color-secondary)'">
                     
-                    @if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
-                        <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl" class="absolute inset-0 w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black" [style.opacity]="(asAny(section.content).overlayOpacity || section.styles?.overlayOpacity || 40) / 100"></div>
+                    <!-- Video de Fondo -->
+                    @if (asAny(section.content).backgroundVideoUrl) {
+                        <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+                            <source [src]="asAny(section.content).backgroundVideoUrl">
+                        </video>
+                    } @else if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                        <!-- Imagen de Fondo -->
+                        <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl"
+                            class="absolute inset-0 w-full h-full object-cover">
                     }
 
-                    <div class="relative z-10 text-center" [class]="getSectionContainerClass(section)">
-                        @if (asAny(section.content).badgeText) {
-                            <span class="inline-block px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white rounded-full mb-4 bg-white/20 backdrop-blur-md">
-                                {{ asAny(section.content).badgeText }}
-                            </span>
-                        }
+                    <!-- Overlay Configurable -->
+                    @if (asAny(section.content).backgroundVideoUrl || asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                        <div class="absolute inset-0"
+                            [style.backgroundColor]="asAny(section.content).overlayColor || '#000000'"
+                            [style.opacity]="(asAny(section.content).overlayOpacity ?? 40) / 100"></div>
+                    }
 
-                        <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight"
-                            [style.font-family]="'var(--store-font-heading)'">
-                            {{ asAny(section.content).title }}
-                        </h1>
+                    <!-- Animación y Contenido -->
+                    <div class="relative z-10 w-full"
+                        [class.text-left]="asAny(section.content).alignment === 'left'"
+                        [class.text-center]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment"
+                        [class.text-right]="asAny(section.content).alignment === 'right'"
+                        [class.animate-in]="asAny(section.content).animation && asAny(section.content).animation !== 'none'"
+                        [class.fade-in]="asAny(section.content).animation === 'fade-in'"
+                        [class.slide-in-from-bottom-6]="asAny(section.content).animation === 'slide-up'"
+                        [class.zoom-in-95]="asAny(section.content).animation === 'zoom-in'"
+                        [class.duration-700]="asAny(section.content).animation && asAny(section.content).animation !== 'none'">
+                        
+                        <div [class]="getSectionContainerClass(section)">
 
-                        @if (asAny(section.content).subtitle) {
-                            <p class="mt-4 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed">
-                                {{ asAny(section.content).subtitle }}
-                            </p>
-                        }
+                            <!-- ESTILO 1 & 4: FULL BANNER O MINIMAL CENTERED -->
+                            @if (asAny(section.content).compositionStyle === 'full-banner' || asAny(section.content).compositionStyle === 'minimal-centered' || !asAny(section.content).compositionStyle) {
+                                <div [class.max-w-3xl]="asAny(section.content).alignment !== 'center'"
+                                    [class.mx-auto]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment"
+                                    [class.ml-auto]="asAny(section.content).alignment === 'right'">
+                                    
+                                    @if (asAny(section.content).badgeText) {
+                                        <span class="inline-block px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white rounded-full mb-4 bg-white/20 backdrop-blur-md shadow-xs border border-white/20">
+                                            {{ asAny(section.content).badgeText }}
+                                        </span>
+                                    }
 
-                        <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-                            @if (asAny(section.content).buttonText) {
-                                <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
-                                    class="inline-flex items-center px-8 py-3.5 text-base font-bold text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-xl hover:-translate-y-0.5"
-                                    [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
-                                    {{ asAny(section.content).buttonText }}
-                                </a>
+                                    <h1 class="font-black text-white leading-tight tracking-tight mb-4"
+                                        [class.text-2xl]="asAny(section.content).textSize === 'compact'"
+                                        [class.md:text-4xl]="asAny(section.content).textSize === 'compact'"
+                                        [class.text-3xl]="asAny(section.content).textSize === 'normal'"
+                                        [class.md:text-5xl]="asAny(section.content).textSize === 'normal'"
+                                        [class.text-4xl]="asAny(section.content).textSize === 'large' || !asAny(section.content).textSize"
+                                        [class.md:text-6xl]="asAny(section.content).textSize === 'large' || !asAny(section.content).textSize"
+                                        [class.text-5xl]="asAny(section.content).textSize === 'display'"
+                                        [class.md:text-7xl]="asAny(section.content).textSize === 'display'"
+                                        [style.font-family]="'var(--store-font-heading)'">
+                                        {{ asAny(section.content).title }}
+                                    </h1>
+
+                                    @if (asAny(section.content).subtitle) {
+                                        <p class="text-white/90 leading-relaxed mb-8"
+                                            [class.text-sm]="asAny(section.content).textSize === 'compact'"
+                                            [class.text-base]="asAny(section.content).textSize === 'normal' || !asAny(section.content).textSize"
+                                            [class.text-lg]="asAny(section.content).textSize === 'large'"
+                                            [class.md:text-xl]="asAny(section.content).textSize === 'large' || asAny(section.content).textSize === 'display'">
+                                            {{ asAny(section.content).subtitle }}
+                                        </p>
+                                    }
+
+                                    <div class="flex flex-wrap items-center gap-4"
+                                        [class.justify-center]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment"
+                                        [class.justify-start]="asAny(section.content).alignment === 'left'"
+                                        [class.justify-end]="asAny(section.content).alignment === 'right'">
+                                        @if (asAny(section.content).buttonText) {
+                                            <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
+                                                class="inline-flex items-center px-8 py-4 text-base font-bold text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-2xl hover:-translate-y-0.5"
+                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                                {{ asAny(section.content).buttonText }}
+                                            </a>
+                                        }
+                                        @if (asAny(section.content).secondaryButtonText) {
+                                            <a [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'" queryParamsHandling="preserve"
+                                                class="inline-flex items-center px-8 py-4 text-base font-bold text-white bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 transition-all shadow-xl hover:-translate-y-0.5"
+                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                                {{ asAny(section.content).secondaryButtonText }}
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
                             }
-                            @if (asAny(section.content).secondaryButtonText) {
-                                <a [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'" queryParamsHandling="preserve"
-                                    class="inline-flex items-center px-8 py-3.5 text-base font-bold text-white bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 transition-all shadow-lg hover:-translate-y-0.5"
-                                    [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
-                                    {{ asAny(section.content).secondaryButtonText }}
-                                </a>
+
+                            <!-- ESTILO 2: MODO DIVIDIDO (SPLIT) -->
+                            @if (asAny(section.content).compositionStyle === 'split') {
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center py-8">
+                                    <div [class.md:order-2]="asAny(section.content).splitImagePosition === 'left'">
+                                        @if (asAny(section.content).badgeText) {
+                                            <span class="inline-block px-4 py-1.5 text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 rounded-full mb-4">
+                                                {{ asAny(section.content).badgeText }}
+                                            </span>
+                                        }
+
+                                        <h1 class="font-black text-gray-900 dark:text-white leading-tight tracking-tight mb-4 text-3xl md:text-5xl"
+                                            [style.font-family]="'var(--store-font-heading)'">
+                                            {{ asAny(section.content).title }}
+                                        </h1>
+
+                                        @if (asAny(section.content).subtitle) {
+                                            <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-8 text-base md:text-lg">
+                                                {{ asAny(section.content).subtitle }}
+                                            </p>
+                                        }
+
+                                        <div class="flex flex-wrap items-center gap-4">
+                                            @if (asAny(section.content).buttonText) {
+                                                <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
+                                                    class="inline-flex items-center px-8 py-3.5 text-base font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-xl hover:-translate-y-0.5"
+                                                    [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                                    {{ asAny(section.content).buttonText }}
+                                                </a>
+                                            }
+                                            @if (asAny(section.content).secondaryButtonText) {
+                                                <a [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'" queryParamsHandling="preserve"
+                                                    class="inline-flex items-center px-8 py-3.5 text-base font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all border border-gray-200 dark:border-gray-700 shadow-md"
+                                                    [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                                    {{ asAny(section.content).secondaryButtonText }}
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div [class.md:order-1]="asAny(section.content).splitImagePosition === 'left'"
+                                        class="relative h-80 md:h-[480px] rounded-3xl overflow-hidden shadow-2xl border border-white/20">
+                                        <img [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'"
+                                            class="w-full h-full object-cover">
+                                    </div>
+                                </div>
                             }
+
+                            <!-- ESTILO 3: TARJETA FLOTANTE (CARD OVERLAY) -->
+                            @if (asAny(section.content).compositionStyle === 'card-overlay') {
+                                <div class="max-w-2xl p-10 md:p-14 bg-white/20 dark:bg-black/40 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-2xl"
+                                    [class.mx-auto]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment"
+                                    [class.ml-auto]="asAny(section.content).alignment === 'right'">
+                                    
+                                    @if (asAny(section.content).badgeText) {
+                                        <span class="inline-block px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white bg-white/30 rounded-full mb-4 backdrop-blur-md">
+                                            {{ asAny(section.content).badgeText }}
+                                        </span>
+                                    }
+
+                                    <h1 class="font-black text-white leading-tight tracking-tight mb-4 text-3xl md:text-5xl"
+                                        [style.font-family]="'var(--store-font-heading)'">
+                                        {{ asAny(section.content).title }}
+                                    </h1>
+
+                                    @if (asAny(section.content).subtitle) {
+                                        <p class="text-white/90 text-sm md:text-base leading-relaxed mb-8">
+                                            {{ asAny(section.content).subtitle }}
+                                        </p>
+                                    }
+
+                                    <div class="flex flex-wrap items-center gap-4"
+                                        [class.justify-center]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment">
+                                        @if (asAny(section.content).buttonText) {
+                                            <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
+                                                class="inline-flex items-center px-8 py-3.5 text-base font-bold text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-xl hover:-translate-y-0.5"
+                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                                {{ asAny(section.content).buttonText }}
+                                            </a>
+                                        }
+                                        @if (asAny(section.content).secondaryButtonText) {
+                                            <a [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'" queryParamsHandling="preserve"
+                                                class="inline-flex items-center px-8 py-3.5 text-base font-bold text-white bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition-all shadow-lg hover:-translate-y-0.5"
+                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                                {{ asAny(section.content).secondaryButtonText }}
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
                         </div>
                     </div>
                 </section>

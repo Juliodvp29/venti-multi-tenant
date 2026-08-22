@@ -17,6 +17,9 @@ export type ShadowStyleOption = 'none' | 'subtle' | 'elevated' | 'hard' | 'glow'
 export type ButtonShapeOption = 'sharp' | 'rounded' | 'pill';
 export type ButtonStyleOption = 'filled' | 'outline' | 'elevated' | 'soft';
 export type CardStyleOption = 'minimal' | 'bordered' | 'elevated' | 'glass' | 'magazine' | 'playful';
+export type CardOrientationOption = 'vertical' | 'horizontal';
+export type CardBorderStyleOption = 'bordered' | 'borderless' | 'shadow' | 'flat';
+export type CardCartButtonOption = 'hover' | 'always' | 'icon_only' | 'none';
 export type HeaderStyleOption = 'minimal' | 'classic' | 'centered' | 'floating' | 'bold';
 export type HeroStyleOption = 'centered' | 'split' | 'left' | 'minimal' | 'full';
 
@@ -93,6 +96,16 @@ export interface ThemeTokens {
     // Tarjetas de Producto
     card_style: CardStyleOption;
     card_image_aspect: '1/1' | '4/5' | '3/4' | '16/9';
+    card_orientation?: CardOrientationOption;
+    card_border_style?: CardBorderStyleOption;
+    card_show_price?: boolean;
+    card_show_original_price?: boolean;
+    card_show_discount_badge?: boolean;
+    card_show_stock?: boolean;
+    card_show_new_badge?: boolean;
+    card_show_sale_badge?: boolean;
+    card_cart_button_style?: CardCartButtonOption;
+    card_hover_secondary_image?: boolean;
 
     // Header y Hero Banner
     header_style: HeaderStyleOption;

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { PreviewSyncService } from '@core/services/preview-sync.service';
-import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption } from '@core/models';
+import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, CardOrientationOption, CardBorderStyleOption, CardCartButtonOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption } from '@core/models';
 import { THEME_PRESETS, AVAILABLE_FONTS, TYPOGRAPHY_PAIRINGS } from '@core/constants/theme-presets';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 
@@ -203,6 +203,25 @@ export class SettingsTheme {
         { label: 'Retrato (4:5)', value: '4/5' },
         { label: 'Moda Alargada (3:4)', value: '3/4' },
         { label: 'Panorámico (16/9)', value: '16/9' },
+    ];
+
+    readonly cardOrientationDropdownOptions: DropdownOption[] = [
+        { label: 'Vertical (Estándar)', value: 'vertical' },
+        { label: 'Horizontal (Fila / Lista)', value: 'horizontal' },
+    ];
+
+    readonly cardBorderStyleDropdownOptions: DropdownOption[] = [
+        { label: 'Borde definido', value: 'bordered' },
+        { label: 'Sin borde (Limpio)', value: 'borderless' },
+        { label: 'Sombra elevada', value: 'shadow' },
+        { label: 'Plano (Flat)', value: 'flat' },
+    ];
+
+    readonly cardCartButtonDropdownOptions: DropdownOption[] = [
+        { label: 'Hover (Al pasar el cursor)', value: 'hover' },
+        { label: 'Siempre visible', value: 'always' },
+        { label: 'Solo ícono flotante', value: 'icon_only' },
+        { label: 'Ocultar botón de compra rápida', value: 'none' },
     ];
 
     readonly headerStyles: { label: string; value: HeaderStyleOption }[] = [

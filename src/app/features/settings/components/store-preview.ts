@@ -51,13 +51,120 @@ export class StorePreview {
     readonly data = input.required<PreviewData>();
 
     readonly mockProducts = [
-        { name: 'Classic Chrono', price: 129, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400' },
-        { name: 'Sport Runner', price: 85, image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400' },
-        { name: 'Leather Wallet', price: 45, image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&q=80&w=400' },
-        { name: 'Wireless Pods', price: 199, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400' },
-        { name: 'Minimal Backpack', price: 120, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400' },
-        { name: 'Smart Glasses', price: 250, image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=400' }
+        { 
+            name: 'Classic Chrono', 
+            price: 129, 
+            original_price: 169,
+            image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
+            secondaryImage: 'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&q=80&w=400',
+            stock: 12,
+            isNew: true,
+        },
+        { 
+            name: 'Sport Runner', 
+            price: 85, 
+            original_price: 110,
+            image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400',
+            secondaryImage: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=400',
+            stock: 4,
+            isNew: false,
+        },
+        { 
+            name: 'Leather Wallet', 
+            price: 45, 
+            original_price: null,
+            image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&q=80&w=400',
+            secondaryImage: null,
+            stock: 25,
+            isNew: true,
+        },
+        { 
+            name: 'Wireless Pods', 
+            price: 199, 
+            original_price: 249,
+            image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400',
+            secondaryImage: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&q=80&w=400',
+            stock: 0,
+            isNew: false,
+        },
+        { 
+            name: 'Minimal Backpack', 
+            price: 120, 
+            original_price: null,
+            image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400',
+            secondaryImage: 'https://images.unsplash.com/photo-1546938576-6e6a64f317cc?auto=format&fit=crop&q=80&w=400',
+            stock: 8,
+            isNew: false,
+        },
+        { 
+            name: 'Smart Glasses', 
+            price: 250, 
+            original_price: 320,
+            image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=400',
+            secondaryImage: null,
+            stock: 15,
+            isNew: true,
+        }
     ];
+
+    get cardOrientation(): string {
+        return this.activeTokens.card_orientation || 'vertical';
+    }
+
+    get cardBorderStyle(): string {
+        return this.activeTokens.card_border_style || 'bordered';
+    }
+
+    get cardShowPrice(): boolean {
+        return this.activeTokens.card_show_price ?? true;
+    }
+
+    get cardShowOriginalPrice(): boolean {
+        return this.activeTokens.card_show_original_price ?? true;
+    }
+
+    get cardShowDiscountBadge(): boolean {
+        return this.activeTokens.card_show_discount_badge ?? true;
+    }
+
+    get cardShowStock(): boolean {
+        return this.activeTokens.card_show_stock ?? false;
+    }
+
+    get cardShowNewBadge(): boolean {
+        return this.activeTokens.card_show_new_badge ?? true;
+    }
+
+    get cardShowSaleBadge(): boolean {
+        return this.activeTokens.card_show_sale_badge ?? true;
+    }
+
+    get cardCartButtonStyle(): string {
+        return this.activeTokens.card_cart_button_style || 'hover';
+    }
+
+    get cardHoverSecondaryImage(): boolean {
+        return this.activeTokens.card_hover_secondary_image ?? true;
+    }
+
+    get cardImageAspectClass(): string {
+        const aspect = this.activeTokens.card_image_aspect;
+        switch (aspect) {
+            case '1/1': return 'aspect-square';
+            case '3/4': return 'aspect-[3/4]';
+            case '16/9': return 'aspect-video';
+            case '4/5':
+            default:
+                return 'aspect-[4/5]';
+        }
+    }
+
+    getDiscountPercent(price: number, originalPrice: number | null): number | null {
+        if (originalPrice && originalPrice > price) {
+            return Math.round(((originalPrice - price) / originalPrice) * 100);
+        }
+        return null;
+    }
 
     readonly dynamicCssVars = computed(() => {
         const d = this.data();

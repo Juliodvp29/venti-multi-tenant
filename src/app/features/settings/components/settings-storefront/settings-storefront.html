@@ -291,14 +291,104 @@
                             
                             <!-- 1. HERO -->
                             @if (section.type === 'hero') {
-                                <div class="space-y-4">
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="col-span-2 sm:col-span-1">
-                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Badge Superior</label>
-                                            <input type="text" [(ngModel)]="$any(section.content).badgeText" (ngModelChange)="forceLayoutUpdate()" placeholder="Edición Limitada"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                <div class="space-y-5">
+                                    
+                                    <!-- Composición Visual -->
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800/60 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 space-y-3">
+                                        <label class="block text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🎨 Estilo de Composición</label>
+                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                            <button type="button" (click)="$any(section.content).compositionStyle = 'full-banner'; forceLayoutUpdate()"
+                                                [class.border-indigo-600]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
+                                                [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
+                                                [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
+                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
+                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">🖼️ Full Banner</span>
+                                                <span class="block text-[10px] text-gray-400">Inmersivo</span>
+                                            </button>
+
+                                            <button type="button" (click)="$any(section.content).compositionStyle = 'split'; forceLayoutUpdate()"
+                                                [class.border-indigo-600]="$any(section.content).compositionStyle === 'split'"
+                                                [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'split'"
+                                                [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'split'"
+                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
+                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">🌓 Dividido</span>
+                                                <span class="block text-[10px] text-gray-400">Texto e imagen</span>
+                                            </button>
+
+                                            <button type="button" (click)="$any(section.content).compositionStyle = 'card-overlay'; forceLayoutUpdate()"
+                                                [class.border-indigo-600]="$any(section.content).compositionStyle === 'card-overlay'"
+                                                [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'card-overlay'"
+                                                [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'card-overlay'"
+                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
+                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">🎴 Tarjeta Flotante</span>
+                                                <span class="block text-[10px] text-gray-400">Glassmorphism</span>
+                                            </button>
+
+                                            <button type="button" (click)="$any(section.content).compositionStyle = 'minimal-centered'; forceLayoutUpdate()"
+                                                [class.border-indigo-600]="$any(section.content).compositionStyle === 'minimal-centered'"
+                                                [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'minimal-centered'"
+                                                [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'minimal-centered'"
+                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
+                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">✨ Minimalista</span>
+                                                <span class="block text-[10px] text-gray-400">Limpio / Editorial</span>
+                                            </button>
                                         </div>
-                                        <div class="col-span-2 sm:col-span-1">
+                                    </div>
+
+                                    <!-- Opciones de Layout Dividido (Split) -->
+                                    @if ($any(section.content).compositionStyle === 'split') {
+                                        <div class="p-4 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-2xl border border-indigo-100 dark:border-indigo-900/50 space-y-3">
+                                            <label class="block text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300">📸 Configuración del Modo Dividido</label>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Posición de Imagen</label>
+                                                    <select [(ngModel)]="$any(section.content).splitImagePosition" (ngModelChange)="forceLayoutUpdate()"
+                                                        class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                        <option value="right">Imagen a la Derecha</option>
+                                                        <option value="left">Imagen a la Izquierda</option>
+                                                    </select>
+                                                </div>
+
+                                                <div>
+                                                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Imagen Dividida</label>
+                                                    <div class="flex items-center gap-2">
+                                                        <input type="text" [(ngModel)]="$any(section.content).splitImageUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://..."
+                                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                        <label class="px-3 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 cursor-pointer shrink-0">
+                                                            Subir
+                                                            <input type="file" accept="image/*" class="hidden" (change)="onHeroSplitImageUpload($event, section)">
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <!-- Dimensiones, Alineación y Animación -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Altura del Banner</label>
+                                            <select [(ngModel)]="$any(section.content).height" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="compact">Compacto (~400px)</option>
+                                                <option value="medium">Mediano (~550px)</option>
+                                                <option value="tall">Alto (~700px)</option>
+                                                <option value="full">Pantalla Completa (100vh)</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Tamaño de Texto</label>
+                                            <select [(ngModel)]="$any(section.content).textSize" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="compact">Compacto</option>
+                                                <option value="normal">Normal</option>
+                                                <option value="large">Grande</option>
+                                                <option value="display">Impactante (Display)</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Alineación del Texto</label>
                                             <select [(ngModel)]="$any(section.content).alignment" (ngModelChange)="forceLayoutUpdate()"
                                                 class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
@@ -309,6 +399,72 @@
                                         </div>
                                     </div>
 
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Animación de Entrada</label>
+                                            <select [(ngModel)]="$any(section.content).animation" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="none">Sin animación</option>
+                                                <option value="fade-in">Desvanecer (Fade In)</option>
+                                                <option value="slide-up">Deslizar arriba (Slide Up)</option>
+                                                <option value="zoom-in">Zoom In</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Badge Superior</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).badgeText" (ngModelChange)="forceLayoutUpdate()" placeholder="Edición Limitada"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+
+                                    <!-- Medios: Fondo de Imagen, Video y Overlay -->
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800/60 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 space-y-4">
+                                        <label class="block text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🎥 Fondo y Medios de la Sección</label>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Imagen de Fondo (URL)</label>
+                                                <div class="flex items-center gap-2">
+                                                    <input type="text" [(ngModel)]="$any(section.content).backgroundImageUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://..."
+                                                        class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                    <label class="px-3 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 cursor-pointer shrink-0">
+                                                        Subir
+                                                        <input type="file" accept="image/*" class="hidden" (change)="onHeroBannerUpload($event, section)">
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Video de Fondo (MP4 / WebM URL)</label>
+                                                <input type="text" [(ngModel)]="$any(section.content).backgroundVideoUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://ejemplo.com/video.mp4"
+                                                    class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                                            <div>
+                                                <div class="flex items-center justify-between mb-1">
+                                                    <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Opacidad de Capa / Overlay</label>
+                                                    <span class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">{{ $any(section.content).overlayOpacity || 40 }}%</span>
+                                                </div>
+                                                <input type="range" min="0" max="100" [(ngModel)]="$any(section.content).overlayOpacity" (ngModelChange)="forceLayoutUpdate()"
+                                                    class="w-full accent-indigo-600">
+                                            </div>
+
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Color de Overlay</label>
+                                                <div class="flex items-center gap-2">
+                                                    <input type="color" [(ngModel)]="$any(section.content).overlayColor" (ngModelChange)="forceLayoutUpdate()"
+                                                        class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0">
+                                                    <input type="text" [(ngModel)]="$any(section.content).overlayColor" (ngModelChange)="forceLayoutUpdate()" placeholder="#000000"
+                                                        class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Título y Subtítulo -->
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título Principal</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()" placeholder="Título impactante"
@@ -321,6 +477,7 @@
                                             class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
                                     </div>
 
+                                    <!-- Botones -->
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Botón Principal</label>
@@ -337,7 +494,7 @@
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Botón Secundario (Opcional)</label>
-                                            <input type="text" [(ngModel)]="$any(section.content).secondaryButtonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Ver más"
+                                            <input type="text" [(ngModel)]="$any(section.content).secondaryButtonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Ver catálogo"
                                                 class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
                                         </div>
                                         <div>

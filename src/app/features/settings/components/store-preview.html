@@ -166,43 +166,203 @@
                         <!-- 1. HERO -->
                         @if (section.type === 'hero') {
                             <section [ngStyle]="getSectionStyle(section)"
-                                class="relative min-h-[300px] md:min-h-[380px] overflow-hidden flex flex-col items-center justify-center text-center p-6"
+                                class="relative overflow-hidden flex items-center justify-center transition-all duration-300"
                                 [class]="getSectionPaddingClass(section)"
+                                [class.min-h-\[350px\]]="asAny(section.content).height === 'compact'"
+                                [class.md:min-h-\[420px\]]="asAny(section.content).height === 'compact'"
+                                [class.min-h-\[450px\]]="asAny(section.content).height === 'medium' || !asAny(section.content).height"
+                                [class.md:min-h-\[550px\]]="asAny(section.content).height === 'medium' || !asAny(section.content).height"
+                                [class.min-h-\[580px\]]="asAny(section.content).height === 'tall'"
+                                [class.md:min-h-\[700px\]]="asAny(section.content).height === 'tall'"
+                                [class.min-h-screen]="asAny(section.content).height === 'full'"
                                 [style.backgroundColor]="asAny(section.content).backgroundColor || section.styles?.backgroundColor || 'var(--store-color-secondary)'">
                                 
-                                @if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                                <!-- Video de Fondo (si se especifica) -->
+                                @if (asAny(section.content).backgroundVideoUrl) {
+                                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+                                        <source [src]="asAny(section.content).backgroundVideoUrl">
+                                    </video>
+                                } @else if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                                    <!-- Imagen de Fondo -->
                                     <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl"
                                         class="absolute inset-0 w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-black"
-                                        [style.opacity]="(asAny(section.content).overlayOpacity || section.styles?.overlayOpacity || 40) / 100"></div>
                                 }
 
-                                <div class="relative z-10" [class]="getSectionContainerClass(section)">
-                                    @if (asAny(section.content).badgeText) {
-                                        <span class="inline-block px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white rounded-full mb-3 bg-white/20 backdrop-blur-xs">
-                                            {{ asAny(section.content).badgeText }}
-                                        </span>
-                                    }
-                                    <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-2 leading-tight"
-                                        [style.font-family]="activeTokens.font_heading">
-                                        {{ asAny(section.content).title }}
-                                    </h2>
-                                    <p class="text-xs md:text-sm text-white/80 max-w-xl mx-auto mb-6">{{ asAny(section.content).subtitle }}</p>
+                                <!-- Overlay Configurable (Color y Opacidad) -->
+                                @if (asAny(section.content).backgroundVideoUrl || asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                                    <div class="absolute inset-0"
+                                        [style.backgroundColor]="asAny(section.content).overlayColor || '#000000'"
+                                        [style.opacity]="(asAny(section.content).overlayOpacity ?? 40) / 100"></div>
+                                }
+
+                                <!-- Animaciones de Entrada -->
+                                <div class="relative z-10 w-full"
+                                    [class.text-left]="asAny(section.content).alignment === 'left'"
+                                    [class.text-center]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment"
+                                    [class.text-right]="asAny(section.content).alignment === 'right'"
+                                    [class.animate-in]="asAny(section.content).animation && asAny(section.content).animation !== 'none'"
+                                    [class.fade-in]="asAny(section.content).animation === 'fade-in'"
+                                    [class.slide-in-from-bottom-6]="asAny(section.content).animation === 'slide-up'"
+                                    [class.zoom-in-95]="asAny(section.content).animation === 'zoom-in'"
+                                    [class.duration-700]="asAny(section.content).animation && asAny(section.content).animation !== 'none'">
                                     
-                                    <div class="flex items-center justify-center gap-3">
-                                        @if (asAny(section.content).buttonText) {
-                                            <button class="px-5 py-2.5 text-xs font-bold text-white shadow-lg transition-transform hover:scale-105"
-                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
-                                                [style.background-color]="data().primary_color || 'var(--store-color-primary)'">
-                                                {{ asAny(section.content).buttonText }}
-                                            </button>
+                                    <div [class]="getSectionContainerClass(section)">
+
+                                        <!-- ESTILO 1 & 4: FULL BANNER O MINIMAL CENTERED -->
+                                        @if (asAny(section.content).compositionStyle === 'full-banner' || asAny(section.content).compositionStyle === 'minimal-centered' || !asAny(section.content).compositionStyle) {
+                                            <div [class.max-w-2xl]="asAny(section.content).alignment !== 'center'"
+                                                [class.mx-auto]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment"
+                                                [class.ml-auto]="asAny(section.content).alignment === 'right'">
+                                                
+                                                @if (asAny(section.content).badgeText) {
+                                                    <span class="inline-block px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white rounded-full mb-4 bg-white/20 backdrop-blur-md shadow-xs border border-white/20">
+                                                        {{ asAny(section.content).badgeText }}
+                                                    </span>
+                                                }
+
+                                                <h2 class="font-black text-white leading-tight tracking-tight mb-3"
+                                                    [class.text-xl]="asAny(section.content).textSize === 'compact'"
+                                                    [class.md:text-3xl]="asAny(section.content).textSize === 'compact'"
+                                                    [class.text-2xl]="asAny(section.content).textSize === 'normal'"
+                                                    [class.md:text-4xl]="asAny(section.content).textSize === 'normal'"
+                                                    [class.text-3xl]="asAny(section.content).textSize === 'large' || !asAny(section.content).textSize"
+                                                    [class.md:text-5xl]="asAny(section.content).textSize === 'large' || !asAny(section.content).textSize"
+                                                    [class.text-4xl]="asAny(section.content).textSize === 'display'"
+                                                    [class.md:text-6xl]="asAny(section.content).textSize === 'display'"
+                                                    [style.font-family]="activeTokens.font_heading">
+                                                    {{ asAny(section.content).title }}
+                                                </h2>
+
+                                                @if (asAny(section.content).subtitle) {
+                                                    <p class="text-white/90 leading-relaxed mb-8"
+                                                        [class.text-xs]="asAny(section.content).textSize === 'compact'"
+                                                        [class.text-sm]="asAny(section.content).textSize === 'normal' || !asAny(section.content).textSize"
+                                                        [class.text-base]="asAny(section.content).textSize === 'large'"
+                                                        [class.md:text-lg]="asAny(section.content).textSize === 'large' || asAny(section.content).textSize === 'display'">
+                                                        {{ asAny(section.content).subtitle }}
+                                                    </p>
+                                                }
+
+                                                <div class="flex flex-wrap items-center gap-3"
+                                                    [class.justify-center]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment"
+                                                    [class.justify-start]="asAny(section.content).alignment === 'left'"
+                                                    [class.justify-end]="asAny(section.content).alignment === 'right'">
+                                                    @if (asAny(section.content).buttonText) {
+                                                        <button class="px-6 py-3 text-xs font-bold text-white shadow-xl transition-all hover:scale-105"
+                                                            [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
+                                                            [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                                            [style.color]="'#ffffff'">
+                                                            {{ asAny(section.content).buttonText }}
+                                                        </button>
+                                                    }
+                                                    @if (asAny(section.content).secondaryButtonText) {
+                                                        <button class="px-6 py-3 text-xs font-bold text-white bg-white/15 backdrop-blur-md border border-white/30 hover:bg-white/25 shadow-lg transition-all hover:scale-105"
+                                                            [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
+                                                            [style.color]="'#ffffff'">
+                                                            {{ asAny(section.content).secondaryButtonText }}
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </div>
                                         }
-                                        @if (asAny(section.content).secondaryButtonText) {
-                                            <button class="px-5 py-2.5 text-xs font-bold text-white bg-white/20 backdrop-blur-xs border border-white/40 hover:bg-white/30"
-                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
-                                                {{ asAny(section.content).secondaryButtonText }}
-                                            </button>
+
+                                        <!-- ESTILO 2: MODOS DIVIDIDO (SPLIT) -->
+                                        @if (asAny(section.content).compositionStyle === 'split') {
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-6">
+                                                <div [class.md:order-2]="asAny(section.content).splitImagePosition === 'left'">
+                                                    @if (asAny(section.content).badgeText) {
+                                                        <span class="inline-block px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 rounded-full mb-3">
+                                                            {{ asAny(section.content).badgeText }}
+                                                        </span>
+                                                    }
+
+                                                    <h2 class="font-black text-gray-900 dark:text-white leading-tight tracking-tight mb-3"
+                                                        [class.text-2xl]="asAny(section.content).textSize === 'compact'"
+                                                        [class.md:text-3xl]="asAny(section.content).textSize === 'compact'"
+                                                        [class.text-3xl]="asAny(section.content).textSize === 'normal' || !asAny(section.content).textSize"
+                                                        [class.md:text-4xl]="asAny(section.content).textSize === 'normal' || !asAny(section.content).textSize"
+                                                        [class.text-4xl]="asAny(section.content).textSize === 'large' || asAny(section.content).textSize === 'display'"
+                                                        [class.md:text-5xl]="asAny(section.content).textSize === 'large' || asAny(section.content).textSize === 'display'"
+                                                        [style.font-family]="activeTokens.font_heading">
+                                                        {{ asAny(section.content).title }}
+                                                    </h2>
+
+                                                    @if (asAny(section.content).subtitle) {
+                                                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 text-sm md:text-base">
+                                                            {{ asAny(section.content).subtitle }}
+                                                        </p>
+                                                    }
+
+                                                    <div class="flex flex-wrap items-center gap-3">
+                                                        @if (asAny(section.content).buttonText) {
+                                                            <button class="px-6 py-3 text-xs font-bold text-white shadow-xl transition-all hover:scale-105"
+                                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
+                                                                [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                                                [style.color]="'#ffffff'">
+                                                                {{ asAny(section.content).buttonText }}
+                                                            </button>
+                                                        }
+                                                        @if (asAny(section.content).secondaryButtonText) {
+                                                            <button class="px-6 py-3 text-xs font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all border border-gray-200 dark:border-gray-700"
+                                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                                                {{ asAny(section.content).secondaryButtonText }}
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                                <div [class.md:order-1]="asAny(section.content).splitImagePosition === 'left'"
+                                                    class="relative h-64 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-white/20">
+                                                    <img [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'"
+                                                        class="w-full h-full object-cover">
+                                                </div>
+                                            </div>
                                         }
+
+                                        <!-- ESTILO 3: TARJETA FLOTANTE (CARD OVERLAY) -->
+                                        @if (asAny(section.content).compositionStyle === 'card-overlay') {
+                                            <div class="max-w-xl p-8 md:p-10 bg-white/20 dark:bg-black/40 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl"
+                                                [class.mx-auto]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment"
+                                                [class.ml-auto]="asAny(section.content).alignment === 'right'">
+                                                
+                                                @if (asAny(section.content).badgeText) {
+                                                    <span class="inline-block px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white bg-white/30 rounded-full mb-3 backdrop-blur-md">
+                                                        {{ asAny(section.content).badgeText }}
+                                                    </span>
+                                                }
+
+                                                <h2 class="font-black text-white leading-tight tracking-tight mb-3 text-2xl md:text-4xl"
+                                                    [style.font-family]="activeTokens.font_heading">
+                                                    {{ asAny(section.content).title }}
+                                                </h2>
+
+                                                @if (asAny(section.content).subtitle) {
+                                                    <p class="text-white/90 text-xs md:text-sm leading-relaxed mb-6">
+                                                        {{ asAny(section.content).subtitle }}
+                                                    </p>
+                                                }
+
+                                                <div class="flex flex-wrap items-center gap-3"
+                                                    [class.justify-center]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment">
+                                                    @if (asAny(section.content).buttonText) {
+                                                        <button class="px-6 py-3 text-xs font-bold text-white shadow-xl transition-all hover:scale-105"
+                                                            [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
+                                                            [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                                            [style.color]="'#ffffff'">
+                                                            {{ asAny(section.content).buttonText }}
+                                                        </button>
+                                                    }
+                                                    @if (asAny(section.content).secondaryButtonText) {
+                                                        <button class="px-6 py-3 text-xs font-bold text-white bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 shadow-md"
+                                                            [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
+                                                            [style.color]="'#ffffff'">
+                                                            {{ asAny(section.content).secondaryButtonText }}
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+
                                     </div>
                                 </div>
                             </section>
@@ -256,37 +416,124 @@
                                             [style.color]="data().primary_color || 'var(--store-color-primary)'">Ver todo</span>
                                     </div>
 
-                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <div [class]="cardOrientation === 'horizontal' ? 'grid grid-cols-1 sm:grid-cols-2 gap-3' : 'grid grid-cols-2 sm:grid-cols-4 gap-3'">
                                         @for (p of mockProducts.slice(0, asAny(section.content).limit || 4); track p.name) {
-                                            <div class="group p-2.5 border overflow-hidden transition-all hover:shadow-md flex flex-col justify-between"
+                                            <div class="group p-2.5 overflow-hidden transition-all relative"
+                                                [class.flex]="true"
+                                                [class.flex-col]="cardOrientation === 'vertical'"
+                                                [class.justify-between]="cardOrientation === 'vertical'"
+                                                [class.flex-row]="cardOrientation === 'horizontal'"
+                                                [class.items-stretch]="cardOrientation === 'horizontal'"
+                                                [class.gap-2]="cardOrientation === 'horizontal'"
+                                                [class.border]="cardBorderStyle === 'bordered'"
+                                                [class.border-0]="cardBorderStyle !== 'bordered'"
+                                                [class.shadow-md]="cardBorderStyle === 'shadow'"
+                                                [class.hover:shadow-lg]="cardBorderStyle === 'shadow' || cardBorderStyle === 'bordered'"
                                                 [style.border-color]="'var(--store-color-border, #e5e5e5)'"
                                                 [style.border-radius]="'var(--store-radius-card, 1rem)'"
-                                                [style.box-shadow]="'var(--store-shadow, none)'"
+                                                [style.box-shadow]="cardBorderStyle === 'shadow' ? 'var(--store-shadow, 0 4px 6px -1px rgba(0,0,0,0.1))' : 'none'"
                                                 [style.background-color]="'var(--store-color-surface, #ffffff)'">
                                                 
-                                                <div>
-                                                    <div class="aspect-square bg-slate-50 overflow-hidden mb-2 relative"
-                                                        [style.border-radius]="'var(--store-radius-card, 1rem)'">
-                                                        <img [src]="p.image" [alt]="p.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                                        <span class="absolute top-2 left-2 px-1.5 py-0.5 text-[8px] font-bold text-white uppercase shadow-sm"
-                                                            [style.border-radius]="'var(--store-radius-badge, 9999px)'"
-                                                            [style.background-color]="data().accent_color || 'var(--store-color-accent)'">
-                                                            Nuevo
-                                                        </span>
+                                                <!-- Image -->
+                                                <div class="bg-slate-50 relative overflow-hidden shrink-0"
+                                                    [class.w-full]="cardOrientation === 'vertical'"
+                                                    [class.w-28]="cardOrientation === 'horizontal'"
+                                                    [class.mb-2]="cardOrientation === 'vertical'"
+                                                    [ngClass]="cardImageAspectClass"
+                                                    [style.border-radius]="'var(--store-radius-card, 1rem)'">
+                                                    <img [src]="p.image" [alt]="p.name" 
+                                                         class="w-full h-full object-cover transition-all duration-500"
+                                                         [class.group-hover:scale-105]="!cardHoverSecondaryImage || !p.secondaryImage"
+                                                         [class.group-hover:opacity-0]="cardHoverSecondaryImage && p.secondaryImage">
+                                                    
+                                                    @if (cardHoverSecondaryImage && p.secondaryImage) {
+                                                        <img [src]="p.secondaryImage" [alt]="p.name + ' 2'" 
+                                                             class="w-full h-full object-cover absolute inset-0 opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                                                    }
+
+                                                    <!-- Badges -->
+                                                    <div class="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
+                                                        @if (cardShowSaleBadge && p.original_price) {
+                                                            <span class="px-1.5 py-0.5 text-[7px] font-black text-white uppercase shadow-sm"
+                                                                [style.border-radius]="'var(--store-radius-badge, 9999px)'"
+                                                                [style.background-color]="data().accent_color || 'var(--store-color-accent, #ef4444)'">
+                                                                Oferta
+                                                            </span>
+                                                        }
+                                                        @if (cardShowDiscountBadge && getDiscountPercent(p.price, p.original_price)) {
+                                                            <span class="px-1.5 py-0.5 text-[7px] font-black text-white shadow-sm"
+                                                                [style.border-radius]="'var(--store-radius-badge, 9999px)'"
+                                                                [style.background-color]="data().primary_color || 'var(--store-color-primary, #0f172a)'">
+                                                                -{{ getDiscountPercent(p.price, p.original_price) }}%
+                                                            </span>
+                                                        }
+                                                        @if (cardShowNewBadge && p.isNew) {
+                                                            <span class="px-1.5 py-0.5 text-[7px] font-black text-white uppercase shadow-sm bg-indigo-600"
+                                                                [style.border-radius]="'var(--store-radius-badge, 9999px)'">
+                                                                Nuevo
+                                                            </span>
+                                                        }
                                                     </div>
-                                                    <p class="truncate text-[11px] font-bold mb-1" 
-                                                    [style.color]="'var(--store-color-text)'"
-                                                    [style.font-family]="activeTokens.font_heading">{{ p.name }}</p>
+
+                                                    <!-- Icon only cart button -->
+                                                    @if (cardCartButtonStyle === 'icon_only') {
+                                                        <button class="w-6 h-6 rounded-full shadow-md absolute bottom-1.5 right-1.5 flex items-center justify-center text-white text-[10px] cursor-pointer"
+                                                                [style.background-color]="data().primary_color || 'var(--store-color-primary, #0f172a)'">
+                                                            🛒
+                                                        </button>
+                                                    }
+
+                                                    <!-- Hover slide-up cart button -->
+                                                    @if (cardCartButtonStyle === 'hover') {
+                                                        <div class="absolute inset-x-0 bottom-0 p-1.5 translate-y-full group-hover:translate-y-0 transition-transform duration-200 z-10">
+                                                            <button class="w-full py-1 text-[8px] font-bold shadow-sm text-white"
+                                                                    [style.border-radius]="'var(--store-radius-btn, 0.375rem)'"
+                                                                    [style.background-color]="data().primary_color || 'var(--store-color-primary)'">
+                                                                Añadir
+                                                            </button>
+                                                        </div>
+                                                    }
                                                 </div>
 
-                                                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100/30">
-                                                    <p class="text-[11px] font-black" [style.color]="data().primary_color || 'var(--store-color-primary)'">{{ formatPrice(p.price) }}</p>
-                                                    <button class="px-2.5 py-1 text-[9px] font-bold shadow-sm transition-transform active:scale-95"
-                                                            [style.border-radius]="'var(--store-radius-btn, 0.5rem)'"
-                                                            [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
-                                                            [style.color]="'white'">
-                                                        Añadir
-                                                    </button>
+                                                <!-- Info -->
+                                                <div class="flex-1 flex flex-col justify-between">
+                                                    <div>
+                                                        <p class="truncate text-[11px] font-bold mb-0.5" 
+                                                           [style.color]="'var(--store-color-text)'"
+                                                           [style.font-family]="activeTokens.font_heading">{{ p.name }}</p>
+                                                        
+                                                        @if (cardShowStock) {
+                                                            <p class="text-[8px] text-emerald-600 dark:text-emerald-400 font-medium">
+                                                                {{ p.stock > 0 ? (p.stock + ' en stock') : 'Agotado' }}
+                                                            </p>
+                                                        }
+                                                    </div>
+
+                                                    <div class="mt-1 pt-1 border-t border-slate-100/30">
+                                                        <div class="flex items-center justify-between">
+                                                            @if (cardShowPrice) {
+                                                                <div>
+                                                                    @if (cardShowOriginalPrice && p.original_price) {
+                                                                        <span class="text-[8px] line-through text-gray-400 block -mb-0.5">
+                                                                            {{ formatPrice(p.original_price) }}
+                                                                        </span>
+                                                                    }
+                                                                    <p class="text-[11px] font-black" [style.color]="data().primary_color || 'var(--store-color-primary)'">
+                                                                        {{ formatPrice(p.price) }}
+                                                                    </p>
+                                                                </div>
+                                                            }
+
+                                                            @if (cardCartButtonStyle === 'always') {
+                                                                <button class="px-2 py-0.5 text-[8px] font-bold shadow-sm transition-transform active:scale-95"
+                                                                        [style.border-radius]="'var(--store-radius-btn, 0.375rem)'"
+                                                                        [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                                                        [style.color]="'white'">
+                                                                    Añadir
+                                                                </button>
+                                                            }
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         }

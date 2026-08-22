@@ -46,7 +46,14 @@ export interface SectionContentHero {
     secondaryButtonLink?: string;
     alignment: 'left' | 'center' | 'right';
     overlayOpacity?: number;
+    overlayColor?: string;
     badgeText?: string;
+    height?: 'compact' | 'medium' | 'tall' | 'full';
+    textSize?: 'compact' | 'normal' | 'large' | 'display';
+    compositionStyle?: 'full-banner' | 'split' | 'card-overlay' | 'minimal-centered';
+    splitImagePosition?: 'left' | 'right';
+    splitImageUrl?: string;
+    animation?: 'none' | 'fade-in' | 'slide-up' | 'zoom-in';
 }
 
 // 2. Promo Banner

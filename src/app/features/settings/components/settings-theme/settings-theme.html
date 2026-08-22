@@ -126,7 +126,7 @@
             [class.text-slate-700]="activeCustomizerTab() !== 'cards'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'cards'"
             class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>🛍️ Tarjetas y Hero</span>
+            <span>🛍️ Tarjetas de Producto</span>
         </button>
 
         <button 
@@ -650,41 +650,175 @@
         </div>
     }
 
-    <!-- TAB 8: CARDS & HEADER -->
+    <!-- TAB 8: PRODUCT CARDS CUSTOMIZER -->
     @if (activeCustomizerTab() === 'cards') {
-        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
-            <h3 class="font-bold text-slate-900 dark:text-white text-base">Tarjetas de Producto y Header</h3>
+        <div class="space-y-8">
+            <!-- 1. STRUCTURE & GEOMETRY -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+                <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                        📐 Estructura y Geometría de la Tarjeta
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Configura la orientación, proporciones de imagen y silueta de las tarjetas en los catálogos y grillas.</p>
+                </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6"
-                 [class.lg:grid-cols-3]="isPopoutOpen()"
-                 [class.xl:grid-cols-4]="isPopoutOpen()">
-                <app-dropdown 
-                    label="Estilo de Tarjeta de Producto"
-                    [options]="cardStyleDropdownOptions" 
-                    [value]="tokens().card_style" 
-                    (valueChange)="updateToken('card_style', $event)">
-                </app-dropdown>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                     [class.lg:grid-cols-3]="isPopoutOpen()"
+                     [class.xl:grid-cols-4]="isPopoutOpen()">
+                    <app-dropdown 
+                        label="Orientación de Tarjeta"
+                        [options]="cardOrientationDropdownOptions" 
+                        [value]="tokens().card_orientation ?? 'vertical'" 
+                        (valueChange)="updateToken('card_orientation', $event)">
+                    </app-dropdown>
 
-                <app-dropdown 
-                    label="Proporción de Imagen de Producto"
-                    [options]="cardImageAspectDropdownOptions" 
-                    [value]="tokens().card_image_aspect" 
-                    (valueChange)="updateToken('card_image_aspect', $event)">
-                </app-dropdown>
+                    <app-dropdown 
+                        label="Proporción de Imagen"
+                        [options]="cardImageAspectDropdownOptions" 
+                        [value]="tokens().card_image_aspect" 
+                        (valueChange)="updateToken('card_image_aspect', $event)">
+                    </app-dropdown>
 
-                <app-dropdown 
-                    label="Estilo de Navegación del Header"
-                    [options]="headerStyleDropdownOptions" 
-                    [value]="tokens().header_style" 
-                    (valueChange)="updateToken('header_style', $event)">
-                </app-dropdown>
+                    <app-dropdown 
+                        label="Estilo Visual"
+                        [options]="cardStyleDropdownOptions" 
+                        [value]="tokens().card_style" 
+                        (valueChange)="updateToken('card_style', $event)">
+                    </app-dropdown>
 
-                <app-dropdown 
-                    label="Disposición del Hero Banner"
-                    [options]="heroStyleDropdownOptions" 
-                    [value]="tokens().hero_style" 
-                    (valueChange)="updateToken('hero_style', $event)">
-                </app-dropdown>
+                    <app-dropdown 
+                        label="Contorno / Borde"
+                        [options]="cardBorderStyleDropdownOptions" 
+                        [value]="tokens().card_border_style ?? 'bordered'" 
+                        (valueChange)="updateToken('card_border_style', $event)">
+                    </app-dropdown>
+                </div>
+            </div>
+
+            <!-- 2. PRICES & STOCK -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+                <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                        🏷️ Precios, Descuentos y Stock
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Controla qué información financiera y de inventario se muestra en cada tarjeta.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Show Price -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer">
+                        <div>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white block">Mostrar Precio Principal</span>
+                            <span class="text-xs text-slate-500 dark:text-gray-400">Muestra el precio actual de venta del producto</span>
+                        </div>
+                        <input type="checkbox"
+                               [checked]="tokens().card_show_price ?? true"
+                               (change)="updateToken('card_show_price', $any($event.target).checked)"
+                               class="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                    </label>
+
+                    <!-- Show Compare Price -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer">
+                        <div>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white block">Mostrar Precio Anterior (Tachado)</span>
+                            <span class="text-xs text-slate-500 dark:text-gray-400">Muestra el precio tachado cuando hay una oferta activa</span>
+                        </div>
+                        <input type="checkbox"
+                               [checked]="tokens().card_show_original_price ?? true"
+                               (change)="updateToken('card_show_original_price', $any($event.target).checked)"
+                               class="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                    </label>
+
+                    <!-- Show Discount Badge -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer">
+                        <div>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white block">Mostrar Porcentaje de Descuento (-X%)</span>
+                            <span class="text-xs text-slate-500 dark:text-gray-400">Calcula y muestra la insignia con el ahorro porcentual</span>
+                        </div>
+                        <input type="checkbox"
+                               [checked]="tokens().card_show_discount_badge ?? true"
+                               (change)="updateToken('card_show_discount_badge', $any($event.target).checked)"
+                               class="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                    </label>
+
+                    <!-- Show Stock -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer">
+                        <div>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white block">Mostrar Estado de Stock</span>
+                            <span class="text-xs text-slate-500 dark:text-gray-400">Indica unidades disponibles o aviso de stock agotado</span>
+                        </div>
+                        <input type="checkbox"
+                               [checked]="tokens().card_show_stock ?? false"
+                               (change)="updateToken('card_show_stock', $any($event.target).checked)"
+                               class="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                    </label>
+                </div>
+            </div>
+
+            <!-- 3. BADGES & LABELS -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+                <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                        ✨ Insignias y Etiquetas Visuales
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Destaca novedades y promociones especiales con badges llamativos.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- New Badge -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer">
+                        <div>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white block">Etiqueta "Nuevo"</span>
+                            <span class="text-xs text-slate-500 dark:text-gray-400">Muestra la insignia en productos de reciente creación</span>
+                        </div>
+                        <input type="checkbox"
+                               [checked]="tokens().card_show_new_badge ?? true"
+                               (change)="updateToken('card_show_new_badge', $any($event.target).checked)"
+                               class="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                    </label>
+
+                    <!-- Sale Badge -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer">
+                        <div>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white block">Etiqueta "Oferta"</span>
+                            <span class="text-xs text-slate-500 dark:text-gray-400">Muestra la insignia destacada cuando el producto está rebajado</span>
+                        </div>
+                        <input type="checkbox"
+                               [checked]="tokens().card_show_sale_badge ?? true"
+                               (change)="updateToken('card_show_sale_badge', $any($event.target).checked)"
+                               class="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                    </label>
+                </div>
+            </div>
+
+            <!-- 4. BUTTONS & INTERACTIVITY -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+                <div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                        🛒 Botón de Carrito e Interactividad
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Configura la experiencia de compra directa y las transiciones al pasar el cursor.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <app-dropdown 
+                        label="Botón Directo de Carrito"
+                        [options]="cardCartButtonDropdownOptions" 
+                        [value]="tokens().card_cart_button_style ?? 'hover'" 
+                        (valueChange)="updateToken('card_cart_button_style', $event)">
+                    </app-dropdown>
+
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer">
+                        <div>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white block">Hover con 2ª Imagen</span>
+                            <span class="text-xs text-slate-500 dark:text-gray-400">Muestra la segunda foto del producto suavemente al pasar el ratón</span>
+                        </div>
+                        <input type="checkbox"
+                               [checked]="tokens().card_hover_secondary_image ?? true"
+                               (change)="updateToken('card_hover_secondary_image', $any($event.target).checked)"
+                               class="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                    </label>
+                </div>
             </div>
         </div>
     }
