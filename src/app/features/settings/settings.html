@@ -22,6 +22,58 @@ Comisiones por Venta<div
                 </div>
             </div>
 
+            <!-- Store summary -->
+            @if (tenant(); as currentTenant) {
+            <div class="mt-6 rounded-2xl border border-gray-200 bg-gray-50/70 p-4 dark:border-gray-800 dark:bg-gray-900/70">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex min-w-0 items-center gap-3">
+                        @if (currentTenant.logo_url) {
+                        <img [src]="currentTenant.logo_url" [alt]="currentTenant.business_name"
+                            class="h-10 w-10 rounded-xl object-contain bg-white p-1 dark:bg-gray-800">
+                        } @else {
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-sm font-bold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300">
+                            {{ currentTenant.business_name.charAt(0).toUpperCase() }}
+                        </div>
+                        }
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-bold text-gray-900 dark:text-white">
+                                {{ currentTenant.business_name }}
+                            </p>
+                            <p class="truncate text-xs text-gray-500 dark:text-gray-400">
+                                {{ currentTenant.custom_domain || currentTenant.subdomain + '.venti.com' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                            {{ currentTenant.status === 'active' ? 'Activa' : currentTenant.status }}
+                        </span>
+                        <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold capitalize text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300">
+                            Plan {{ currentTenant.plan }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-3 dark:border-gray-800">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                        Actualizada {{ currentTenant.updated_at | date:'mediumDate' }}
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <button type="button" (click)="copyStoreUrl()"
+                            class="rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-600 transition-colors hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-800">
+                            Copiar URL
+                        </button>
+                        <a [href]="storeUrl()" target="_blank" rel="noopener"
+                            class="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-700">
+                            Ver tienda
+                        </a>
+                    </div>
+                </div>
+            </div>
+            }
+
             <!-- Tabs -->
             <nav class="-mb-px flex space-x-1 mt-6" aria-label="Tabs">
                 @for (tab of tabs; track tab.id) {
@@ -39,16 +91,35 @@ Comisiones por Venta<div
             </nav>
         </div>
 
+        @if (hasUnsavedChanges()) {
+        <div class="flex shrink-0 items-center justify-between gap-4 border-b border-amber-200 bg-amber-50 px-6 py-3 dark:border-amber-900/40 dark:bg-amber-950/30 md:px-10">
+            <div class="flex min-w-0 items-center gap-2 text-xs font-semibold text-amber-800 dark:text-amber-200">
+                <span class="h-2 w-2 shrink-0 rounded-full bg-amber-500"></span>
+                <span class="truncate">Tienes cambios sin guardar</span>
+            </div>
+            <div class="flex shrink-0 items-center gap-2">
+                <button type="button" (click)="discardChanges()"
+                    class="rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-600 transition-colors hover:bg-amber-100 dark:text-gray-300 dark:hover:bg-amber-900/30">
+                    Descartar
+                </button>
+                <button type="button" (click)="saveChanges()"
+                    class="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-700">
+                    Guardar
+                </button>
+            </div>
+        </div>
+        }
+
         <!-- Scrollable content -->
         <div class="flex-1 overflow-y-auto px-6 md:px-10 py-8">
             <div class="max-w-2xl pb-20">
                 @switch (activeTab()) {
-                @case ('branding') { <app-settings-branding (brandingChange)="updatePreview($event)" /> }
-                @case ('general') { <app-settings-general /> }
-                @case ('address') { <app-settings-address /> }
+                @case ('branding') { <app-settings-branding (brandingChange)="updatePreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
+                @case ('general') { <app-settings-general (dirtyChange)="onDirtyChange($event)" /> }
+                @case ('address') { <app-settings-address (dirtyChange)="onDirtyChange($event)" /> }
                 @case ('shipping-taxes') { <app-settings-shipping-taxes /> }
                 @case ('commissions') { <app-settings-commissions /> }
-                @case ('storefront') { <app-settings-storefront (layoutChange)="updateStorefrontPreview($event)" /> }
+                @case ('storefront') { <app-settings-storefront (layoutChange)="updateStorefrontPreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
                 }
 
                 <!-- Danger Zone -->
@@ -57,6 +128,7 @@ Comisiones por Venta<div
                 </div>
             </div>
         </div>
+
     </div>
 
 

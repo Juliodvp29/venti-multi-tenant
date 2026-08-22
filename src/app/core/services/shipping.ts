@@ -21,8 +21,7 @@ export class ShippingService {
         const { data, error } = await this.supabase.client
             .from('shipping_zones')
             .select('*, rates:shipping_rates(*)')
-            .eq('tenant_id', this.tenantId)
-            .is('deleted_at', null);
+            .eq('tenant_id', this.tenantId);
 
         if (error) throw error;
         return data as ShippingZone[];

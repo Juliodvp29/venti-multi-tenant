@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
@@ -16,6 +16,7 @@ export class SettingsGeneral {
 
     readonly isSaving = signal(false);
     readonly tenant = this.tenantService.tenant;
+    readonly dirtyChange = output<boolean>();
 
     readonly form = this.fb.nonNullable.group({
         business_name: ['', [Validators.required, Validators.minLength(2)]],
@@ -39,6 +40,8 @@ export class SettingsGeneral {
                 this.form.markAsPristine();
             }
         });
+
+        this.form.valueChanges.subscribe(() => this.dirtyChange.emit(this.form.dirty));
     }
 
     async save() {
@@ -54,6 +57,7 @@ export class SettingsGeneral {
             if (result.success) {
                 this.toastService.success('Configuración guardada exitosamente');
                 this.form.markAsPristine();
+                this.dirtyChange.emit(false);
             } else {
                 this.toastService.error(result.error || 'Error al guardar la configuración');
             }
@@ -76,6 +80,7 @@ export class SettingsGeneral {
                 subdomain: tenant.subdomain,
             });
             this.form.markAsPristine();
+            this.dirtyChange.emit(false);
         }
         this.toastService.info('Cambios descartados');
     }

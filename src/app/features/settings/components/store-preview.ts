@@ -8,6 +8,9 @@ export interface PreviewData {
     primary_color: string;
     secondary_color: string;
     accent_color: string;
+    background_color: string;
+    header_color: string;
+    footer_color: string;
     font_family: string;
     layout: 'modern' | 'classic' | 'minimal';
     viewMode: 'desktop' | 'mobile';
