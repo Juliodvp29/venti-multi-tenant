@@ -9,9 +9,10 @@ import { TenantService } from '@core/services/tenant';
 import { SettingsShippingTaxes } from './components/settings-shipping-taxes';
 import { SettingsStorefront } from './components/settings-storefront/settings-storefront';
 import { SettingsCommissions } from './components/settings-commissions/settings-commissions';
+import { SettingsTheme } from './components/settings-theme/settings-theme';
 import { ToastService } from '@core/services/toast';
 
-import { StorefrontLayout } from '@core/models';
+import { StorefrontLayout, ThemeTokens } from '@core/models';
 
 export interface PreviewData {
   business_name: string;
@@ -28,13 +29,25 @@ export interface PreviewData {
   layout: 'modern' | 'classic' | 'minimal';
   viewMode: 'desktop' | 'mobile';
   storefront_layout: StorefrontLayout;
+  themeTokens?: ThemeTokens;
 }
 
-type Tab = 'general' | 'branding' | 'address' | 'shipping-taxes' | 'storefront' | 'commissions' | 'advanced';
+type Tab = 'general' | 'theme' | 'branding' | 'address' | 'shipping-taxes' | 'storefront' | 'commissions' | 'advanced';
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, SettingsGeneral, SettingsBranding, SettingsAddress, SettingsShippingTaxes, SettingsStorefront, SettingsDangerZone, StorePreview, SettingsCommissions],
+  imports: [
+    CommonModule,
+    SettingsGeneral,
+    SettingsTheme,
+    SettingsBranding,
+    SettingsAddress,
+    SettingsShippingTaxes,
+    SettingsStorefront,
+    SettingsDangerZone,
+    StorePreview,
+    SettingsCommissions
+  ],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,19 +56,25 @@ export class Settings {
   private readonly tenantService = inject(TenantService);
   private readonly toastService = inject(ToastService);
 
-  readonly activeTab = signal<Tab>('branding');
+  readonly activeTab = signal<Tab>('theme');
   readonly viewMode = signal<'desktop' | 'mobile'>('desktop');
   readonly showMobilePreview = signal(false);
   readonly tenant = this.tenantService.currentTenant;
   readonly isTenantLoading = this.tenantService.loading;
   readonly storeUrl = this.tenantService.storeUrl;
   readonly hasUnsavedChanges = signal(false);
+  readonly themeSection = viewChild(SettingsTheme);
   readonly brandingSection = viewChild(SettingsBranding);
   readonly generalSection = viewChild(SettingsGeneral);
   readonly addressSection = viewChild(SettingsAddress);
   readonly storefrontSection = viewChild(SettingsStorefront);
 
   readonly tabs: { id: Tab; label: string; icon: string }[] = [
+    {
+      id: 'theme',
+      label: 'Temas & Estilo Visual',
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M16.5 12l3.432-3.432a2.25 2.25 0 0 0 0-3.182l-1.318-1.318a2.25 2.25 0 0 0-3.182 0L12 7.5m4.5 4.5d-4.5 4.5" /></svg>`,
+    },
     {
       id: 'branding',
       label: 'Marca',
@@ -83,15 +102,14 @@ export class Settings {
     },
     {
       id: 'storefront',
-      label: 'Diseño de la Tienda',
+      label: 'Secciones de la Tienda',
       icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" /></svg>`,
     },
   ];
 
   readonly tabGroups: { label: string; tabs: { id: Tab; label: string; icon: string }[] }[] = [
+    { label: 'Apariencia', tabs: this.tabs.filter(tab => ['theme', 'branding', 'storefront'].includes(tab.id)) },
     { label: 'Cuenta', tabs: this.tabs.filter(tab => ['general', 'address'].includes(tab.id)) },
-    { label: 'Marca', tabs: this.tabs.filter(tab => tab.id === 'branding') },
-    { label: 'Tienda', tabs: this.tabs.filter(tab => tab.id === 'storefront') },
     { label: 'Operaciones', tabs: this.tabs.filter(tab => ['shipping-taxes', 'commissions'].includes(tab.id)) },
     {
       label: 'Avanzado',
@@ -117,29 +135,32 @@ export class Settings {
     font_family: '"Inter", sans-serif',
     layout: 'modern',
     viewMode: 'desktop',
-    storefront_layout: { sections: [] }
+    storefront_layout: { sections: [] },
+    themeTokens: this.tenantService.themeTokens()
   });
 
   constructor() {
     // Sync preview data when tenant or layout changes
     effect(() => {
       const t = this.tenantService.tenant();
+      const tokens = this.tenantService.themeTokens();
       if (t) {
         this.previewData.update(prev => ({
           ...prev,
           business_name: t.business_name,
           logo_url: t.logo_url,
-          primary_color: t.primary_color,
-          secondary_color: t.secondary_color,
-          accent_color: t.accent_color,
-          background_color: t.background_color,
-          header_color: t.header_color,
-          footer_color: t.footer_color,
+          primary_color: tokens.colors.primary || t.primary_color,
+          secondary_color: tokens.colors.secondary || t.secondary_color,
+          accent_color: tokens.colors.accent || t.accent_color,
+          background_color: tokens.colors.background || t.background_color,
+          header_color: tokens.colors.header || t.header_color,
+          footer_color: tokens.colors.footer || t.footer_color,
           currency: String(t.settings?.['currency'] || 'USD'),
           timezone: String(t.settings?.['timezone'] || 'America/New_York'),
-          font_family: t.font_family,
+          font_family: tokens.font_heading || t.font_family,
           layout: t.layout || 'modern',
-          storefront_layout: this.tenantService.storefrontLayout()
+          storefront_layout: this.tenantService.storefrontLayout(),
+          themeTokens: tokens
         }));
       }
     });
@@ -174,6 +195,7 @@ export class Settings {
 
   async saveChanges() {
     switch (this.activeTab()) {
+      case 'theme': await this.themeSection()?.save(); break;
       case 'branding': await this.brandingSection()?.save(); break;
       case 'general': await this.generalSection()?.save(); break;
       case 'address': await this.addressSection()?.save(); break;
@@ -183,6 +205,7 @@ export class Settings {
 
   discardChanges() {
     switch (this.activeTab()) {
+      case 'theme': this.themeSection()?.cancel(); break;
       case 'branding': this.brandingSection()?.cancel(); break;
       case 'general': this.generalSection()?.cancel(); break;
       case 'address': this.addressSection()?.cancel(); break;
@@ -208,6 +231,20 @@ export class Settings {
     } catch {
       // Clipboard access can be unavailable outside a secure browser context.
     }
+  }
+
+  updateThemePreview(tokens: ThemeTokens) {
+    this.previewData.update(prev => ({
+      ...prev,
+      primary_color: tokens.colors.primary,
+      secondary_color: tokens.colors.secondary,
+      accent_color: tokens.colors.accent,
+      background_color: tokens.colors.background,
+      header_color: tokens.colors.header,
+      footer_color: tokens.colors.footer,
+      font_family: tokens.font_heading,
+      themeTokens: tokens
+    }));
   }
 
   updatePreview(branding: any) {

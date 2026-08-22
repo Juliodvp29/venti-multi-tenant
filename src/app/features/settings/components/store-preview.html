@@ -1,9 +1,10 @@
 <div class="flex h-full min-h-0 items-center justify-center bg-slate-50 p-4 md:p-8 transition-all duration-300">
     <div [class]="containerClass" class="min-h-0 transition-all duration-500 relative flex flex-col"
-        [style]="fontStyle" [style.background-color]="data().background_color">
+        [ngStyle]="dynamicCssVars()" [style.background-color]="data().background_color || 'var(--store-color-bg)'"
+        [style.color]="'var(--store-color-text)'">
 
         @if (data().viewMode === 'desktop') {
-        <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 flex items-center space-x-2">
+        <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 flex items-center space-x-2 shrink-0">
             <div class="flex space-x-1.5">
                 <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                 <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
@@ -24,54 +25,56 @@
 
         <!-- Store Header -->
         <header
-            class="p-4 border-b border-slate-100 flex items-center justify-between sticky top-0 backdrop-blur-md z-10"
-            [style.background-color]="data().header_color"
-            [class.flex-col]="data().layout === 'classic'" [class.gap-4]="data().layout === 'classic'">
+            class="p-4 border-b border-slate-200/60 flex items-center justify-between sticky top-0 backdrop-blur-md z-10 shrink-0"
+            [style.background-color]="data().header_color || 'var(--store-color-header)'"
+            [class.flex-col]="data().layout === 'classic' || activeTokens.header_style === 'centered'" 
+            [class.gap-3]="data().layout === 'classic' || activeTokens.header_style === 'centered'">
+            
             <div class="flex items-center space-x-3">
                 @if (data().logo_url) {
                 <img [src]="data().logo_url" alt="Logo" class="h-8 w-auto">
                 } @else {
-                <span class="font-bold text-lg" [style.color]="data().primary_color">
+                <span class="font-bold text-lg" [style.font-family]="activeTokens.font_heading" [style.color]="data().primary_color">
                     {{ data().business_name }}
                 </span>
                 }
             </div>
 
             @if (data().viewMode === 'desktop') {
-            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600"
+            <nav class="hidden md:flex items-center space-x-6 text-xs font-semibold uppercase tracking-wider"
+                [style.color]="'var(--store-color-text)'"
                 [class.order-last]="data().layout === 'classic'">
                 @if (data().storefront_layout.navigation?.length) {
                 @for (link of data().storefront_layout.navigation; track $index) {
                 <a [href]="link.url || '#'" (click)="preventDefault($event)"
-                    class="hover:text-slate-900 transition-colors">
+                    class="hover:opacity-80 transition-opacity">
                     {{ link.label || 'Sin título' }}
                 </a>
                 }
                 } @else {
-                <a href="#" (click)="preventDefault($event)" class="hover:text-slate-900 transition-colors">New
-                    Arrivals</a>
-                <a href="#" (click)="preventDefault($event)"
-                    class="hover:text-slate-900 transition-colors">Collections</a>
-                <a href="#" (click)="preventDefault($event)" class="hover:text-slate-900 transition-colors">About</a>
+                <a href="#" (click)="preventDefault($event)" class="hover:opacity-80 transition-opacity">Novedades</a>
+                <a href="#" (click)="preventDefault($event)" class="hover:opacity-80 transition-opacity">Colecciones</a>
+                <a href="#" (click)="preventDefault($event)" class="hover:opacity-80 transition-opacity">Nosotros</a>
                 }
             </nav>
             }
 
-            <div class="flex items-center space-x-4">
-                <button class="text-slate-400 hover:text-slate-600">
+            <div class="flex items-center space-x-3">
+                <button [style.color]="'var(--store-color-text)'" class="hover:opacity-80">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </button>
-                <button class="text-slate-400 hover:text-slate-600 relative">
+                <button [style.color]="'var(--store-color-text)'" class="hover:opacity-80 relative">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                     <span
-                        class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-indigo-500 rounded-full text-[8px] flex items-center justify-center text-white"
-                        [style.background-color]="data().accent_color">1</span>
+                        class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full text-[8px] flex items-center justify-center text-white font-bold"
+                        [style.border-radius]="'var(--store-radius-badge)'"
+                        [style.background-color]="data().accent_color || 'var(--store-color-accent)'">1</span>
                 </button>
             </div>
         </header>
@@ -81,8 +84,8 @@
             @for (section of data().storefront_layout.sections; track section.id) {
             @if (section.isActive) {
             @if (section.type === 'hero') {
-            <section [style.backgroundColor]="asAny(section.content).backgroundColor || '#111827'"
-                class="relative h-[250px] overflow-hidden flex flex-col items-center justify-center text-center p-6">
+            <section [style.backgroundColor]="asAny(section.content).backgroundColor || 'var(--store-color-secondary)'"
+                class="relative h-[240px] overflow-hidden flex flex-col items-center justify-center text-center p-6">
                 <!-- Background Image -->
                 @if (asAny(section.content).backgroundImageUrl) {
                 <img [src]="asAny(section.content).backgroundImageUrl"
@@ -91,11 +94,16 @@
                     [style.opacity]="(asAny(section.content).overlayOpacity || 40) / 100"></div>
                 }
 
-                <div class="relative z-10">
-                    <h2 class="text-xl font-bold text-white mb-2 leading-tight">{{ asAny(section.content).title }}</h2>
+                <div class="relative z-10 max-w-md">
+                    <h2 class="text-xl md:text-2xl font-bold text-white mb-2 leading-tight"
+                        [style.font-family]="activeTokens.font_heading">
+                        {{ asAny(section.content).title }}
+                    </h2>
                     <p class="text-xs text-white/80 mb-4">{{ asAny(section.content).subtitle }}</p>
-                    <button class="px-4 py-1.5 rounded-lg text-[10px] font-bold text-white shadow-lg"
-                        [style.background-color]="data().primary_color">
+                    <button class="px-5 py-2 text-[10px] font-bold text-white shadow-lg transition-transform hover:scale-105"
+                        [style.border-radius]="'var(--store-radius-btn)'"
+                        [style.text-transform]="activeTokens.button_transform"
+                        [style.background-color]="data().primary_color || 'var(--store-color-primary)'">
                         {{ asAny(section.content).buttonText }}
                     </button>
                 </div>
@@ -105,18 +113,50 @@
             @if (section.type === 'product_grid') {
             <section class="p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xs font-bold text-slate-900 tracking-tight">{{ asAny(section.content).title }}</h3>
-                    <span class="text-[9px] font-bold uppercase tracking-wider"
-                        [style.color]="data().primary_color">View all</span>
+                    <h3 class="text-xs font-bold tracking-tight"
+                        [style.color]="'var(--store-color-text)'"
+                        [style.font-family]="activeTokens.font_heading">
+                        {{ asAny(section.content).title }}
+                    </h3>
+                    <span class="text-[9px] font-bold uppercase tracking-wider cursor-pointer"
+                        [style.color]="data().primary_color || 'var(--store-color-primary)'">Ver todo</span>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     @for (p of mockProducts.slice(0, 4); track p.name) {
-                    <div>
-                        <div class="aspect-square rounded-lg bg-slate-50 overflow-hidden mb-1 ring-1 ring-slate-200/50">
-                            <img [src]="p.image" [alt]="p.name" class="w-full h-full object-cover">
+                    <div class="group p-2.5 border overflow-hidden transition-all hover:shadow-md flex flex-col justify-between"
+                         [style.border-color]="'var(--store-color-border, #e5e5e5)'"
+                         [style.border-radius]="'var(--store-radius-card, 1rem)'"
+                         [style.box-shadow]="'var(--store-shadow, none)'"
+                         [style.background-color]="'var(--store-color-surface, #ffffff)'">
+                        
+                        <div>
+                            <div class="aspect-square bg-slate-50 overflow-hidden mb-2 relative"
+                                 [style.border-radius]="'var(--store-radius-card, 1rem)'">
+                                <img [src]="p.image" [alt]="p.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                
+                                <span class="absolute top-2 left-2 px-1.5 py-0.5 text-[8px] font-bold text-white uppercase shadow-sm"
+                                      [style.border-radius]="'var(--store-radius-badge, 9999px)'"
+                                      [style.background-color]="data().accent_color || 'var(--store-color-accent)'">
+                                    Nuevo
+                                </span>
+                            </div>
+                            
+                            <!-- PRODUCT TITLE: Uses var(--store-color-text) instead of hardcoded text-slate-900 for dark mode contrast! -->
+                            <p class="truncate text-[11px] font-bold mb-1" 
+                               [style.color]="'var(--store-color-text)'"
+                               [style.font-family]="activeTokens.font_heading">{{ p.name }}</p>
                         </div>
-                        <p class="truncate text-[10px] font-semibold text-slate-900">{{ p.name }}</p>
-                        <p class="text-[10px] text-slate-500">{{ formatPrice(p.price) }}</p>
+
+                        <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100/30">
+                            <p class="text-[11px] font-black" [style.color]="data().primary_color || 'var(--store-color-primary)'">{{ formatPrice(p.price) }}</p>
+                            
+                            <button class="px-2.5 py-1 text-[9px] font-bold text-white shadow-sm transition-transform active:scale-95"
+                                    [style.border-radius]="'var(--store-radius-btn)'"
+                                    [style.text-transform]="activeTokens.button_transform"
+                                    [style.background-color]="data().primary_color || 'var(--store-color-primary)'">
+                                Añadir
+                            </button>
+                        </div>
                     </div>
                     }
                 </div>
@@ -124,11 +164,11 @@
             }
 
             @if (section.type === 'about_us') {
-            <section class="p-6 bg-slate-50/50">
-                <div class="flex flex-col gap-4">
-                    <h3 class="text-xs font-bold text-slate-900">{{ asAny(section.content).title }}</h3>
-                    <p class="text-[10px] text-slate-500 line-clamp-3">{{ asAny(section.content).content }}</p>
-                    <div class="h-24 rounded-xl overflow-hidden shadow-sm">
+            <section class="p-6 bg-slate-50/10 border-t border-b border-slate-100/20">
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-xs font-bold" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
+                    <p class="text-[10px] line-clamp-3 leading-relaxed" [style.color]="'var(--store-color-muted)'">{{ asAny(section.content).content }}</p>
+                    <div class="h-24 overflow-hidden shadow-sm mt-1" [style.border-radius]="'var(--store-radius-card)'">
                         <img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=400"
                             class="w-full h-full object-cover">
                     </div>
@@ -138,28 +178,24 @@
 
             @if (section.type === 'featured_categories') {
             <section class="p-6 text-center">
-                <h3 class="text-xs font-bold text-slate-900 mb-4">{{ asAny(section.content).title }}</h3>
+                <h3 class="text-xs font-bold mb-4" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
                 <div class="grid grid-cols-4 gap-2">
-                    <div class="p-2 bg-white rounded-lg border border-slate-100 shadow-sm"><span
-                            class="text-lg">✨</span></div>
-                    <div class="p-2 bg-white rounded-lg border border-slate-100 shadow-sm"><span
-                            class="text-lg">🔥</span></div>
-                    <div class="p-2 bg-white rounded-lg border border-slate-100 shadow-sm"><span
-                            class="text-lg">💎</span></div>
-                    <div class="p-2 bg-white rounded-lg border border-slate-100 shadow-sm"><span
-                            class="text-lg">🎁</span></div>
+                    <div class="p-2 border border-slate-200/40 shadow-sm" [style.background-color]="'var(--store-color-surface)'" [style.border-radius]="'var(--store-radius-card)'"><span class="text-lg">✨</span></div>
+                    <div class="p-2 border border-slate-200/40 shadow-sm" [style.background-color]="'var(--store-color-surface)'" [style.border-radius]="'var(--store-radius-card)'"><span class="text-lg">🔥</span></div>
+                    <div class="p-2 border border-slate-200/40 shadow-sm" [style.background-color]="'var(--store-color-surface)'" [style.border-radius]="'var(--store-radius-card)'"><span class="text-lg">💎</span></div>
+                    <div class="p-2 border border-slate-200/40 shadow-sm" [style.background-color]="'var(--store-color-surface)'" [style.border-radius]="'var(--store-radius-card)'"><span class="text-lg">🎁</span></div>
                 </div>
             </section>
             }
             }
             }
 
-
-            <footer class="p-10 text-center border-t border-slate-50 mt-10"
-                [style.background-color]="data().footer_color">
-                <span class="text-[10px] text-slate-300 font-medium tracking-widest uppercase">© 2026 {{
-                    data().business_name }}</span>
-                <span class="block mt-2 text-[9px] text-slate-400">Vista previa · {{ formatCurrentDate() }}</span>
+            <footer class="p-8 text-center border-t border-slate-200/40 mt-10"
+                [style.background-color]="data().footer_color || 'var(--store-color-footer)'">
+                <span class="text-[10px] font-semibold tracking-widest uppercase"
+                      [style.color]="'var(--store-color-muted)'"
+                      [style.font-family]="activeTokens.font_heading">© 2026 {{ data().business_name }}</span>
+                <span class="block mt-2 text-[9px]" [style.color]="'var(--store-color-muted)'">Vista previa de la tienda · {{ formatCurrentDate() }}</span>
             </footer>
         </main>
     </div>

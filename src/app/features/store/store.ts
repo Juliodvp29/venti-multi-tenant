@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { TenantService } from '@core/services/tenant';
 import { SeoService } from '@core/services/seo';
+import { themeTokensToCssVars, AVAILABLE_FONTS } from '@core/constants/theme-presets';
 import { StoreHeader } from './components/store-header/store-header';
 import { CartDrawer } from './components/cart-drawer/cart-drawer';
 
@@ -19,6 +20,7 @@ export class StoreComponent {
 
   readonly isCartOpen = signal(false);
   readonly branding = this.tenantService.branding;
+  readonly themeTokens = this.tenantService.themeTokens;
 
   constructor() {
     effect(() => {
@@ -31,21 +33,41 @@ export class StoreComponent {
           siteName: branding.business_name || 'Venti Shop'
         });
       }
+
+      // Dynamically load Google Fonts if needed
+      const tokens = this.themeTokens();
+      if (tokens) {
+        this.ensureFontLoaded(tokens.font_heading);
+        this.ensureFontLoaded(tokens.font_body);
+      }
     });
   }
 
   readonly dynamicStyles = computed(() => {
+    const tokens = this.themeTokens();
     const branding = this.branding();
-    if (!branding) return {};
+    if (!tokens) return {};
+
+    const cssVars = themeTokensToCssVars(tokens);
 
     return {
-      '--primary-color': branding.primary_color || '#4f46e5',
-      '--secondary-color': branding.secondary_color || '#1e293b',
-      '--accent-color': branding.accent_color || '#f59e0b',
-      '--background-color': branding.background_color || '#f8fafc',
-      '--header-color': branding.header_color || '#ffffff',
-      '--footer-color': branding.footer_color || '#ffffff',
-      'font-family': branding.font_family || 'Inter, sans-serif'
+      ...cssVars,
+      'font-family': tokens.font_body || branding?.font_family || '"Inter", sans-serif'
     };
   });
+
+  private ensureFontLoaded(fontFamily: string) {
+    if (!fontFamily) return;
+    const fontObj = AVAILABLE_FONTS.find(f => f.family === fontFamily);
+    if (!fontObj || !fontObj.googleFontUrl) return;
+
+    const linkId = `google-font-${fontObj.name.toLowerCase().replace(/\s+/g, '-')}`;
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement('link');
+      link.id = linkId;
+      link.rel = 'stylesheet';
+      link.href = fontObj.googleFontUrl;
+      document.head.appendChild(link);
+    }
+  }
 }

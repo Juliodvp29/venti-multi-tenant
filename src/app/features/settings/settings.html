@@ -149,6 +149,7 @@
             [attr.aria-labelledby]="'settings-tab-' + activeTab()" [id]="'settings-panel-' + activeTab()">
             <div class="max-w-2xl pb-20">
                 @switch (activeTab()) {
+                @case ('theme') { <app-settings-theme (themeChange)="updateThemePreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
                 @case ('branding') { <app-settings-branding (brandingChange)="updatePreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
                 @case ('general') { <app-settings-general (dirtyChange)="onDirtyChange($event)" /> }
                 @case ('address') { <app-settings-address (dirtyChange)="onDirtyChange($event)" /> }
