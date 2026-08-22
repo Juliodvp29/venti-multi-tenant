@@ -225,6 +225,31 @@
   --input-border-hover: #475569; /* slate-600 */
   --input-border-focus: var(--color-primary-500);
   --input-placeholder: #64748b; /* slate-500 */
+  --auth-bg: #020817; /* slate-950 */
+  --auth-card-bg: #0f172a; /* slate-900 */
+  --auth-gradient-from: rgba(99, 102, 241, 0.45);
+  --auth-gradient-to: rgba(168, 85, 247, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --input-bg: #1e293b;
+    --input-text: #f8fafc;
+    --input-border: #334155;
+    --input-border-hover: #475569;
+    --input-border-focus: var(--color-primary-500);
+    --input-placeholder: #64748b;
+    --auth-bg: #020817;
+    --auth-card-bg: #0f172a;
+    --auth-gradient-from: rgba(99, 102, 241, 0.45);
+    --auth-gradient-to: rgba(168, 85, 247, 0.4);
+  }
+
+  html,
+  body {
+    background-color: #020817;
+    color: #f8fafc;
+  }
 }
 
 /* Scoped utility for inputs on dark backgrounds (like tables) */
