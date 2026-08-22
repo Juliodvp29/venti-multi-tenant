@@ -168,6 +168,22 @@
             </svg>
             <span>Cabecera (Header)</span>
         </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('footer')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'footer'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'footer'"
+            [class.text-white]="activeCustomizerTab() === 'footer'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'footer'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'footer'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'footer'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'footer'"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 20h16M4 16h16M4 12h8" />
+            </svg>
+            <span>Pie de Página (Footer)</span>
+        </button>
     </div>
 
     <!-- TAB 1: PRESET SELECTION GRID -->
@@ -1101,6 +1117,328 @@
                     </app-dropdown>
                 </div>
             </div>
+        </div>
+    }
+
+    <!-- TAB 10: FOOTER CONFIGURATOR -->
+    @if (activeCustomizerTab() === 'footer') {
+        <div class="space-y-8">
+
+            <!-- Columnas del Footer -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h4v12H4zM10 6h4v12h-4zM16 6h4v12h-4z"/></svg>
+                    Estructura del Footer
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Elige cuántas columnas de contenido mostrar.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    @for (opt of footerColumnOptions; track opt.value) {
+                        <button (click)="updateToken('footer_columns', opt.value)"
+                            class="flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all cursor-pointer text-xs font-bold"
+                            [class.border-indigo-500]="(tokens().footer_columns ?? '3') === opt.value"
+                            [class.bg-indigo-50]="(tokens().footer_columns ?? '3') === opt.value"
+                            [class.dark:bg-indigo-950\/30]="(tokens().footer_columns ?? '3') === opt.value"
+                            [class.text-indigo-700]="(tokens().footer_columns ?? '3') === opt.value"
+                            [class.border-slate-200]="(tokens().footer_columns ?? '3') !== opt.value"
+                            [class.dark:border-gray-700]="(tokens().footer_columns ?? '3') !== opt.value"
+                            [class.text-slate-600]="(tokens().footer_columns ?? '3') !== opt.value"
+                            [class.dark:text-gray-400]="(tokens().footer_columns ?? '3') !== opt.value">
+                            <span class="text-base font-mono font-bold">{{ opt.icon }}</span>
+                            <span>{{ opt.label }}</span>
+                            <span class="text-[10px] text-slate-400 text-center font-normal">{{ opt.description }}</span>
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Modo Visual y Alineación -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+                    Color y Apariencia
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Modo de Color -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-2">Modo de Fondo</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            @for (opt of footerThemeModeOptions; track opt.value) {
+                                <button (click)="updateToken('footer_theme_mode', opt.value)"
+                                    class="px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer text-left"
+                                    [class.border-indigo-500]="(tokens().footer_theme_mode ?? 'auto') === opt.value"
+                                    [class.bg-indigo-50]="(tokens().footer_theme_mode ?? 'auto') === opt.value"
+                                    [class.text-indigo-700]="(tokens().footer_theme_mode ?? 'auto') === opt.value"
+                                    [class.border-slate-200]="(tokens().footer_theme_mode ?? 'auto') !== opt.value"
+                                    [class.text-slate-600]="(tokens().footer_theme_mode ?? 'auto') !== opt.value">
+                                    {{ opt.label }}
+                                </button>
+                            }
+                        </div>
+                        @if ((tokens().footer_theme_mode ?? 'auto') === 'custom') {
+                            <div class="mt-3 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg border border-slate-200 shrink-0 shadow-xs" [style.background-color]="tokens().footer_custom_bg || '#0f172a'"></div>
+                                <input type="color" [value]="tokens().footer_custom_bg || '#0f172a'" (input)="updateToken('footer_custom_bg', $any($event.target).value)" class="sr-only" id="footer-custom-bg">
+                                <label for="footer-custom-bg" class="text-xs px-3 py-1.5 bg-slate-100 dark:bg-gray-800 rounded-lg cursor-pointer font-bold text-slate-700 dark:text-gray-300">Seleccionar color</label>
+                                <input type="text" [value]="tokens().footer_custom_bg || '#0f172a'" (change)="updateToken('footer_custom_bg', $any($event.target).value)" class="flex-1 text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white font-mono">
+                            </div>
+                        }
+                    </div>
+                    <!-- Alineación -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-2">Alineación del Contenido</label>
+                        <div class="flex gap-2">
+                            @for (opt of footerAlignmentOptions; track opt.value) {
+                                <button (click)="updateToken('footer_alignment', opt.value)"
+                                    class="flex-1 px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer"
+                                    [class.border-indigo-500]="(tokens().footer_alignment ?? 'left') === opt.value"
+                                    [class.bg-indigo-50]="(tokens().footer_alignment ?? 'left') === opt.value"
+                                    [class.text-indigo-700]="(tokens().footer_alignment ?? 'left') === opt.value"
+                                    [class.border-slate-200]="(tokens().footer_alignment ?? 'left') !== opt.value"
+                                    [class.text-slate-600]="(tokens().footer_alignment ?? 'left') !== opt.value">
+                                    {{ opt.label }}
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Identidad: Logo y Descripción -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-4">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"/></svg>
+                    Identidad de la Tienda
+                </h3>
+                <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-gray-800">
+                    <div>
+                        <p class="text-xs font-bold text-slate-900 dark:text-white">Mostrar Logo</p>
+                        <p class="text-[11px] text-slate-500">Muestra el logo o nombre de la tienda en el pie</p>
+                    </div>
+                    <button (click)="updateToken('footer_show_logo', !(tokens().footer_show_logo ?? true))"
+                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                        [class.bg-indigo-600]="tokens().footer_show_logo ?? true"
+                        [class.bg-slate-200]="!(tokens().footer_show_logo ?? true)">
+                        <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
+                              [class.translate-x-4.5]="tokens().footer_show_logo ?? true"
+                              [class.translate-x-0.5]="!(tokens().footer_show_logo ?? true)"></span>
+                    </button>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-gray-800">
+                    <div>
+                        <p class="text-xs font-bold text-slate-900 dark:text-white">Mostrar Descripción</p>
+                        <p class="text-[11px] text-slate-500">Lema o reseña descriptiva de tu negocio</p>
+                    </div>
+                    <button (click)="updateToken('footer_show_description', !(tokens().footer_show_description ?? true))"
+                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                        [class.bg-indigo-600]="tokens().footer_show_description ?? true"
+                        [class.bg-slate-200]="!(tokens().footer_show_description ?? true)">
+                        <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
+                              [class.translate-x-4.5]="tokens().footer_show_description ?? true"
+                              [class.translate-x-0.5]="!(tokens().footer_show_description ?? true)"></span>
+                    </button>
+                </div>
+                @if (tokens().footer_show_description ?? true) {
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Texto de Descripción Personalizada</label>
+                        <textarea rows="2"
+                            [value]="tokens().footer_description || ''"
+                            (change)="updateToken('footer_description', $any($event.target).value)"
+                            placeholder="Breve descripción de tu tienda para el pie de página..."
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+                }
+                <div class="flex items-center justify-between py-2">
+                    <div>
+                        <p class="text-xs font-bold text-slate-900 dark:text-white">Redes Sociales</p>
+                        <p class="text-[11px] text-slate-500">Iconos con enlaces a tus redes configuradas</p>
+                    </div>
+                    <button (click)="updateToken('footer_show_social', !(tokens().footer_show_social ?? true))"
+                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                        [class.bg-indigo-600]="tokens().footer_show_social ?? true"
+                        [class.bg-slate-200]="!(tokens().footer_show_social ?? true)">
+                        <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
+                              [class.translate-x-4.5]="tokens().footer_show_social ?? true"
+                              [class.translate-x-0.5]="!(tokens().footer_show_social ?? true)"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Datos de Contacto -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        Datos de Contacto
+                    </h3>
+                    <button (click)="updateToken('footer_show_contact', !(tokens().footer_show_contact ?? true))"
+                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                        [class.bg-indigo-600]="tokens().footer_show_contact ?? true"
+                        [class.bg-slate-200]="!(tokens().footer_show_contact ?? true)">
+                        <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
+                              [class.translate-x-4.5]="tokens().footer_show_contact ?? true"
+                              [class.translate-x-0.5]="!(tokens().footer_show_contact ?? true)"></span>
+                    </button>
+                </div>
+                @if (tokens().footer_show_contact ?? true) {
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Dirección Física</label>
+                            <input type="text" [value]="tokens().footer_address || ''"
+                                (change)="updateToken('footer_address', $any($event.target).value)"
+                                placeholder="Ej: Carrera 15 #85-12, Bogotá, Colombia"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Teléfono / WhatsApp</label>
+                            <input type="text" [value]="tokens().footer_phone || ''"
+                                (change)="updateToken('footer_phone', $any($event.target).value)"
+                                placeholder="Ej: +57 310 123 4567"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Horario de Atención</label>
+                            <input type="text" [value]="tokens().footer_hours || ''"
+                                (change)="updateToken('footer_hours', $any($event.target).value)"
+                                placeholder="Ej: Lun–Sáb: 8:00 AM – 6:00 PM"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Newsletter -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Newsletter / Suscripción
+                    </h3>
+                    <button (click)="updateToken('footer_show_newsletter', !(tokens().footer_show_newsletter ?? true))"
+                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                        [class.bg-indigo-600]="tokens().footer_show_newsletter ?? true"
+                        [class.bg-slate-200]="!(tokens().footer_show_newsletter ?? true)">
+                        <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
+                              [class.translate-x-4.5]="tokens().footer_show_newsletter ?? true"
+                              [class.translate-x-0.5]="!(tokens().footer_show_newsletter ?? true)"></span>
+                    </button>
+                </div>
+                @if (tokens().footer_show_newsletter ?? true) {
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Título del Newsletter</label>
+                            <input type="text" [value]="tokens().footer_newsletter_title || ''"
+                                (change)="updateToken('footer_newsletter_title', $any($event.target).value)"
+                                placeholder="Únete a nuestro club"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Descripción de Oferta / Incentivo</label>
+                            <input type="text" [value]="tokens().footer_newsletter_description || ''"
+                                (change)="updateToken('footer_newsletter_description', $any($event.target).value)"
+                                placeholder="Suscríbete y recibe un 10% de descuento en tu primera compra"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Métodos de Pago -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        Métodos de Pago Aceptados
+                    </h3>
+                    <button (click)="updateToken('footer_show_payments', !(tokens().footer_show_payments ?? true))"
+                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                        [class.bg-indigo-600]="tokens().footer_show_payments ?? true"
+                        [class.bg-slate-200]="!(tokens().footer_show_payments ?? true)">
+                        <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
+                              [class.translate-x-4.5]="tokens().footer_show_payments ?? true"
+                              [class.translate-x-0.5]="!(tokens().footer_show_payments ?? true)"></span>
+                    </button>
+                </div>
+                @if (tokens().footer_show_payments ?? true) {
+                    <p class="text-xs text-slate-500">Selecciona las insignias de pago a mostrar:</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        @for (method of footerPaymentMethodOptions; track method.id) {
+                            <button (click)="togglePaymentMethod(method.id)"
+                                class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer"
+                                [class.border-indigo-500]="isPaymentMethodEnabled(method.id)"
+                                [class.bg-indigo-50]="isPaymentMethodEnabled(method.id)"
+                                [class.text-indigo-700]="isPaymentMethodEnabled(method.id)"
+                                [class.border-slate-200]="!isPaymentMethodEnabled(method.id)"
+                                [class.text-slate-600]="!isPaymentMethodEnabled(method.id)">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    @if (isPaymentMethodEnabled(method.id)) {
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    } @else {
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                    }
+                                </svg>
+                                {{ method.label }}
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Enlaces Legales -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Enlaces Legales
+                    </h3>
+                    <button (click)="updateToken('footer_show_legal', !(tokens().footer_show_legal ?? true))"
+                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                        [class.bg-indigo-600]="tokens().footer_show_legal ?? true"
+                        [class.bg-slate-200]="!(tokens().footer_show_legal ?? true)">
+                        <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
+                              [class.translate-x-4.5]="tokens().footer_show_legal ?? true"
+                              [class.translate-x-0.5]="!(tokens().footer_show_legal ?? true)"></span>
+                    </button>
+                </div>
+                @if (tokens().footer_show_legal ?? true) {
+                    <div class="space-y-2">
+                        @for (link of (tokens().footer_legal_links || []); track link.id) {
+                            <div class="flex items-center gap-2">
+                                <input type="text" [value]="link.label"
+                                    (change)="updateLegalLink(link.id, 'label', $any($event.target).value)"
+                                    placeholder="Nombre del enlace"
+                                    class="flex-1 text-xs px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none">
+                                <input type="text" [value]="link.url"
+                                    (change)="updateLegalLink(link.id, 'url', $any($event.target).value)"
+                                    placeholder="URL (#, /terminos)"
+                                    class="flex-1 text-xs px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none">
+                                <button (click)="removeLegalLink(link.id)"
+                                    class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
+                        }
+                        <button (click)="addLegalLink()"
+                            class="flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Agregar enlace legal
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <!-- Copyright -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                    Texto de Copyright y Créditos
+                </h3>
+                <p class="text-xs text-slate-500 mb-3">Deja vacío para usar el formato automático: <em>© {{'{year}'}} {{'{tienda}'}}. Todos los derechos reservados.</em></p>
+                <input type="text" [value]="tokens().footer_copyright_text || ''"
+                    (change)="updateToken('footer_copyright_text', $any($event.target).value)"
+                    placeholder="© 2026 Mi Tienda. Todos los derechos reservados."
+                    class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
         </div>
     }
 </div>

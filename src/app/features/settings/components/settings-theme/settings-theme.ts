@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { PreviewSyncService } from '@core/services/preview-sync.service';
-import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, CardOrientationOption, CardBorderStyleOption, CardCartButtonOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption } from '@core/models';
+import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, CardOrientationOption, CardBorderStyleOption, CardCartButtonOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption, FooterColumnsOption, FooterThemeModeOption, FooterAlignmentOption, FooterPaymentMethod, FooterLegalLink } from '@core/models';
 import { THEME_PRESETS, AVAILABLE_FONTS, TYPOGRAPHY_PAIRINGS } from '@core/constants/theme-presets';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 
@@ -93,7 +93,7 @@ export class SettingsTheme {
     readonly tokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly savedTokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly isSaving = signal(false);
-    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards' | 'header'>('preset');
+    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards' | 'header' | 'footer'>('preset');
 
     readonly spacingDensities: { label: string; value: SpacingDensityOption; description: string }[] = [
         { label: 'Compacto', value: 'compact', description: 'Menor espaciado, mayor densidad de productos en pantalla' },
@@ -247,6 +247,67 @@ export class SettingsTheme {
         { label: 'Minimalista Fino', value: 'minimal' },
         { label: 'Pantalla Completa', value: 'full' },
     ];
+
+    readonly footerColumnOptions: { label: string; value: FooterColumnsOption; icon: string; description: string }[] = [
+        { label: '1 Columna', value: '1', icon: '▐', description: 'Centrado simple, ideal para tiendas pequeñas' },
+        { label: '2 Columnas', value: '2', icon: '▐▐', description: 'Logo + Navegación, limpio y equilibrado' },
+        { label: '3 Columnas', value: '3', icon: '▐▐▐', description: 'Estándar: Logo, Navegación y Contacto' },
+        { label: '4 Columnas', value: '4', icon: '▐▐▐▐', description: 'Completo con Newsletter integrado' },
+    ];
+
+    readonly footerThemeModeOptions: { label: string; value: FooterThemeModeOption; description: string }[] = [
+        { label: 'Automático', value: 'auto', description: 'Usa el color de footer del tema activo' },
+        { label: 'Claro', value: 'light', description: 'Fondo blanco o gris claro, texto oscuro' },
+        { label: 'Oscuro', value: 'dark', description: 'Fondo oscuro o negro, texto claro' },
+        { label: 'Personalizado', value: 'custom', description: 'Elige el color exacto del fondo' },
+    ];
+
+    readonly footerAlignmentOptions: { label: string; value: FooterAlignmentOption; description: string }[] = [
+        { label: 'Izquierda', value: 'left', description: 'Contenido alineado al margen izquierdo' },
+        { label: 'Centrado', value: 'center', description: 'Contenido centrado horizontalmente' },
+    ];
+
+    readonly footerPaymentMethodOptions: { id: FooterPaymentMethod; label: string }[] = [
+        { id: 'visa', label: 'Visa' },
+        { id: 'mastercard', label: 'Mastercard' },
+        { id: 'amex', label: 'American Express' },
+        { id: 'paypal', label: 'PayPal' },
+        { id: 'mercadopago', label: 'Mercado Pago' },
+        { id: 'nequi', label: 'Nequi' },
+        { id: 'pse', label: 'PSE' },
+        { id: 'cash', label: 'Efectivo/Contraentrega' },
+    ];
+
+    isPaymentMethodEnabled(method: FooterPaymentMethod): boolean {
+        const methods = this.tokens().footer_payment_methods || ['visa', 'mastercard'];
+        return methods.includes(method);
+    }
+
+    togglePaymentMethod(method: FooterPaymentMethod) {
+        const current = this.tokens().footer_payment_methods || ['visa', 'mastercard'];
+        const updated = current.includes(method)
+            ? current.filter(m => m !== method)
+            : [...current, method];
+        this.updateToken('footer_payment_methods', updated);
+    }
+
+    addLegalLink() {
+        const current = this.tokens().footer_legal_links || [];
+        this.updateToken('footer_legal_links', [
+            ...current,
+            { id: Date.now().toString(), label: 'Nuevo Enlace', url: '#' }
+        ]);
+    }
+
+    removeLegalLink(id: string) {
+        const current = this.tokens().footer_legal_links || [];
+        this.updateToken('footer_legal_links', current.filter(l => l.id !== id));
+    }
+
+    updateLegalLink(id: string, field: 'label' | 'url', value: string) {
+        const current = this.tokens().footer_legal_links || [];
+        this.updateToken('footer_legal_links', current.map(l => l.id === id ? { ...l, [field]: value } : l));
+    }
 
     constructor() {
         effect(() => {

@@ -353,5 +353,130 @@ export class StorePreview {
         return styles;
     }
 
+    // Footer Configurable Getters
+    get footerColumns(): string {
+        return this.activeTokens.footer_columns || '3';
+    }
+
+    get footerThemeMode(): string {
+        return this.activeTokens.footer_theme_mode || 'auto';
+    }
+
+    get footerAlignment(): string {
+        return this.activeTokens.footer_alignment || 'left';
+    }
+
+    get footerBgColor(): string {
+        const mode = this.footerThemeMode;
+        if (mode === 'light') return '#ffffff';
+        if (mode === 'dark') return '#0f172a';
+        if (mode === 'custom') return this.activeTokens.footer_custom_bg || '#0f172a';
+        return this.data().footer_color || 'var(--store-color-footer, #ffffff)';
+    }
+
+    get footerTextColor(): string {
+        const mode = this.footerThemeMode;
+        if (mode === 'light') return '#0f172a';
+        if (mode === 'dark') return '#ffffff';
+        if (mode === 'custom') return getContrastColor(this.activeTokens.footer_custom_bg || '#0f172a');
+        return 'var(--store-color-text, #0f172a)';
+    }
+
+    get footerMutedColor(): string {
+        const mode = this.footerThemeMode;
+        if (mode === 'light') return '#64748b';
+        if (mode === 'dark') return '#94a3b8';
+        if (mode === 'custom') {
+            const isDark = getContrastColor(this.activeTokens.footer_custom_bg || '#0f172a') === '#ffffff';
+            return isDark ? '#94a3b8' : '#64748b';
+        }
+        return 'var(--store-color-muted, #64748b)';
+    }
+
+    get footerBorderColor(): string {
+        const mode = this.footerThemeMode;
+        if (mode === 'dark' || (mode === 'custom' && getContrastColor(this.activeTokens.footer_custom_bg || '#0f172a') === '#ffffff')) {
+            return 'rgba(255, 255, 255, 0.1)';
+        }
+        return 'rgba(0, 0, 0, 0.08)';
+    }
+
+    get footerShowLogo(): boolean {
+        return this.activeTokens.footer_show_logo ?? true;
+    }
+
+    get footerShowDescription(): boolean {
+        return this.activeTokens.footer_show_description ?? true;
+    }
+
+    get footerDescription(): string {
+        return this.activeTokens.footer_description || 'Tu tienda en línea de confianza con los mejores productos y atención.';
+    }
+
+    get footerShowSocial(): boolean {
+        return this.activeTokens.footer_show_social ?? true;
+    }
+
+    get footerShowNewsletter(): boolean {
+        return this.activeTokens.footer_show_newsletter ?? true;
+    }
+
+    get footerNewsletterTitle(): string {
+        return this.activeTokens.footer_newsletter_title || 'Suscríbete a nuestro boletín';
+    }
+
+    get footerNewsletterDescription(): string {
+        return this.activeTokens.footer_newsletter_description || 'Recibe promociones exclusivas, lanzamientos y novedades directamente en tu email.';
+    }
+
+    get footerShowContact(): boolean {
+        return this.activeTokens.footer_show_contact ?? true;
+    }
+
+    get footerAddress(): string {
+        return this.activeTokens.footer_address || 'Carrera 15 #85-12, Bogotá, Colombia';
+    }
+
+    get footerPhone(): string {
+        return this.activeTokens.footer_phone || '+57 310 123 4567';
+    }
+
+    get footerHours(): string {
+        return this.activeTokens.footer_hours || 'Lun–Sáb: 8:00 AM – 6:00 PM';
+    }
+
+    get footerShowLegal(): boolean {
+        return this.activeTokens.footer_show_legal ?? true;
+    }
+
+    get footerLegalLinks(): any[] {
+        const links = this.activeTokens.footer_legal_links;
+        if (links && links.length) return links;
+        return [
+            { id: '1', label: 'Términos y Condiciones', url: '#' },
+            { id: '2', label: 'Política de Privacidad', url: '#' },
+            { id: '3', label: 'Envíos y Devoluciones', url: '#' },
+            { id: '4', label: 'Preguntas Frecuentes', url: '#' },
+        ];
+    }
+
+    get footerShowPayments(): boolean {
+        return this.activeTokens.footer_show_payments ?? true;
+    }
+
+    get footerPaymentMethods(): string[] {
+        return this.activeTokens.footer_payment_methods || ['visa', 'mastercard', 'amex', 'paypal', 'mercadopago', 'nequi', 'pse', 'cash'];
+    }
+
+    get footerCopyrightText(): string {
+        const custom = this.activeTokens.footer_copyright_text;
+        const year = new Date().getFullYear().toString();
+        const storeName = this.data().business_name || 'Mi Tienda';
+        if (custom) {
+            return custom.replace(/{{year}}/gi, year).replace(/{{store}}/gi, storeName);
+        }
+        return `© ${year} ${storeName}. Todos los derechos reservados. Potenciado por Venti Shop.`;
+    }
+
     asAny(val: any): any { return val; }
 }

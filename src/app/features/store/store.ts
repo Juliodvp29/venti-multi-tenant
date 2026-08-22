@@ -5,7 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { TenantService } from '@core/services/tenant';
 import { SeoService } from '@core/services/seo';
-import { themeTokensToCssVars, AVAILABLE_FONTS } from '@core/constants/theme-presets';
+import { themeTokensToCssVars, AVAILABLE_FONTS, getContrastColor } from '@core/constants/theme-presets';
 import { StorePageId, PageLayoutConfig, PageHeaderStyle, PageFooterStyle } from '@core/models';
 import { StoreHeader } from './components/store-header/store-header';
 import { CartDrawer } from './components/cart-drawer/cart-drawer';
@@ -91,6 +91,83 @@ export class StoreComponent {
       xl: '7rem',
     };
     return pb ? (map[pb] || 'var(--store-section-py, 4rem)') : 'var(--store-section-py, 4rem)';
+  });
+
+  // Footer Computeds
+  readonly footerColumns = computed(() => this.themeTokens()?.footer_columns || '3');
+  readonly footerThemeMode = computed(() => this.themeTokens()?.footer_theme_mode || 'auto');
+  readonly footerAlignment = computed(() => this.themeTokens()?.footer_alignment || 'left');
+
+  readonly footerBgColor = computed(() => {
+    const mode = this.footerThemeMode();
+    if (mode === 'light') return '#ffffff';
+    if (mode === 'dark') return '#0f172a';
+    if (mode === 'custom') return this.themeTokens()?.footer_custom_bg || '#0f172a';
+    return this.branding()?.footer_color || 'var(--store-color-footer, #ffffff)';
+  });
+
+  readonly footerTextColor = computed(() => {
+    const mode = this.footerThemeMode();
+    if (mode === 'light') return '#0f172a';
+    if (mode === 'dark') return '#ffffff';
+    if (mode === 'custom') return getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a');
+    return 'var(--store-color-text, #0f172a)';
+  });
+
+  readonly footerMutedColor = computed(() => {
+    const mode = this.footerThemeMode();
+    if (mode === 'light') return '#64748b';
+    if (mode === 'dark') return '#94a3b8';
+    if (mode === 'custom') {
+      const isDark = getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a') === '#ffffff';
+      return isDark ? '#94a3b8' : '#64748b';
+    }
+    return 'var(--store-color-muted, #64748b)';
+  });
+
+  readonly footerBorderColor = computed(() => {
+    const mode = this.footerThemeMode();
+    if (mode === 'dark' || (mode === 'custom' && getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a') === '#ffffff')) {
+      return 'rgba(255, 255, 255, 0.1)';
+    }
+    return 'rgba(0, 0, 0, 0.08)';
+  });
+
+  readonly footerShowLogo = computed(() => this.themeTokens()?.footer_show_logo ?? true);
+  readonly footerShowDescription = computed(() => this.themeTokens()?.footer_show_description ?? true);
+  readonly footerDescription = computed(() => this.themeTokens()?.footer_description || this.branding()?.description || 'Tu tienda en línea de confianza con los mejores productos y atención.');
+  readonly footerShowSocial = computed(() => this.themeTokens()?.footer_show_social ?? true);
+  readonly footerShowNewsletter = computed(() => this.themeTokens()?.footer_show_newsletter ?? true);
+  readonly footerNewsletterTitle = computed(() => this.themeTokens()?.footer_newsletter_title || 'Suscríbete a nuestro boletín');
+  readonly footerNewsletterDescription = computed(() => this.themeTokens()?.footer_newsletter_description || 'Recibe promociones exclusivas, lanzamientos y novedades directamente en tu email.');
+  readonly footerShowContact = computed(() => this.themeTokens()?.footer_show_contact ?? true);
+  readonly footerAddress = computed(() => this.themeTokens()?.footer_address || '');
+  readonly footerPhone = computed(() => this.themeTokens()?.footer_phone || '');
+  readonly footerHours = computed(() => this.themeTokens()?.footer_hours || '');
+  readonly footerShowLegal = computed(() => this.themeTokens()?.footer_show_legal ?? true);
+  readonly footerLegalLinks = computed(() => {
+    const links = this.themeTokens()?.footer_legal_links;
+    if (links && links.length) return links;
+    return [
+      { id: '1', label: 'Términos y Condiciones', url: '/store/terminos' },
+      { id: '2', label: 'Política de Privacidad', url: '/store/privacidad' },
+      { id: '3', label: 'Envíos y Devoluciones', url: '/store/envios' },
+      { id: '4', label: 'Contacto', url: '/store/contacto' },
+    ];
+  });
+  readonly footerShowPayments = computed(() => this.themeTokens()?.footer_show_payments ?? true);
+  readonly footerPaymentMethods = computed(() => this.themeTokens()?.footer_payment_methods || ['visa', 'mastercard', 'amex', 'paypal', 'mercadopago', 'nequi', 'pse', 'cash']);
+  readonly footerCopyrightText = computed(() => {
+    const custom = this.themeTokens()?.footer_copyright_text;
+    const year = new Date().getFullYear().toString();
+    const storeName = this.branding()?.business_name || 'Mi Tienda';
+    if (custom) {
+      return custom.replace(/{{year}}/gi, year).replace(/{{store}}/gi, storeName);
+    }
+    return `© ${year} ${storeName}. Todos los derechos reservados. Potenciado por Venti Shop.`;
+  });
+  readonly primaryContrastColor = computed(() => {
+    return getContrastColor(this.themeTokens()?.colors?.primary || this.branding()?.primary_color);
   });
 
   constructor() {

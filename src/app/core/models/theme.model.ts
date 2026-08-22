@@ -36,6 +36,18 @@ export type BaseFontSizeOption = '14px' | '15px' | '16px' | '18px';
 export type LineHeightOption = '1.2' | '1.4' | '1.5' | '1.6' | '1.8';
 export type LetterSpacingOption = '-0.03em' | '0em' | '0.03em' | '0.08em';
 
+// Footer tokens
+export type FooterColumnsOption = '1' | '2' | '3' | '4';
+export type FooterThemeModeOption = 'auto' | 'light' | 'dark' | 'custom';
+export type FooterAlignmentOption = 'left' | 'center';
+export type FooterPaymentMethod = 'visa' | 'mastercard' | 'amex' | 'paypal' | 'mercadopago' | 'nequi' | 'pse' | 'cash';
+
+export interface FooterLegalLink {
+    id: string;
+    label: string;
+    url: string;
+}
+
 export interface TypographyPairing {
     id: string;
     name: string;
@@ -121,6 +133,31 @@ export interface ThemeTokens {
     header_nav_spacing?: NavSpacingOption;
     hero_style: HeroStyleOption;
 
+    // Footer Configurable
+    footer_columns?: FooterColumnsOption;
+    footer_theme_mode?: FooterThemeModeOption;
+    footer_alignment?: FooterAlignmentOption;
+    footer_custom_bg?: string;
+    footer_show_logo?: boolean;
+    footer_show_description?: boolean;
+    footer_description?: string;
+    footer_show_social?: boolean;
+    footer_show_newsletter?: boolean;
+    footer_newsletter_title?: string;
+    footer_newsletter_description?: string;
+    footer_show_contact?: boolean;
+    footer_show_address?: boolean;
+    footer_address?: string;
+    footer_show_phone?: boolean;
+    footer_phone?: string;
+    footer_show_hours?: boolean;
+    footer_hours?: string;
+    footer_show_legal?: boolean;
+    footer_legal_links?: FooterLegalLink[];
+    footer_show_payments?: boolean;
+    footer_payment_methods?: FooterPaymentMethod[];
+    footer_copyright_text?: string;
+
     // Paleta de Colores
     colors: ThemeColors;
 }
@@ -142,3 +179,5 @@ export interface FontOption {
     category: 'sans-serif' | 'serif' | 'display' | 'monospace';
     googleFontUrl?: string;
 }
+
+
