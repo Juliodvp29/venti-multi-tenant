@@ -15,8 +15,15 @@ export class SettingsGeneral {
     private readonly toastService = inject(ToastService);
 
     readonly isSaving = signal(false);
+    readonly isVerifyingDomain = signal(false);
     readonly tenant = this.tenantService.tenant;
     readonly dirtyChange = output<boolean>();
+
+    readonly domainStatus = () => {
+        const status = this.tenant()?.settings?.['custom_domain_status'];
+        return status === 'verified' || status === 'error' ? status : 'pending';
+    };
+    readonly domainError = () => String(this.tenant()?.settings?.['custom_domain_error'] || '');
 
     readonly form = this.fb.nonNullable.group({
         business_name: ['', [Validators.required, Validators.minLength(2)]],
@@ -62,14 +69,21 @@ export class SettingsGeneral {
             const { currency, timezone, custom_domain, ...businessInfo } = this.form.getRawValue();
             const tenant = this.tenant();
             if (!tenant) return;
+            const normalizedDomain = custom_domain.trim() || null;
+            const domainChanged = normalizedDomain !== (tenant.custom_domain || null);
 
             await this.tenantService.updateTenant(tenant.id, {
                 ...businessInfo,
-                custom_domain: custom_domain || null,
+                custom_domain: normalizedDomain,
                 settings: {
                     ...tenant.settings,
                     currency,
                     timezone,
+                    ...(domainChanged ? {
+                        custom_domain_status: normalizedDomain ? 'pending' : null,
+                        custom_domain_last_checked_at: null,
+                        custom_domain_error: null,
+                    } : {}),
                 },
             });
             this.toastService.success('Configuración guardada exitosamente');
@@ -80,6 +94,29 @@ export class SettingsGeneral {
             this.toastService.error('Error al guardar la configuración');
         } finally {
             this.isSaving.set(false);
+        }
+    }
+
+    async verifyDomain() {
+        const domain = this.form.controls.custom_domain.value.trim();
+        if (!domain || this.form.controls.custom_domain.invalid) {
+            this.form.controls.custom_domain.markAsTouched();
+            return;
+        }
+
+        this.isVerifyingDomain.set(true);
+        try {
+            const result = await this.tenantService.verifyCustomDomain(domain);
+            if (result.status === 'verified') {
+                this.toastService.success('Dominio verificado correctamente');
+            } else {
+                this.toastService.warning(result.reason || 'El dominio todavía no está configurado');
+            }
+        } catch (error) {
+            console.error('Error verifying custom domain:', error);
+            this.toastService.error('No se pudo verificar el dominio');
+        } finally {
+            this.isVerifyingDomain.set(false);
         }
     }
 

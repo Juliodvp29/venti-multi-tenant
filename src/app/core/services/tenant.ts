@@ -458,6 +458,34 @@ export class TenantService {
     return data as any;
   }
 
+  async verifyCustomDomain(domain: string): Promise<{ status: 'verified' | 'error'; reason?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) throw new Error('No tenant found');
+
+    const { data, error } = await this.supabase.client.functions.invoke('verify-domain', {
+      body: { tenant_id: tenantId, domain },
+    });
+
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+
+    const currentTenant = this._state().currentTenant;
+    if (currentTenant) {
+      const updatedSettings = {
+        ...currentTenant.settings,
+        custom_domain_status: data.status,
+        custom_domain_last_checked_at: new Date().toISOString(),
+        custom_domain_error: data.reason || null,
+      };
+      this._state.update(state => ({
+        ...state,
+        currentTenant: { ...currentTenant, settings: updatedSettings },
+      }));
+    }
+
+    return data as { status: 'verified' | 'error'; reason?: string };
+  }
+
   /**
    * Update business information
    */

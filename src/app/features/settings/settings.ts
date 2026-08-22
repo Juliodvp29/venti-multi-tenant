@@ -30,7 +30,7 @@ export interface PreviewData {
   storefront_layout: StorefrontLayout;
 }
 
-type Tab = 'general' | 'branding' | 'address' | 'shipping-taxes' | 'storefront' | 'commissions';
+type Tab = 'general' | 'branding' | 'address' | 'shipping-taxes' | 'storefront' | 'commissions' | 'advanced';
 
 @Component({
   selector: 'app-settings',
@@ -87,6 +87,21 @@ export class Settings {
     },
   ];
 
+  readonly tabGroups: { label: string; tabs: { id: Tab; label: string; icon: string }[] }[] = [
+    { label: 'Cuenta', tabs: this.tabs.filter(tab => ['general', 'address'].includes(tab.id)) },
+    { label: 'Marca', tabs: this.tabs.filter(tab => tab.id === 'branding') },
+    { label: 'Tienda', tabs: this.tabs.filter(tab => tab.id === 'storefront') },
+    { label: 'Operaciones', tabs: this.tabs.filter(tab => ['shipping-taxes', 'commissions'].includes(tab.id)) },
+    {
+      label: 'Avanzado',
+      tabs: [{
+        id: 'advanced',
+        label: 'Zona de Peligro',
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m0 3h.008M10.29 3.86 2.82 17.25A1.5 1.5 0 0 0 4.13 19.5h15.74a1.5 1.5 0 0 0 1.31-2.25L13.71 3.86a1.95 1.95 0 0 0-3.42 0Z" /></svg>',
+      }],
+    },
+  ];
+
   readonly previewData = signal<PreviewData>({
     business_name: 'Venti Shop',
     logo_url: null,
@@ -130,6 +145,7 @@ export class Settings {
   }
 
   readonly activeTabLabel = computed(() => {
+    if (this.activeTab() === 'advanced') return 'Zona de Peligro';
     return this.tabs.find(t => t.id === this.activeTab())?.label || '';
   });
 

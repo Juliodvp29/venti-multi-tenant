@@ -84,7 +84,10 @@ Comisiones por Venta<div
 
             <!-- Tabs -->
             <nav class="-mb-px flex space-x-1 mt-6 overflow-x-auto scrollbar-thin" aria-label="Secciones de configuración" role="tablist">
-                @for (tab of tabs; track tab.id) {
+                @for (group of tabGroups; track group.label) {
+                <div class="mr-4 flex shrink-0 items-center gap-1 border-r border-gray-200 pr-4 last:border-0 last:pr-0 dark:border-gray-800">
+                    <span class="mr-2 hidden text-[10px] font-bold uppercase tracking-wider text-gray-400 xl:inline">{{ group.label }}</span>
+                @for (tab of group.tabs; track tab.id) {
                 <button type="button" (click)="setActiveTab(tab.id)" role="tab" [attr.aria-selected]="activeTab() === tab.id"
                     [attr.aria-controls]="'settings-panel-' + tab.id" [id]="'settings-tab-' + tab.id"
                     class="inline-flex items-center gap-1.5 whitespace-nowrap border-b-2 py-3.5 px-1 mr-6 text-sm font-semibold transition-all"
@@ -96,6 +99,8 @@ Comisiones por Venta<div
                     <span [innerHTML]="tab.icon"></span>
                     {{ tab.label }}
                 </button>
+                }
+                </div>
                 }
             </nav>
         </div>
@@ -133,9 +138,11 @@ Comisiones por Venta<div
                 }
 
                 <!-- Danger Zone -->
+                @if (activeTab() === 'advanced') {
                 <div class="mt-16 pt-10 border-t border-red-100 dark:border-red-900/30">
                     <app-settings-danger-zone />
                 </div>
+                }
 
                 @if (showMobilePreview()) {
                 <section class="mt-10 border-t border-gray-200 pt-8 dark:border-gray-800 lg:hidden">

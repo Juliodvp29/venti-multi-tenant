@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TenantService } from '@core/services/tenant';
 
 export interface DashboardTransaction {
   id: string;
@@ -15,7 +16,7 @@ export interface DashboardTransaction {
 @Component({
   selector: 'app-recent-transactions',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, CurrencyPipe, RouterLink],
+  imports: [CommonModule, RouterLink],
   template: `
     <div
       class="bg-white/85 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md rounded-2xl shadow-xs overflow-hidden"
@@ -68,7 +69,7 @@ export interface DashboardTransaction {
                   {{ tx.date }}
                 </td>
                 <td class="px-6 py-3.5 text-xs font-bold text-slate-900 dark:text-white font-mono">
-                  {{ tx.amount | currency }}
+                  {{ formatCurrency(tx.amount) }}
                 </td>
                 <td class="px-6 py-3.5">
                   <div class="flex justify-center">
@@ -97,4 +98,13 @@ export interface DashboardTransaction {
 })
 export class RecentTransactions {
   transactions = input.required<DashboardTransaction[]>();
+  private readonly tenantService = inject(TenantService);
+
+  formatCurrency(value: number): string {
+    const currency = this.tenantService.currentTenant()?.settings?.['currency'];
+    return new Intl.NumberFormat('es', {
+      style: 'currency',
+      currency: typeof currency === 'string' ? currency : 'USD',
+    }).format(value);
+  }
 }
