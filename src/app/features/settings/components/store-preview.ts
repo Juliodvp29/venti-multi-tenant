@@ -61,6 +61,52 @@ export class StorePreview {
         return this.data().themeTokens || THEME_PRESETS.minimalist.tokens;
     }
 
+    get headerLogoPosition(): string {
+        return this.activeTokens.header_logo_position || 'left';
+    }
+
+    get headerShowSearch(): boolean {
+        return this.activeTokens.header_show_search ?? true;
+    }
+
+    get headerShowCart(): boolean {
+        return this.activeTokens.header_show_cart ?? true;
+    }
+
+    get headerShowSocials(): boolean {
+        return this.activeTokens.header_show_socials ?? false;
+    }
+
+    get headerHamburger(): boolean {
+        return this.activeTokens.header_hamburger ?? false;
+    }
+
+    get headerLogoSizeClass(): string {
+        const size = this.activeTokens.header_logo_size || 'md';
+        const map: Record<string, string> = { sm: 'h-6', md: 'h-8', lg: 'h-10', xl: 'h-14' };
+        return map[size] || 'h-8';
+    }
+
+    get headerNavSpacingClass(): string {
+        const spacing = this.activeTokens.header_nav_spacing || 'normal';
+        const map: Record<string, string> = { tight: 'space-x-3', normal: 'space-x-6', wide: 'space-x-10' };
+        return map[spacing] || 'space-x-6';
+    }
+
+    get navLinks(): any[] {
+        const custom = this.data().storefront_layout?.navigation;
+        if (custom && custom.length) return custom;
+        return [
+            { label: 'Productos', url: '#' },
+            { label: 'Colecciones', url: '#' },
+            { label: 'Sobre Nosotros', url: '#' }
+        ];
+    }
+
+    get halfNavLinks(): number {
+        return Math.ceil(this.navLinks.length / 2);
+    }
+
     get containerClass() {
         const base = this.data().viewMode === 'mobile'
             ? 'w-[375px] h-[667px] border-[12px] border-slate-800 rounded-[3rem] shadow-2xl overflow-hidden'

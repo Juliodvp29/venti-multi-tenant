@@ -674,26 +674,12 @@ export class TenantService {
         settings: updatedSettings
       };
 
-      const { data, error } = await this.supabase.client
-        .from('tenants')
-        .update(brandingUpdates as any)
-        .eq('id', tenantId)
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      this._state.update(s => ({
-        ...s,
-        currentTenant: data as any,
-        settings: updatedSettings,
-        loading: false
-      }));
-
+      await this.updateTenant(tenantId, brandingUpdates as any);
+      this._state.update(s => ({ ...s, loading: false }));
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating theme tokens:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update theme tokens';
+      const errorMessage = error?.message || error?.details || (typeof error === 'string' ? error : 'Failed to update theme tokens');
       this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }

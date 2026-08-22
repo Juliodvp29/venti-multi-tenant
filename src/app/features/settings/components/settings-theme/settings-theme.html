@@ -126,7 +126,20 @@
             [class.text-slate-700]="activeCustomizerTab() !== 'cards'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'cards'"
             class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>🛍️ Tarjetas y Header</span>
+            <span>🛍️ Tarjetas y Hero</span>
+        </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('header')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'header'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'header'"
+            [class.text-white]="activeCustomizerTab() === 'header'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'header'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'header'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'header'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'header'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>🔝 Header</span>
         </button>
     </div>
 
@@ -672,6 +685,231 @@
                     [value]="tokens().hero_style" 
                     (valueChange)="updateToken('hero_style', $event)">
                 </app-dropdown>
+            </div>
+        </div>
+    }
+
+    <!-- TAB: HEADER CONFIGURABLE -->
+    @if (activeCustomizerTab() === 'header') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-8">
+
+            <!-- SECTION 1: LOGO POSITION -->
+            <div>
+                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1 flex items-center gap-2">
+                    🖼️ Posición del Logo
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Define dónde aparece el logo/nombre de tu tienda dentro del header.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    @for (opt of logoPositionOptions; track opt.value) {
+                        <div (click)="updateToken('header_logo_position', opt.value)"
+                             class="p-4 rounded-xl border cursor-pointer transition-all text-center flex flex-col justify-between"
+                             [class.border-indigo-600]="(tokens().header_logo_position ?? 'left') === opt.value"
+                             [class.dark:border-indigo-500]="(tokens().header_logo_position ?? 'left') === opt.value"
+                             [class.bg-indigo-50/60]="(tokens().header_logo_position ?? 'left') === opt.value"
+                             [class.dark:bg-indigo-950/50]="(tokens().header_logo_position ?? 'left') === opt.value"
+                             [class.border-slate-200]="(tokens().header_logo_position ?? 'left') !== opt.value"
+                             [class.dark:border-gray-800]="(tokens().header_logo_position ?? 'left') !== opt.value"
+                             [class.bg-white]="(tokens().header_logo_position ?? 'left') !== opt.value"
+                             [class.dark:bg-gray-800/40]="(tokens().header_logo_position ?? 'left') !== opt.value">
+                            <!-- Mini header preview -->
+                            <div class="h-8 rounded-lg mb-3 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 flex items-center px-2 gap-1 overflow-hidden">
+                                @if (opt.value === 'left') {
+                                    <div class="w-4 h-2.5 bg-slate-800 dark:bg-slate-200 rounded shrink-0"></div>
+                                    <div class="flex gap-1 ml-1">
+                                        <div class="w-3 h-1 bg-slate-300 dark:bg-gray-600 rounded"></div>
+                                        <div class="w-3 h-1 bg-slate-300 dark:bg-gray-600 rounded"></div>
+                                    </div>
+                                    <div class="ml-auto w-3 h-3 bg-slate-400 dark:bg-gray-500 rounded-full shrink-0"></div>
+                                }
+                                @if (opt.value === 'center') {
+                                    <div class="flex gap-1 shrink-0">
+                                        <div class="w-3 h-1 bg-slate-300 dark:bg-gray-600 rounded"></div>
+                                    </div>
+                                    <div class="flex-1 flex justify-center">
+                                        <div class="w-5 h-2.5 bg-slate-800 dark:bg-slate-200 rounded"></div>
+                                    </div>
+                                    <div class="w-3 h-3 bg-slate-400 dark:bg-gray-500 rounded-full shrink-0"></div>
+                                }
+                                @if (opt.value === 'right') {
+                                    <div class="w-3 h-3 bg-slate-400 dark:bg-gray-500 rounded-full shrink-0"></div>
+                                    <div class="flex gap-1 ml-1">
+                                        <div class="w-3 h-1 bg-slate-300 dark:bg-gray-600 rounded"></div>
+                                        <div class="w-3 h-1 bg-slate-300 dark:bg-gray-600 rounded"></div>
+                                    </div>
+                                    <div class="ml-auto w-4 h-2.5 bg-slate-800 dark:bg-slate-200 rounded shrink-0"></div>
+                                }
+                            </div>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ opt.label }}</p>
+                            <p class="text-[11px] text-slate-500 dark:text-gray-400 mt-1">{{ opt.description }}</p>
+                            @if ((tokens().header_logo_position ?? 'left') === opt.value) {
+                                <span class="inline-block mt-2 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 rounded-full">✓ Activo</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- SECTION 2: BEHAVIOR TOGGLES -->
+            <div class="pt-6 border-t border-slate-100 dark:border-gray-800">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1 flex items-center gap-2">
+                    ⚙️ Comportamiento del Header
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Controla cómo se comporta el header al hacer scroll o encima del banner.</p>
+                <div class="space-y-3">
+
+                    <!-- Sticky -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">📌 Header Fijo (Sticky)</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">El header permanece visible al desplazarse por la página.</p>
+                        </div>
+                        <div class="relative ml-4 shrink-0">
+                            <input type="checkbox" class="sr-only"
+                                   [checked]="tokens().header_sticky ?? true"
+                                   (change)="updateToken('header_sticky', $any($event.target).checked)">
+                            <div class="w-11 h-6 rounded-full transition-colors"
+                                 [class.bg-indigo-600]="tokens().header_sticky ?? true"
+                                 [class.bg-slate-300]="!(tokens().header_sticky ?? true)"
+                                 [class.dark:bg-slate-600]="!(tokens().header_sticky ?? true)">
+                                <div class="absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition-transform"
+                                     [class.translate-x-5]="tokens().header_sticky ?? true"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Transparent over hero -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">🌫️ Transparente sobre el Banner</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">El header comienza transparente y se opacifica al hacer scroll. Ideal con hero de imagen.</p>
+                        </div>
+                        <div class="relative ml-4 shrink-0">
+                            <input type="checkbox" class="sr-only"
+                                   [checked]="tokens().header_transparent ?? false"
+                                   (change)="updateToken('header_transparent', $any($event.target).checked)">
+                            <div class="w-11 h-6 rounded-full transition-colors"
+                                 [class.bg-indigo-600]="tokens().header_transparent ?? false"
+                                 [class.bg-slate-300]="!(tokens().header_transparent ?? false)"
+                                 [class.dark:bg-slate-600]="!(tokens().header_transparent ?? false)">
+                                <div class="absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition-transform"
+                                     [class.translate-x-5]="tokens().header_transparent ?? false"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Force hamburger -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">☰ Menú Tipo Hamburguesa</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Oculta el menú de navegación y usa siempre el ícono hamburguesa, incluso en desktop.</p>
+                        </div>
+                        <div class="relative ml-4 shrink-0">
+                            <input type="checkbox" class="sr-only"
+                                   [checked]="tokens().header_hamburger ?? false"
+                                   (change)="updateToken('header_hamburger', $any($event.target).checked)">
+                            <div class="w-11 h-6 rounded-full transition-colors"
+                                 [class.bg-indigo-600]="tokens().header_hamburger ?? false"
+                                 [class.bg-slate-300]="!(tokens().header_hamburger ?? false)"
+                                 [class.dark:bg-slate-600]="!(tokens().header_hamburger ?? false)">
+                                <div class="absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition-transform"
+                                     [class.translate-x-5]="tokens().header_hamburger ?? false"></div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SECTION 3: VISIBILITY TOGGLES -->
+            <div class="pt-6 border-t border-slate-100 dark:border-gray-800">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1 flex items-center gap-2">
+                    👁️ Visibilidad de Elementos
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Decide qué elementos del header se muestran en tu tienda.</p>
+                <div class="space-y-3">
+
+                    <!-- Search -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">🔍 Mostrar Búsqueda</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Ícono de búsqueda en el área de acciones.</p>
+                        </div>
+                        <div class="relative ml-4 shrink-0">
+                            <input type="checkbox" class="sr-only"
+                                   [checked]="tokens().header_show_search ?? true"
+                                   (change)="updateToken('header_show_search', $any($event.target).checked)">
+                            <div class="w-11 h-6 rounded-full transition-colors"
+                                 [class.bg-indigo-600]="tokens().header_show_search ?? true"
+                                 [class.bg-slate-300]="!(tokens().header_show_search ?? true)"
+                                 [class.dark:bg-slate-600]="!(tokens().header_show_search ?? true)">
+                                <div class="absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition-transform"
+                                     [class.translate-x-5]="tokens().header_show_search ?? true"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Cart -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">🛒 Mostrar Carrito</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Botón del carrito de compras con contador de artículos.</p>
+                        </div>
+                        <div class="relative ml-4 shrink-0">
+                            <input type="checkbox" class="sr-only"
+                                   [checked]="tokens().header_show_cart ?? true"
+                                   (change)="updateToken('header_show_cart', $any($event.target).checked)">
+                            <div class="w-11 h-6 rounded-full transition-colors"
+                                 [class.bg-indigo-600]="tokens().header_show_cart ?? true"
+                                 [class.bg-slate-300]="!(tokens().header_show_cart ?? true)"
+                                 [class.dark:bg-slate-600]="!(tokens().header_show_cart ?? true)">
+                                <div class="absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition-transform"
+                                     [class.translate-x-5]="tokens().header_show_cart ?? true"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Socials -->
+                    <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">📱 Mostrar Redes Sociales</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Íconos de Instagram y Facebook junto al menú de navegación.</p>
+                        </div>
+                        <div class="relative ml-4 shrink-0">
+                            <input type="checkbox" class="sr-only"
+                                   [checked]="tokens().header_show_socials ?? false"
+                                   (change)="updateToken('header_show_socials', $any($event.target).checked)">
+                            <div class="w-11 h-6 rounded-full transition-colors"
+                                 [class.bg-indigo-600]="tokens().header_show_socials ?? false"
+                                 [class.bg-slate-300]="!(tokens().header_show_socials ?? false)"
+                                 [class.dark:bg-slate-600]="!(tokens().header_show_socials ?? false)">
+                                <div class="absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition-transform"
+                                     [class.translate-x-5]="tokens().header_show_socials ?? false"></div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SECTION 4: SCALE & SPACING -->
+            <div class="pt-6 border-t border-slate-100 dark:border-gray-800 space-y-4">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1 flex items-center gap-2">
+                    📐 Escala y Espaciado
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Ajusta el tamaño del logo y el espaciado entre los enlaces de navegación.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <app-dropdown
+                        label="Tamaño del Logo"
+                        [options]="logoSizeOptions"
+                        [value]="tokens().header_logo_size || 'md'"
+                        (valueChange)="updateToken('header_logo_size', $event)">
+                    </app-dropdown>
+
+                    <app-dropdown
+                        label="Espaciado entre Enlacces del Menú"
+                        [options]="navSpacingOptions"
+                        [value]="tokens().header_nav_spacing || 'normal'"
+                        (valueChange)="updateToken('header_nav_spacing', $event)">
+                    </app-dropdown>
+                </div>
             </div>
         </div>
     }

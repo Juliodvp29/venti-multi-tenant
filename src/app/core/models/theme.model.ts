@@ -23,6 +23,11 @@ export type HeroStyleOption = 'centered' | 'split' | 'left' | 'minimal' | 'full'
 export type SpacingDensityOption = 'compact' | 'normal' | 'spacious';
 export type MaxContentWidthOption = '1024px' | '1280px' | '1440px' | '100%';
 
+export type LogoPositionOption = 'left' | 'center' | 'right';
+export type NavAlignOption = 'left' | 'center' | 'right';
+export type LogoSizeOption = 'sm' | 'md' | 'lg' | 'xl';
+export type NavSpacingOption = 'tight' | 'normal' | 'wide';
+
 export type FontWeightOption = '400' | '500' | '600' | '700' | '800' | '900';
 export type BaseFontSizeOption = '14px' | '15px' | '16px' | '18px';
 export type LineHeightOption = '1.2' | '1.4' | '1.5' | '1.6' | '1.8';
@@ -91,6 +96,16 @@ export interface ThemeTokens {
 
     // Header y Hero Banner
     header_style: HeaderStyleOption;
+    header_logo_position?: LogoPositionOption;
+    header_nav_align?: NavAlignOption;
+    header_sticky?: boolean;
+    header_transparent?: boolean;
+    header_show_search?: boolean;
+    header_show_cart?: boolean;
+    header_show_socials?: boolean;
+    header_hamburger?: boolean;
+    header_logo_size?: LogoSizeOption;
+    header_nav_spacing?: NavSpacingOption;
     hero_style: HeroStyleOption;
 
     // Paleta de Colores

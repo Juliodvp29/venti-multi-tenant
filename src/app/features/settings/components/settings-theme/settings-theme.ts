@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { PreviewSyncService } from '@core/services/preview-sync.service';
-import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption } from '@core/models';
+import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption } from '@core/models';
 import { THEME_PRESETS, AVAILABLE_FONTS, TYPOGRAPHY_PAIRINGS } from '@core/constants/theme-presets';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 
@@ -65,10 +65,35 @@ export class SettingsTheme {
         { label: 'Separado (0.08em)', value: '0.08em' },
     ];
 
+    readonly logoPositionOptions: { label: string; value: LogoPositionOption; icon: string; description: string }[] = [
+        { label: 'Izquierda', value: 'left',   icon: '◀', description: 'Logo y nombre alineados a la izquierda (clásico)' },
+        { label: 'Centro',    value: 'center', icon: '●', description: 'Logo centrado con menú dividido a ambos lados' },
+        { label: 'Derecha',   value: 'right',  icon: '▶', description: 'Acciones a la izquierda, logo a la derecha' },
+    ];
+
+    readonly navAlignOptions: { label: string; value: NavAlignOption; icon: string; description: string }[] = [
+        { label: 'Izquierda', value: 'left',   icon: '◀', description: 'Menú junto al logo' },
+        { label: 'Centro',    value: 'center', icon: '●', description: 'Menú horizontalmente centrado' },
+        { label: 'Derecha',   value: 'right',  icon: '▶', description: 'Menú hacia los elementos de acción' },
+    ];
+
+    readonly logoSizeOptions: DropdownOption[] = [
+        { label: 'Pequeño (24px)',      value: 'sm' },
+        { label: 'Mediano (32px)',      value: 'md' },
+        { label: 'Grande (40px)',       value: 'lg' },
+        { label: 'Extra Grande (56px)', value: 'xl' },
+    ];
+
+    readonly navSpacingOptions: DropdownOption[] = [
+        { label: 'Estrecho (16px)', value: 'tight' },
+        { label: 'Normal (32px)',   value: 'normal' },
+        { label: 'Amplio (48px)',   value: 'wide' },
+    ];
+
     readonly tokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly savedTokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly isSaving = signal(false);
-    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards'>('preset');
+    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards' | 'header'>('preset');
 
     readonly spacingDensities: { label: string; value: SpacingDensityOption; description: string }[] = [
         { label: 'Compacto', value: 'compact', description: 'Menor espaciado, mayor densidad de productos en pantalla' },
