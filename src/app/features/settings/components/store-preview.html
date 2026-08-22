@@ -20,14 +20,14 @@
             <div class="flex items-center gap-1 overflow-x-auto max-w-full py-0.5">
                 @for (p of pageOptions; track p.id) {
                     <button (click)="previewPage.set(p.id)"
-                        class="px-2 py-0.5 rounded text-[10px] font-bold transition-all cursor-pointer whitespace-nowrap"
+                        class="px-2.5 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer whitespace-nowrap"
                         [class.bg-indigo-600]="previewPage() === p.id"
                         [class.text-white]="previewPage() === p.id"
                         [class.bg-white]="previewPage() !== p.id"
                         [class.text-slate-700]="previewPage() !== p.id"
                         [class.border]="previewPage() !== p.id"
                         [class.border-slate-200]="previewPage() !== p.id">
-                        {{ p.icon }} {{ p.label }}
+                        {{ p.label }}
                     </button>
                 }
             </div>
@@ -64,8 +64,8 @@
                         }
                         @if (headerShowSocials) {
                             <div class="flex items-center space-x-2 pl-3 border-l border-slate-200 text-slate-400">
-                                <span>📷</span>
-                                <span>📘</span>
+                                <svg class="w-3.5 h-3.5 hover:text-indigo-600 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                <svg class="w-3.5 h-3.5 hover:text-indigo-600 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.688 5H18V0h-3.808C10.595 0 9 1.583 9 4.615V8z"/></svg>
                             </div>
                         }
                     </nav>
@@ -491,19 +491,26 @@
 
                                                     <!-- Icon only cart button -->
                                                     @if (cardCartButtonStyle === 'icon_only') {
-                                                        <button class="w-6 h-6 rounded-full shadow-md absolute bottom-1.5 right-1.5 flex items-center justify-center text-white text-[10px] cursor-pointer"
-                                                                [style.background-color]="data().primary_color || 'var(--store-color-primary, #0f172a)'">
-                                                            🛒
+                                                        <button class="w-6 h-6 rounded-full shadow-md absolute bottom-1.5 right-1.5 flex items-center justify-center text-[10px] cursor-pointer"
+                                                                [style.background-color]="data().primary_color || 'var(--store-color-primary, #0f172a)'"
+                                                                [style.color]="primaryContrastColor()">
+                                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z" />
+                                                            </svg>
                                                         </button>
                                                     }
 
                                                     <!-- Hover slide-up cart button -->
                                                     @if (cardCartButtonStyle === 'hover') {
                                                         <div class="absolute inset-x-0 bottom-0 p-1.5 translate-y-full group-hover:translate-y-0 transition-transform duration-200 z-10">
-                                                            <button class="w-full py-1 text-[8px] font-bold shadow-sm text-white"
+                                                            <button class="w-full py-1 text-[8px] font-bold shadow-md flex items-center justify-center gap-1 cursor-pointer"
                                                                     [style.border-radius]="'var(--store-radius-btn, 0.375rem)'"
-                                                                    [style.background-color]="data().primary_color || 'var(--store-color-primary)'">
-                                                                Añadir
+                                                                    [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                                                    [style.color]="primaryContrastColor()">
+                                                                <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z" />
+                                                                </svg>
+                                                                <span>Añadir</span>
                                                             </button>
                                                         </div>
                                                     }
@@ -539,11 +546,11 @@
                                                             }
 
                                                             @if (cardCartButtonStyle === 'always') {
-                                                                <button class="px-2 py-0.5 text-[8px] font-bold shadow-sm transition-transform active:scale-95"
+                                                                <button class="px-2 py-0.5 text-[8px] font-bold shadow-sm transition-transform active:scale-95 flex items-center gap-1 cursor-pointer"
                                                                         [style.border-radius]="'var(--store-radius-btn, 0.375rem)'"
                                                                         [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
-                                                                        [style.color]="'white'">
-                                                                    Añadir
+                                                                        [style.color]="primaryContrastColor()">
+                                                                    <span>Añadir</span>
                                                                 </button>
                                                             }
                                                         </div>
@@ -813,8 +820,9 @@
                                         @for (post of (asAny(section.content).items || []); track post.id) {
                                             <div class="aspect-square rounded-xl overflow-hidden relative group">
                                                 <img [src]="post.imageUrl" class="w-full h-full object-cover">
-                                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold">
-                                                    ❤️ {{ post.likes || 100 }}
+                                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1">
+                                                    <svg class="w-3.5 h-3.5 fill-current text-red-500" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                                    <span>{{ post.likes || 100 }}</span>
                                                 </div>
                                             </div>
                                         }
@@ -829,12 +837,22 @@
                                 <div [class]="getSectionContainerClass(section)" class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
                                     <div class="space-y-2">
                                         <h3 class="text-sm font-bold" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
-                                        <p class="text-xs text-gray-600 dark:text-gray-300">📍 {{ asAny(section.content).address }}</p>
-                                        <p class="text-xs text-gray-500">📞 {{ asAny(section.content).phone }}</p>
-                                        <p class="text-xs text-gray-500">🕒 {{ asAny(section.content).hours }}</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-indigo-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                            <span>{{ asAny(section.content).address }}</span>
+                                        </p>
+                                        <p class="text-xs text-gray-500 flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                            <span>{{ asAny(section.content).phone }}</span>
+                                        </p>
+                                        <p class="text-xs text-gray-500 flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span>{{ asAny(section.content).hours }}</span>
+                                        </p>
                                     </div>
-                                    <div class="h-36 bg-slate-200 dark:bg-gray-700 rounded-xl flex items-center justify-center text-xs text-gray-500">
-                                        🗺️ Mapa Interactivo
+                                    <div class="h-36 bg-slate-200 dark:bg-gray-700 rounded-xl flex items-center justify-center text-xs text-gray-500 gap-1.5">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                                        <span>Mapa Interactivo</span>
                                     </div>
                                 </div>
                             </section>

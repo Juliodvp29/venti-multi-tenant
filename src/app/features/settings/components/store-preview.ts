@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StorefrontLayout, ThemeTokens, StorePageId, PageLayoutConfig, PageHeaderStyle, PageFooterStyle, StorefrontSection, getDefaultPageLayout } from '@core/models';
-import { themeTokensToCssVars, THEME_PRESETS } from '@core/constants/theme-presets';
+import { themeTokensToCssVars, THEME_PRESETS, getContrastColor } from '@core/constants/theme-presets';
 
 export interface PreviewData {
     business_name: string;
@@ -52,14 +52,14 @@ export class StorePreview {
 
     readonly previewPage = signal<StorePageId>('home');
 
-    readonly pageOptions: { id: StorePageId; label: string; icon: string }[] = [
-        { id: 'home', label: 'Inicio', icon: '🏠' },
-        { id: 'catalog', label: 'Catálogo', icon: '📦' },
-        { id: 'product_detail', label: 'Detalle', icon: '🔍' },
-        { id: 'cart', label: 'Carrito', icon: '🛒' },
-        { id: 'checkout', label: 'Checkout', icon: '💳' },
-        { id: 'contact', label: 'Contacto', icon: '✉️' },
-        { id: 'about', label: 'Nosotros', icon: '👥' },
+    readonly pageOptions: { id: StorePageId; label: string }[] = [
+        { id: 'home', label: 'Inicio' },
+        { id: 'catalog', label: 'Catálogo' },
+        { id: 'product_detail', label: 'Detalle' },
+        { id: 'cart', label: 'Carrito' },
+        { id: 'checkout', label: 'Checkout' },
+        { id: 'contact', label: 'Contacto' },
+        { id: 'about', label: 'Nosotros' },
     ];
 
     readonly activePageConfig = computed<PageLayoutConfig>(() => {
@@ -207,18 +207,33 @@ export class StorePreview {
         const d = this.data();
         const tokens = d.themeTokens || THEME_PRESETS.minimalist.tokens;
         const baseVars = themeTokensToCssVars(tokens);
+        const primaryColor = d.primary_color || tokens.colors.primary;
+        const secondaryColor = d.secondary_color || tokens.colors.secondary;
+        const accentColor = d.accent_color || tokens.colors.accent;
 
         return {
             ...baseVars,
-            '--store-color-primary': d.primary_color || tokens.colors.primary,
-            '--store-color-secondary': d.secondary_color || tokens.colors.secondary,
-            '--store-color-accent': d.accent_color || tokens.colors.accent,
+            '--store-color-primary': primaryColor,
+            '--store-color-primary-contrast': getContrastColor(primaryColor),
+            '--store-color-secondary': secondaryColor,
+            '--store-color-secondary-contrast': getContrastColor(secondaryColor),
+            '--store-color-accent': accentColor,
+            '--store-color-accent-contrast': getContrastColor(accentColor),
             '--store-color-bg': d.background_color || tokens.colors.background,
             '--store-color-header': d.header_color || tokens.colors.header,
             '--store-color-footer': d.footer_color || tokens.colors.footer,
             '--store-font-heading': d.font_family || tokens.font_heading,
+            '--store-color-btn-text': getContrastColor(primaryColor),
         };
     });
+
+    primaryContrastColor(): string {
+        return getContrastColor(this.data().primary_color || this.activeTokens.colors.primary);
+    }
+
+    accentContrastColor(): string {
+        return getContrastColor(this.data().accent_color || this.activeTokens.colors.accent);
+    }
 
     get activeTokens(): ThemeTokens {
         return this.data().themeTokens || THEME_PRESETS.minimalist.tokens;

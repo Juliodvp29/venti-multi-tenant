@@ -91,7 +91,8 @@ import { TenantService } from '@core/services/tenant';
                         (click)="addToCart($event)" 
                         title="Añadir al Carrito"
                         class="w-10 h-10 rounded-full shadow-lg transition-transform active:scale-90 flex items-center justify-center cursor-pointer text-white"
-                        [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'">
+                        [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'"
+                        [style.color]="added() ? '#ffffff' : 'var(--store-color-primary-contrast, #ffffff)'">
                         @if (added()) {
                             <svg class="w-5 h-5 animate-in zoom-in" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
@@ -111,10 +112,11 @@ import { TenantService } from '@core/services/tenant';
                     @if (!product.variants?.length) {
                         <button 
                             (click)="addToCart($event)" 
-                            class="w-full py-2.5 sm:py-3 font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95 text-white"
+                            class="w-full py-2.5 sm:py-3 font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                             [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                             [style.text-transform]="'var(--store-btn-transform, none)'"
-                            [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'">
+                            [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'"
+                            [style.color]="added() ? '#ffffff' : 'var(--store-color-primary-contrast, #ffffff)'">
                             
                             @if (added()) {
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5 animate-in zoom-in duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,10 +132,11 @@ import { TenantService } from '@core/services/tenant';
                         </button>
                     } @else {
                         <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve"
-                           class="w-full py-2.5 sm:py-3 font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-white"
+                           class="w-full py-2.5 sm:py-3 font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
                            [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                            [style.text-transform]="'var(--store-btn-transform, none)'"
-                           [style.background-color]="'var(--store-color-primary, #0f172a)'">
+                           [style.background-color]="'var(--store-color-primary, #0f172a)'"
+                           [style.color]="'var(--store-color-primary-contrast, #ffffff)'">
                             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -214,10 +217,11 @@ import { TenantService } from '@core/services/tenant';
                         @if (!product.variants?.length) {
                             <button 
                                 (click)="addToCart($event)" 
-                                class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95 text-white"
+                                class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                                 [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                                 [style.text-transform]="'var(--store-btn-transform, none)'"
-                                [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'">
+                                [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'"
+                                [style.color]="added() ? '#ffffff' : 'var(--store-color-primary-contrast, #ffffff)'">
                                 @if (added()) {
                                     <svg class="w-4 h-4 animate-in zoom-in" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
@@ -232,10 +236,11 @@ import { TenantService } from '@core/services/tenant';
                             </button>
                         } @else {
                             <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve"
-                               class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer text-white"
+                               class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                                [style.text-transform]="'var(--store-btn-transform, none)'"
-                               [style.background-color]="'var(--store-color-primary, #0f172a)'">
+                               [style.background-color]="'var(--store-color-primary, #0f172a)'"
+                               [style.color]="'var(--store-color-primary-contrast, #ffffff)'">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />

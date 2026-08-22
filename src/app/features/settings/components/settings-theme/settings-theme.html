@@ -34,8 +34,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'preset'"
             [class.text-slate-700]="activeCustomizerTab() !== 'preset'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'preset'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>🎨 Temas Base (10)</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+            <span>Temas Base (10)</span>
         </button>
         
         <button 
@@ -47,8 +50,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'colors'"
             [class.text-slate-700]="activeCustomizerTab() !== 'colors'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'colors'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>💧 Paleta de Colores (10)</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 5 5 0 013-4.5V11a7 7 0 1114 0v1.5a5 5 0 013 4.5 4 4 0 01-4 4H7z" />
+            </svg>
+            <span>Colores (10)</span>
         </button>
 
         <button 
@@ -60,8 +66,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'typography'"
             [class.text-slate-700]="activeCustomizerTab() !== 'typography'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'typography'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>🔤 Tipografías</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+            </svg>
+            <span>Tipografías</span>
         </button>
 
         <button 
@@ -73,8 +82,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'borders'"
             [class.text-slate-700]="activeCustomizerTab() !== 'borders'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'borders'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>📐 Bordes y Radios</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <rect x="3" y="3" width="18" height="18" rx="4" stroke-width="2" />
+            </svg>
+            <span>Bordes y Radios</span>
         </button>
 
         <button 
@@ -86,8 +98,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'shadows'"
             [class.text-slate-700]="activeCustomizerTab() !== 'shadows'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'shadows'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>☁️ Sombras</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <span>Sombras</span>
         </button>
 
         <button 
@@ -99,8 +114,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'spacing'"
             [class.text-slate-700]="activeCustomizerTab() !== 'spacing'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'spacing'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>📏 Espaciado y Ancho</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+            <span>Espaciado y Ancho</span>
         </button>
 
         <button 
@@ -112,8 +130,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'buttons'"
             [class.text-slate-700]="activeCustomizerTab() !== 'buttons'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'buttons'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>🔘 Botones</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+            </svg>
+            <span>Botones</span>
         </button>
 
         <button 
@@ -125,8 +146,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'cards'"
             [class.text-slate-700]="activeCustomizerTab() !== 'cards'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'cards'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>🛍️ Tarjetas de Producto</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 10-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span>Tarjetas de Producto</span>
         </button>
 
         <button 
@@ -138,8 +162,11 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'header'"
             [class.text-slate-700]="activeCustomizerTab() !== 'header'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'header'"
-            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
-            <span>🔝 Header</span>
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+            <span>Cabecera (Header)</span>
         </button>
     </div>
 
@@ -334,7 +361,10 @@
             <div>
                 <div class="flex items-center justify-between mb-2">
                     <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                        ✨ Combinaciones Tipográficas Preparadas
+                        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                        Combinaciones Tipográficas Preparadas
                         <span class="text-xs px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full font-semibold border border-indigo-100 dark:border-indigo-800">
                             1-Clic
                         </span>
@@ -657,7 +687,10 @@
             <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
                 <div>
                     <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                        📐 Estructura y Geometría de la Tarjeta
+                        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="3" width="18" height="18" rx="3" stroke-width="2" />
+                        </svg>
+                        Estructura y Geometría de la Tarjeta
                     </h3>
                     <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Configura la orientación, proporciones de imagen y silueta de las tarjetas en los catálogos y grillas.</p>
                 </div>
@@ -699,7 +732,10 @@
             <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
                 <div>
                     <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                        🏷️ Precios, Descuentos y Stock
+                        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        Precios, Descuentos y Stock
                     </h3>
                     <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Controla qué información financiera y de inventario se muestra en cada tarjeta.</p>
                 </div>
@@ -759,7 +795,10 @@
             <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
                 <div>
                     <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                        ✨ Insignias y Etiquetas Visuales
+                        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                        Insignias y Etiquetas Visuales
                     </h3>
                     <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Destaca novedades y promociones especiales con badges llamativos.</p>
                 </div>
@@ -795,7 +834,10 @@
             <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
                 <div>
                     <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                        🛒 Botón de Carrito e Interactividad
+                        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 10-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        Botón de Carrito e Interactividad
                     </h3>
                     <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Configura la experiencia de compra directa y las transiciones al pasar el cursor.</p>
                 </div>
@@ -830,7 +872,10 @@
             <!-- SECTION 1: LOGO POSITION -->
             <div>
                 <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1 flex items-center gap-2">
-                    🖼️ Posición del Logo
+                    <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Posición del Logo
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Define dónde aparece el logo/nombre de tu tienda dentro del header.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -886,7 +931,11 @@
             <!-- SECTION 2: BEHAVIOR TOGGLES -->
             <div class="pt-6 border-t border-slate-100 dark:border-gray-800">
                 <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1 flex items-center gap-2">
-                    ⚙️ Comportamiento del Header
+                    <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Comportamiento del Header
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Controla cómo se comporta el header al hacer scroll o encima del banner.</p>
                 <div class="space-y-3">
@@ -894,7 +943,7 @@
                     <!-- Sticky -->
                     <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
                         <div>
-                            <p class="text-sm font-semibold text-slate-800 dark:text-white">📌 Header Fijo (Sticky)</p>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">Header Fijo (Sticky)</p>
                             <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">El header permanece visible al desplazarse por la página.</p>
                         </div>
                         <div class="relative ml-4 shrink-0">
@@ -914,7 +963,7 @@
                     <!-- Transparent over hero -->
                     <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
                         <div>
-                            <p class="text-sm font-semibold text-slate-800 dark:text-white">🌫️ Transparente sobre el Banner</p>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">Transparente sobre el Banner</p>
                             <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">El header comienza transparente y se opacifica al hacer scroll. Ideal con hero de imagen.</p>
                         </div>
                         <div class="relative ml-4 shrink-0">
@@ -934,7 +983,7 @@
                     <!-- Force hamburger -->
                     <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
                         <div>
-                            <p class="text-sm font-semibold text-slate-800 dark:text-white">☰ Menú Tipo Hamburguesa</p>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">Menú Tipo Hamburguesa</p>
                             <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Oculta el menú de navegación y usa siempre el ícono hamburguesa, incluso en desktop.</p>
                         </div>
                         <div class="relative ml-4 shrink-0">
@@ -956,7 +1005,11 @@
             <!-- SECTION 3: VISIBILITY TOGGLES -->
             <div class="pt-6 border-t border-slate-100 dark:border-gray-800">
                 <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1 flex items-center gap-2">
-                    👁️ Visibilidad de Elementos
+                    <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Visibilidad de Elementos
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Decide qué elementos del header se muestran en tu tienda.</p>
                 <div class="space-y-3">
@@ -964,7 +1017,7 @@
                     <!-- Search -->
                     <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
                         <div>
-                            <p class="text-sm font-semibold text-slate-800 dark:text-white">🔍 Mostrar Búsqueda</p>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">Mostrar Búsqueda</p>
                             <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Ícono de búsqueda en el área de acciones.</p>
                         </div>
                         <div class="relative ml-4 shrink-0">
@@ -984,7 +1037,7 @@
                     <!-- Cart -->
                     <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
                         <div>
-                            <p class="text-sm font-semibold text-slate-800 dark:text-white">🛒 Mostrar Carrito</p>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">Mostrar Carrito</p>
                             <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Botón del carrito de compras con contador de artículos.</p>
                         </div>
                         <div class="relative ml-4 shrink-0">
@@ -1004,7 +1057,7 @@
                     <!-- Socials -->
                     <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/40 cursor-pointer hover:border-indigo-400 transition-all">
                         <div>
-                            <p class="text-sm font-semibold text-slate-800 dark:text-white">📱 Mostrar Redes Sociales</p>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-white">Mostrar Redes Sociales</p>
                             <p class="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Íconos de Instagram y Facebook junto al menú de navegación.</p>
                         </div>
                         <div class="relative ml-4 shrink-0">
@@ -1026,7 +1079,10 @@
             <!-- SECTION 4: SCALE & SPACING -->
             <div class="pt-6 border-t border-slate-100 dark:border-gray-800 space-y-4">
                 <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1 flex items-center gap-2">
-                    📐 Escala y Espaciado
+                    <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                    Escala y Espaciado
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Ajusta el tamaño del logo y el espaciado entre los enlaces de navegación.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">

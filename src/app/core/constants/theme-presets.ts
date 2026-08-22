@@ -619,8 +619,11 @@ export function themeTokensToCssVars(tokens: ThemeTokens): Record<string, string
 
         // Extended theme color variables
         '--store-color-primary': tokens.colors.primary,
+        '--store-color-primary-contrast': getContrastColor(tokens.colors.primary),
         '--store-color-secondary': tokens.colors.secondary,
+        '--store-color-secondary-contrast': getContrastColor(tokens.colors.secondary),
         '--store-color-accent': tokens.colors.accent,
+        '--store-color-accent-contrast': getContrastColor(tokens.colors.accent),
         '--store-color-bg': tokens.colors.background,
         '--store-color-surface': tokens.colors.surface || '#ffffff',
         '--store-color-header': tokens.colors.header,
@@ -628,5 +631,25 @@ export function themeTokensToCssVars(tokens: ThemeTokens): Record<string, string
         '--store-color-text': tokens.colors.text_primary || '#0a0a0a',
         '--store-color-muted': tokens.colors.text_muted || '#737373',
         '--store-color-border': tokens.colors.border || '#e5e5e5',
+        '--store-color-btn-text': getContrastColor(tokens.colors.primary),
     };
+}
+
+/**
+ * Computes high-contrast text color (white or dark) based on background hex color luminance
+ */
+export function getContrastColor(hexColor: string | null | undefined, defaultDark = '#0f172a', defaultLight = '#ffffff'): string {
+    if (!hexColor) return defaultLight;
+    let hex = hexColor.replace('#', '').trim();
+    if (hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
+    }
+    if (hex.length !== 6) return defaultLight;
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    if (isNaN(r) || isNaN(g) || isNaN(b)) return defaultLight;
+    // YIQ formula for perceived luminance
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 150 ? defaultDark : defaultLight;
 }

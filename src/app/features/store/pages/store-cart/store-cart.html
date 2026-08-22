@@ -12,7 +12,11 @@
     @if (items().length === 0) {
         <!-- Empty State -->
         <div class="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xs max-w-md mx-auto space-y-4">
-            <span class="text-5xl block">🛒</span>
+            <div class="w-16 h-16 rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+            </div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Tu carrito está vacío</h3>
             <p class="text-xs text-gray-500">Aún no has agregado ningún producto a tu pedido.</p>
             <a routerLink="/store/productos"
@@ -65,7 +69,9 @@
 
                                     <button (click)="cartService.removeFromCart(item.id)"
                                         class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="Eliminar">
-                                        🗑️
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
                                     </button>
                                 </div>
                             </div>
@@ -95,7 +101,12 @@
 
                         @if (coupon()) {
                             <div class="flex items-center justify-between text-xs px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 rounded-xl border border-emerald-100 dark:border-emerald-800">
-                                <span>🎉 Cupón: <b>{{ coupon()?.code }}</b></span>
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                    </svg>
+                                    <span>Cupón: <b>{{ coupon()?.code }}</b></span>
+                                </span>
                                 <button (click)="removeCoupon()" class="text-xs text-red-500 font-bold hover:underline">Quitar</button>
                             </div>
                         }
@@ -128,8 +139,11 @@
 
                     <!-- Checkout CTA -->
                     <a routerLink="/store/checkout"
-                        class="w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold text-center block transition-all shadow-md">
-                        Proceder al Checkout Seguro 🔒
+                        class="w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold text-center flex items-center justify-center gap-2 transition-all shadow-md">
+                        <span>Proceder al Checkout Seguro</span>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
                     </a>
                 </div>
             </div>
@@ -147,7 +161,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         @for (item of (asAny(section.content).items || []); track item.id) {
                             <div class="p-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center space-y-2">
-                                <span class="text-2xl block">{{ item.icon || '🛡️' }}</span>
+                                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
                                 <h4 class="text-xs font-bold text-gray-900 dark:text-white">{{ item.title }}</h4>
                                 <p class="text-[11px] text-gray-500">{{ item.description }}</p>
                             </div>
