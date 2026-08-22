@@ -125,19 +125,34 @@ export class TenantService {
 
   readonly themeTokens = computed<ThemeTokens>(() => {
     const settings = this._state().currentTenant?.settings as any;
-    const savedTokens = settings?.theme_config as ThemeTokens;
-    if (savedTokens) return savedTokens;
-
-    const t = this._state().currentTenant;
     const presetId = (settings?.theme_id as ThemePresetId) || 'minimalist';
     const baseTokens = THEME_PRESETS[presetId]?.tokens || THEME_PRESETS.minimalist.tokens;
+    const savedTokens = settings?.theme_config as ThemeTokens;
 
+    if (savedTokens) {
+      return {
+        ...baseTokens,
+        ...savedTokens,
+        font_button: savedTokens.font_button || savedTokens.font_body || baseTokens.font_button || baseTokens.font_body || '"Inter", sans-serif',
+        font_weight_heading: savedTokens.font_weight_heading || baseTokens.font_weight_heading || '700',
+        font_size_base: savedTokens.font_size_base || baseTokens.font_size_base || '16px',
+        line_height: savedTokens.line_height || baseTokens.line_height || '1.5',
+        letter_spacing: savedTokens.letter_spacing || baseTokens.letter_spacing || '0em',
+      };
+    }
+
+    const t = this._state().currentTenant;
     if (!t) return baseTokens;
 
     return {
       ...baseTokens,
       font_heading: t.font_family || baseTokens.font_heading,
       font_body: t.font_family || baseTokens.font_body,
+      font_button: t.font_family || baseTokens.font_button || baseTokens.font_body,
+      font_weight_heading: baseTokens.font_weight_heading || '700',
+      font_size_base: baseTokens.font_size_base || '16px',
+      line_height: baseTokens.line_height || '1.5',
+      letter_spacing: baseTokens.letter_spacing || '0em',
       colors: {
         ...baseTokens.colors,
         primary: t.primary_color || baseTokens.colors.primary,

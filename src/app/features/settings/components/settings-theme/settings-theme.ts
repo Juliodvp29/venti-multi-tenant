@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { PreviewSyncService } from '@core/services/preview-sync.service';
-import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption } from '@core/models';
-import { THEME_PRESETS, AVAILABLE_FONTS } from '@core/constants/theme-presets';
+import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption } from '@core/models';
+import { THEME_PRESETS, AVAILABLE_FONTS, TYPOGRAPHY_PAIRINGS } from '@core/constants/theme-presets';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 
 @Component({
@@ -27,11 +27,43 @@ export class SettingsTheme {
 
     readonly presets = Object.values(THEME_PRESETS).filter(p => p.id !== 'custom');
     readonly fonts = AVAILABLE_FONTS;
+    readonly typographyPairings = TYPOGRAPHY_PAIRINGS;
 
     readonly fontOptions: DropdownOption[] = AVAILABLE_FONTS.map(f => ({
         label: `${f.name} (${f.category})`,
         value: f.family
     }));
+
+    readonly fontWeightOptions: DropdownOption[] = [
+        { label: 'Normal (400)', value: '400' },
+        { label: 'Medio (500)', value: '500' },
+        { label: 'Semibold (600)', value: '600' },
+        { label: 'Bold / Negrita (700)', value: '700' },
+        { label: 'Extra Bold (800)', value: '800' },
+        { label: 'Black / Pesado (900)', value: '900' },
+    ];
+
+    readonly baseFontSizeOptions: DropdownOption[] = [
+        { label: 'Compacto (14px)', value: '14px' },
+        { label: 'Sutil (15px)', value: '15px' },
+        { label: 'Estándar (16px)', value: '16px' },
+        { label: 'Grande (18px)', value: '18px' },
+    ];
+
+    readonly lineHeightOptions: DropdownOption[] = [
+        { label: 'Ajustado (1.2)', value: '1.2' },
+        { label: 'Equilibrado (1.4)', value: '1.4' },
+        { label: 'Estándar (1.5)', value: '1.5' },
+        { label: 'Holgado (1.6)', value: '1.6' },
+        { label: 'Amplio (1.8)', value: '1.8' },
+    ];
+
+    readonly letterSpacingOptions: DropdownOption[] = [
+        { label: 'Estrecho (-0.03em)', value: '-0.03em' },
+        { label: 'Normal (0em)', value: '0em' },
+        { label: 'Sutil (0.03em)', value: '0.03em' },
+        { label: 'Separado (0.08em)', value: '0.08em' },
+    ];
 
     readonly tokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly savedTokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
@@ -191,6 +223,20 @@ export class SettingsTheme {
         this.tokens.set(newTokens);
         this.emitChanges();
         this.toastService.info(`Tema "${preset.name}" aplicado. Puedes guardar o seguir personalizando.`);
+    }
+
+    applyTypographyPairing(pairing: TypographyPairing) {
+        this.tokens.update(t => ({
+            ...t,
+            theme_id: 'custom',
+            theme_name: 'Personalizado',
+            font_heading: pairing.font_heading,
+            font_body: pairing.font_body,
+            font_button: pairing.font_button,
+            font_weight_heading: pairing.font_weight_heading,
+        }));
+        this.emitChanges();
+        this.toastService.info(`Combinación tipográfica "${pairing.name}" aplicada.`);
     }
 
     updateColor(key: keyof ThemeTokens['colors'], value: string) {

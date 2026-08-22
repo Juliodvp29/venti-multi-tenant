@@ -1,4 +1,4 @@
-import { ThemePreset, ThemeTokens, ThemePresetId, FontOption } from '@core/models';
+import { ThemePreset, ThemeTokens, ThemePresetId, FontOption, TypographyPairing } from '@core/models';
 
 export const AVAILABLE_FONTS: FontOption[] = [
     { name: 'Inter', family: '"Inter", sans-serif', category: 'sans-serif', googleFontUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap' },
@@ -12,6 +12,59 @@ export const AVAILABLE_FONTS: FontOption[] = [
     { name: 'Plus Jakarta Sans', family: '"Plus Jakarta Sans", sans-serif', category: 'sans-serif', googleFontUrl: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap' },
     { name: 'Roboto', family: '"Roboto", sans-serif', category: 'sans-serif', googleFontUrl: 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap' },
     { name: 'Cinzel', family: '"Cinzel", serif', category: 'serif', googleFontUrl: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap' },
+];
+
+export const TYPOGRAPHY_PAIRINGS: TypographyPairing[] = [
+    {
+        id: 'elegant',
+        name: 'Elegante',
+        tagline: 'Lujo, romance y sofisticación',
+        description: 'Combinación distinguida entre Playfair Display para encabezados y Outfit para cuerpo y botones.',
+        font_heading: '"Playfair Display", serif',
+        font_body: '"Outfit", sans-serif',
+        font_button: '"Outfit", sans-serif',
+        font_weight_heading: '700',
+    },
+    {
+        id: 'modern',
+        name: 'Moderna',
+        tagline: 'Limpia, directa y contemporánea',
+        description: 'Combinación versátil con Plus Jakarta Sans en títulos y botones junto con la legibilidad de Inter.',
+        font_heading: '"Plus Jakarta Sans", sans-serif',
+        font_body: '"Inter", sans-serif',
+        font_button: '"Plus Jakarta Sans", sans-serif',
+        font_weight_heading: '800',
+    },
+    {
+        id: 'editorial',
+        name: 'Editorial',
+        tagline: 'Estilo prensa, calidez y lectura atemporal',
+        description: 'Inspirada en periódicos y revistas con Merriweather en títulos y cuerpo, equilibrada con botones en Inter.',
+        font_heading: '"Merriweather", serif',
+        font_body: '"Merriweather", serif',
+        font_button: '"Inter", sans-serif',
+        font_weight_heading: '900',
+    },
+    {
+        id: 'geometric',
+        name: 'Geométrica',
+        tagline: 'Vanguardista, audaz y estructurada',
+        description: 'Trazos geométricos modernos usando Space Grotesk en títulos y botones con Poppins en texto principal.',
+        font_heading: '"Space Grotesk", sans-serif',
+        font_body: '"Poppins", sans-serif',
+        font_button: '"Space Grotesk", sans-serif',
+        font_weight_heading: '700',
+    },
+    {
+        id: 'classic',
+        name: 'Clásica',
+        tagline: 'Herencia, sobriedad y distinción tradicional',
+        description: 'Cormorant Garamond en títulos combinada con la neutralidad funcional de Roboto para cuerpo y acciones.',
+        font_heading: '"Cormorant Garamond", serif',
+        font_body: '"Roboto", sans-serif',
+        font_button: '"Roboto", sans-serif',
+        font_weight_heading: '600',
+    },
 ];
 
 export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
@@ -538,6 +591,11 @@ export function themeTokensToCssVars(tokens: ThemeTokens): Record<string, string
     return {
         '--store-font-heading': tokens.font_heading || '"Inter", sans-serif',
         '--store-font-body': tokens.font_body || '"Inter", sans-serif',
+        '--store-font-button': tokens.font_button || tokens.font_body || '"Inter", sans-serif',
+        '--store-font-weight-heading': tokens.font_weight_heading || '700',
+        '--store-font-size-base': tokens.font_size_base || '16px',
+        '--store-line-height': tokens.line_height || '1.5',
+        '--store-letter-spacing': tokens.letter_spacing || '0em',
         '--store-radius': radiusMap[tokens.border_radius || 'lg'],
         '--store-radius-card': radiusMap[tokens.border_radius_card || tokens.border_radius || 'lg'],
         '--store-radius-btn': radiusMap[tokens.border_radius_button || tokens.border_radius || 'lg'],

@@ -23,6 +23,22 @@ export type HeroStyleOption = 'centered' | 'split' | 'left' | 'minimal' | 'full'
 export type SpacingDensityOption = 'compact' | 'normal' | 'spacious';
 export type MaxContentWidthOption = '1024px' | '1280px' | '1440px' | '100%';
 
+export type FontWeightOption = '400' | '500' | '600' | '700' | '800' | '900';
+export type BaseFontSizeOption = '14px' | '15px' | '16px' | '18px';
+export type LineHeightOption = '1.2' | '1.4' | '1.5' | '1.6' | '1.8';
+export type LetterSpacingOption = '-0.03em' | '0em' | '0.03em' | '0.08em';
+
+export interface TypographyPairing {
+    id: string;
+    name: string;
+    tagline: string;
+    description: string;
+    font_heading: string;
+    font_body: string;
+    font_button: string;
+    font_weight_heading: FontWeightOption;
+}
+
 export interface ThemeColors {
     primary: string;
     secondary: string;
@@ -43,6 +59,11 @@ export interface ThemeTokens {
     // Tipografías
     font_heading: string;
     font_body: string;
+    font_button?: string;
+    font_weight_heading?: FontWeightOption;
+    font_size_base?: BaseFontSizeOption;
+    line_height?: LineHeightOption;
+    letter_spacing?: LetterSpacingOption;
     font_size_scale: 'compact' | 'normal' | 'spacious';
 
     // Bordes y Radios

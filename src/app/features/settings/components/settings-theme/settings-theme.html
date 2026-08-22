@@ -315,42 +315,172 @@
 
     <!-- TAB 3: TYPOGRAPHY CUSTOMIZATION -->
     @if (activeCustomizerTab() === 'typography') {
-        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
-            <h3 class="font-bold text-slate-900 dark:text-white text-base">Combinación Tipográfica</h3>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-8">
+            
+            <!-- SECTION 1: PREPARED TYPOGRAPHY PAIRINGS -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                        ✨ Combinaciones Tipográficas Preparadas
+                        <span class="text-xs px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full font-semibold border border-indigo-100 dark:border-indigo-800">
+                            1-Clic
+                        </span>
+                    </h3>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">
+                    Selecciona una combinación prediseñada por expertos en diseño tipográfico para darle un tono de voz único a tu marca.
+                </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-3">
+                <div class="grid gap-4"
+                     [class.grid-cols-1]="true"
+                     [class.sm:grid-cols-2]="true"
+                     [class.lg:grid-cols-3]="isPopoutOpen()"
+                     [class.xl:grid-cols-5]="isPopoutOpen()">
+                    @for (pairing of typographyPairings; track pairing.id) {
+                        <div 
+                            (click)="applyTypographyPairing(pairing)"
+                            class="p-4 rounded-xl border transition-all cursor-pointer hover:border-indigo-500 flex flex-col justify-between"
+                            [class.border-indigo-600]="tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body"
+                            [class.dark:border-indigo-500]="tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body"
+                            [class.bg-indigo-50\/30]="tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body"
+                            [class.dark:bg-indigo-950\/30]="tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body"
+                            [class.border-slate-200]="tokens().font_heading !== pairing.font_heading || tokens().font_body !== pairing.font_body"
+                            [class.dark:border-gray-800]="tokens().font_heading !== pairing.font_heading || tokens().font_body !== pairing.font_body"
+                            [class.bg-white]="tokens().font_heading !== pairing.font_heading || tokens().font_body !== pairing.font_body"
+                            [class.dark:bg-gray-900]="tokens().font_heading !== pairing.font_heading || tokens().font_body !== pairing.font_body">
+                            
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-bold text-slate-900 dark:text-white text-sm">{{ pairing.name }}</span>
+                                    @if (tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body) {
+                                        <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 rounded-full">✓ Activa</span>
+                                    }
+                                </div>
+                                <p class="text-[11px] text-slate-400 dark:text-gray-500 font-medium mb-2">{{ pairing.tagline }}</p>
+                                
+                                <div class="p-3 bg-slate-50 dark:bg-gray-800/60 rounded-lg border border-slate-200/50 dark:border-gray-700/50 mb-3 space-y-1">
+                                    <p class="text-base font-bold truncate leading-tight" [style.font-family]="pairing.font_heading" [style.font-weight]="pairing.font_weight_heading">
+                                        {{ pairing.name }}
+                                    </p>
+                                    <p class="text-xs text-slate-500 dark:text-gray-400 truncate" [style.font-family]="pairing.font_body">
+                                        Texto de muestra
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p class="text-[10px] text-slate-400 dark:text-gray-500 leading-tight">
+                                {{ pairing.description }}
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- SECTION 2: INDIVIDUAL FONT SELECTION -->
+            <div class="pt-6 border-t border-slate-100 dark:border-gray-800 space-y-4">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base">Selección Individual de Fuentes</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400">Personaliza la tipografía específica para cada tipo de elemento en tu tienda.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <app-dropdown 
                         label="Fuente de Títulos y Banner"
                         [options]="fontOptions" 
                         [value]="tokens().font_heading" 
                         (valueChange)="updateToken('font_heading', $event)">
                     </app-dropdown>
-                    
-                    <div class="p-4 bg-slate-50 dark:bg-gray-800/60 rounded-xl border border-slate-200/60 dark:border-gray-700 mt-2">
-                        <p class="text-xs text-slate-400 dark:text-gray-500 mb-1">Muestra de Título:</p>
-                        <p class="text-2xl font-bold leading-tight" [style.color]="tokens().colors.text_primary" [style.font-family]="tokens().font_heading">
-                            Diseño Exclusivo para Tu Tienda
-                        </p>
-                    </div>
-                </div>
 
-                <div class="space-y-3">
                     <app-dropdown 
-                        label="Fuente de Cuerpo y Botones"
+                        label="Fuente de Cuerpo y Párrafos"
                         [options]="fontOptions" 
                         [value]="tokens().font_body" 
                         (valueChange)="updateToken('font_body', $event)">
                     </app-dropdown>
 
-                    <div class="p-4 bg-slate-50 dark:bg-gray-800/60 rounded-xl border border-slate-200/60 dark:border-gray-700 mt-2">
-                        <p class="text-xs text-slate-400 dark:text-gray-500 mb-1">Muestra de Párrafo:</p>
-                        <p class="text-sm leading-relaxed" [style.color]="tokens().colors.text_muted" [style.font-family]="tokens().font_body">
-                            Explora nuestras colecciones destacadas y disfruta de una experiencia de compra personalizada.
+                    <app-dropdown 
+                        label="Fuente de Botones y Acciones"
+                        [options]="fontOptions" 
+                        [value]="tokens().font_button || tokens().font_body" 
+                        (valueChange)="updateToken('font_button', $event)">
+                    </app-dropdown>
+                </div>
+            </div>
+
+            <!-- SECTION 3: FINE-TUNING FORMATTING -->
+            <div class="pt-6 border-t border-slate-100 dark:border-gray-800 space-y-4">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base">Ajustes de Formato Tipográfico</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400">Controla el peso visual, espaciado e interlineado para optimizar la legibilidad.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                    <app-dropdown 
+                        label="Grosor de Títulos"
+                        [options]="fontWeightOptions" 
+                        [value]="tokens().font_weight_heading || '700'" 
+                        (valueChange)="updateToken('font_weight_heading', $event)">
+                    </app-dropdown>
+
+                    <app-dropdown 
+                        label="Tamaño Base de Texto"
+                        [options]="baseFontSizeOptions" 
+                        [value]="tokens().font_size_base || '16px'" 
+                        (valueChange)="updateToken('font_size_base', $event)">
+                    </app-dropdown>
+
+                    <app-dropdown 
+                        label="Interlineado (Line Height)"
+                        [options]="lineHeightOptions" 
+                        [value]="tokens().line_height || '1.5'" 
+                        (valueChange)="updateToken('line_height', $event)">
+                    </app-dropdown>
+
+                    <app-dropdown 
+                        label="Espaciado de Letras (Tracking)"
+                        [options]="letterSpacingOptions" 
+                        [value]="tokens().letter_spacing || '0em'" 
+                        (valueChange)="updateToken('letter_spacing', $event)">
+                    </app-dropdown>
+                </div>
+            </div>
+
+            <!-- SECTION 4: LIVE PREVIEW BOX -->
+            <div class="pt-6 border-t border-slate-100 dark:border-gray-800">
+                <p class="text-xs font-bold text-slate-400 dark:text-gray-500 mb-3 uppercase tracking-wider">Muestra de Vista Previa Tipográfica en Vivo</p>
+                <div class="p-6 bg-slate-50 dark:bg-gray-800/60 rounded-2xl border border-slate-200/80 dark:border-gray-700 space-y-4">
+                    <div>
+                        <p class="text-2xl font-bold leading-tight transition-all" 
+                           [style.color]="tokens().colors.text_primary" 
+                           [style.font-family]="tokens().font_heading"
+                           [style.font-weight]="tokens().font_weight_heading || '700'"
+                           [style.letter-spacing]="tokens().letter_spacing || '0em'">
+                            Colección Exclusiva de Primavera
                         </p>
+                    </div>
+
+                    <div>
+                        <p class="transition-all" 
+                           [style.color]="tokens().colors.text_muted" 
+                           [style.font-family]="tokens().font_body"
+                           [style.font-size]="tokens().font_size_base || '16px'"
+                           [style.line-height]="tokens().line_height || '1.5'">
+                            Descubre piezas diseñadas con la máxima atención al detalle. Materiales sostenibles, confección artesanal y siluetas modernas que transforman tu experiencia diaria.
+                        </p>
+                    </div>
+
+                    <div class="pt-2 flex items-center gap-4">
+                        <button type="button" class="px-5 py-2.5 rounded-xl font-bold shadow-sm transition-all"
+                                [style.background-color]="tokens().colors.primary"
+                                [style.color]="tokens().colors.background"
+                                [style.font-family]="tokens().font_button || tokens().font_body"
+                                [style.letter-spacing]="tokens().letter_spacing || '0em'">
+                            Explorar Catálogo →
+                        </button>
+
+                        <span class="text-xs font-mono text-slate-400 dark:text-gray-500">
+                            {{ tokens().font_heading.split(',')[0] }} / {{ tokens().font_body.split(',')[0] }}
+                        </span>
                     </div>
                 </div>
             </div>
+
         </div>
     }
 

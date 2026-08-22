@@ -37,8 +37,9 @@ export class StoreComponent {
       // Dynamically load Google Fonts if needed
       const tokens = this.themeTokens();
       if (tokens) {
-        this.ensureFontLoaded(tokens.font_heading);
-        this.ensureFontLoaded(tokens.font_body);
+        if (tokens.font_heading) this.ensureFontLoaded(tokens.font_heading);
+        if (tokens.font_body) this.ensureFontLoaded(tokens.font_body);
+        if (tokens.font_button) this.ensureFontLoaded(tokens.font_button);
       }
     });
   }
