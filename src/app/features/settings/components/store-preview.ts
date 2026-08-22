@@ -25,7 +25,26 @@ export interface PreviewData {
     selector: 'app-store-preview',
     imports: [CommonModule],
     templateUrl: './store-preview.html',
-    styles: [':host { display: block; height: 100%; min-height: 0; }'],
+    styles: [
+        ':host { display: block; height: 100%; min-height: 0; }',
+        `
+        .store-section [class*="text-gray"],
+        .store-section [class*="text-slate"],
+        .store-section [class*="text-white"],
+        .store-section [class*="text-black"],
+        .store-section p,
+        .store-section span:not(.badge-pill),
+        .store-section li {
+            color: var(--section-text-color, inherit);
+        }
+        .store-section h1,
+        .store-section h2,
+        .store-section h3,
+        .store-section h4 {
+            color: var(--section-title-color, var(--section-text-color, inherit));
+        }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StorePreview {
@@ -136,6 +155,43 @@ export class StorePreview {
 
     preventDefault(event: Event) {
         event.preventDefault();
+    }
+
+    getSectionPaddingClass(section: any): string {
+        const pt = section.styles?.paddingTop || 'md';
+        const pb = section.styles?.paddingBottom || 'md';
+        const ptMap: Record<string, string> = { none: 'pt-0', sm: 'pt-4', md: 'pt-8', lg: 'pt-14', xl: 'pt-20' };
+        const pbMap: Record<string, string> = { none: 'pb-0', sm: 'pb-4', md: 'pb-8', lg: 'pb-14', xl: 'pb-20' };
+        return `${ptMap[pt] || 'pt-8'} ${pbMap[pb] || 'pb-8'}`;
+    }
+
+    getSectionContainerClass(section: any): string {
+        const width = section.styles?.containerWidth || 'boxed';
+        if (width === 'full') return 'w-full px-4';
+        if (width === 'narrow') return 'max-w-3xl mx-auto px-4';
+        return 'max-w-6xl mx-auto px-4 sm:px-6';
+    }
+
+    getSectionDeviceClass(section: any): string {
+        if (section.styles?.hideOnMobile && section.styles?.hideOnDesktop) return 'hidden';
+        if (section.styles?.hideOnMobile) return 'hidden md:block';
+        if (section.styles?.hideOnDesktop) return 'block md:hidden';
+        return '';
+    }
+
+    getSectionStyle(section: any): Record<string, string> {
+        const styles: Record<string, string> = {};
+        if (section.styles?.backgroundColor) {
+            styles['background-color'] = section.styles.backgroundColor;
+        }
+        if (section.styles?.textColor) {
+            styles['color'] = section.styles.textColor;
+            styles['--section-text-color'] = section.styles.textColor;
+        }
+        if (section.styles?.titleColor) {
+            styles['--section-title-color'] = section.styles.titleColor;
+        }
+        return styles;
     }
 
     asAny(val: any): any { return val; }

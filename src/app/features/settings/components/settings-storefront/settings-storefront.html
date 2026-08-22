@@ -1,301 +1,1050 @@
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <!-- TOP BAR -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-gray-800">
         <div>
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Constructor de la Tienda</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Personaliza los bloques que aparecen en la página
-                principal de tu tienda.</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                Constructor de Página
+                <span class="text-xs px-2.5 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-bold rounded-full border border-indigo-100 dark:border-indigo-800">
+                    {{ layout().sections.length }} Secciones
+                </span>
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                Organiza, personaliza y diseña los bloques visuales de tu tienda con controles avanzados de estilo y contenido.
+            </p>
         </div>
-        <button (click)="saveLayout()" [disabled]="isSaving()"
-            class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-sm flex items-center gap-2">
-            @if (isSaving()) {
-            <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            }
-            {{ isSaving() ? 'Guardando...' : 'Guardar Cambios' }}
-        </button>
+        
+        <div class="flex items-center gap-2">
+            <button (click)="isAddModalOpen.set(true)"
+                class="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-indigo-100 dark:border-indigo-800">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Agregar Bloque
+            </button>
+
+            <button (click)="saveLayout()" [disabled]="isSaving()"
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
+                @if (isSaving()) {
+                    <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                }
+                {{ isSaving() ? 'Guardando...' : 'Guardar Diseño' }}
+            </button>
+        </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Left: Navigation & Section List -->
-        <div class="lg:col-span-1 space-y-6">
-            <!-- NAVIGATION LINKS -->
-            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm">
-                <div
-                    class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between rounded-t-2xl">
-                    <span class="text-xs font-black uppercase tracking-widest text-gray-500">Navegación</span>
-                    <button (click)="addNavigationLink()"
-                        class="text-indigo-600 hover:text-indigo-700 text-xs font-bold flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Agregar
+    <!-- MAIN GRID: LEFT (SECTIONS & NAV) | RIGHT (EDITOR) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: SECTIONS LIST & NAVIGATION -->
+        <div class="lg:col-span-5 space-y-6">
+
+            <!-- SECTIONS LIST -->
+            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                        <span class="text-xs font-black uppercase tracking-wider text-gray-700 dark:text-gray-300 block truncate">Estructura de la Tienda</span>
+                        <p class="text-[11px] text-gray-400 truncate">Organiza y gestiona las secciones</p>
+                    </div>
+
+                    <button (click)="isAddModalOpen.set(true)"
+                        class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 shrink-0 whitespace-nowrap">
+                        + Nueva Sección
                     </button>
                 </div>
 
-                <div class="p-4 space-y-4 max-h-[300px] overflow-y-auto">
-                    @for (link of (layout().navigation || []); track $index) {
-                    <div class="space-y-2 pb-4 border-b border-gray-50 dark:border-gray-800 last:border-0 last:pb-0">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-black text-gray-400 uppercase">Enlace {{ $index + 1 }}</span>
-                            <div class="flex items-center gap-1">
-                                <button (click)="moveNavigationLink($index, 'up')" [disabled]="$index === 0"
-                                    class="p-1 hover:text-indigo-600 disabled:opacity-30">
-                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path d="M5 15l7-7 7 7" />
-                                    </svg>
-                                </button>
-                                <button (click)="removeNavigationLink($index)"
-                                    class="p-1 text-gray-400 hover:text-red-500">
-                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <input type="text" [(ngModel)]="link.label" (ngModelChange)="forceLayoutUpdate()"
-                            placeholder="Etiqueta"
-                            class="w-full px-3 py-1.5 text-xs rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none">
-                        <input type="text" [(ngModel)]="link.url" (ngModelChange)="forceLayoutUpdate()"
-                            placeholder="URL (p. ej. /store/sobre-nosotros)"
-                            class="w-full px-3 py-1.5 text-xs rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none">
-                    </div>
-                    }
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm">
-                <div
-                    class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between rounded-t-2xl">
-                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300">Secciones Actuales</span>
-
-                    <div class="relative group">
-                        <button
-                            class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                        </button>
-                        <div
-                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 py-2 hidden group-focus-within:block transition-all animate-in fade-in zoom-in-95">
-                            <button (click)="addSection('hero')"
-                                class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"><span>🚩</span>
-                                Banner Principal</button>
-                            <button (click)="addSection('product_grid')"
-                                class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"><span>📦</span>
-                                Lista de Productos</button>
-                            <button (click)="addSection('featured_categories')"
-                                class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"><span>📂</span>
-                                Categorías</button>
-                            <button (click)="addSection('about_us')"
-                                class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"><span>ℹ️</span>
-                                Sobre Nosotros</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="divide-y divide-gray-100 dark:divide-gray-800">
+                <div class="p-3 max-h-[550px] overflow-y-auto space-y-2.5">
                     @if (layout().sections.length === 0) {
-                    <div class="p-8 text-center">
-                        <p class="text-sm text-gray-500">No hay secciones agregadas. Comienza agregando una.</p>
-                    </div>
+                        <div class="p-8 text-center space-y-3">
+                            <span class="text-3xl block">🧩</span>
+                            <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">No hay secciones en la tienda</p>
+                            <p class="text-xs text-gray-400 max-w-xs mx-auto">Comienza agregando un Banner Principal, Productos Destacados o Beneficios.</p>
+                            <button (click)="isAddModalOpen.set(true)"
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all">
+                                Explorar Catálogo de Bloques
+                            </button>
+                        </div>
                     }
 
                     @for (section of layout().sections; track section.id; let i = $index) {
-                    <div (click)="selectedSectionId.set(section.id)"
-                        [class.bg-indigo-50]="selectedSectionId() === section.id"
-                        [class.dark:bg-indigo-900/10]="selectedSectionId() === section.id"
-                        class="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs text-gray-400 font-mono">{{ i + 1 }}</span>
-                            <div>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white capitalize">{{
-                                    section.type.replace('_', ' ') }}</p>
-                                <p class="text-xs text-gray-500">{{ section.isActive ? 'Activa' : 'Oculta' }}</p>
+                        <div (click)="selectedSectionId.set(section.id)"
+                            [class.bg-indigo-50\/50]="selectedSectionId() === section.id"
+                            [class.dark:bg-indigo-950\/40]="selectedSectionId() === section.id"
+                            [class.border-indigo-600]="selectedSectionId() === section.id"
+                            [class.dark:border-indigo-500]="selectedSectionId() === section.id"
+                            [class.border-gray-200]="selectedSectionId() !== section.id"
+                            [class.dark:border-gray-800]="selectedSectionId() !== section.id"
+                            class="p-3.5 rounded-xl border transition-all cursor-pointer hover:border-indigo-300 dark:hover:border-gray-700 bg-white dark:bg-gray-900/80 shadow-xs space-y-2.5 group">
+                            
+                            <!-- Top Row: Icon + Title + Status Badges -->
+                            <div class="flex items-center justify-between gap-2 min-w-0">
+                                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                                    <span class="text-xs font-mono font-bold text-gray-400 dark:text-gray-500 w-4 text-center shrink-0">{{ i + 1 }}</span>
+                                    <span class="text-lg shrink-0">{{ getSectionIcon(section.type) }}</span>
+                                    <span class="text-xs font-bold text-gray-900 dark:text-white truncate">
+                                        {{ section.titleCustom || getSectionName(section.type) }}
+                                    </span>
+                                </div>
+
+                                <!-- Badges -->
+                                <div class="flex items-center gap-1 shrink-0">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                                          [class.bg-emerald-100]="section.isActive"
+                                          [class.text-emerald-700]="section.isActive"
+                                          [class.dark:bg-emerald-900\/40]="section.isActive"
+                                          [class.dark:text-emerald-400]="section.isActive"
+                                          [class.bg-gray-100]="!section.isActive"
+                                          [class.text-gray-500]="!section.isActive"
+                                          [class.dark:bg-gray-800]="!section.isActive"
+                                          [class.dark:text-gray-400]="!section.isActive">
+                                        {{ section.isActive ? 'Activa' : 'Oculta' }}
+                                    </span>
+
+                                    @if (section.styles?.hideOnMobile) {
+                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300" title="Oculto en celular">
+                                            Solo PC
+                                        </span>
+                                    }
+                                    @if (section.styles?.hideOnDesktop) {
+                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300" title="Oculto en PC">
+                                            Solo Móvil
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Bottom Row: Subtitle / Type + Action Buttons -->
+                            <div class="flex items-center justify-between gap-2 pt-2 border-t border-gray-100 dark:border-gray-800/80">
+                                <span class="text-[10px] text-gray-400 dark:text-gray-500 capitalize truncate">
+                                    {{ section.type.replace('_', ' ') }}
+                                </span>
+
+                                <!-- Action Toolbar -->
+                                <div class="flex items-center gap-0.5 shrink-0 bg-gray-50 dark:bg-gray-800/80 p-0.5 rounded-lg border border-gray-100 dark:border-gray-700/60">
+                                    <!-- Active Toggle -->
+                                    <button (click)="$event.stopPropagation(); toggleSectionActive(section.id)"
+                                        [title]="section.isActive ? 'Ocultar sección' : 'Mostrar sección'"
+                                        class="p-1 rounded text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                                        @if (section.isActive) {
+                                            <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        } @else {
+                                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                            </svg>
+                                        }
+                                    </button>
+
+                                    <!-- Duplicate -->
+                                    <button (click)="$event.stopPropagation(); duplicateSection(section.id)"
+                                        title="Duplicar sección"
+                                        class="p-1 rounded text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Move Up -->
+                                    <button (click)="$event.stopPropagation(); moveSection(section.id, 'up')" [disabled]="i === 0"
+                                        title="Subir"
+                                        class="p-1 rounded text-gray-400 hover:text-indigo-600 disabled:opacity-20 hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Move Down -->
+                                    <button (click)="$event.stopPropagation(); moveSection(section.id, 'down')" [disabled]="i === layout().sections.length - 1"
+                                        title="Bajar"
+                                        class="p-1 rounded text-gray-400 hover:text-indigo-600 disabled:opacity-20 hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Delete -->
+                                    <button (click)="$event.stopPropagation(); removeSection(section.id)"
+                                        title="Eliminar sección"
+                                        class="p-1 rounded text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/40 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button (click)="$event.stopPropagation(); moveSection(section.id, 'up')"
-                                class="p-1 hover:text-indigo-600 disabled:opacity-30" [disabled]="i === 0">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path d="M5 15l7-7 7 7" />
-                                </svg>
-                            </button>
-                            <button (click)="$event.stopPropagation(); moveSection(section.id, 'down')"
-                                class="p-1 hover:text-indigo-600 disabled:opacity-30"
-                                [disabled]="i === layout().sections.length - 1">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <button (click)="$event.stopPropagation(); removeSection(section.id)"
-                                class="p-1 hover:text-red-600">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
                     }
                 </div>
             </div>
+
+            <!-- NAVIGATION LINKS CARD -->
+            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-black uppercase tracking-wider text-gray-700 dark:text-gray-300">Menú de Navegación</span>
+                        <p class="text-[11px] text-gray-400">Enlaces visibles en la cabecera</p>
+                    </div>
+
+                    <button (click)="addNavigationLink()"
+                        class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 text-xs font-bold flex items-center gap-1">
+                        + Agregar Enlace
+                    </button>
+                </div>
+
+                <div class="p-4 space-y-3 max-h-[250px] overflow-y-auto">
+                    @for (link of (layout().navigation || []); track $index) {
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800/40 rounded-xl border border-gray-100 dark:border-gray-800 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase">Enlace {{ $index + 1 }}</span>
+                                <div class="flex items-center gap-1">
+                                    <button (click)="moveNavigationLink($index, 'up')" [disabled]="$index === 0"
+                                        class="p-1 hover:text-indigo-600 disabled:opacity-20 text-gray-400">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                        </svg>
+                                    </button>
+                                    <button (click)="moveNavigationLink($index, 'down')" [disabled]="$index === (layout().navigation || []).length - 1"
+                                        class="p-1 hover:text-indigo-600 disabled:opacity-20 text-gray-400">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <button (click)="removeNavigationLink($index)"
+                                        class="p-1 text-gray-400 hover:text-red-500">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" [(ngModel)]="link.label" (ngModelChange)="forceLayoutUpdate()"
+                                    placeholder="Nombre del enlace"
+                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-indigo-500">
+                                <input type="text" [(ngModel)]="link.url" (ngModelChange)="forceLayoutUpdate()"
+                                    placeholder="/store/productos"
+                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
         </div>
 
-        <!-- Right: Edit Form -->
-        <div class="lg:col-span-2">
+        <!-- RIGHT COLUMN: SECTION EDITOR (CONTENT & STYLES) -->
+        <div class="lg:col-span-7">
             @if (!selectedSection()) {
-            <div
-                class="bg-gray-50 dark:bg-gray-800/50 border border-dashed border-gray-300 dark:border-gray-700 rounded-2xl h-64 flex items-center justify-center">
-                <p class="text-gray-500 italic">Selecciona una sección para editar su contenido.</p>
-            </div>
+                <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl h-[450px] flex flex-col items-center justify-center text-center p-8 space-y-3">
+                    <span class="text-4xl">👈</span>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white">Selecciona o agrega una sección</h4>
+                    <p class="text-xs text-gray-400 max-w-sm">Haz clic en cualquier sección de la lista izquierda para editar su contenido, colores, fondo, márgenes y visibilidad.</p>
+                    <button (click)="isAddModalOpen.set(true)"
+                        class="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 rounded-xl text-xs font-bold transition-all border border-indigo-100 dark:border-indigo-800">
+                        + Agregar Bloque a la Tienda
+                    </button>
+                </div>
             }
 
             @if (selectedSection(); as section) {
-            <div
-                class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm animate-in fade-in slide-in-from-right-4 duration-300">
-                <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-                    <h4 class="font-bold text-gray-900 dark:text-white capitalize">Editar {{ section.type.replace('_', '
-                        ') }}</h4>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">Estado</span>
-                        <input type="checkbox" [(ngModel)]="section.isActive" (ngModelChange)="forceLayoutUpdate()"
-                            class="sr-only peer">
-                        <div
-                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 relative transition-all">
+                <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden animate-in fade-in duration-200">
+                    
+                    <!-- EDITOR TOP BAR -->
+                    <div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xl">{{ getSectionIcon(section.type) }}</span>
+                            <div>
+                                <input type="text" [(ngModel)]="section.titleCustom" (ngModelChange)="forceLayoutUpdate()"
+                                    [placeholder]="getSectionName(section.type)"
+                                    class="text-sm font-bold text-gray-900 dark:text-white bg-transparent border-b border-transparent hover:border-gray-300 focus:border-indigo-500 outline-none px-1 py-0.5">
+                                <p class="text-[10px] text-gray-400 px-1">Tipo: {{ section.type }}</p>
+                            </div>
                         </div>
-                    </label>
-                </div>
 
-                <div class="p-6 space-y-6">
-                    <!-- Hero Section Editor -->
-                    @if (section.type === 'hero') {
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Imagen de
-                                Banner</label>
-                            <div class="flex items-center gap-4">
-                                @if (asAny(section.content).backgroundImageUrl) {
-                                <div class="relative w-32 h-20 rounded-xl overflow-hidden group shadow-sm">
-                                    <img [src]="asAny(section.content).backgroundImageUrl"
-                                        class="w-full h-full object-cover">
-                                    <div
-                                        class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button (click)="removeHeroBanner(section)"
-                                            class="p-1 text-white hover:text-red-400">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
+                        <!-- TAB SELECTOR: CONTENT VS STYLES -->
+                        <div class="flex items-center bg-gray-200/70 dark:bg-gray-800 p-1 rounded-xl">
+                            <button (click)="activeSectionTab.set('content')"
+                                [class.bg-white]="activeSectionTab() === 'content'"
+                                [class.dark:bg-gray-700]="activeSectionTab() === 'content'"
+                                [class.shadow-sm]="activeSectionTab() === 'content'"
+                                [class.text-indigo-600]="activeSectionTab() === 'content'"
+                                [class.dark:text-white]="activeSectionTab() === 'content'"
+                                class="px-3 py-1 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 transition-all cursor-pointer">
+                                📝 Contenido
+                            </button>
+                            <button (click)="activeSectionTab.set('styles')"
+                                [class.bg-white]="activeSectionTab() === 'styles'"
+                                [class.dark:bg-gray-700]="activeSectionTab() === 'styles'"
+                                [class.shadow-sm]="activeSectionTab() === 'styles'"
+                                [class.text-indigo-600]="activeSectionTab() === 'styles'"
+                                [class.dark:text-white]="activeSectionTab() === 'styles'"
+                                class="px-3 py-1 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 transition-all cursor-pointer">
+                                🎨 Estilos & Dispositivo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 1: SECTION SPECIFIC CONTENT -->
+                    @if (activeSectionTab() === 'content') {
+                        <div class="p-6 space-y-5">
+                            
+                            <!-- 1. HERO -->
+                            @if (section.type === 'hero') {
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="col-span-2 sm:col-span-1">
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Badge Superior</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).badgeText" (ngModelChange)="forceLayoutUpdate()" placeholder="Edición Limitada"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div class="col-span-2 sm:col-span-1">
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Alineación del Texto</label>
+                                            <select [(ngModel)]="$any(section.content).alignment" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="left">Izquierda</option>
+                                                <option value="center">Centrado</option>
+                                                <option value="right">Derecha</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título Principal</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()" placeholder="Título impactante"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Subtítulo</label>
+                                        <textarea [(ngModel)]="$any(section.content).subtitle" (ngModelChange)="forceLayoutUpdate()" rows="2" placeholder="Descripción breve..."
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Botón Principal</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Comprar ahora"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace Principal</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonLink" (ngModelChange)="forceLayoutUpdate()" placeholder="/store/productos"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Botón Secundario (Opcional)</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).secondaryButtonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Ver más"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace Secundario</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).secondaryButtonLink" (ngModelChange)="forceLayoutUpdate()" placeholder="/store/productos"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
                                     </div>
                                 </div>
-                                } @else {
-                                <label
-                                    class="w-32 h-20 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all text-gray-400 hover:text-indigo-600">
-                                    <svg class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path
-                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span class="text-[10px] font-bold uppercase">Subir</span>
-                                    <input type="file" (change)="onHeroBannerUpload($event, section)" class="hidden"
-                                        accept="image/*">
-                                </label>
-                                }
+                            }
 
-                                <div class="flex-1">
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Color
-                                        de Fondo</label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="color" [(ngModel)]="asAny(section.content).backgroundColor"
-                                            (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-10 h-10 p-0.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 cursor-pointer">
-                                        <input type="text" [(ngModel)]="asAny(section.content).backgroundColor"
-                                            (ngModelChange)="forceLayoutUpdate()"
-                                            class="flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            <!-- 2. PROMO BANNER -->
+                            @if (section.type === 'promo_banner') {
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Badge / Tag</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).badge" (ngModelChange)="forceLayoutUpdate()" placeholder="OFERTA FLASH"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">% Descuento</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).discountPercent" (ngModelChange)="forceLayoutUpdate()" placeholder="30% OFF"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título del Banner</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Subtítulo</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).subtitle" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Texto del Botón</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Ver Ofertas"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace del Botón</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonLink" (ngModelChange)="forceLayoutUpdate()" placeholder="/store/productos"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 3. PRODUCT GRID -->
+                            @if (section.type === 'product_grid') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título de la Sección</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Límite de Productos</label>
+                                            <input type="number" [(ngModel)]="$any(section.content).limit" (ngModelChange)="forceLayoutUpdate()" min="2" max="24"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Columnas</label>
+                                            <select [(ngModel)]="$any(section.content).columns" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option [ngValue]="2">2 Columnas</option>
+                                                <option [ngValue]="3">3 Columnas</option>
+                                                <option [ngValue]="4">4 Columnas</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 4. FEATURED CATEGORIES -->
+                            @if (section.type === 'featured_categories') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+
+                                    <div class="space-y-2 pt-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Categorías Destacadas</label>
+                                            <button (click)="addCategoryItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar</button>
+                                        </div>
+                                        @for (cat of $any(section.content).categories; track cat.id; let ci = $index) {
+                                            <div class="flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700">
+                                                <input type="text" [(ngModel)]="cat.icon" (ngModelChange)="forceLayoutUpdate()" placeholder="Icono (ej. ✨)"
+                                                    class="w-12 px-2 py-1 text-center text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                                                <input type="text" [(ngModel)]="cat.name" (ngModelChange)="forceLayoutUpdate()" placeholder="Nombre"
+                                                    class="flex-1 px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                <button (click)="removeCategoryItem(section, ci)" class="p-1 text-gray-400 hover:text-red-500">✕</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 5. OFFERS / FLASH SALE -->
+                            @if (section.type === 'offers') {
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Badge</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).badge" (ngModelChange)="forceLayoutUpdate()" placeholder="FLASH SALE"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descuento</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).discountBadge" (ngModelChange)="forceLayoutUpdate()" placeholder="50% OFF"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
+                                        <textarea [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()" rows="2"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Botón</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonLink" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 6. TESTIMONIALS -->
+                            @if (section.type === 'testimonials') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Subtítulo</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).subtitle" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+
+                                    <div class="space-y-3 pt-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Testimonios ({{ $any(section.content).items?.length || 0 }})</label>
+                                            <button (click)="addTestimonialItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Testimonio</button>
+                                        </div>
+                                        @for (item of $any(section.content).items; track item.id; let ti = $index) {
+                                            <div class="p-3.5 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 space-y-2">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-[10px] font-bold text-gray-400">Testimonio {{ ti + 1 }}</span>
+                                                    <button (click)="removeTestimonialItem(section, ti)" class="text-xs text-red-500 hover:underline">Eliminar</button>
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <input type="text" [(ngModel)]="item.name" (ngModelChange)="forceLayoutUpdate()" placeholder="Nombre del cliente"
+                                                        class="px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                    <input type="text" [(ngModel)]="item.role" (ngModelChange)="forceLayoutUpdate()" placeholder="Rol / Cargo"
+                                                        class="px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                </div>
+                                                <textarea [(ngModel)]="item.content" (ngModelChange)="forceLayoutUpdate()" rows="2" placeholder="Texto del testimonio..."
+                                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"></textarea>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 7. REVIEWS -->
+                            @if (section.type === 'reviews') {
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Calificación General</label>
+                                            <input type="number" [(ngModel)]="$any(section.content).overallRating" (ngModelChange)="forceLayoutUpdate()" step="0.1" min="1" max="5"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                    <div class="space-y-3 pt-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Reseñas Individuales</label>
+                                            <button (click)="addReviewItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Reseña</button>
+                                        </div>
+                                        @for (rev of $any(section.content).items; track rev.id; let ri = $index) {
+                                            <div class="p-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 space-y-2">
+                                                <div class="flex items-center justify-between">
+                                                    <input type="text" [(ngModel)]="rev.author" (ngModelChange)="forceLayoutUpdate()" placeholder="Autor"
+                                                        class="px-2 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold">
+                                                    <button (click)="removeReviewItem(section, ri)" class="text-xs text-red-500 hover:underline">Eliminar</button>
+                                                </div>
+                                                <input type="text" [(ngModel)]="rev.title" (ngModelChange)="forceLayoutUpdate()" placeholder="Título de la reseña"
+                                                    class="w-full px-2 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                <textarea [(ngModel)]="rev.comment" (ngModelChange)="forceLayoutUpdate()" rows="2" placeholder="Comentario..."
+                                                    class="w-full px-2 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"></textarea>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 8. ABOUT US -->
+                            @if (section.type === 'about_us') {
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Posición de Imagen</label>
+                                            <select [(ngModel)]="$any(section.content).imagePosition" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="left">Izquierda</option>
+                                                <option value="right">Derecha</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">URL de la Imagen</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).imageUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://..."
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Historia / Contenido</label>
+                                        <textarea [(ngModel)]="$any(section.content).content" (ngModelChange)="forceLayoutUpdate()" rows="4"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 9. IMAGE GALLERY -->
+                            @if (section.type === 'image_gallery') {
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título de la Galería</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Columnas</label>
+                                            <select [(ngModel)]="$any(section.content).columns" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option [ngValue]="2">2 Columnas</option>
+                                                <option [ngValue]="3">3 Columnas</option>
+                                                <option [ngValue]="4">4 Columnas</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2 pt-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Imágenes ({{ $any(section.content).items?.length || 0 }})</label>
+                                            <button (click)="addGalleryItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Imagen</button>
+                                        </div>
+                                        @for (img of $any(section.content).items; track img.id; let gi = $index) {
+                                            <div class="flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700">
+                                                <input type="text" [(ngModel)]="img.imageUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="URL de la imagen"
+                                                    class="flex-1 px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                <input type="text" [(ngModel)]="img.caption" (ngModelChange)="forceLayoutUpdate()" placeholder="Pie de foto"
+                                                    class="w-32 px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                <button (click)="removeGalleryItem(section, gi)" class="p-1 text-gray-400 hover:text-red-500">✕</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 10. NEWSLETTER -->
+                            @if (section.type === 'newsletter') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título de la Suscripción</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción / Beneficio</label>
+                                        <textarea [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()" rows="2"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Placeholder</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).placeholderText" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Texto del Botón</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 11. FAQ -->
+                            @if (section.type === 'faq') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div class="space-y-3 pt-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Preguntas & Respuestas</label>
+                                            <button (click)="addFaqItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar FAQ</button>
+                                        </div>
+                                        @for (faq of $any(section.content).items; track faq.id; let fi = $index) {
+                                            <div class="p-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 space-y-2">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-[10px] font-bold text-gray-400">Pregunta {{ fi + 1 }}</span>
+                                                    <button (click)="removeFaqItem(section, fi)" class="text-xs text-red-500 hover:underline">Eliminar</button>
+                                                </div>
+                                                <input type="text" [(ngModel)]="faq.question" (ngModelChange)="forceLayoutUpdate()" placeholder="Pregunta"
+                                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold">
+                                                <textarea [(ngModel)]="faq.answer" (ngModelChange)="forceLayoutUpdate()" rows="2" placeholder="Respuesta..."
+                                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"></textarea>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 12. BENEFITS -->
+                            @if (section.type === 'benefits') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título de la Sección</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div class="space-y-3 pt-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Beneficios Clave</label>
+                                            <button (click)="addBenefitItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Beneficio</button>
+                                        </div>
+                                        @for (ben of $any(section.content).items; track ben.id; let bi = $index) {
+                                            <div class="p-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 space-y-2">
+                                                <div class="flex items-center gap-2">
+                                                    <input type="text" [(ngModel)]="ben.icon" (ngModelChange)="forceLayoutUpdate()" placeholder="Icono"
+                                                        class="w-12 px-2 py-1 text-center text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                                                    <input type="text" [(ngModel)]="ben.title" (ngModelChange)="forceLayoutUpdate()" placeholder="Título del beneficio"
+                                                        class="flex-1 px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold">
+                                                    <button (click)="removeBenefitItem(section, bi)" class="p-1 text-gray-400 hover:text-red-500">✕</button>
+                                                </div>
+                                                <input type="text" [(ngModel)]="ben.description" (ngModelChange)="forceLayoutUpdate()" placeholder="Descripción breve"
+                                                    class="w-full px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 13. BRAND LOGOS -->
+                            @if (section.type === 'brand_logos') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div class="space-y-2 pt-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Marcas ({{ $any(section.content).items?.length || 0 }})</label>
+                                            <button (click)="addBrandLogoItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Marca</button>
+                                        </div>
+                                        @for (brand of $any(section.content).items; track brand.id; let bli = $index) {
+                                            <div class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700">
+                                                <input type="text" [(ngModel)]="brand.name" (ngModelChange)="forceLayoutUpdate()" placeholder="Nombre de la marca"
+                                                    class="flex-1 px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold">
+                                                <input type="text" [(ngModel)]="brand.logoUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="URL del logo (opcional)"
+                                                    class="w-40 px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                                <button (click)="removeBrandLogoItem(section, bli)" class="p-1 text-gray-400 hover:text-red-500">✕</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 14. COUNTDOWN -->
+                            @if (section.type === 'countdown') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título del Evento / Venta</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
+                                        <textarea [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()" rows="2"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Texto del Botón</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace del Botón</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).buttonLink" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 15. SOCIAL FEED -->
+                            @if (section.type === 'social_feed') {
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Usuario Instagram (ej. @mitienda)</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).handle" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Texto del Botón</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).followButtonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Seguir en Instagram"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace del Perfil</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).profileUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://instagram.com/..."
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- 16. MAP & LOCATION -->
+                            @if (section.type === 'map_location') {
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Dirección Física</label>
+                                        <input type="text" [(ngModel)]="$any(section.content).address" (ngModelChange)="forceLayoutUpdate()" placeholder="Av. Principal 1234..."
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Teléfono</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).phone" (ngModelChange)="forceLayoutUpdate()" placeholder="+52 55 1234 5678"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Horarios</label>
+                                            <input type="text" [(ngModel)]="$any(section.content).hours" (ngModelChange)="forceLayoutUpdate()" placeholder="Lun - Sáb: 10am - 8pm"
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    }
+
+                    <!-- TAB 2: UNIVERSAL STYLES & DEVICE VISIBILITY -->
+                    @if (activeSectionTab() === 'styles') {
+                        <div class="p-6 space-y-6">
+
+                            <!-- SPACING (PADDING TOP & BOTTOM) -->
+                            <div>
+                                <h5 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">📏 Espaciado Superior e Inferior</h5>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Espaciado Superior (Padding Top)</label>
+                                        <select [(ngModel)]="ensureSectionStyles(section).paddingTop" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            @for (opt of spacingOptions; track opt.value) {
+                                                <option [value]="opt.value">{{ opt.label }}</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Espaciado Inferior (Padding Bottom)</label>
+                                        <select [(ngModel)]="ensureSectionStyles(section).paddingBottom" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            @for (opt of spacingOptions; track opt.value) {
+                                                <option [value]="opt.value">{{ opt.label }}</option>
+                                            }
+                                        </select>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- BACKGROUND & COLORS -->
+                            <div class="pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4">
+                                <h5 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">🎨 Fondo y Colores de la Sección</h5>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Color de Fondo Propio</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" [(ngModel)]="ensureSectionStyles(section).backgroundColor" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-9 h-9 p-0.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 cursor-pointer">
+                                            <input type="text" [(ngModel)]="ensureSectionStyles(section).backgroundColor" (ngModelChange)="forceLayoutUpdate()" placeholder="Ej. #ffffff o transparent"
+                                                class="flex-1 px-3 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Color de Texto Propio</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" [(ngModel)]="ensureSectionStyles(section).textColor" (ngModelChange)="forceLayoutUpdate()"
+                                                class="w-9 h-9 p-0.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 cursor-pointer">
+                                            <input type="text" [(ngModel)]="ensureSectionStyles(section).textColor" (ngModelChange)="forceLayoutUpdate()" placeholder="Ej. #1e293b"
+                                                class="flex-1 px-3 py-1.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Background Image & Overlay -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Imagen de Fondo</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" [(ngModel)]="ensureSectionStyles(section).backgroundImageUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://ejemplo.com/fondo.jpg"
+                                            class="flex-1 px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none">
+                                        <label class="px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 rounded-xl text-xs font-bold text-gray-700 dark:text-gray-300 cursor-pointer transition-colors">
+                                            Subir
+                                            <input type="file" (change)="onSectionBgUpload($event, section)" class="hidden" accept="image/*">
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Background Video -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Video de Fondo (URL .mp4)</label>
+                                    <input type="text" [(ngModel)]="ensureSectionStyles(section).backgroundVideoUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://ejemplo.com/video.mp4"
+                                        class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none">
+                                </div>
+
+                                <!-- Overlay Opacity -->
+                                @if (ensureSectionStyles(section).backgroundImageUrl || ensureSectionStyles(section).backgroundVideoUrl) {
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Opacidad de Capa Oscura (Overlay)</label>
+                                            <span class="text-xs font-bold font-mono text-indigo-600">{{ ensureSectionStyles(section).overlayOpacity ?? 40 }}%</span>
+                                        </div>
+                                        <input type="range" [(ngModel)]="ensureSectionStyles(section).overlayOpacity" (ngModelChange)="forceLayoutUpdate()" min="0" max="90" step="5"
+                                            class="w-full accent-indigo-600">
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- CONTAINER WIDTH & DEVICE VISIBILITY -->
+                            <div class="pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4">
+                                <h5 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">📱 Ancho y Visibilidad por Dispositivo</h5>
+                                
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Ancho del Contenido</label>
+                                    <select [(ngModel)]="ensureSectionStyles(section).containerWidth" (ngModelChange)="forceLayoutUpdate()"
+                                        class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        @for (opt of containerWidthOptions; track opt.value) {
+                                            <option [value]="opt.value">{{ opt.label }}</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/40 cursor-pointer">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-800 dark:text-gray-200">Ocultar en Móvil</p>
+                                            <p class="text-[10px] text-gray-400">No mostrar en celulares</p>
+                                        </div>
+                                        <input type="checkbox" [(ngModel)]="ensureSectionStyles(section).hideOnMobile" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-4 h-4 rounded text-indigo-600 accent-indigo-600">
+                                    </label>
+
+                                    <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/40 cursor-pointer">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-800 dark:text-gray-200">Ocultar en PC</p>
+                                            <p class="text-[10px] text-gray-400">No mostrar en computadoras</p>
+                                        </div>
+                                        <input type="checkbox" [(ngModel)]="ensureSectionStyles(section).hideOnDesktop" (ngModelChange)="forceLayoutUpdate()"
+                                            class="w-4 h-4 rounded text-indigo-600 accent-indigo-600">
+                                    </label>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título
-                                Principal</label>
-                            <input type="text" [(ngModel)]="asAny(section.content).title"
-                                (ngModelChange)="forceLayoutUpdate()"
-                                class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                        </div>
-                        <div class="col-span-2">
-                            <label
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subtítulo</label>
-                            <textarea [(ngModel)]="asAny(section.content).subtitle"
-                                (ngModelChange)="forceLayoutUpdate()" rows="2"
-                                class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Texto del
-                                Botón</label>
-                            <input type="text" [(ngModel)]="asAny(section.content).buttonText"
-                                (ngModelChange)="forceLayoutUpdate()"
-                                class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Enlace del
-                                Botón</label>
-                            <input type="text" [(ngModel)]="asAny(section.content).buttonLink"
-                                (ngModelChange)="forceLayoutUpdate()" placeholder="/products"
-                                class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                        </div>
-                    </div>
                     }
 
-                    <!-- About Us Editor -->
-                    @if (section.type === 'about_us') {
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título</label>
-                        <input type="text" [(ngModel)]="asAny(section.content).title"
-                            (ngModelChange)="forceLayoutUpdate()"
-                            class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contenido</label>
-                        <textarea [(ngModel)]="asAny(section.content).content" (ngModelChange)="forceLayoutUpdate()"
-                            rows="4"
-                            class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Posición de la
-                            Imagen</label>
-                        <select [(ngModel)]="asAny(section.content).imagePosition" (ngModelChange)="forceLayoutUpdate()"
-                            class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                            <option value="left">Izquierda</option>
-                            <option value="right">Derecha</option>
-                        </select>
-                    </div>
-                    }
-
-                    <!-- Product Grid Editor -->
-                    @if (section.type === 'product_grid') {
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título de la
-                            Sección</label>
-                        <input type="text" [(ngModel)]="asAny(section.content).title"
-                            class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Límite de
-                            Productos</label>
-                        <input type="number" [(ngModel)]="asAny(section.content).limit"
-                            (ngModelChange)="forceLayoutUpdate()" min="4" max="20"
-                            class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                    </div>
-                    }
-
-                    <p
-                        class="text-[10px] text-gray-400 font-bold uppercase tracking-widest pt-4 border-t border-gray-50 dark:border-gray-800">
-                        Cualquier cambio aquí se reflejará en tu tienda una vez que guardes.</p>
                 </div>
-            </div>
             }
         </div>
+
     </div>
+
+    <!-- MODAL: ADD SECTION CATALOG (16 BLOCKS) -->
+    @if (isAddModalOpen()) {
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+                
+                <!-- Modal Header -->
+                <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/70 dark:bg-gray-800/50">
+                    <div>
+                        <h4 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            ✨ Catálogo de Bloques para la Tienda
+                        </h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Selecciona el tipo de sección que deseas incorporar a tu página principal</p>
+                    </div>
+
+                    <button (click)="isAddModalOpen.set(false)" class="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex flex-wrap gap-2 bg-gray-50/30 dark:bg-gray-800/20">
+                    @for (cat of catalogCategories; track cat) {
+                        <button (click)="addCategoryFilter.set(cat)"
+                            [class.bg-indigo-600]="addCategoryFilter() === cat"
+                            [class.text-white]="addCategoryFilter() === cat"
+                            [class.bg-gray-100]="addCategoryFilter() !== cat"
+                            [class.dark:bg-gray-800]="addCategoryFilter() !== cat"
+                            [class.text-gray-700]="addCategoryFilter() !== cat"
+                            [class.dark:text-gray-300]="addCategoryFilter() !== cat"
+                            class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer">
+                            {{ cat === 'all' ? 'Todos los bloques (16)' : cat }}
+                        </button>
+                    }
+                </div>
+
+                <!-- Sections Grid -->
+                <div class="p-5 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5 flex-1">
+                    @for (item of filteredCatalog(); track item.type) {
+                        <div (click)="addSection(item.type)"
+                            class="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/60 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-md cursor-pointer transition-all flex items-start gap-3.5 group">
+                            
+                            <div class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-2xl group-hover:scale-110 transition-transform shrink-0">
+                                {{ item.icon }}
+                            </div>
+
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h5 class="text-xs font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                        {{ item.name }}
+                                    </h5>
+                                    <span class="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+                                        {{ item.category.split('&')[0].trim() }}
+                                    </span>
+                                </div>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+                                    {{ item.description }}
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 flex justify-end">
+                    <button (click)="isAddModalOpen.set(false)"
+                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        Cerrar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    }
 </div>
+    

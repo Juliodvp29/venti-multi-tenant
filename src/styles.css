@@ -327,3 +327,22 @@ input[disabled] {
   outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   STORE SECTION: Color de Texto Personalizado
+   Solo se activa cuando --section-text-color tiene un valor real
+   (no initial). Los botones y svgs quedan sin afectarse.
+   ═══════════════════════════════════════════════════════════ */
+
+.store-section[style*="--section-text-color"] h1,
+.store-section[style*="--section-text-color"] h2,
+.store-section[style*="--section-text-color"] h3,
+.store-section[style*="--section-text-color"] h4 {
+  color: var(--section-title-color, var(--section-text-color));
+}
+
+.store-section[style*="--section-text-color"] p,
+.store-section[style*="--section-text-color"] li,
+.store-section[style*="--section-text-color"] label {
+  color: var(--section-text-color);
+}

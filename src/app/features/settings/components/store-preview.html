@@ -156,115 +156,431 @@
             }
         </header>
 
+        <!-- MAIN SCROLLABLE CONTENT -->
         <main class="min-h-0 flex-1 overflow-y-auto">
-            <!-- DYNAMIC SECTIONS PREVIEW -->
-            @for (section of data().storefront_layout.sections; track section.id) {
-            @if (section.isActive) {
-            @if (section.type === 'hero') {
-            <section [style.backgroundColor]="asAny(section.content).backgroundColor || 'var(--store-color-secondary)'"
-                class="relative h-[240px] overflow-hidden flex flex-col items-center justify-center text-center p-6">
-                <!-- Background Image -->
-                @if (asAny(section.content).backgroundImageUrl) {
-                <img [src]="asAny(section.content).backgroundImageUrl"
-                    class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black"
-                    [style.opacity]="(asAny(section.content).overlayOpacity || 40) / 100"></div>
-                }
-
-                <div class="relative z-10 max-w-md">
-                    <h2 class="text-xl md:text-2xl font-bold text-white mb-2 leading-tight"
-                        [style.font-family]="activeTokens.font_heading">
-                        {{ asAny(section.content).title }}
-                    </h2>
-                    <p class="text-xs text-white/80 mb-4">{{ asAny(section.content).subtitle }}</p>
-                    <button class="px-5 py-2 text-[10px] font-bold text-white shadow-lg transition-transform hover:scale-105"
-                        [style.border-radius]="'var(--store-radius-btn)'"
-                        [style.text-transform]="activeTokens.button_transform"
-                        [style.background-color]="data().primary_color || 'var(--store-color-primary)'">
-                        {{ asAny(section.content).buttonText }}
-                    </button>
-                </div>
-            </section>
-            }
-
-            @if (section.type === 'product_grid') {
-            <section class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xs font-bold tracking-tight"
-                        [style.color]="'var(--store-color-text)'"
-                        [style.font-family]="activeTokens.font_heading">
-                        {{ asAny(section.content).title }}
-                    </h3>
-                    <span class="text-[9px] font-bold uppercase tracking-wider cursor-pointer"
-                        [style.color]="data().primary_color || 'var(--store-color-primary)'">Ver todo</span>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    @for (p of mockProducts.slice(0, 4); track p.name) {
-                    <div class="group p-2.5 border overflow-hidden transition-all hover:shadow-md flex flex-col justify-between"
-                         [style.border-color]="'var(--store-color-border, #e5e5e5)'"
-                         [style.border-radius]="'var(--store-radius-card, 1rem)'"
-                         [style.box-shadow]="'var(--store-shadow, none)'"
-                         [style.background-color]="'var(--store-color-surface, #ffffff)'">
+            @for (section of (data().storefront_layout.sections || []); track section.id) {
+                @if (section.isActive) {
+                    
+                    <div [class]="getSectionDeviceClass(section)" class="store-section" [ngStyle]="getSectionStyle(section)">
                         
-                        <div>
-                            <div class="aspect-square bg-slate-50 overflow-hidden mb-2 relative"
-                                 [style.border-radius]="'var(--store-radius-card, 1rem)'">
-                                <img [src]="p.image" [alt]="p.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <!-- 1. HERO -->
+                        @if (section.type === 'hero') {
+                            <section [ngStyle]="getSectionStyle(section)"
+                                class="relative min-h-[300px] md:min-h-[380px] overflow-hidden flex flex-col items-center justify-center text-center p-6"
+                                [class]="getSectionPaddingClass(section)"
+                                [style.backgroundColor]="asAny(section.content).backgroundColor || section.styles?.backgroundColor || 'var(--store-color-secondary)'">
                                 
-                                <span class="absolute top-2 left-2 px-1.5 py-0.5 text-[8px] font-bold text-white uppercase shadow-sm"
-                                      [style.border-radius]="'var(--store-radius-badge, 9999px)'"
-                                      [style.background-color]="data().accent_color || 'var(--store-color-accent)'">
-                                    Nuevo
-                                </span>
-                            </div>
-                            
-                            <!-- PRODUCT TITLE: Uses var(--store-color-text) instead of hardcoded text-slate-900 for dark mode contrast! -->
-                            <p class="truncate text-[11px] font-bold mb-1" 
-                               [style.color]="'var(--store-color-text)'"
-                               [style.font-family]="activeTokens.font_heading">{{ p.name }}</p>
-                        </div>
+                                @if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                                    <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl"
+                                        class="absolute inset-0 w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black"
+                                        [style.opacity]="(asAny(section.content).overlayOpacity || section.styles?.overlayOpacity || 40) / 100"></div>
+                                }
 
-                        <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100/30">
-                            <p class="text-[11px] font-black" [style.color]="data().primary_color || 'var(--store-color-primary)'">{{ formatPrice(p.price) }}</p>
-                            
-                            <button class="px-2.5 py-1 text-[9px] font-bold text-white shadow-sm transition-transform active:scale-95"
-                                    [style.border-radius]="'var(--store-radius-btn)'"
-                                    [style.text-transform]="activeTokens.button_transform"
-                                    [style.background-color]="data().primary_color || 'var(--store-color-primary)'">
-                                Añadir
-                            </button>
-                        </div>
+                                <div class="relative z-10" [class]="getSectionContainerClass(section)">
+                                    @if (asAny(section.content).badgeText) {
+                                        <span class="inline-block px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white rounded-full mb-3 bg-white/20 backdrop-blur-xs">
+                                            {{ asAny(section.content).badgeText }}
+                                        </span>
+                                    }
+                                    <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-2 leading-tight"
+                                        [style.font-family]="activeTokens.font_heading">
+                                        {{ asAny(section.content).title }}
+                                    </h2>
+                                    <p class="text-xs md:text-sm text-white/80 max-w-xl mx-auto mb-6">{{ asAny(section.content).subtitle }}</p>
+                                    
+                                    <div class="flex items-center justify-center gap-3">
+                                        @if (asAny(section.content).buttonText) {
+                                            <button class="px-5 py-2.5 text-xs font-bold text-white shadow-lg transition-transform hover:scale-105"
+                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
+                                                [style.background-color]="data().primary_color || 'var(--store-color-primary)'">
+                                                {{ asAny(section.content).buttonText }}
+                                            </button>
+                                        }
+                                        @if (asAny(section.content).secondaryButtonText) {
+                                            <button class="px-5 py-2.5 text-xs font-bold text-white bg-white/20 backdrop-blur-xs border border-white/40 hover:bg-white/30"
+                                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                                {{ asAny(section.content).secondaryButtonText }}
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 2. PROMO BANNER -->
+                        @if (section.type === 'promo_banner') {
+                            <section [ngStyle]="getSectionStyle(section)"
+                                class="p-6 text-center relative overflow-hidden"
+                                [class]="getSectionPaddingClass(section)"
+                                [style.backgroundColor]="asAny(section.content).backgroundColor || section.styles?.backgroundColor || data().accent_color || '#4f46e5'"
+                                [style.color]="asAny(section.content).textColor || section.styles?.textColor || '#ffffff'">
+                                
+                                <div [class]="getSectionContainerClass(section)" class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div class="text-left">
+                                        @if (asAny(section.content).badge) {
+                                            <span class="inline-block text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-black/20 mb-1">
+                                                {{ asAny(section.content).badge }}
+                                            </span>
+                                        }
+                                        <h3 class="text-lg md:text-xl font-black">{{ asAny(section.content).title }}</h3>
+                                        @if (asAny(section.content).subtitle) {
+                                            <p class="text-xs opacity-90">{{ asAny(section.content).subtitle }}</p>
+                                        }
+                                    </div>
+                                    @if (asAny(section.content).buttonText) {
+                                        <button class="px-5 py-2 text-xs font-bold bg-white text-slate-900 rounded-xl shadow-sm hover:scale-105 transition-transform shrink-0">
+                                            {{ asAny(section.content).buttonText }}
+                                        </button>
+                                    }
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 3. PRODUCT GRID -->
+                        @if (section.type === 'product_grid') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h3 class="text-sm font-bold tracking-tight"
+                                                [style.color]="'var(--store-color-text)'"
+                                                [style.font-family]="activeTokens.font_heading">
+                                                {{ asAny(section.content).title }}
+                                            </h3>
+                                            @if (asAny(section.content).description) {
+                                                <p class="text-[11px] text-gray-500">{{ asAny(section.content).description }}</p>
+                                            }
+                                        </div>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+                                            [style.color]="data().primary_color || 'var(--store-color-primary)'">Ver todo</span>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        @for (p of mockProducts.slice(0, asAny(section.content).limit || 4); track p.name) {
+                                            <div class="group p-2.5 border overflow-hidden transition-all hover:shadow-md flex flex-col justify-between"
+                                                [style.border-color]="'var(--store-color-border, #e5e5e5)'"
+                                                [style.border-radius]="'var(--store-radius-card, 1rem)'"
+                                                [style.box-shadow]="'var(--store-shadow, none)'"
+                                                [style.background-color]="'var(--store-color-surface, #ffffff)'">
+                                                
+                                                <div>
+                                                    <div class="aspect-square bg-slate-50 overflow-hidden mb-2 relative"
+                                                        [style.border-radius]="'var(--store-radius-card, 1rem)'">
+                                                        <img [src]="p.image" [alt]="p.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                                        <span class="absolute top-2 left-2 px-1.5 py-0.5 text-[8px] font-bold text-white uppercase shadow-sm"
+                                                            [style.border-radius]="'var(--store-radius-badge, 9999px)'"
+                                                            [style.background-color]="data().accent_color || 'var(--store-color-accent)'">
+                                                            Nuevo
+                                                        </span>
+                                                    </div>
+                                                    <p class="truncate text-[11px] font-bold mb-1" 
+                                                    [style.color]="'var(--store-color-text)'"
+                                                    [style.font-family]="activeTokens.font_heading">{{ p.name }}</p>
+                                                </div>
+
+                                                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-100/30">
+                                                    <p class="text-[11px] font-black" [style.color]="data().primary_color || 'var(--store-color-primary)'">{{ formatPrice(p.price) }}</p>
+                                                    <button class="px-2.5 py-1 text-[9px] font-bold shadow-sm transition-transform active:scale-95"
+                                                            [style.border-radius]="'var(--store-radius-btn, 0.5rem)'"
+                                                            [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                                            [style.color]="'white'">
+                                                        Añadir
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 4. FEATURED CATEGORIES -->
+                        @if (section.type === 'featured_categories') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    <h3 class="text-sm font-bold mb-1" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
+                                    @if (asAny(section.content).description) {
+                                        <p class="text-xs text-gray-500 mb-4">{{ asAny(section.content).description }}</p>
+                                    }
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        @for (cat of (asAny(section.content).categories || []); track cat.id) {
+                                            <div class="p-4 border border-slate-200/60 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col items-center"
+                                                [style.background-color]="'var(--store-color-surface, #ffffff)'"
+                                                [style.border-radius]="'var(--store-radius-card, 1rem)'">
+                                                <span class="text-2xl mb-1">{{ cat.icon || '🛍️' }}</span>
+                                                <span class="text-xs font-bold" [style.color]="'var(--store-color-text)'">{{ cat.name }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 5. OFFERS / FLASH SALE -->
+                        @if (section.type === 'offers') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-amber-50/40 border-y border-amber-100/60" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)" class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                                    <div>
+                                        @if (asAny(section.content).badge) {
+                                            <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-amber-200 text-amber-900 font-bold mb-1 inline-block">
+                                                {{ asAny(section.content).badge }}
+                                            </span>
+                                        }
+                                        <h3 class="text-base font-black text-amber-950">{{ asAny(section.content).title }}</h3>
+                                        <p class="text-xs text-amber-800/80">{{ asAny(section.content).description }}</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="px-3 py-1.5 bg-red-600 text-white text-xs font-black rounded-lg animate-pulse">
+                                            {{ asAny(section.content).discountBadge || 'OFERTA' }}
+                                        </span>
+                                        @if (asAny(section.content).buttonText) {
+                                            <button class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm hover:scale-105 transition-transform">
+                                                {{ asAny(section.content).buttonText }}
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 6. TESTIMONIALS -->
+                        @if (section.type === 'testimonials') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    <h3 class="text-sm font-bold mb-1" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
+                                    <p class="text-xs text-gray-500 mb-6">{{ asAny(section.content).subtitle }}</p>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        @for (t of (asAny(section.content).items || []); track t.id) {
+                                            <div class="p-4 rounded-2xl border border-slate-200/60 shadow-sm text-left flex flex-col justify-between"
+                                                [style.background-color]="'var(--store-color-surface, #ffffff)'"
+                                                [style.border-radius]="'var(--store-radius-card, 1rem)'">
+                                                <div>
+                                                    <div class="flex text-amber-400 text-xs mb-2">★★★★★</div>
+                                                    <p class="text-xs italic text-slate-600 dark:text-gray-300 mb-4">"{{ t.content }}"</p>
+                                                </div>
+                                                <div class="flex items-center gap-2.5 pt-2 border-t border-slate-100 dark:border-gray-800">
+                                                    <img [src]="t.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'" class="w-7 h-7 rounded-full object-cover">
+                                                    <div>
+                                                        <p class="text-xs font-bold text-slate-900 dark:text-white">{{ t.name }}</p>
+                                                        <p class="text-[10px] text-gray-400">{{ t.role }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 7. REVIEWS -->
+                        @if (section.type === 'reviews') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-slate-50/50" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h3 class="text-sm font-bold" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
+                                            <div class="flex items-center gap-1.5 mt-0.5">
+                                                <span class="text-amber-500 text-xs">★★★★★</span>
+                                                <span class="text-xs font-bold">{{ asAny(section.content).overallRating || 4.9 }} / 5</span>
+                                                <span class="text-[10px] text-gray-400">({{ asAny(section.content).totalReviews || 100 }}+ reseñas)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        @for (r of (asAny(section.content).items || []); track r.id) {
+                                            <div class="p-3.5 rounded-xl border border-slate-200/60 bg-white dark:bg-gray-800 shadow-sm space-y-1">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-xs font-bold">{{ r.author }}</span>
+                                                    <span class="text-[10px] text-emerald-600 font-bold">✓ Verificado</span>
+                                                </div>
+                                                <p class="text-xs font-semibold text-slate-800 dark:text-gray-200">{{ r.title }}</p>
+                                                <p class="text-[11px] text-gray-500 leading-relaxed">{{ r.comment }}</p>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 8. ABOUT US -->
+                        @if (section.type === 'about_us') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-slate-50/20" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)" class="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center">
+                                    <div [class.sm:order-2]="asAny(section.content).imagePosition === 'right'">
+                                        @if (asAny(section.content).badge) {
+                                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-indigo-600 mb-1 block">
+                                                {{ asAny(section.content).badge }}
+                                            </span>
+                                        }
+                                        <h3 class="text-lg font-bold mb-2" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-4">{{ asAny(section.content).content }}</p>
+                                        @if (asAny(section.content).buttonText) {
+                                            <button class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm">
+                                                {{ asAny(section.content).buttonText }}
+                                            </button>
+                                        }
+                                    </div>
+                                    <div [class.sm:order-1]="asAny(section.content).imagePosition === 'right'" class="h-48 rounded-2xl overflow-hidden shadow-sm">
+                                        <img [src]="asAny(section.content).imageUrl || 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=600'" class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 9. IMAGE GALLERY -->
+                        @if (section.type === 'image_gallery') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    <h3 class="text-sm font-bold mb-1" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
+                                    @if (asAny(section.content).subtitle) {
+                                        <p class="text-xs text-gray-500 mb-4">{{ asAny(section.content).subtitle }}</p>
+                                    }
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        @for (item of (asAny(section.content).items || []); track item.id) {
+                                            <div class="aspect-square rounded-xl overflow-hidden group relative shadow-sm">
+                                                <img [src]="item.imageUrl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                @if (item.caption) {
+                                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-center text-white text-xs font-bold">
+                                                        {{ item.caption }}
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 10. NEWSLETTER -->
+                        @if (section.type === 'newsletter') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-8 text-center bg-indigo-50/60 dark:bg-indigo-950/20 border-y border-indigo-100 dark:border-indigo-900/40" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)" class="max-w-md mx-auto">
+                                    <h3 class="text-base font-bold mb-1" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
+                                    <p class="text-xs text-gray-500 mb-4">{{ asAny(section.content).description }}</p>
+                                    <div class="flex items-center gap-2">
+                                        <input type="email" placeholder="tu@correo.com" class="flex-1 px-3 py-2 text-xs rounded-xl border border-gray-300 bg-white text-slate-900 outline-none">
+                                        <button class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-sm shrink-0">
+                                            {{ asAny(section.content).buttonText || 'Suscribirme' }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 11. FAQ -->
+                        @if (section.type === 'faq') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)" class="max-w-2xl mx-auto space-y-3">
+                                    <h3 class="text-sm font-bold text-center mb-4" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
+                                    @for (faq of (asAny(section.content).items || []); track faq.id) {
+                                        <div class="p-3 rounded-xl border border-slate-200/60 bg-white dark:bg-gray-800 shadow-xs space-y-1">
+                                            <p class="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                                                <span>{{ faq.question }}</span>
+                                                <span class="text-indigo-600">+</span>
+                                            </p>
+                                            <p class="text-[11px] text-gray-500 leading-relaxed">{{ faq.answer }}</p>
+                                        </div>
+                                    }
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 12. BENEFITS -->
+                        @if (section.type === 'benefits') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 border-y border-slate-100 dark:border-gray-800" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center sm:text-left">
+                                        @for (ben of (asAny(section.content).items || []); track ben.id) {
+                                            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2.5">
+                                                <span class="text-2xl shrink-0">{{ ben.icon }}</span>
+                                                <div>
+                                                    <p class="text-xs font-bold text-slate-900 dark:text-white">{{ ben.title }}</p>
+                                                    <p class="text-[10px] text-gray-500">{{ ben.description }}</p>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 13. BRAND LOGOS -->
+                        @if (section.type === 'brand_logos') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center opacity-70" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    @if (asAny(section.content).title) {
+                                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">{{ asAny(section.content).title }}</p>
+                                    }
+                                    <div class="flex flex-wrap items-center justify-center gap-6">
+                                        @for (b of (asAny(section.content).items || []); track b.id) {
+                                            <span class="text-xs font-bold text-gray-500 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg">{{ b.name }}</span>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 14. COUNTDOWN -->
+                        @if (section.type === 'countdown') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-gradient-to-r from-indigo-900 to-slate-900 text-white text-center rounded-2xl mx-4 my-2" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    <h3 class="text-lg font-black mb-1">{{ asAny(section.content).title }}</h3>
+                                    <p class="text-xs text-indigo-200 mb-4">{{ asAny(section.content).description }}</p>
+                                    <div class="flex items-center justify-center gap-3 mb-4 font-mono font-black">
+                                        <div class="bg-white/10 px-3 py-2 rounded-xl text-center"><span class="text-lg block">03</span><span class="text-[8px] opacity-70">DÍAS</span></div>
+                                        <div class="bg-white/10 px-3 py-2 rounded-xl text-center"><span class="text-lg block">14</span><span class="text-[8px] opacity-70">HRS</span></div>
+                                        <div class="bg-white/10 px-3 py-2 rounded-xl text-center"><span class="text-lg block">42</span><span class="text-[8px] opacity-70">MIN</span></div>
+                                        <div class="bg-white/10 px-3 py-2 rounded-xl text-center"><span class="text-lg block">18</span><span class="text-[8px] opacity-70">SEG</span></div>
+                                    </div>
+                                    @if (asAny(section.content).buttonText) {
+                                        <button class="px-5 py-2 bg-indigo-500 text-white rounded-xl text-xs font-bold hover:bg-indigo-400 transition-colors">
+                                            {{ asAny(section.content).buttonText }}
+                                        </button>
+                                    }
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 15. SOCIAL FEED -->
+                        @if (section.type === 'social_feed') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)">
+                                    <h3 class="text-sm font-bold mb-0.5" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
+                                    <p class="text-xs text-indigo-600 font-semibold mb-4">{{ asAny(section.content).handle }}</p>
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                        @for (post of (asAny(section.content).items || []); track post.id) {
+                                            <div class="aspect-square rounded-xl overflow-hidden relative group">
+                                                <img [src]="post.imageUrl" class="w-full h-full object-cover">
+                                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold">
+                                                    ❤️ {{ post.likes || 100 }}
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        <!-- 16. MAP & LOCATION -->
+                        @if (section.type === 'map_location') {
+                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-slate-50/50" [class]="getSectionPaddingClass(section)">
+                                <div [class]="getSectionContainerClass(section)" class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                                    <div class="space-y-2">
+                                        <h3 class="text-sm font-bold" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">📍 {{ asAny(section.content).address }}</p>
+                                        <p class="text-xs text-gray-500">📞 {{ asAny(section.content).phone }}</p>
+                                        <p class="text-xs text-gray-500">🕒 {{ asAny(section.content).hours }}</p>
+                                    </div>
+                                    <div class="h-36 bg-slate-200 dark:bg-gray-700 rounded-xl flex items-center justify-center text-xs text-gray-500">
+                                        🗺️ Mapa Interactivo
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
                     </div>
-                    }
-                </div>
-            </section>
-            }
-
-            @if (section.type === 'about_us') {
-            <section class="p-6 bg-slate-50/10 border-t border-b border-slate-100/20">
-                <div class="flex flex-col gap-3">
-                    <h3 class="text-xs font-bold" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
-                    <p class="text-[10px] line-clamp-3 leading-relaxed" [style.color]="'var(--store-color-muted)'">{{ asAny(section.content).content }}</p>
-                    <div class="h-24 overflow-hidden shadow-sm mt-1" [style.border-radius]="'var(--store-radius-card)'">
-                        <img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=400"
-                            class="w-full h-full object-cover">
-                    </div>
-                </div>
-            </section>
-            }
-
-            @if (section.type === 'featured_categories') {
-            <section class="p-6 text-center">
-                <h3 class="text-xs font-bold mb-4" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
-                <div class="grid grid-cols-4 gap-2">
-                    <div class="p-2 border border-slate-200/40 shadow-sm" [style.background-color]="'var(--store-color-surface)'" [style.border-radius]="'var(--store-radius-card)'"><span class="text-lg">✨</span></div>
-                    <div class="p-2 border border-slate-200/40 shadow-sm" [style.background-color]="'var(--store-color-surface)'" [style.border-radius]="'var(--store-radius-card)'"><span class="text-lg">🔥</span></div>
-                    <div class="p-2 border border-slate-200/40 shadow-sm" [style.background-color]="'var(--store-color-surface)'" [style.border-radius]="'var(--store-radius-card)'"><span class="text-lg">💎</span></div>
-                    <div class="p-2 border border-slate-200/40 shadow-sm" [style.background-color]="'var(--store-color-surface)'" [style.border-radius]="'var(--store-radius-card)'"><span class="text-lg">🎁</span></div>
-                </div>
-            </section>
-            }
-            }
+                }
             }
 
             <footer class="p-8 text-center border-t border-slate-200/40 mt-10"
