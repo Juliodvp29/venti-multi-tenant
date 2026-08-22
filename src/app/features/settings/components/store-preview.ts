@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StorefrontLayout } from '@core/models';
+import { StorefrontLayout, ThemeTokens } from '@core/models';
+import { themeTokensToCssVars, THEME_PRESETS } from '@core/constants/theme-presets';
 
 export interface PreviewData {
     business_name: string;
@@ -17,6 +18,7 @@ export interface PreviewData {
     layout: 'modern' | 'classic' | 'minimal';
     viewMode: 'desktop' | 'mobile';
     storefront_layout: StorefrontLayout;
+    themeTokens?: ThemeTokens;
 }
 
 @Component({
@@ -38,6 +40,27 @@ export class StorePreview {
         { name: 'Smart Glasses', price: 250, image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=400' }
     ];
 
+    readonly dynamicCssVars = computed(() => {
+        const d = this.data();
+        const tokens = d.themeTokens || THEME_PRESETS.minimalist.tokens;
+        const baseVars = themeTokensToCssVars(tokens);
+
+        return {
+            ...baseVars,
+            '--store-color-primary': d.primary_color || tokens.colors.primary,
+            '--store-color-secondary': d.secondary_color || tokens.colors.secondary,
+            '--store-color-accent': d.accent_color || tokens.colors.accent,
+            '--store-color-bg': d.background_color || tokens.colors.background,
+            '--store-color-header': d.header_color || tokens.colors.header,
+            '--store-color-footer': d.footer_color || tokens.colors.footer,
+            '--store-font-heading': d.font_family || tokens.font_heading,
+        };
+    });
+
+    get activeTokens(): ThemeTokens {
+        return this.data().themeTokens || THEME_PRESETS.minimalist.tokens;
+    }
+
     get containerClass() {
         const base = this.data().viewMode === 'mobile'
             ? 'w-[375px] h-[667px] border-[12px] border-slate-800 rounded-[3rem] shadow-2xl overflow-hidden'
@@ -46,7 +69,9 @@ export class StorePreview {
     }
 
     get fontStyle() {
-        return { 'font-family': this.data().font_family };
+        return {
+            'font-family': this.activeTokens.font_body || this.data().font_family,
+        };
     }
 
     formatPrice(price: number): string {

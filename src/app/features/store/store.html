@@ -1,10 +1,15 @@
-<div [ngStyle]="dynamicStyles()" [style.backgroundColor]="'var(--background-color)'"
-    class="min-h-screen text-slate-900 font-sans">
+<div [ngStyle]="dynamicStyles()" 
+     [style.backgroundColor]="'var(--store-color-bg, #ffffff)'"
+     [style.color]="'var(--store-color-text, #0f172a)'"
+     class="min-h-screen font-sans">
     <!-- Header -->
     <app-store-header (openCart)="isCartOpen.set(true)"></app-store-header>
 
     <!-- Content -->
-    <main class="max-w-7xl mx-auto py-8 px-4">
+    <main class="mx-auto px-4"
+          [style.maxWidth]="'var(--store-max-width, 1280px)'"
+          [style.paddingTop]="'var(--store-grid-gap, 1.5rem)'"
+          [style.paddingBottom]="'var(--store-section-py, 4rem)'">
         <router-outlet></router-outlet>
     </main>
 
@@ -14,14 +19,14 @@
     }
 
     <!-- Footer -->
-    <footer [style.backgroundColor]="'var(--footer-color)'"
-        class="border-t border-slate-200 dark:border-slate-800 py-12">
-        <div class="max-w-7xl mx-auto px-4">
+    <footer [style.backgroundColor]="'var(--store-color-footer, #ffffff)'"
+        class="border-t border-slate-200/50 py-12">
+        <div class="mx-auto px-4" [style.maxWidth]="'var(--store-max-width, 1280px)'">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <!-- Branding -->
                 <div class="text-center md:text-left">
-                    <h2 class="text-xl font-bold font-sans">{{ branding()?.business_name }}</h2>
-                    <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm max-w-xs">
+                    <h2 class="text-xl font-bold" [style.font-family]="'var(--store-font-heading)'" [style.color]="'var(--store-color-text)'">{{ branding()?.business_name }}</h2>
+                    <p class="mt-2 text-sm max-w-xs" [style.color]="'var(--store-color-muted, #64748b)'">
                         {{ branding()?.description }}
                     </p>
                 </div>
@@ -60,8 +65,8 @@
                 }
             </div>
 
-            <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 text-center">
-                <p class="text-slate-400 text-sm">© 2026 {{ branding()?.business_name }}. Potenciado por Venti Shop.</p>
+            <div class="mt-8 pt-8 border-t border-slate-100/40 text-center">
+                <p class="text-xs" [style.color]="'var(--store-color-muted, #94a3b8)'">© 2026 {{ branding()?.business_name }}. Potenciado por Venti Shop.</p>
             </div>
         </div>
     </footer>

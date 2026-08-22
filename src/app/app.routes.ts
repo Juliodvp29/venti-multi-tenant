@@ -108,6 +108,11 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'preview',
+    canActivate: [authGuard],
+    loadComponent: () => import('@features/settings/components/standalone-preview/standalone-preview').then((m) => m.StandalonePreview),
+  },
+  {
     path: 'store',
     canActivate: [storeGuard],
     loadChildren: () => import('./features/store/store.routes').then((m) => m.STORE_ROUTES),

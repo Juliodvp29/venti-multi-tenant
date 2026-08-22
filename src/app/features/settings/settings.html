@@ -1,8 +1,26 @@
-Comisiones por Venta<div
-    class="max-w-[1600px] mx-auto h-screen overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-gray-950 transition-colors duration-300">
+<div
+    class="relative max-w-[1600px] mx-auto h-screen overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-gray-950 transition-colors duration-300">
+
+    @if (!tenant() && isTenantLoading()) {
+    <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/90 p-6 backdrop-blur-sm dark:bg-gray-950/90">
+        <div class="w-full max-w-md space-y-4">
+            <div class="h-7 w-56 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-800"></div>
+            <div class="h-4 w-80 max-w-full animate-pulse rounded bg-gray-200 dark:bg-gray-800"></div>
+            <div class="mt-8 grid grid-cols-3 gap-3">
+                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
+                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
+                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
+            </div>
+            <div class="h-48 animate-pulse rounded-2xl bg-gray-100 dark:bg-gray-900"></div>
+            <p class="pt-2 text-center text-sm font-medium text-gray-500 dark:text-gray-400">Preparando la configuración...</p>
+        </div>
+    </div>
+    }
 
     <div
-        class="flex-1 lg:max-w-2xl xl:max-w-3xl border-r border-gray-100 dark:border-gray-800 flex flex-col h-full overflow-hidden">
+        [class.lg:max-w-2xl]="!isPopoutOpen()"
+        [class.xl:max-w-3xl]="!isPopoutOpen()"
+        class="flex-1 border-r border-gray-100 dark:border-gray-800 flex flex-col h-full overflow-hidden">
 
         <!-- Header (Fixed at top) -->
         <div
@@ -83,16 +101,19 @@ Comisiones por Venta<div
             }
 
             <!-- Tabs -->
-            <nav class="-mb-px flex space-x-1 mt-6 overflow-x-auto scrollbar-thin" aria-label="Secciones de configuración" role="tablist">
+            <nav class="-mb-px mt-8 flex items-start gap-5 border-t border-gray-100 pt-4 overflow-x-auto scrollbar-thin dark:border-gray-800" aria-label="Secciones de configuración" role="tablist">
                 @for (group of tabGroups; track group.label) {
-                <div class="mr-4 flex shrink-0 items-center gap-1 border-r border-gray-200 pr-4 last:border-0 last:pr-0 dark:border-gray-800">
-                    <span class="mr-2 hidden text-[10px] font-bold uppercase tracking-wider text-gray-400 xl:inline">{{ group.label }}</span>
+                <div class="flex shrink-0 flex-col gap-1.5 border-r border-gray-200 pr-5 last:border-0 last:pr-0 dark:border-gray-800">
+                    <span class="px-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ group.label }}</span>
+                    <div class="flex items-center gap-1">
                 @for (tab of group.tabs; track tab.id) {
                 <button type="button" (click)="setActiveTab(tab.id)" role="tab" [attr.aria-selected]="activeTab() === tab.id"
                     [attr.aria-controls]="'settings-panel-' + tab.id" [id]="'settings-tab-' + tab.id"
-                    class="inline-flex items-center gap-1.5 whitespace-nowrap border-b-2 py-3.5 px-1 mr-6 text-sm font-semibold transition-all"
+                    class="inline-flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-lg border-b-2 px-3 text-sm font-semibold transition-all"
                     [class.border-indigo-500]="activeTab() === tab.id" [class.text-indigo-600]="activeTab() === tab.id"
                     [class.dark:text-indigo-400]="activeTab() === tab.id"
+                    [class.bg-indigo-50]="activeTab() === tab.id"
+                    [class.dark:bg-indigo-900\/20]="activeTab() === tab.id"
                     [class.border-transparent]="activeTab() !== tab.id" [class.text-gray-500]="activeTab() !== tab.id"
                     [class.hover:text-gray-700]="activeTab() !== tab.id"
                     [class.dark:hover:text-gray-300]="activeTab() !== tab.id">
@@ -100,6 +121,7 @@ Comisiones por Venta<div
                     {{ tab.label }}
                 </button>
                 }
+                    </div>
                 </div>
                 }
             </nav>
@@ -127,8 +149,11 @@ Comisiones por Venta<div
         <!-- Scrollable content -->
         <div class="flex-1 overflow-y-auto px-6 md:px-10 py-8" role="tabpanel"
             [attr.aria-labelledby]="'settings-tab-' + activeTab()" [id]="'settings-panel-' + activeTab()">
-            <div class="max-w-2xl pb-20">
+            <div class="pb-20"
+                [class.max-w-2xl]="!isPopoutOpen()"
+                [class.max-w-5xl]="isPopoutOpen()">
                 @switch (activeTab()) {
+                @case ('theme') { <app-settings-theme (themeChange)="updateThemePreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
                 @case ('branding') { <app-settings-branding (brandingChange)="updatePreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
                 @case ('general') { <app-settings-general (dirtyChange)="onDirtyChange($event)" /> }
                 @case ('address') { <app-settings-address (dirtyChange)="onDirtyChange($event)" /> }
@@ -169,6 +194,41 @@ Comisiones por Venta<div
     </div>
 
 
+    @if (isPopoutOpen()) {
+    <!-- Collapsed preview panel when popout is active -->
+    <div
+        class="hidden lg:flex flex-col items-center justify-center lg:w-80 xl:w-96 shrink-0 bg-slate-50 dark:bg-gray-900/50 min-h-0 sticky top-0 max-h-screen min-w-0 gap-5 p-10">
+        <div class="flex flex-col items-center gap-4 text-center max-w-xs">
+            <div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30">
+                <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+            </div>
+            <div>
+                <p class="text-sm font-bold text-gray-900 dark:text-white">Preview en otra pestaña</p>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    La vista previa se está mostrando en una pestaña separada. Los cambios se sincronizan en tiempo
+                    real.
+                </p>
+            </div>
+            <div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Sincronizando en vivo
+            </div>
+            <button type="button" (click)="closePreviewPopout()"
+                class="mt-2 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25" />
+                </svg>
+                Volver a integrar aquí
+            </button>
+        </div>
+    </div>
+    } @else {
+    <!-- Embedded preview panel -->
     <div
         class="hidden lg:flex flex-col flex-1 bg-slate-50 dark:bg-gray-900/50 min-h-0 sticky top-0 max-h-screen overflow-hidden min-w-0">
 
@@ -180,26 +240,39 @@ Comisiones por Venta<div
                     en Vivo</span>
             </div>
 
-            <!-- Viewport toggle -->
-            <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg gap-0.5">
-                <button (click)="setViewMode('desktop')"
-                    class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
-                    [class.bg-white]="viewMode() === 'desktop'" [class.dark:bg-gray-700]="viewMode() === 'desktop'"
-                    [class.shadow-sm]="viewMode() === 'desktop'" [class.text-gray-900]="viewMode() === 'desktop'"
-                    [class.dark:text-white]="viewMode() === 'desktop'">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                </button>
-                <button (click)="setViewMode('mobile')"
-                    class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
-                    [class.bg-white]="viewMode() === 'mobile'" [class.dark:bg-gray-700]="viewMode() === 'mobile'"
-                    [class.shadow-sm]="viewMode() === 'mobile'" [class.text-gray-900]="viewMode() === 'mobile'"
-                    [class.dark:text-white]="viewMode() === 'mobile'">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            <!-- Viewport toggle + Popout button -->
+            <div class="flex items-center gap-2">
+                <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg gap-0.5">
+                    <button type="button" (click)="setViewMode('desktop')" aria-label="Vista previa de escritorio"
+                        [attr.aria-pressed]="viewMode() === 'desktop'" title="Vista de escritorio"
+                        class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
+                        [class.bg-white]="viewMode() === 'desktop'" [class.dark:bg-gray-700]="viewMode() === 'desktop'"
+                        [class.shadow-sm]="viewMode() === 'desktop'" [class.text-gray-900]="viewMode() === 'desktop'"
+                        [class.dark:text-white]="viewMode() === 'desktop'">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                    <button type="button" (click)="setViewMode('mobile')" aria-label="Vista previa móvil"
+                        [attr.aria-pressed]="viewMode() === 'mobile'" title="Vista móvil"
+                        class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
+                        [class.bg-white]="viewMode() === 'mobile'" [class.dark:bg-gray-700]="viewMode() === 'mobile'"
+                        [class.shadow-sm]="viewMode() === 'mobile'" [class.text-gray-900]="viewMode() === 'mobile'"
+                        [class.dark:text-white]="viewMode() === 'mobile'">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Pop-out button -->
+                <button type="button" (click)="openPreviewPopout()" title="Abrir preview en nueva pestaña"
+                    class="p-2 rounded-lg transition-all text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                     </svg>
                 </button>
             </div>
@@ -217,5 +290,6 @@ Comisiones por Venta<div
             <app-store-preview [data]="fullPreviewData()" />
         </div>
     </div>
+    }
 
 </div>

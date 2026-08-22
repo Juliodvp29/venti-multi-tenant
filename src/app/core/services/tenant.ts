@@ -1,5 +1,6 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks, ThemeTokens, ThemePresetId } from '@core/models';
+import { THEME_PRESETS } from '@core/constants/theme-presets';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
 import { TenantRole } from '@core/enums';
@@ -119,6 +120,33 @@ export class TenantService {
       ...layout,
       sections: layout.sections !== undefined ? layout.sections : defaultLayout.sections,
       navigation: layout.navigation || defaultLayout.navigation
+    };
+  });
+
+  readonly themeTokens = computed<ThemeTokens>(() => {
+    const settings = this._state().currentTenant?.settings as any;
+    const savedTokens = settings?.theme_config as ThemeTokens;
+    if (savedTokens) return savedTokens;
+
+    const t = this._state().currentTenant;
+    const presetId = (settings?.theme_id as ThemePresetId) || 'minimalist';
+    const baseTokens = THEME_PRESETS[presetId]?.tokens || THEME_PRESETS.minimalist.tokens;
+
+    if (!t) return baseTokens;
+
+    return {
+      ...baseTokens,
+      font_heading: t.font_family || baseTokens.font_heading,
+      font_body: t.font_family || baseTokens.font_body,
+      colors: {
+        ...baseTokens.colors,
+        primary: t.primary_color || baseTokens.colors.primary,
+        secondary: t.secondary_color || baseTokens.colors.secondary,
+        accent: t.accent_color || baseTokens.colors.accent,
+        background: t.background_color || baseTokens.colors.background,
+        header: t.header_color || baseTokens.colors.header,
+        footer: t.footer_color || baseTokens.colors.footer,
+      }
     };
   });
 
@@ -596,6 +624,61 @@ export class TenantService {
     } catch (error) {
       console.error('Error updating storefront layout:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to update storefront layout';
+      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Update theme tokens and preset configuration in settings and tenant columns
+   */
+  async updateThemeTokens(tokens: ThemeTokens): Promise<{ success: boolean; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return { success: false, error: 'No tenant selected' };
+
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const currentTenant = this._state().currentTenant;
+      const currentSettings = (currentTenant?.settings as Record<string, unknown>) || {};
+
+      const updatedSettings = {
+        ...currentSettings,
+        theme_config: tokens,
+        theme_id: tokens.theme_id
+      };
+
+      const brandingUpdates = {
+        primary_color: tokens.colors.primary,
+        secondary_color: tokens.colors.secondary,
+        accent_color: tokens.colors.accent,
+        background_color: tokens.colors.background,
+        header_color: tokens.colors.header,
+        footer_color: tokens.colors.footer,
+        font_family: tokens.font_heading,
+        settings: updatedSettings
+      };
+
+      const { data, error } = await this.supabase.client
+        .from('tenants')
+        .update(brandingUpdates as any)
+        .eq('id', tenantId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      this._state.update(s => ({
+        ...s,
+        currentTenant: data as any,
+        settings: updatedSettings,
+        loading: false
+      }));
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating theme tokens:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update theme tokens';
       this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }

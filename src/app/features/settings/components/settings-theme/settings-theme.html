@@ -1,0 +1,548 @@
+<div class="space-y-8 animate-in fade-in duration-300">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-gray-800">
+        <div>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                Sistema de Diseño por Tienda
+                <span class="text-xs px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-bold rounded-full border border-indigo-100 dark:border-indigo-800">
+                    {{ tokens().theme_name }}
+                </span>
+            </h2>
+            <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">
+                Configura tokens visuales para darle una identidad única a tu tienda: paleta de colores completa, fuentes, radios, sombras, espaciado y ancho máximo de contenido.
+            </p>
+        </div>
+        
+        <button 
+            (click)="resetToPreset()"
+            class="px-3.5 py-2 text-xs font-bold text-slate-600 dark:text-gray-300 bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-xl transition-all flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Restablecer tema base
+        </button>
+    </div>
+
+    <!-- Sub-navigation tabs for Theme Customizer -->
+    <div class="flex flex-wrap gap-2 border-b border-slate-200 dark:border-gray-800 pb-3">
+        <button 
+            (click)="activeCustomizerTab.set('preset')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'preset'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'preset'"
+            [class.text-white]="activeCustomizerTab() === 'preset'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'preset'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'preset'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'preset'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'preset'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>🎨 Temas Base (10)</span>
+        </button>
+        
+        <button 
+            (click)="activeCustomizerTab.set('colors')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'colors'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'colors'"
+            [class.text-white]="activeCustomizerTab() === 'colors'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'colors'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'colors'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'colors'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'colors'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>💧 Paleta de Colores (10)</span>
+        </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('typography')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'typography'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'typography'"
+            [class.text-white]="activeCustomizerTab() === 'typography'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'typography'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'typography'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'typography'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'typography'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>🔤 Tipografías</span>
+        </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('borders')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'borders'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'borders'"
+            [class.text-white]="activeCustomizerTab() === 'borders'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'borders'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'borders'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'borders'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'borders'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>📐 Bordes y Radios</span>
+        </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('shadows')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'shadows'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'shadows'"
+            [class.text-white]="activeCustomizerTab() === 'shadows'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'shadows'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'shadows'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'shadows'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'shadows'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>☁️ Sombras</span>
+        </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('spacing')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'spacing'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'spacing'"
+            [class.text-white]="activeCustomizerTab() === 'spacing'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'spacing'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'spacing'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'spacing'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'spacing'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>📏 Espaciado y Ancho</span>
+        </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('buttons')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'buttons'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'buttons'"
+            [class.text-white]="activeCustomizerTab() === 'buttons'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'buttons'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'buttons'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'buttons'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'buttons'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>🔘 Botones</span>
+        </button>
+
+        <button 
+            (click)="activeCustomizerTab.set('cards')"
+            [class.bg-slate-900]="activeCustomizerTab() === 'cards'"
+            [class.dark:bg-indigo-600]="activeCustomizerTab() === 'cards'"
+            [class.text-white]="activeCustomizerTab() === 'cards'"
+            [class.bg-slate-100]="activeCustomizerTab() !== 'cards'"
+            [class.dark:bg-gray-800]="activeCustomizerTab() !== 'cards'"
+            [class.text-slate-700]="activeCustomizerTab() !== 'cards'"
+            [class.dark:text-gray-300]="activeCustomizerTab() !== 'cards'"
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            <span>🛍️ Tarjetas y Header</span>
+        </button>
+    </div>
+
+    <!-- TAB 1: PRESET SELECTION GRID -->
+    @if (activeCustomizerTab() === 'preset') {
+        <div class="grid gap-4"
+             [class.grid-cols-1]="true"
+             [class.md:grid-cols-2]="!isPopoutOpen()"
+             [class.sm:grid-cols-2]="isPopoutOpen()"
+             [class.lg:grid-cols-3]="isPopoutOpen()"
+             [class.xl:grid-cols-4]="isPopoutOpen()">
+            @for (preset of presets; track preset.id) {
+                <div 
+                    (click)="selectPreset(preset.id)"
+                    class="group relative rounded-2xl border p-5 transition-all cursor-pointer hover:shadow-xl flex flex-col justify-between"
+                    [class.ring-2]="tokens().theme_id === preset.id"
+                    [class.ring-indigo-600]="tokens().theme_id === preset.id"
+                    [class.border-indigo-600]="tokens().theme_id === preset.id"
+                    [class.dark:border-indigo-500]="tokens().theme_id === preset.id"
+                    [class.bg-indigo-50\/20]="tokens().theme_id === preset.id"
+                    [class.dark:bg-indigo-950\/30]="tokens().theme_id === preset.id"
+                    [class.border-slate-200]="tokens().theme_id !== preset.id"
+                    [class.dark:border-gray-800]="tokens().theme_id !== preset.id"
+                    [class.bg-white]="tokens().theme_id !== preset.id"
+                    [class.dark:bg-gray-900]="tokens().theme_id !== preset.id">
+
+                    <div>
+                        <!-- Header Preview Swatch -->
+                        <div class="h-24 rounded-xl mb-4 overflow-hidden border border-slate-200/60 dark:border-gray-700 relative p-3 flex flex-col justify-between"
+                             [style.background-color]="preset.tokens.colors.background">
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold px-2 py-0.5 rounded"
+                                      [style.background-color]="preset.tokens.colors.header"
+                                      [style.color]="preset.tokens.colors.text_primary">
+                                    {{ preset.name }}
+                                </span>
+
+                                <div class="flex space-x-1">
+                                    <div class="w-3 h-3 rounded-full" [style.background-color]="preset.tokens.colors.primary"></div>
+                                    <div class="w-3 h-3 rounded-full" [style.background-color]="preset.tokens.colors.secondary"></div>
+                                    <div class="w-3 h-3 rounded-full" [style.background-color]="preset.tokens.colors.accent"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="text-[10px] font-semibold truncate max-w-[150px]"
+                                      [style.font-family]="preset.tokens.font_heading"
+                                      [style.color]="preset.tokens.colors.text_primary">
+                                    {{ preset.tagline }}
+                                </span>
+
+                                <button class="px-2.5 py-1 text-[9px] font-bold rounded shadow-sm"
+                                        [style.background-color]="preset.tokens.colors.primary"
+                                        [style.color]="preset.tokens.colors.background">
+                                    Comprar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                {{ preset.name }}
+                            </h3>
+                            @if (tokens().theme_id === preset.id) {
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/40 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                                    ✓ Activo
+                                </span>
+                            }
+                        </div>
+
+                        <p class="text-xs text-slate-500 dark:text-gray-400 mb-3 leading-relaxed">
+                            {{ preset.description }}
+                        </p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 dark:border-gray-800 flex items-center justify-between text-[11px] text-slate-400 dark:text-gray-500 font-medium">
+                        <span>Recomendado: {{ preset.category }}</span>
+                        <span class="text-slate-600 dark:text-gray-300 font-bold group-hover:translate-x-1 transition-transform">Usar este tema →</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- TAB 2: COLOR CUSTOMIZATION -->
+    @if (activeCustomizerTab() === 'colors') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Paleta de Colores por Tienda</h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+                 [class.lg:grid-cols-4]="isPopoutOpen()"
+                 [class.xl:grid-cols-5]="isPopoutOpen()">
+                <!-- Primary Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color Primario</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Secondary Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color Secundario</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Accent Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Acento / Ofertas</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Background Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Fondo General de Página</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Surface / Card Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Fondo de Tarjetas de Producto</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Header Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color del Header</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Footer Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color del Footer</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Primary Text Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Texto Principal</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Secondary / Muted Text Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Texto Secundario</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+
+                <!-- Border Color -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Bordes y Líneas</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="color" [ngModel]="tokens().colors.border" (ngModelChange)="updateColor('border', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
+                        <input type="text" [ngModel]="tokens().colors.border" (ngModelChange)="updateColor('border', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- TAB 3: TYPOGRAPHY CUSTOMIZATION -->
+    @if (activeCustomizerTab() === 'typography') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Combinación Tipográfica</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-3">
+                    <app-dropdown 
+                        label="Fuente de Títulos y Banner"
+                        [options]="fontOptions" 
+                        [value]="tokens().font_heading" 
+                        (valueChange)="updateToken('font_heading', $event)">
+                    </app-dropdown>
+                    
+                    <div class="p-4 bg-slate-50 dark:bg-gray-800/60 rounded-xl border border-slate-200/60 dark:border-gray-700 mt-2">
+                        <p class="text-xs text-slate-400 dark:text-gray-500 mb-1">Muestra de Título:</p>
+                        <p class="text-2xl font-bold leading-tight" [style.color]="tokens().colors.text_primary" [style.font-family]="tokens().font_heading">
+                            Diseño Exclusivo para Tu Tienda
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <app-dropdown 
+                        label="Fuente de Cuerpo y Botones"
+                        [options]="fontOptions" 
+                        [value]="tokens().font_body" 
+                        (valueChange)="updateToken('font_body', $event)">
+                    </app-dropdown>
+
+                    <div class="p-4 bg-slate-50 dark:bg-gray-800/60 rounded-xl border border-slate-200/60 dark:border-gray-700 mt-2">
+                        <p class="text-xs text-slate-400 dark:text-gray-500 mb-1">Muestra de Párrafo:</p>
+                        <p class="text-sm leading-relaxed" [style.color]="tokens().colors.text_muted" [style.font-family]="tokens().font_body">
+                            Explora nuestras colecciones destacadas y disfruta de una experiencia de compra personalizada.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- TAB 4: BORDERS & RADIUSES -->
+    @if (activeCustomizerTab() === 'borders') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Bordes y Geometría de Componentes</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <app-dropdown 
+                    label="Radio de Botones"
+                    [options]="borderRadiusDropdownOptions" 
+                    [value]="tokens().border_radius_button" 
+                    (valueChange)="updateToken('border_radius_button', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Radio de Tarjetas de Producto"
+                    [options]="borderRadiusDropdownOptions" 
+                    [value]="tokens().border_radius_card" 
+                    (valueChange)="updateToken('border_radius_card', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Grosor de Bordes"
+                    [options]="borderWidthDropdownOptions" 
+                    [value]="tokens().border_width" 
+                    (valueChange)="updateToken('border_width', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Radio de Badges / Etiquetas"
+                    [options]="borderRadiusDropdownOptions" 
+                    [value]="tokens().border_radius_badge" 
+                    (valueChange)="updateToken('border_radius_badge', $event)">
+                </app-dropdown>
+            </div>
+        </div>
+    }
+
+    <!-- TAB 5: SHADOWS -->
+    @if (activeCustomizerTab() === 'shadows') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Estilo de Sombras & Profundidad</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+                 [class.lg:grid-cols-4]="isPopoutOpen()"
+                 [class.xl:grid-cols-5]="isPopoutOpen()">
+                @for (shadow of shadowStyles; track shadow.value) {
+                    <div 
+                        (click)="updateToken('shadow_style', shadow.value)"
+                        class="p-4 rounded-xl border transition-all cursor-pointer hover:border-indigo-500"
+                        [class.border-indigo-600]="tokens().shadow_style === shadow.value"
+                        [class.dark:border-indigo-500]="tokens().shadow_style === shadow.value"
+                        [class.bg-indigo-50\/30]="tokens().shadow_style === shadow.value"
+                        [class.dark:bg-indigo-950\/30]="tokens().shadow_style === shadow.value"
+                        [class.border-slate-200]="tokens().shadow_style !== shadow.value"
+                        [class.dark:border-gray-800]="tokens().shadow_style !== shadow.value"
+                        [class.bg-white]="tokens().shadow_style !== shadow.value"
+                        [class.dark:bg-gray-900]="tokens().shadow_style !== shadow.value">
+                        
+                        <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ shadow.label }}</p>
+                        <p class="text-xs text-slate-500 dark:text-gray-400">{{ shadow.description }}</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- TAB 6: SPACING & MAX CONTENT WIDTH -->
+    @if (activeCustomizerTab() === 'spacing') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-8">
+            <div>
+                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1">Densidad de Espacios de la Tienda</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Controla la respiración y distancia entre secciones y elementos en la pantalla.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @for (density of spacingDensities; track density.value) {
+                        <div 
+                            (click)="updateToken('spacing_density', density.value)"
+                            class="p-4 rounded-xl border transition-all cursor-pointer hover:border-indigo-500"
+                            [class.border-indigo-600]="tokens().spacing_density === density.value"
+                            [class.dark:border-indigo-500]="tokens().spacing_density === density.value"
+                            [class.bg-indigo-50\/30]="tokens().spacing_density === density.value"
+                            [class.dark:bg-indigo-950\/30]="tokens().spacing_density === density.value"
+                            [class.border-slate-200]="tokens().spacing_density !== density.value"
+                            [class.dark:border-gray-800]="tokens().spacing_density !== density.value"
+                            [class.bg-white]="tokens().spacing_density !== density.value"
+                            [class.dark:bg-gray-900]="tokens().spacing_density !== density.value">
+                            
+                            <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ density.label }}</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">{{ density.description }}</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 dark:border-gray-800">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1">Ancho Máximo del Contenido</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Determina el ancho máximo de la cuadrícula de productos y contenidos en monitores grandes.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                     [class.md:grid-cols-2]="!isPopoutOpen()"
+                     [class.md:grid-cols-4]="isPopoutOpen()">
+                    @for (width of maxContentWidths; track width.value) {
+                        <div 
+                            (click)="updateToken('max_content_width', width.value)"
+                            class="p-4 rounded-xl border transition-all cursor-pointer hover:border-indigo-500"
+                            [class.border-indigo-600]="tokens().max_content_width === width.value"
+                            [class.dark:border-indigo-500]="tokens().max_content_width === width.value"
+                            [class.bg-indigo-50\/30]="tokens().max_content_width === width.value"
+                            [class.dark:bg-indigo-950\/30]="tokens().max_content_width === width.value"
+                            [class.border-slate-200]="tokens().max_content_width !== width.value"
+                            [class.dark:border-gray-800]="tokens().max_content_width !== width.value"
+                            [class.bg-white]="tokens().max_content_width !== width.value"
+                            [class.dark:bg-gray-900]="tokens().max_content_width !== width.value">
+                            
+                            <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ width.label }}</p>
+                            <p class="text-[11px] text-slate-500 dark:text-gray-400 leading-relaxed">{{ width.description }}</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- TAB 7: BUTTONS -->
+    @if (activeCustomizerTab() === 'buttons') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Personalización de Botones</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <app-dropdown 
+                    label="Forma del Botón"
+                    [options]="buttonShapeDropdownOptions" 
+                    [value]="tokens().button_shape" 
+                    (valueChange)="updateToken('button_shape', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Estilo Visual"
+                    [options]="buttonStyleDropdownOptions" 
+                    [value]="tokens().button_style" 
+                    (valueChange)="updateToken('button_style', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Transformación de Texto"
+                    [options]="buttonTransformDropdownOptions" 
+                    [value]="tokens().button_transform" 
+                    (valueChange)="updateToken('button_transform', $event)">
+                </app-dropdown>
+            </div>
+        </div>
+    }
+
+    <!-- TAB 8: CARDS & HEADER -->
+    @if (activeCustomizerTab() === 'cards') {
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 space-y-6">
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Tarjetas de Producto y Header</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                 [class.lg:grid-cols-3]="isPopoutOpen()"
+                 [class.xl:grid-cols-4]="isPopoutOpen()">
+                <app-dropdown 
+                    label="Estilo de Tarjeta de Producto"
+                    [options]="cardStyleDropdownOptions" 
+                    [value]="tokens().card_style" 
+                    (valueChange)="updateToken('card_style', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Proporción de Imagen de Producto"
+                    [options]="cardImageAspectDropdownOptions" 
+                    [value]="tokens().card_image_aspect" 
+                    (valueChange)="updateToken('card_image_aspect', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Estilo de Navegación del Header"
+                    [options]="headerStyleDropdownOptions" 
+                    [value]="tokens().header_style" 
+                    (valueChange)="updateToken('header_style', $event)">
+                </app-dropdown>
+
+                <app-dropdown 
+                    label="Disposición del Hero Banner"
+                    [options]="heroStyleDropdownOptions" 
+                    [value]="tokens().hero_style" 
+                    (valueChange)="updateToken('hero_style', $event)">
+                </app-dropdown>
+            </div>
+        </div>
+    }
+</div>

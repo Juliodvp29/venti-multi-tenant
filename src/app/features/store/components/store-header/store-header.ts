@@ -12,8 +12,8 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, RouterLink, CustomerAuthModal],
     template: `
-    <header [style.backgroundColor]="branding()?.header_color || 'rgba(255, 255, 255, 0.8)'" 
-            class="backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 transition-all duration-300">
+    <header [style.backgroundColor]="branding()?.header_color || 'var(--store-color-header, #ffffff)'" 
+            class="backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
             <!-- Logo & Title -->
             <a routerLink="/store" queryParamsHandling="preserve" class="flex items-center gap-3 group">
@@ -22,7 +22,9 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
                         <img [src]="branding()?.logo_url" alt="Logo" class="w-full h-full object-contain">
                     </div>
                 }
-                <span class="text-xl font-black tracking-tight group-hover:opacity-80 transition-opacity" [style.color]="'var(--primary-color)'">
+                <span class="text-xl font-extrabold tracking-tight group-hover:opacity-80 transition-opacity" 
+                      [style.color]="'var(--primary-color)'"
+                      [style.font-family]="'var(--store-font-heading)'">
                    {{ branding()?.business_name || 'Venti Store' }}
                 </span>
             </a>
@@ -30,7 +32,7 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
             <!-- Desktop Nav -->
             <nav class="hidden md:flex items-center gap-8">
                @for (link of navigation(); track link.label) {
-                   <a [routerLink]="link.url" queryParamsHandling="preserve" class="text-sm font-bold text-slate-600 hover:text-slate-900">
+                   <a [routerLink]="link.url" queryParamsHandling="preserve" class="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
                        {{ link.label }}
                    </a>
                }
@@ -47,11 +49,11 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
                 <!-- Auth Icon -->
                 @if (user()) {
                     <div class="flex items-center gap-3 pl-2">
-                        <button (click)="onLogout()" class="hidden md:block text-xs font-black text-slate-400 uppercase tracking-widest hover:text-red-500 transition-colors">
+                        <button (click)="onLogout()" class="hidden md:block text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-red-500 transition-colors">
                             Cerrar sesión
                         </button>
-                        <div class="h-10 w-10 md:h-12 md:w-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-900 border-2 border-slate-50 shadow-sm">
-                            <span class="font-black text-sm uppercase">{{ user()?.email?.[0] || 'U' }}</span>
+                        <div class="h-10 w-10 md:h-11 md:w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-900 border-2 border-slate-50 shadow-sm">
+                            <span class="font-bold text-sm uppercase">{{ user()?.email?.[0] || 'U' }}</span>
                         </div>
                     </div>
                 } @else {
@@ -59,16 +61,19 @@ import { CustomerAuthModal } from '@shared/components/customer-auth-modal/custom
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        <span class="hidden md:block text-xs font-black uppercase tracking-widest text-slate-900">Iniciar sesión</span>
+                        <span class="hidden md:block text-xs font-bold uppercase tracking-widest text-slate-900">Iniciar sesión</span>
                     </button>
                 }
                 
-                <button (click)="openCart.emit()" class="relative p-2.5 bg-slate-900 text-white rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200">
+                <button (click)="openCart.emit()" 
+                        class="relative p-2.5 bg-slate-900 text-white rounded-2xl hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
+                        [style.border-radius]="'var(--store-radius-btn, 1rem)'">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                     @if (cartCount() > 0) {
-                        <span class="absolute -top-1 -right-1 h-5 w-5 bg-indigo-500 text-white text-[10px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-sm scale-in">
+                        <span class="absolute -top-1 -right-1 h-5 w-5 bg-indigo-500 text-white text-[10px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-sm scale-in"
+                              [style.background-color]="'var(--store-color-accent, #6366f1)'">
                             {{ cartCount() }}
                         </span>
                     }
@@ -94,6 +99,7 @@ export class StoreHeader {
     @Output() openCart = new EventEmitter<void>();
 
     readonly branding = this.tenantService.branding;
+    readonly themeTokens = this.tenantService.themeTokens;
     readonly navigation = computed(() => this.tenantService.storefrontLayout().navigation || []);
     readonly cartCount = this.cartService.count;
     readonly user = this.authService.user;

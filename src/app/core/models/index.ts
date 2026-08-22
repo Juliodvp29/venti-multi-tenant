@@ -192,6 +192,7 @@ export interface AuditLog {
 }
 
 export * from './storefront.model';
+export * from './theme.model';
 
 export * from './commission';
 
