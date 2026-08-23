@@ -4,10 +4,13 @@ import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MediaManagerModal } from '@shared/components/media-manager-modal/media-manager-modal';
+import { BrandGalleryItem, BackgroundPatternOption } from '@core/models';
 
 @Component({
     selector: 'app-settings-branding',
-    imports: [CommonModule, ReactiveFormsModule],
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, MediaManagerModal],
     templateUrl: './settings-branding.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -21,6 +24,14 @@ export class SettingsBranding {
     readonly brandingChange = output<any>();
     readonly dirtyChange = output<boolean>();
 
+    // Media Manager Modal state
+    readonly isMediaManagerOpen = signal(false);
+    readonly activeTargetField = signal<string | null>(null);
+    readonly mediaFilter = signal<'all' | 'image' | 'video'>('all');
+
+    // Brand Gallery items signal
+    readonly brandGallery = signal<BrandGalleryItem[]>([]);
+
     readonly fonts = [
         { name: 'Inter', value: '"Inter", sans-serif' },
         { name: 'Roboto', value: '"Roboto", sans-serif' },
@@ -29,10 +40,12 @@ export class SettingsBranding {
         { name: 'Poppins', value: '"Poppins", sans-serif' },
     ];
 
-    readonly layouts = [
-        { id: 'modern', name: 'Moderno', icon: 'M4 6h16M4 12h16M4 18h7' },
-        { id: 'classic', name: 'Clásico', icon: 'M4 6h16M7 12h10M9 18h6' },
-        { id: 'minimal', name: 'Minimalista', icon: 'M4 6h16M4 10h16M4 14h16M4 18h16' },
+    readonly patterns: { label: string; value: BackgroundPatternOption }[] = [
+        { label: 'Ninguno (Liso)', value: 'none' },
+        { label: 'Puntos sutiles', value: 'dots' },
+        { label: 'Cuadrícula', value: 'grid' },
+        { label: 'Gradiente Mesh', value: 'mesh' },
+        { label: 'Granulado (Noise)', value: 'noise' },
     ];
 
     // Quick-pick color swatches
@@ -49,13 +62,24 @@ export class SettingsBranding {
         accent_color: ['#3b82f6', [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)]],
         font_family: ['"Inter", sans-serif', [Validators.required]],
         layout: ['modern', [Validators.required]],
+
+        // Recursos Visuales de Marca
         logo_url: [''],
+        logo_dark_url: [''],
         favicon_url: [''],
+        social_share_image_url: [''],
+        main_banner_url: [''],
+        background_image_url: [''],
+        background_pattern: ['none' as BackgroundPatternOption],
+        promo_video_url: [''],
+
         social_links: this.fb.group({
             whatsapp: [''],
             facebook: [''],
             instagram: [''],
             tiktok: [''],
+            youtube: [''],
+            twitter: [''],
         }),
     });
 
@@ -63,6 +87,7 @@ export class SettingsBranding {
         // Populate from tenant
         effect(() => {
             const tenant = this.tenant();
+            const branding = this.tenantService.branding();
             if (tenant) {
                 this.form.patchValue({
                     primary_color: tenant.primary_color,
@@ -73,15 +98,27 @@ export class SettingsBranding {
                     accent_color: tenant.accent_color,
                     font_family: tenant.font_family || '"Inter", sans-serif',
                     layout: tenant.layout || 'modern',
-                    logo_url: tenant.logo_url || '',
-                    favicon_url: tenant.favicon_url || '',
+                    logo_url: branding?.logo_url || tenant.logo_url || '',
+                    logo_dark_url: branding?.logo_dark_url || (tenant.settings?.['logo_dark_url'] as string) || '',
+                    favicon_url: branding?.favicon_url || tenant.favicon_url || '',
+                    social_share_image_url: branding?.social_share_image_url || (tenant.settings?.['social_share_image_url'] as string) || '',
+                    main_banner_url: branding?.main_banner_url || (tenant.settings?.['main_banner_url'] as string) || '',
+                    background_image_url: branding?.background_image_url || (tenant.settings?.['background_image_url'] as string) || '',
+                    background_pattern: branding?.background_pattern || (tenant.settings?.['background_pattern'] as any) || 'none',
+                    promo_video_url: branding?.promo_video_url || (tenant.settings?.['promo_video_url'] as string) || '',
                     social_links: {
                         whatsapp: tenant.social_links?.whatsapp || '',
                         facebook: tenant.social_links?.facebook || '',
                         instagram: tenant.social_links?.instagram || '',
                         tiktok: tenant.social_links?.tiktok || '',
+                        youtube: tenant.social_links?.youtube || '',
+                        twitter: tenant.social_links?.twitter || '',
                     },
                 }, { emitEvent: false });
+
+                const gallery = branding?.brand_gallery || (tenant.settings?.['brand_gallery'] as any) || [];
+                this.brandGallery.set(gallery);
+
                 this.form.markAsPristine();
                 this.emitBranding();
             }
@@ -95,10 +132,39 @@ export class SettingsBranding {
     }
 
     private emitBranding() {
-        this.brandingChange.emit(this.form.getRawValue());
+        this.brandingChange.emit({
+            ...this.form.getRawValue(),
+            brand_gallery: this.brandGallery(),
+        });
     }
 
-    async onFileSelected(event: Event, type: 'logo' | 'favicon') {
+    // Media Manager Modal Helpers
+    openMediaManager(fieldKey: string, filter: 'all' | 'image' | 'video' = 'all') {
+        this.activeTargetField.set(fieldKey);
+        this.mediaFilter.set(filter);
+        this.isMediaManagerOpen.set(true);
+    }
+
+    closeMediaManager() {
+        this.isMediaManagerOpen.set(false);
+        this.activeTargetField.set(null);
+    }
+
+    handleMediaSelected(url: string) {
+        const field = this.activeTargetField();
+        if (!field) return;
+
+        if (field === 'brand_gallery') {
+            this.addGalleryItem(url);
+        } else {
+            this.form.patchValue({ [field]: url });
+            this.form.markAsDirty();
+            this.emitBranding();
+        }
+    }
+
+    // Direct file upload fallback
+    async onFileSelected(event: Event, type: 'logo' | 'logo_dark' | 'favicon' | 'social_share' | 'main_banner' | 'background') {
         const input = event.target as HTMLInputElement;
         if (!input.files?.length) return;
 
@@ -107,8 +173,8 @@ export class SettingsBranding {
             this.toastService.error('El archivo debe ser una imagen');
             return;
         }
-        if (file.size > 2 * 1024 * 1024) {
-            this.toastService.error('La imagen no debe exceder los 2MB');
+        if (file.size > 5 * 1024 * 1024) {
+            this.toastService.error('La imagen no debe exceder los 5MB');
             return;
         }
 
@@ -116,8 +182,11 @@ export class SettingsBranding {
         try {
             const result = await this.tenantService.uploadBrandingAsset(file, type);
             if (result.success && result.url) {
-                this.form.patchValue({ [type === 'logo' ? 'logo_url' : 'favicon_url']: result.url });
-                this.toastService.success('Imagen actualizada exitosamente');
+                const formFieldKey = `${type}_url`;
+                this.form.patchValue({ [formFieldKey]: result.url });
+                this.form.markAsDirty();
+                this.emitBranding();
+                this.toastService.success('Recurso subido exitosamente');
             } else {
                 this.toastService.error(result.error || 'Error al subir la imagen');
             }
@@ -127,6 +196,37 @@ export class SettingsBranding {
             this.isSaving.set(false);
             input.value = '';
         }
+    }
+
+    // Brand Gallery Handlers
+    addGalleryItem(url: string, caption = '') {
+        const current = this.brandGallery();
+        const newItem: BrandGalleryItem = {
+            id: Date.now().toString(),
+            url,
+            caption
+        };
+        const updated = [...current, newItem];
+        this.brandGallery.set(updated);
+        this.form.markAsDirty();
+        this.emitBranding();
+        this.toastService.success('Imagen agregada a la galería de marca');
+    }
+
+    removeGalleryItem(id: string) {
+        const current = this.brandGallery();
+        const updated = current.filter(item => item.id !== id);
+        this.brandGallery.set(updated);
+        this.form.markAsDirty();
+        this.emitBranding();
+    }
+
+    updateGalleryCaption(id: string, caption: string) {
+        const current = this.brandGallery();
+        const updated = current.map(item => item.id === id ? { ...item, caption } : item);
+        this.brandGallery.set(updated);
+        this.form.markAsDirty();
+        this.emitBranding();
     }
 
     async save() {
@@ -140,17 +240,26 @@ export class SettingsBranding {
             const result = await this.tenantService.updateBranding({
                 ...data,
                 logo_url: data.logo_url || null,
+                logo_dark_url: data.logo_dark_url || null,
                 favicon_url: data.favicon_url || null,
+                social_share_image_url: data.social_share_image_url || null,
+                main_banner_url: data.main_banner_url || null,
+                background_image_url: data.background_image_url || null,
+                background_pattern: data.background_pattern || 'none',
+                promo_video_url: data.promo_video_url || null,
+                brand_gallery: this.brandGallery(),
                 layout: data.layout as 'modern' | 'classic' | 'minimal',
                 social_links: {
                     whatsapp: data.social_links.whatsapp || undefined,
                     facebook: data.social_links.facebook || undefined,
                     instagram: data.social_links.instagram || undefined,
                     tiktok: data.social_links.tiktok || undefined,
+                    youtube: data.social_links.youtube || undefined,
+                    twitter: data.social_links.twitter || undefined,
                 }
             });
             if (result.success) {
-                this.toastService.success('Configuración guardada exitosamente');
+                this.toastService.success('Recursos de marca guardados exitosamente');
                 this.form.markAsPristine();
                 this.dirtyChange.emit(false);
             } else {
@@ -165,6 +274,7 @@ export class SettingsBranding {
 
     cancel() {
         const tenant = this.tenant();
+        const branding = this.tenantService.branding();
         if (tenant) {
             this.form.patchValue({
                 primary_color: tenant.primary_color,
@@ -173,15 +283,27 @@ export class SettingsBranding {
                 header_color: tenant.header_color || '#ffffff',
                 footer_color: tenant.footer_color || '#ffffff',
                 accent_color: tenant.accent_color,
-                logo_url: tenant.logo_url || '',
-                favicon_url: tenant.favicon_url || '',
+                logo_url: branding?.logo_url || tenant.logo_url || '',
+                logo_dark_url: branding?.logo_dark_url || (tenant.settings?.['logo_dark_url'] as string) || '',
+                favicon_url: branding?.favicon_url || tenant.favicon_url || '',
+                social_share_image_url: branding?.social_share_image_url || (tenant.settings?.['social_share_image_url'] as string) || '',
+                main_banner_url: branding?.main_banner_url || (tenant.settings?.['main_banner_url'] as string) || '',
+                background_image_url: branding?.background_image_url || (tenant.settings?.['background_image_url'] as string) || '',
+                background_pattern: branding?.background_pattern || (tenant.settings?.['background_pattern'] as any) || 'none',
+                promo_video_url: branding?.promo_video_url || (tenant.settings?.['promo_video_url'] as string) || '',
                 social_links: {
                     whatsapp: tenant.social_links?.whatsapp || '',
                     facebook: tenant.social_links?.facebook || '',
                     instagram: tenant.social_links?.instagram || '',
                     tiktok: tenant.social_links?.tiktok || '',
+                    youtube: tenant.social_links?.youtube || '',
+                    twitter: tenant.social_links?.twitter || '',
                 },
             });
+
+            const gallery = branding?.brand_gallery || (tenant.settings?.['brand_gallery'] as any) || [];
+            this.brandGallery.set(gallery);
+
             this.form.markAsPristine();
             this.dirtyChange.emit(false);
         }

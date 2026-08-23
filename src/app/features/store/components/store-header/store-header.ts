@@ -44,10 +44,10 @@ import { getContrastColor } from '@core/constants/theme-presets';
                 <a routerLink="/store" queryParamsHandling="preserve"
                    class="flex items-center gap-3 group flex-shrink-0"
                    [class.order-last]="logoPosition() === 'right'">
-                    @if (branding()?.logo_url) {
+                    @if (activeLogoUrl()) {
                         <div class="overflow-hidden rounded-xl bg-slate-50 border border-slate-100 p-1 flex-shrink-0"
                              [class]="logoSizeClass()">
-                            <img [src]="branding()?.logo_url" alt="Logo" class="w-full h-full object-contain">
+                            <img [src]="activeLogoUrl()" alt="Logo" class="w-full h-full object-contain">
                         </div>
                     }
                     <span class="text-xl font-extrabold tracking-tight group-hover:opacity-80 transition-opacity"
@@ -96,10 +96,10 @@ import { getContrastColor } from '@core/constants/theme-presets';
 
                 <a routerLink="/store" queryParamsHandling="preserve"
                    class="flex items-center gap-3 group flex-shrink-0 absolute left-1/2 -translate-x-1/2">
-                    @if (branding()?.logo_url) {
+                    @if (activeLogoUrl()) {
                         <div class="overflow-hidden rounded-xl bg-slate-50 border border-slate-100 p-1 flex-shrink-0"
                              [class]="logoSizeClass()">
-                            <img [src]="branding()?.logo_url" alt="Logo" class="w-full h-full object-contain">
+                            <img [src]="activeLogoUrl()" alt="Logo" class="w-full h-full object-contain">
                         </div>
                     }
                     <span class="text-xl font-extrabold tracking-tight group-hover:opacity-80 transition-opacity"
@@ -270,6 +270,16 @@ export class StoreHeader {
     readonly showCart      = computed(() => this.themeTokens()?.header_show_cart ?? true);
     readonly showSocials   = computed(() => this.themeTokens()?.header_show_socials ?? false);
     readonly isHamburger   = computed(() => this.themeTokens()?.header_hamburger ?? false);
+
+    readonly activeLogoUrl = computed(() => {
+        const b = this.branding();
+        const headerBg = b?.header_color || 'var(--store-color-header, #ffffff)';
+        const isHeaderDark = getContrastColor(headerBg) === '#ffffff';
+        if (isHeaderDark && b?.logo_dark_url) {
+            return b.logo_dark_url;
+        }
+        return b?.logo_url || null;
+    });
 
     readonly primaryContrastColor = computed(() => {
         return getContrastColor(this.branding()?.primary_color || this.themeTokens()?.colors?.primary || '#0a0a0a');

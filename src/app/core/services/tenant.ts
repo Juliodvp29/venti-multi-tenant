@@ -216,7 +216,14 @@ export class TenantService {
     if (!t) return null;
     return {
       logo_url: t.logo_url,
+      logo_dark_url: t.logo_dark_url || (t.settings?.['logo_dark_url'] as string) || null,
       favicon_url: t.favicon_url,
+      social_share_image_url: t.social_share_image_url || (t.settings?.['social_share_image_url'] as string) || null,
+      main_banner_url: t.main_banner_url || (t.settings?.['main_banner_url'] as string) || null,
+      background_image_url: t.background_image_url || (t.settings?.['background_image_url'] as string) || null,
+      background_pattern: t.background_pattern || (t.settings?.['background_pattern'] as any) || 'none',
+      promo_video_url: t.promo_video_url || (t.settings?.['promo_video_url'] as string) || null,
+      brand_gallery: t.brand_gallery || (t.settings?.['brand_gallery'] as any) || [],
       business_name: t.business_name,
       description: t.description,
       primary_color: t.primary_color,
@@ -592,21 +599,9 @@ export class TenantService {
   }
 
   /**
-   * Update branding colors and logos
+   * Update branding colors, logos, and brand assets
    */
-  async updateBranding(branding: {
-    primary_color?: string;
-    secondary_color?: string;
-    accent_color?: string;
-    logo_url?: string | null;
-    favicon_url?: string | null;
-    font_family?: string;
-    background_color?: string;
-    header_color?: string;
-    footer_color?: string;
-    layout?: 'modern' | 'classic' | 'minimal';
-    social_links?: SocialLinks;
-  }): Promise<{ success: boolean; error?: string }> {
+  async updateBranding(branding: Partial<TenantBranding> & { [key: string]: any }): Promise<{ success: boolean; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) {
       return { success: false, error: 'No tenant found' };
@@ -821,21 +816,21 @@ export class TenantService {
   }
 
   /**
-   * Upload branding asset (logo or favicon)
+   * Upload branding asset (logo, logo_dark, favicon, social_share, main_banner, background, etc.)
    */
   async uploadBrandingAsset(
     file: File,
-    type: 'logo' | 'favicon'
+    type: 'logo' | 'logo_dark' | 'favicon' | 'social_share' | 'main_banner' | 'background' | 'video' | 'media'
   ): Promise<{ success: boolean; url?: string; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No tenant found' };
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${tenantId}/${type}-${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const fileExt = file.name.split('.').pop() || 'png';
+      const cleanName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const filePath = `${tenantId}/${type}-${Date.now()}-${cleanName}`;
 
-      const bucketName = environment.storage.buckets.products;
+      const bucketName = environment.storage.buckets.media || environment.storage.buckets.products || 'product-images';
       const { error: uploadError } = await this.supabase.storage
         .from(bucketName)
         .upload(filePath, file, {
@@ -847,10 +842,6 @@ export class TenantService {
 
       const { data } = this.supabase.storage.from(bucketName).getPublicUrl(filePath);
 
-      // Update tenant with new URL
-      const updateData = type === 'logo' ? { logo_url: data.publicUrl } : { favicon_url: data.publicUrl };
-      await this.updateTenant(tenantId, updateData);
-
       return { success: true, url: data.publicUrl };
     } catch (error) {
       console.error(`Error uploading ${type}:`, error);
@@ -858,6 +849,58 @@ export class TenantService {
         success: false,
         error: error instanceof Error ? error.message : `Failed to upload ${type}`
       };
+    }
+  }
+
+  /**
+   * List all media assets belonging to the current tenant in storage
+   */
+  async listTenantMedia(): Promise<{ name: string; url: string; created_at?: string; size?: number; type: string }[]> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return [];
+
+    try {
+      const bucketName = environment.storage.buckets.media || environment.storage.buckets.products || 'product-images';
+      const { data, error } = await this.supabase.storage
+        .from(bucketName)
+        .list(tenantId, { limit: 100, offset: 0, sortBy: { column: 'created_at', order: 'desc' } });
+
+      if (error || !data) return [];
+
+      return data.map(item => {
+        const fullPath = `${tenantId}/${item.name}`;
+        const { data: urlData } = this.supabase.storage.from(bucketName).getPublicUrl(fullPath);
+        const ext = item.name.split('.').pop()?.toLowerCase() || '';
+        const isVideo = ['mp4', 'webm', 'ogg', 'mov'].includes(ext);
+        return {
+          name: item.name,
+          url: urlData.publicUrl,
+          created_at: item.created_at,
+          size: (item.metadata as any)?.size,
+          type: isVideo ? 'video' : 'image',
+        };
+      });
+    } catch (err) {
+      console.error('Error listing tenant media:', err);
+      return [];
+    }
+  }
+
+  /**
+   * Delete a tenant media asset from storage
+   */
+  async deleteTenantMedia(filename: string): Promise<boolean> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return false;
+
+    try {
+      const bucketName = environment.storage.buckets.media || environment.storage.buckets.products || 'product-images';
+      const filePath = `${tenantId}/${filename}`;
+      const { error } = await this.supabase.storage.from(bucketName).remove([filePath]);
+      return !error;
+    } catch (err) {
+      console.error('Error deleting tenant media:', err);
+      return false;
     }
   }
 

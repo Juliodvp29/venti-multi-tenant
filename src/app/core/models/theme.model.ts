@@ -158,6 +158,13 @@ export interface ThemeTokens {
     footer_payment_methods?: FooterPaymentMethod[];
     footer_copyright_text?: string;
 
+    // Recursos Visuales de Marca
+    logo_dark_url?: string;
+    main_banner_url?: string;
+    background_image_url?: string;
+    background_pattern?: 'none' | 'dots' | 'grid' | 'mesh' | 'noise';
+    promo_video_url?: string;
+
     // Paleta de Colores
     colors: ThemeColors;
 }

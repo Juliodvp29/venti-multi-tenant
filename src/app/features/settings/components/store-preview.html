@@ -44,8 +44,8 @@
             <!-- ===== LOGO LEFT OR RIGHT ===== -->
             @if (headerLogoPosition !== 'center') {
                 <div class="flex items-center space-x-3" [class.order-last]="headerLogoPosition === 'right'">
-                    @if (data().logo_url) {
-                        <img [src]="data().logo_url" alt="Logo" [class]="headerLogoSizeClass + ' w-auto object-contain'">
+                    @if (activeLogoUrl) {
+                        <img [src]="activeLogoUrl" alt="Logo" [class]="headerLogoSizeClass + ' w-auto object-contain'">
                     } @else {
                         <span class="font-bold text-lg" [style.font-family]="activeTokens.font_heading" [style.color]="data().primary_color">
                             {{ data().business_name }}
@@ -114,8 +114,8 @@
                 }
 
                 <div class="flex items-center space-x-3 absolute left-1/2 -translate-x-1/2">
-                    @if (data().logo_url) {
-                        <img [src]="data().logo_url" alt="Logo" [class]="headerLogoSizeClass + ' w-auto object-contain'">
+                    @if (activeLogoUrl) {
+                        <img [src]="activeLogoUrl" alt="Logo" [class]="headerLogoSizeClass + ' w-auto object-contain'">
                     } @else {
                         <span class="font-bold text-lg" [style.font-family]="activeTokens.font_heading" [style.color]="data().primary_color">
                             {{ data().business_name }}

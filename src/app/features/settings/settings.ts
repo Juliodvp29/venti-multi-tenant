@@ -18,6 +18,14 @@ import { StorefrontLayout, ThemeTokens } from '@core/models';
 export interface PreviewData {
   business_name: string;
   logo_url: string | null;
+  logo_dark_url?: string | null;
+  social_share_image_url?: string | null;
+  main_banner_url?: string | null;
+  background_image_url?: string | null;
+  background_pattern?: string;
+  promo_video_url?: string | null;
+  brand_gallery?: any[];
+  social_links?: any;
   primary_color: string;
   secondary_color: string;
   accent_color: string;
@@ -147,12 +155,21 @@ export class Settings {
     // Sync preview data when tenant or layout changes
     effect(() => {
       const t = this.tenantService.tenant();
+      const branding = this.tenantService.branding();
       const tokens = this.tenantService.themeTokens();
       if (t) {
         this.previewData.update(prev => ({
           ...prev,
           business_name: t.business_name,
-          logo_url: t.logo_url,
+          logo_url: branding?.logo_url || t.logo_url,
+          logo_dark_url: branding?.logo_dark_url || (t.settings?.['logo_dark_url'] as string) || null,
+          social_share_image_url: branding?.social_share_image_url || (t.settings?.['social_share_image_url'] as string) || null,
+          main_banner_url: branding?.main_banner_url || (t.settings?.['main_banner_url'] as string) || null,
+          background_image_url: branding?.background_image_url || (t.settings?.['background_image_url'] as string) || null,
+          background_pattern: branding?.background_pattern || (t.settings?.['background_pattern'] as any) || 'none',
+          promo_video_url: branding?.promo_video_url || (t.settings?.['promo_video_url'] as string) || null,
+          brand_gallery: branding?.brand_gallery || (t.settings?.['brand_gallery'] as any) || [],
+          social_links: t.social_links,
           primary_color: tokens.colors.primary || t.primary_color,
           secondary_color: tokens.colors.secondary || t.secondary_color,
           accent_color: tokens.colors.accent || t.accent_color,

@@ -6,6 +6,14 @@ import { themeTokensToCssVars, THEME_PRESETS, getContrastColor } from '@core/con
 export interface PreviewData {
     business_name: string;
     logo_url: string | null;
+    logo_dark_url?: string | null;
+    social_share_image_url?: string | null;
+    main_banner_url?: string | null;
+    background_image_url?: string | null;
+    background_pattern?: string;
+    promo_video_url?: string | null;
+    brand_gallery?: any[];
+    social_links?: any;
     primary_color: string;
     secondary_color: string;
     accent_color: string;
@@ -143,6 +151,15 @@ export class StorePreview {
             isNew: true,
         }
     ];
+
+    get activeLogoUrl(): string | null {
+        const headerBg = this.data().header_color || '#ffffff';
+        const isHeaderDark = getContrastColor(headerBg) === '#ffffff';
+        if (isHeaderDark && this.data().logo_dark_url) {
+            return this.data().logo_dark_url!;
+        }
+        return this.data().logo_url;
+    }
 
     get cardOrientation(): string {
         return this.activeTokens.card_orientation || 'vertical';

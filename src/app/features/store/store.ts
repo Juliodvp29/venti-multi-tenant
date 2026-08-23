@@ -179,9 +179,12 @@ export class StoreComponent {
         this.seo.updateTags({
           title: branding.business_name || 'Venti Shop',
           description: branding.description || 'Nuestra tienda online oficial.',
-          image: branding.logo_url || undefined,
+          image: branding.social_share_image_url || branding.logo_url || undefined,
           siteName: branding.business_name || 'Venti Shop'
         });
+        if (branding.favicon_url) {
+          this.seo.updateFavicon(branding.favicon_url);
+        }
       }
 
       // Dynamically load Google Fonts if needed
@@ -200,10 +203,12 @@ export class StoreComponent {
     if (!tokens) return {};
 
     const cssVars = themeTokensToCssVars(tokens);
+    const bgImage = branding?.background_image_url || tokens.background_image_url;
 
     return {
       ...cssVars,
-      'font-family': tokens.font_body || branding?.font_family || '"Inter", sans-serif'
+      'font-family': tokens.font_body || branding?.font_family || '"Inter", sans-serif',
+      ...(bgImage ? { 'background-image': `url('${bgImage}')`, 'background-size': 'cover', 'background-attachment': 'fixed' } : {})
     };
   });
 
