@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
@@ -7,6 +7,7 @@ import { PreviewSyncService } from '@core/services/preview-sync.service';
 import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, CardOrientationOption, CardBorderStyleOption, CardCartButtonOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption, FooterColumnsOption, FooterThemeModeOption, FooterAlignmentOption, FooterPaymentMethod, FooterLegalLink } from '@core/models';
 import { THEME_PRESETS, AVAILABLE_FONTS, TYPOGRAPHY_PAIRINGS } from '@core/constants/theme-presets';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
+import { validateAndSanitizeCss, highlightCssToHtml, CSS_VARIABLE_CATALOG, CSS_SNIPPETS, CssValidationMessage, CssVariableCatalogGroup, CssSnippet } from '@core/utils/css-validator';
 
 @Component({
     selector: 'app-settings-theme',
@@ -93,7 +94,50 @@ export class SettingsTheme {
     readonly tokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly savedTokens = signal<ThemeTokens>(structuredClone(this.tenantService.themeTokens()));
     readonly isSaving = signal(false);
-    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards' | 'header' | 'footer'>('preset');
+    readonly activeCustomizerTab = signal<'preset' | 'colors' | 'typography' | 'borders' | 'shadows' | 'spacing' | 'buttons' | 'cards' | 'header' | 'footer' | 'custom_css'>('preset');
+
+    // CSS Personalizado Avanzado State
+    readonly cssVariableCatalog = CSS_VARIABLE_CATALOG;
+    readonly cssSnippets = CSS_SNIPPETS;
+    readonly cssSearchQuery = signal('');
+    readonly activeVariableCategory = signal<string>('all');
+    readonly copiedVariable = signal<string | null>(null);
+    readonly cssEditorView = signal<'edit' | 'preview'>('edit');
+
+    readonly cssValidation = computed(() => validateAndSanitizeCss(this.tokens().custom_css || ''));
+    readonly cssLineCount = computed(() => {
+        const text = this.tokens().custom_css || '';
+        if (!text) return 1;
+        return text.split('\n').length;
+    });
+
+    readonly highlightedCustomCss = computed(() => {
+        const text = this.tokens().custom_css || '';
+        return highlightCssToHtml(text);
+    });
+
+    readonly lineNumbersArray = computed(() => {
+        const count = Math.max(this.cssLineCount(), 14);
+        return Array.from({ length: count }, (_, i) => i + 1);
+    });
+
+    readonly filteredCssVariables = computed(() => {
+        const q = this.cssSearchQuery().toLowerCase().trim();
+        const cat = this.activeVariableCategory();
+
+        return this.cssVariableCatalog.map(group => {
+            if (cat !== 'all' && group.category !== cat) {
+                return { ...group, entries: [] };
+            }
+            if (!q) return group;
+            const entries = group.entries.filter(e =>
+                e.variable.toLowerCase().includes(q) ||
+                e.label.toLowerCase().includes(q) ||
+                e.description.toLowerCase().includes(q)
+            );
+            return { ...group, entries };
+        }).filter(g => g.entries.length > 0);
+    });
 
     readonly spacingDensities: { label: string; value: SpacingDensityOption; description: string }[] = [
         { label: 'Compacto', value: 'compact', description: 'Menor espaciado, mayor densidad de productos en pantalla' },
@@ -397,6 +441,99 @@ export class SettingsTheme {
         } finally {
             this.isSaving.set(false);
         }
+    }
+
+    // Advanced Custom CSS Methods
+    updateCustomCss(value: string) {
+        this.updateToken('custom_css', value);
+    }
+
+    insertCssSnippet(snippet: CssSnippet) {
+        const current = this.tokens().custom_css || '';
+        const separator = current.trim().length > 0 ? '\n\n' : '';
+        const updated = current + separator + `/* === ${snippet.name} === */\n` + snippet.css;
+        this.updateCustomCss(updated);
+        this.toastService.success(`Snippet "${snippet.name}" insertado`);
+    }
+
+    insertCssVariable(variable: string) {
+        const current = this.tokens().custom_css || '';
+        const toInsert = `var(${variable})`;
+        const updated = current + (current.endsWith(' ') || current.endsWith(':') ? '' : ' ') + toInsert;
+        this.updateCustomCss(updated);
+        this.toastService.info(`Variable ${variable} agregada`);
+    }
+
+    copyCssVariable(variable: string) {
+        navigator.clipboard?.writeText(`var(${variable})`);
+        this.copiedVariable.set(variable);
+        setTimeout(() => this.copiedVariable.set(null), 2000);
+        this.toastService.success(`Copiado: var(${variable})`);
+    }
+
+    clearCustomCss() {
+        if (confirm('¿Estás seguro de que deseas borrar todo el CSS personalizado?')) {
+            this.updateCustomCss('');
+            this.toastService.info('CSS personalizado limpiado');
+        }
+    }
+
+    formatCustomCss() {
+        const raw = this.tokens().custom_css || '';
+        if (!raw.trim()) return;
+
+        // Simple beautifier: format braces, indentation and newlines
+        let formatted = '';
+        let indentLevel = 0;
+        const lines = raw.split('\n');
+
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+
+            if (line.includes('}')) {
+                indentLevel = Math.max(0, indentLevel - 1);
+            }
+
+            const indent = '  '.repeat(indentLevel);
+            formatted += indent + line + '\n';
+
+            if (line.includes('{')) {
+                indentLevel++;
+            }
+        }
+
+        this.updateCustomCss(formatted.trim());
+        this.toastService.info('CSS formateado');
+    }
+
+    onCodeInput(event: Event) {
+        const value = (event.target as HTMLTextAreaElement).value;
+        this.updateCustomCss(value);
+    }
+
+    syncEditorScroll(textarea: HTMLTextAreaElement, pre: HTMLElement) {
+        if (pre) {
+            pre.scrollTop = textarea.scrollTop;
+            pre.scrollLeft = textarea.scrollLeft;
+        }
+    }
+
+    handleTabKey(event: Event, textarea: HTMLTextAreaElement) {
+        const kbEvent = event as KeyboardEvent;
+        kbEvent.preventDefault();
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const value = textarea.value;
+
+        // Insert 2 spaces
+        const updated = value.substring(0, start) + '  ' + value.substring(end);
+        this.updateCustomCss(updated);
+
+        // Restore caret position
+        setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = start + 2;
+        }, 0);
     }
 
     cancel() {

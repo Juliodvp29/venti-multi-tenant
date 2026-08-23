@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, effect, Renderer2, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -6,6 +6,7 @@ import { filter, map, startWith } from 'rxjs';
 import { TenantService } from '@core/services/tenant';
 import { SeoService } from '@core/services/seo';
 import { themeTokensToCssVars, AVAILABLE_FONTS, getContrastColor } from '@core/constants/theme-presets';
+import { validateAndSanitizeCss } from '@core/utils/css-validator';
 import { StorePageId, PageLayoutConfig, PageHeaderStyle, PageFooterStyle } from '@core/models';
 import { StoreHeader } from './components/store-header/store-header';
 import { CartDrawer } from './components/cart-drawer/cart-drawer';
@@ -210,6 +211,32 @@ export class StoreComponent {
       'font-family': tokens.font_body || branding?.font_family || '"Inter", sans-serif',
       ...(bgImage ? { 'background-image': `url('${bgImage}')`, 'background-size': 'cover', 'background-attachment': 'fixed' } : {})
     };
+  });
+
+  private readonly renderer = inject(Renderer2);
+  private readonly elementRef = inject(ElementRef);
+  private styleElement: HTMLStyleElement | null = null;
+
+  readonly sanitizedCustomCss = computed(() => {
+    const raw = this.themeTokens()?.custom_css;
+    if (!raw || !raw.trim()) return '';
+    return validateAndSanitizeCss(raw).sanitizedCss;
+  });
+
+  private injectCustomCss = effect(() => {
+    const css = this.sanitizedCustomCss();
+    const root = this.elementRef.nativeElement as HTMLElement;
+
+    if (this.styleElement) {
+      this.renderer.removeChild(root, this.styleElement);
+      this.styleElement = null;
+    }
+
+    if (!css) return;
+
+    this.styleElement = this.renderer.createElement('style');
+    this.renderer.setProperty(this.styleElement, 'textContent', css);
+    this.renderer.appendChild(root, this.styleElement);
   });
 
   private ensureFontLoaded(fontFamily: string) {

@@ -165,6 +165,9 @@ export interface ThemeTokens {
     background_pattern?: 'none' | 'dots' | 'grid' | 'mesh' | 'noise';
     promo_video_url?: string;
 
+    // CSS Personalizado Avanzado
+    custom_css?: string;
+
     // Paleta de Colores
     colors: ThemeColors;
 }

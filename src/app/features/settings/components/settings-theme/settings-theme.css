@@ -2,3 +2,127 @@
 :host {
     display: block;
 }
+
+/* Custom CSS Code Editor Styling */
+.code-editor-container {
+    background-color: #030712 !important;
+    color: #e2e8f0 !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+    font-size: 13px !important;
+    line-height: 22px !important;
+    border-radius: 1rem;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #1e293b;
+}
+
+.code-editor-gutter {
+    background-color: #0b0f19 !important;
+    color: #475569 !important;
+    border-right: 1px solid #1e293b !important;
+    font-family: inherit !important;
+    font-size: 11px !important;
+    line-height: 22px !important;
+    user-select: none !important;
+    padding: 16px 8px 16px 12px !important;
+    text-align: right !important;
+    width: 44px !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.code-editor-workspace {
+    position: relative;
+    flex: 1 1 0%;
+    min-width: 0;
+    height: 420px;
+    background-color: #030712 !important;
+}
+
+.code-editor-textarea {
+    width: 100% !important;
+    height: 100% !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+    font-size: 13px !important;
+    line-height: 22px !important;
+    letter-spacing: 0px !important;
+    tab-size: 2 !important;
+    padding: 16px !important;
+    margin: 0 !important;
+    border: none !important;
+    box-sizing: border-box !important;
+    white-space: pre !important;
+    overflow-wrap: normal !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    background-color: #030712 !important;
+    color: #38bdf8 !important;
+    caret-color: #34d399 !important;
+    resize: none !important;
+    outline: none !important;
+}
+
+.code-editor-pre {
+    width: 100% !important;
+    height: 100% !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+    font-size: 13px !important;
+    line-height: 22px !important;
+    letter-spacing: 0px !important;
+    tab-size: 2 !important;
+    padding: 16px !important;
+    margin: 0 !important;
+    border: none !important;
+    box-sizing: border-box !important;
+    white-space: pre !important;
+    overflow-wrap: normal !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    background-color: #030712 !important;
+    color: #e2e8f0 !important;
+}
+
+.code-editor-textarea::selection {
+    background-color: rgba(99, 102, 241, 0.4) !important;
+    color: #ffffff !important;
+}
+
+/* Syntax Highlighting Tokens with ::ng-deep for emulated encapsulation */
+:host ::ng-deep .css-tok-comment {
+    color: #64748b !important;
+    font-style: italic !important;
+}
+
+:host ::ng-deep .css-tok-string {
+    color: #fde68a !important;
+}
+
+:host ::ng-deep .css-tok-var {
+    color: #fbbf24 !important;
+    font-weight: 600 !important;
+}
+
+:host ::ng-deep .css-tok-important {
+    color: #f43f5e !important;
+    font-weight: 700 !important;
+}
+
+:host ::ng-deep .css-tok-hex {
+    color: #c084fc !important;
+    font-weight: 600 !important;
+}
+
+:host ::ng-deep .css-tok-num {
+    color: #34d399 !important;
+    font-family: inherit !important;
+}
+
+:host ::ng-deep .css-tok-atrule {
+    color: #f472b6 !important;
+    font-weight: 700 !important;
+}
+
+:host ::ng-deep .css-tok-prop {
+    color: #38bdf8 !important;
+    font-weight: 500 !important;
+}

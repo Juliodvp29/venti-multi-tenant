@@ -159,6 +159,7 @@ export class TenantService {
       return {
         ...baseTokens,
         ...savedTokens,
+        custom_css: savedTokens.custom_css ?? (settings?.custom_css as string) ?? '',
         font_button: savedTokens.font_button || savedTokens.font_body || baseTokens.font_button || baseTokens.font_body || '"Inter", sans-serif',
         font_weight_heading: savedTokens.font_weight_heading || baseTokens.font_weight_heading || '700',
         font_size_base: savedTokens.font_size_base || baseTokens.font_size_base || '16px',
@@ -172,6 +173,7 @@ export class TenantService {
 
     return {
       ...baseTokens,
+      custom_css: (settings?.custom_css as string) || '',
       font_heading: t.font_family || baseTokens.font_heading,
       font_body: t.font_family || baseTokens.font_body,
       font_button: t.font_family || baseTokens.font_button || baseTokens.font_body,

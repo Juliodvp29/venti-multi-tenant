@@ -36,7 +36,7 @@
         <!-- Store Header -->
         @if (pageHeaderStyle() !== 'hidden') {
         <header
-            class="px-4 py-3 border-b flex items-center justify-between sticky top-0 backdrop-blur-md z-10 shrink-0 relative transition-all"
+            class="store-header px-4 py-3 border-b flex items-center justify-between sticky top-0 backdrop-blur-md z-10 shrink-0 relative transition-all"
             [class.border-slate-200\/60]="pageHeaderStyle() !== 'transparent'"
             [class.border-transparent]="pageHeaderStyle() === 'transparent'"
             [style.background-color]="pageHeaderStyle() === 'transparent' ? 'transparent' : (data().header_color || 'var(--store-color-header)')">
@@ -180,7 +180,7 @@
                         <!-- 1. HERO -->
                         @if (section.type === 'hero') {
                             <section [ngStyle]="getSectionStyle(section)"
-                                class="relative overflow-hidden flex items-center justify-center transition-all duration-300"
+                                class="hero-section relative overflow-hidden flex items-center justify-center transition-all duration-300"
                                 [class]="getSectionPaddingClass(section)"
                                 [class.min-h-\[350px\]]="asAny(section.content).height === 'compact'"
                                 [class.md:min-h-\[420px\]]="asAny(section.content).height === 'compact'"
@@ -417,9 +417,7 @@
                                 <div [class]="getSectionContainerClass(section)">
                                     <div class="flex items-center justify-between mb-4">
                                         <div>
-                                            <h3 class="text-sm font-bold tracking-tight"
-                                                [style.color]="'var(--store-color-text)'"
-                                                [style.font-family]="activeTokens.font_heading">
+                                            <h3 class="text-sm font-bold tracking-tight">
                                                 {{ asAny(section.content).title }}
                                             </h3>
                                             @if (asAny(section.content).description) {
@@ -432,7 +430,7 @@
 
                                     <div [class]="cardOrientation === 'horizontal' ? 'grid grid-cols-1 sm:grid-cols-2 gap-3' : 'grid grid-cols-2 sm:grid-cols-4 gap-3'">
                                         @for (p of mockProducts.slice(0, asAny(section.content).limit || 4); track p.name) {
-                                            <div class="group p-2.5 overflow-hidden transition-all relative"
+                                            <div class="product-card group p-2.5 overflow-hidden transition-all relative"
                                                 [class.flex]="true"
                                                 [class.flex-col]="cardOrientation === 'vertical'"
                                                 [class.justify-between]="cardOrientation === 'vertical'"
@@ -442,19 +440,14 @@
                                                 [class.border]="cardBorderStyle === 'bordered'"
                                                 [class.border-0]="cardBorderStyle !== 'bordered'"
                                                 [class.shadow-md]="cardBorderStyle === 'shadow'"
-                                                [class.hover:shadow-lg]="cardBorderStyle === 'shadow' || cardBorderStyle === 'bordered'"
-                                                [style.border-color]="'var(--store-color-border, #e5e5e5)'"
-                                                [style.border-radius]="'var(--store-radius-card, 1rem)'"
-                                                [style.box-shadow]="cardBorderStyle === 'shadow' ? 'var(--store-shadow, 0 4px 6px -1px rgba(0,0,0,0.1))' : 'none'"
-                                                [style.background-color]="'var(--store-color-surface, #ffffff)'">
+                                                [class.hover:shadow-lg]="cardBorderStyle === 'shadow' || cardBorderStyle === 'bordered'">
                                                 
                                                 <!-- Image -->
-                                                <div class="bg-slate-50 relative overflow-hidden shrink-0"
+                                                <div class="bg-slate-50 relative overflow-hidden shrink-0 rounded-[inherit]"
                                                     [class.w-full]="cardOrientation === 'vertical'"
                                                     [class.w-28]="cardOrientation === 'horizontal'"
                                                     [class.mb-2]="cardOrientation === 'vertical'"
-                                                    [ngClass]="cardImageAspectClass"
-                                                    [style.border-radius]="'var(--store-radius-card, 1rem)'">
+                                                    [ngClass]="cardImageAspectClass">
                                                     <img [src]="p.image" [alt]="p.name" 
                                                          class="w-full h-full object-cover transition-all duration-500"
                                                          [class.group-hover:scale-105]="!cardHoverSecondaryImage || !p.secondaryImage"
@@ -519,9 +512,7 @@
                                                 <!-- Info -->
                                                 <div class="flex-1 flex flex-col justify-between">
                                                     <div>
-                                                        <p class="truncate text-[11px] font-bold mb-0.5" 
-                                                           [style.color]="'var(--store-color-text)'"
-                                                           [style.font-family]="activeTokens.font_heading">{{ p.name }}</p>
+                                                        <p class="truncate text-[11px] font-bold mb-0.5">{{ p.name }}</p>
                                                         
                                                         @if (cardShowStock) {
                                                             <p class="text-[8px] text-emerald-600 dark:text-emerald-400 font-medium">
@@ -573,9 +564,7 @@
                                     }
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                         @for (cat of (asAny(section.content).categories || []); track cat.id) {
-                                            <div class="p-4 border border-slate-200/60 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col items-center"
-                                                [style.background-color]="'var(--store-color-surface, #ffffff)'"
-                                                [style.border-radius]="'var(--store-radius-card, 1rem)'">
+                                            <div class="category-card p-4 border border-slate-200/60 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col items-center">
                                                 <span class="text-2xl mb-1">{{ cat.icon || '🛍️' }}</span>
                                                 <span class="text-xs font-bold" [style.color]="'var(--store-color-text)'">{{ cat.name }}</span>
                                             </div>
@@ -620,9 +609,7 @@
                                     <p class="text-xs text-gray-500 mb-6">{{ asAny(section.content).subtitle }}</p>
                                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                         @for (t of (asAny(section.content).items || []); track t.id) {
-                                            <div class="p-4 rounded-2xl border border-slate-200/60 shadow-sm text-left flex flex-col justify-between"
-                                                [style.background-color]="'var(--store-color-surface, #ffffff)'"
-                                                [style.border-radius]="'var(--store-radius-card, 1rem)'">
+                                            <div class="testimonial-card p-4 rounded-2xl border border-slate-200/60 shadow-sm text-left flex flex-col justify-between">
                                                 <div>
                                                     <div class="flex text-amber-400 text-xs mb-2">★★★★★</div>
                                                     <p class="text-xs italic text-slate-600 dark:text-gray-300 mb-4">"{{ t.content }}"</p>
@@ -657,7 +644,7 @@
                                     </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                         @for (r of (asAny(section.content).items || []); track r.id) {
-                                            <div class="p-3.5 rounded-xl border border-slate-200/60 bg-white dark:bg-gray-800 shadow-sm space-y-1">
+                                            <div class="review-card p-3.5 rounded-xl border border-slate-200/60 bg-white dark:bg-gray-800 shadow-sm space-y-1">
                                                 <div class="flex items-center justify-between">
                                                     <span class="text-xs font-bold">{{ r.author }}</span>
                                                     <span class="text-[10px] text-emerald-600 font-bold">✓ Verificado</span>
@@ -880,7 +867,7 @@
                         </div>
                     </footer>
                 } @else {
-                    <footer class="border-t pt-10 pb-6 px-4 sm:px-8 mt-10 transition-all"
+                    <footer class="store-footer border-t pt-10 pb-6 px-4 sm:px-8 mt-10 transition-all"
                         [style.background-color]="footerBgColor"
                         [style.border-color]="footerBorderColor"
                         [style.color]="footerTextColor">
