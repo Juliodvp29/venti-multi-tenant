@@ -4,6 +4,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { CurrencyPipe } from '@angular/common';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
 import { loaderInterceptor } from '@core/interceptors/loader.interceptor';
 import { errorInterceptor } from '@core/interceptors/error.interceptor';
@@ -18,5 +19,6 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([authInterceptor, loaderInterceptor, errorInterceptor])
     ),
+    CurrencyPipe,
   ],
 };

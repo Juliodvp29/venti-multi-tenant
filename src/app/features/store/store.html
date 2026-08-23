@@ -1,39 +1,44 @@
 <div [ngStyle]="dynamicStyles()" 
      [style.backgroundColor]="pageBackgroundColor()"
      [style.color]="'var(--store-color-text, #0f172a)'"
-     class="min-h-screen font-sans flex flex-col transition-colors duration-300">
+     class="min-h-screen font-sans flex flex-col transition-colors duration-300 relative">
     
     <!-- Header -->
-    @if (headerStyle() !== 'hidden') {
-        @if (headerStyle() === 'minimal') {
-            <header class="px-6 py-4 border-b border-slate-200/50 bg-white dark:bg-gray-900 flex items-center justify-between">
-                <a routerLink="/store" class="text-lg font-bold" [style.font-family]="'var(--store-font-heading)'" [style.color]="'var(--store-color-text)'">
-                    @if (branding()?.logo_url) {
-                        <img [src]="branding()?.logo_url" alt="Logo" class="h-8 w-auto object-contain">
-                    } @else {
-                        {{ branding()?.business_name }}
-                    }
-                </a>
-                <div class="flex items-center gap-3">
-                    <button (click)="isCartOpen.set(true)" class="p-2 text-gray-700 dark:text-gray-200 hover:opacity-80">
-                        🛒
-                    </button>
-                </div>
-            </header>
-        } @else {
-            <app-store-header (openCart)="isCartOpen.set(true)"
-                [class.sticky]="headerStyle() !== 'transparent'"
-                [class.top-0]="headerStyle() !== 'transparent'"
-                [class.z-20]="true"></app-store-header>
-        }
+    @if (headerStyle() === 'minimal') {
+        <header class="px-6 py-4 border-b border-slate-200/50 bg-white dark:bg-gray-900 flex items-center justify-between sticky top-0 z-30"
+                [style.backgroundColor]="'var(--store-color-header, #ffffff)'"
+                [style.borderColor]="'var(--store-color-border, rgba(0,0,0,0.08))'">
+            <a routerLink="/store" queryParamsHandling="preserve" class="text-lg font-bold" [style.font-family]="'var(--store-font-heading)'" [style.color]="'var(--store-color-text)'">
+                @if (branding()?.logo_url) {
+                    <img [src]="branding()?.logo_url" alt="Logo" class="h-8 w-auto object-contain">
+                } @else {
+                    {{ branding()?.business_name }}
+                }
+            </a>
+            <div class="flex items-center gap-3">
+                <button (click)="isCartOpen.set(true)" class="p-2 hover:opacity-80 transition-opacity" [style.color]="'var(--store-color-text)'">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+    } @else if (headerStyle() !== 'hidden') {
+        <app-store-header (openCart)="isCartOpen.set(true)"></app-store-header>
     }
 
     <!-- Content -->
-    <main class="mx-auto px-4 w-full flex-1"
-          [style.maxWidth]="pageContainerMaxWidth()"
-          [style.paddingTop]="pagePaddingTop()"
-          [style.paddingBottom]="pagePaddingBottom()">
-        <router-outlet></router-outlet>
+    <main class="w-full flex-1 flex flex-col min-h-0">
+        @if (isHomePage()) {
+            <router-outlet></router-outlet>
+        } @else {
+            <div class="mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1"
+                 [style.maxWidth]="pageContainerMaxWidth()"
+                 [style.paddingTop]="pagePaddingTop()"
+                 [style.paddingBottom]="pagePaddingBottom()">
+                <router-outlet></router-outlet>
+            </div>
+        }
     </main>
 
     <!-- Cart Drawer -->

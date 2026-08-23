@@ -15,15 +15,17 @@ import { Category } from '@core/models/category';
     template: `
     <div class="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <!-- Catalog Page Configured Sections -->
-      @for (section of catalogSections(); track section.id) {
-        @if (section.isActive && section.type === 'promo_banner') {
-          <div class="rounded-2xl p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center space-y-2 shadow-sm">
-            @if (asAny(section.content).badge) {
-              <span class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 bg-white/20 rounded-full inline-block">{{ asAny(section.content).badge }}</span>
-            }
-            <h2 class="text-xl sm:text-2xl font-bold">{{ asAny(section.content).title }}</h2>
-            <p class="text-xs text-white/80 max-w-lg mx-auto">{{ asAny(section.content).subtitle }}</p>
-          </div>
+      @if (!hideHeaderContent()) {
+        @for (section of catalogSections(); track section.id) {
+          @if (section.isActive && section.type === 'promo_banner') {
+            <div class="rounded-2xl p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center space-y-2 shadow-sm">
+              @if (asAny(section.content).badge) {
+                <span class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 bg-white/20 rounded-full inline-block">{{ asAny(section.content).badge }}</span>
+              }
+              <h2 class="text-xl sm:text-2xl font-bold">{{ asAny(section.content).title }}</h2>
+              <p class="text-xs text-white/80 max-w-lg mx-auto">{{ asAny(section.content).subtitle }}</p>
+            </div>
+          }
         }
       }
 

@@ -46,6 +46,8 @@ export class StoreComponent {
     return 'home';
   });
 
+  readonly isHomePage = computed(() => this.activePageId() === 'home');
+
   readonly activePageLayout = computed<PageLayoutConfig>(() => {
     return this.tenantService.getPageLayout(this.activePageId());
   });
