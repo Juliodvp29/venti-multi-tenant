@@ -120,6 +120,20 @@ export class SeoService {
         if (c.twitterHandle) this.setName('twitter:site', c.twitterHandle);
     }
 
+    /**
+     * Dynamically update browser tab favicon.
+     */
+    updateFavicon(url: string | null): void {
+        if (!this.isBrowser || !url) return;
+        let iconLink = document.querySelector<HTMLLinkElement>("link[rel*='icon']");
+        if (!iconLink) {
+            iconLink = document.createElement('link');
+            iconLink.rel = 'shortcut icon';
+            document.head.appendChild(iconLink);
+        }
+        iconLink.href = url;
+    }
+
     // ── JSON-LD Structured Data ──────────────────────────────
 
     /**

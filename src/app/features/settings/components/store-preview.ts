@@ -1,11 +1,20 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, ViewEncapsulation, Renderer2, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StorefrontLayout, ThemeTokens, StorePageId, PageLayoutConfig, PageHeaderStyle, PageFooterStyle, StorefrontSection, getDefaultPageLayout } from '@core/models';
 import { themeTokensToCssVars, THEME_PRESETS, getContrastColor } from '@core/constants/theme-presets';
+import { validateAndSanitizeCss } from '@core/utils/css-validator';
 
 export interface PreviewData {
     business_name: string;
     logo_url: string | null;
+    logo_dark_url?: string | null;
+    social_share_image_url?: string | null;
+    main_banner_url?: string | null;
+    background_image_url?: string | null;
+    background_pattern?: string;
+    promo_video_url?: string | null;
+    brand_gallery?: any[];
+    social_links?: any;
     primary_color: string;
     secondary_color: string;
     accent_color: string;
@@ -26,29 +35,38 @@ export interface PreviewData {
     imports: [CommonModule],
     templateUrl: './store-preview.html',
     styles: [
-        ':host { display: block; height: 100%; min-height: 0; }',
+        'app-store-preview { display: block; height: 100%; min-height: 0; }',
         `
-        .store-section [class*="text-gray"],
-        .store-section [class*="text-slate"],
-        .store-section [class*="text-white"],
-        .store-section [class*="text-black"],
-        .store-section p,
-        .store-section span:not(.badge-pill),
-        .store-section li {
-            color: var(--section-text-color, inherit);
+        app-store-preview .product-card {
+            border-radius: var(--store-radius-card, 1rem);
+            border-color: var(--store-color-border, #e5e5e5);
+            background-color: var(--store-color-surface, #ffffff);
+            transition: all 0.2s ease-in-out;
         }
-        .store-section h1,
-        .store-section h2,
-        .store-section h3,
-        .store-section h4 {
-            color: var(--section-title-color, var(--section-text-color, inherit));
+        app-store-preview .category-card,
+        app-store-preview .testimonial-card,
+        app-store-preview .review-card {
+            border-radius: var(--store-radius-card, 1rem);
+            background-color: var(--store-color-surface, #ffffff);
+            transition: all 0.2s ease-in-out;
+        }
+        app-store-preview .store-btn-primary {
+            border-radius: var(--store-radius-btn, 0.75rem);
+            background-color: var(--store-color-primary, #4f46e5);
+            color: var(--store-color-btn-text, #ffffff);
+            transition: all 0.2s ease-in-out;
         }
         `
     ],
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StorePreview {
     readonly data = input.required<PreviewData>();
+
+    private readonly renderer = inject(Renderer2);
+    private readonly elementRef = inject(ElementRef);
+    private styleElement: HTMLStyleElement | null = null;
 
     readonly previewPage = signal<StorePageId>('home');
 
@@ -144,6 +162,15 @@ export class StorePreview {
         }
     ];
 
+    get activeLogoUrl(): string | null {
+        const headerBg = this.data().header_color || '#ffffff';
+        const isHeaderDark = getContrastColor(headerBg) === '#ffffff';
+        if (isHeaderDark && this.data().logo_dark_url) {
+            return this.data().logo_dark_url!;
+        }
+        return this.data().logo_url;
+    }
+
     get cardOrientation(): string {
         return this.activeTokens.card_orientation || 'vertical';
     }
@@ -226,6 +253,38 @@ export class StorePreview {
             '--store-color-btn-text': getContrastColor(primaryColor),
         };
     });
+
+    readonly sanitizedCustomCss = computed(() => {
+        const raw = this.data().themeTokens?.custom_css;
+        if (!raw || !raw.trim()) return '';
+        const result = validateAndSanitizeCss(raw);
+        if (result.errors.length > 0) {
+            console.warn('[StorePreview] CSS validation errors:', result.errors);
+        }
+        if (result.warnings.length > 0) {
+            console.info('[StorePreview] CSS validation warnings:', result.warnings);
+        }
+        return result.sanitizedCss;
+    });
+
+    // Effect to inject custom CSS into the component's style element
+    private injectCustomCss = effect(() => {
+        const css = this.sanitizedCustomCss();
+        const root = this.elementRef.nativeElement as HTMLElement;
+
+        // Remove existing style element if any
+        if (this.styleElement) {
+            this.renderer.removeChild(root, this.styleElement);
+            this.styleElement = null;
+        }
+
+        if (!css) return;
+
+        // Create new style element and inject CSS
+        this.styleElement = this.renderer.createElement('style');
+        this.renderer.setProperty(this.styleElement, 'textContent', css);
+        this.renderer.appendChild(root, this.styleElement);
+    }, { allowSignalWrites: true });
 
     primaryContrastColor(): string {
         return getContrastColor(this.data().primary_color || this.activeTokens.colors.primary);

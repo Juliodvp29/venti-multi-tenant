@@ -1,565 +1,450 @@
-<form [formGroup]="form" (ngSubmit)="save()" class="space-y-10">
+<form [formGroup]="form" (ngSubmit)="save()" class="space-y-8 pb-12">
 
-    <!-- ── Brand Logo ─────────────────────────────────────────── -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Logo de la Marca</h3>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Aparece en los correos electrónicos y en tu página de pago.
-            </p>
+    <!-- SECCIÓN 1: LOGOTIPOS E IDENTIDAD VISUAL -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
+        <div class="flex items-center gap-3 border-b border-slate-100 dark:border-gray-800 pb-4">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Logotipos e Iconografía de Marca</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400">Personaliza la representación gráfica de tu negocio en la cabecera, pie de página y navegador.</p>
+            </div>
         </div>
-        <div class="md:col-span-2">
-            <div class="flex items-start gap-6">
-                <!-- Logo Preview -->
-                <div class="relative group flex-shrink-0">
-                    <div
-                        class="w-24 h-24 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center overflow-hidden transition-all group-hover:border-indigo-400 dark:group-hover:border-indigo-500">
-                        @if (form.controls.logo_url.value) {
-                        <img [src]="form.controls.logo_url.value" alt="Logo" class="w-full h-full object-contain p-2">
-                        } @else {
-                        <svg class="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z" />
-                        </svg>
-                        }
-                    </div>
-                    <!-- Upload overlay on hover -->
-                    <button type="button" (click)="logoInput.click()"
-                        class="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                        </svg>
-                    </button>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- 1.1 Logo Claro -->
+            <div class="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-800/40">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span>Logo Claro (Principal)</span>
+                    </label>
+                    <span class="text-[10px] font-semibold text-slate-400">Fondos claros</span>
                 </div>
 
-                <!-- Upload Controls -->
-                <div class="flex-1 min-w-0">
-                    <button type="button" (click)="logoInput.click()"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-800 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all hover:-translate-y-px active:translate-y-0">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                        </svg>
-                        Cambiar Logo
-                    </button>
-                    <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">JPG, GIF or PNG · Max 2MB</p>
+                <!-- Preview Area -->
+                <div class="h-28 rounded-xl bg-white border border-slate-200 dark:border-gray-700 flex items-center justify-center p-3 relative overflow-hidden group shadow-inner">
                     @if (form.controls.logo_url.value) {
-                    <button type="button" (click)="form.controls.logo_url.setValue('')"
-                        class="mt-2 text-xs text-red-500 hover:text-red-600 font-medium transition-colors">
-                        Quitar logo
+                        <img [src]="form.controls.logo_url.value" alt="Logo Claro" class="max-h-full max-w-full object-contain">
+                    } @else {
+                        <div class="text-center text-slate-400">
+                            <svg class="w-8 h-8 mx-auto mb-1 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-[11px]">Sin logo claro</span>
+                        </div>
+                    }
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" (click)="openMediaManager('logo_url', 'image')"
+                        class="px-2 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <span class="truncate">Biblioteca</span>
                     </button>
+                    <label class="px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-700 text-xs font-bold text-slate-700 dark:text-gray-300 transition-colors cursor-pointer flex items-center justify-center min-w-0">
+                        <span class="truncate">Subir</span>
+                        <input type="file" (change)="onFileSelected($event, 'logo')" accept="image/*" class="sr-only">
+                    </label>
+                </div>
+            </div>
+
+            <!-- 1.2 Logo Oscuro -->
+            <div class="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-800/40">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span>Logo Oscuro / Transparente</span>
+                    </label>
+                    <span class="text-[10px] font-semibold text-slate-400">Fondos oscuros</span>
+                </div>
+
+                <!-- Preview Area with dark bg -->
+                <div class="h-28 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center p-3 relative overflow-hidden group shadow-inner">
+                    @if (form.controls.logo_dark_url.value) {
+                        <img [src]="form.controls.logo_dark_url.value" alt="Logo Oscuro" class="max-h-full max-w-full object-contain">
+                    } @else if (form.controls.logo_url.value) {
+                        <img [src]="form.controls.logo_url.value" alt="Logo Fallback" class="max-h-full max-w-full object-contain opacity-60">
+                        <span class="absolute bottom-1 right-2 text-[9px] text-slate-400 bg-slate-800/80 px-1.5 py-0.5 rounded">Usando Logo Claro</span>
+                    } @else {
+                        <div class="text-center text-slate-500">
+                            <svg class="w-8 h-8 mx-auto mb-1 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                            <span class="text-[11px]">Sin logo oscuro</span>
+                        </div>
+                    }
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" (click)="openMediaManager('logo_dark_url', 'image')"
+                        class="px-2 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <span class="truncate">Biblioteca</span>
+                    </button>
+                    <label class="px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-700 text-xs font-bold text-slate-700 dark:text-gray-300 transition-colors cursor-pointer flex items-center justify-center min-w-0">
+                        <span class="truncate">Subir</span>
+                        <input type="file" (change)="onFileSelected($event, 'logo_dark')" accept="image/*" class="sr-only">
+                    </label>
+                </div>
+            </div>
+
+            <!-- 1.3 Favicon -->
+            <div class="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-800/40">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span>Favicon del Navegador</span>
+                    </label>
+                    <span class="text-[10px] font-semibold text-slate-400">32x32 / PNG / ICO</span>
+                </div>
+
+                <!-- Browser Tab Simulation -->
+                <div class="h-28 rounded-xl bg-slate-200 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 flex flex-col justify-end p-2 relative overflow-hidden shadow-inner">
+                    <div class="bg-white dark:bg-gray-800 rounded-t-lg p-2 border-t border-x border-slate-300 dark:border-gray-700 flex items-center gap-2 max-w-[200px] shadow-sm">
+                        <div class="w-4 h-4 rounded-sm flex items-center justify-center shrink-0 overflow-hidden bg-slate-100">
+                            @if (form.controls.favicon_url.value) {
+                                <img [src]="form.controls.favicon_url.value" alt="Favicon" class="w-full h-full object-contain">
+                            } @else {
+                                <div class="w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                            }
+                        </div>
+                        <span class="text-[11px] font-medium text-slate-700 dark:text-gray-300 truncate">Pestaña Tienda</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" (click)="openMediaManager('favicon_url', 'image')"
+                        class="px-2 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <span class="truncate">Biblioteca</span>
+                    </button>
+                    <label class="px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-700 text-xs font-bold text-slate-700 dark:text-gray-300 transition-colors cursor-pointer flex items-center justify-center min-w-0">
+                        <span class="truncate">Subir</span>
+                        <input type="file" (change)="onFileSelected($event, 'favicon')" accept="image/*" class="sr-only">
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- SECCIÓN 2: IMAGEN SOCIAL Y REDES SOCIALES -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
+        <div class="flex items-center gap-3 border-b border-slate-100 dark:border-gray-800 pb-4">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Imagen Social (OpenGraph) y Redes Sociales</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400">Configura cómo se verá tu tienda cuando alguien comparta tu enlace en WhatsApp, Facebook, Instagram o X.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <!-- Social Share Image & Live Card Preview -->
+            <div class="space-y-4">
+                <label class="text-xs font-bold text-slate-900 dark:text-white block">Imagen para compartir en Redes Sociales (1200 x 630 px)</label>
+                
+                <!-- Live Link Preview Card (Simulating WhatsApp / Social share card) -->
+                <div class="rounded-2xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 overflow-hidden shadow-xs">
+                    <div class="h-44 bg-slate-200 dark:bg-gray-900 relative flex items-center justify-center overflow-hidden">
+                        @if (form.controls.social_share_image_url.value) {
+                            <img [src]="form.controls.social_share_image_url.value" alt="Social Share Preview" class="w-full h-full object-cover">
+                        } @else if (form.controls.logo_url.value) {
+                            <div class="flex flex-col items-center gap-2 p-4">
+                                <img [src]="form.controls.logo_url.value" alt="Logo" class="h-12 w-auto object-contain">
+                                <span class="text-[10px] text-slate-400">Imagen por defecto (Logo de tienda)</span>
+                            </div>
+                        } @else {
+                            <div class="text-center text-slate-400 p-4">
+                                <svg class="w-10 h-10 mx-auto mb-1 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-xs">Sube una imagen promocional para redes</span>
+                            </div>
+                        }
+                        <div class="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold rounded-lg">
+                            Vista Previa Link
+                        </div>
+                    </div>
+                    <div class="p-3 bg-white dark:bg-gray-800 border-t border-slate-200 dark:border-gray-700">
+                        <p class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ tenant()?.business_name || 'Venti Store' }}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-gray-400 line-clamp-1 mt-0.5">{{ tenant()?.description || 'Descubre nuestras últimas novedades y productos exclusivos.' }}</p>
+                        <p class="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 mt-1">ventishop.app/store</p>
+                    </div>
+                </div>
+
+                <!-- Input & Button -->
+                <div class="flex gap-2">
+                    <input type="url" [formControl]="form.controls.social_share_image_url"
+                        placeholder="https://ejemplo.com/imagen-social.jpg"
+                        class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button type="button" (click)="openMediaManager('social_share_image_url', 'image')"
+                        class="px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shrink-0">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Elegir Recurso
+                    </button>
+                </div>
+            </div>
+
+            <!-- Social Links Grid -->
+            <div [formGroup]="form.controls.social_links" class="space-y-4">
+                <label class="text-xs font-bold text-slate-900 dark:text-white block">Enlaces a Perfiles de Redes Sociales</label>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- WhatsApp -->
+                    <div>
+                        <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">WhatsApp</label>
+                        <input type="text" formControlName="whatsapp" placeholder="+57 300 000 0000"
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- Instagram -->
+                    <div>
+                        <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">Instagram</label>
+                        <input type="text" formControlName="instagram" placeholder="https://instagram.com/mitienda"
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- Facebook -->
+                    <div>
+                        <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">Facebook</label>
+                        <input type="text" formControlName="facebook" placeholder="https://facebook.com/mitienda"
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- TikTok -->
+                    <div>
+                        <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">TikTok</label>
+                        <input type="text" formControlName="tiktok" placeholder="https://tiktok.com/@mitienda"
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- YouTube -->
+                    <div>
+                        <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">YouTube</label>
+                        <input type="text" formControlName="youtube" placeholder="https://youtube.com/@mitienda"
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- Twitter / X -->
+                    <div>
+                        <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">X / Twitter</label>
+                        <input type="text" formControlName="twitter" placeholder="https://x.com/mitienda"
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- SECCIÓN 3: BANNERS Y VIDEO PROMOCIONAL -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
+        <div class="flex items-center gap-3 border-b border-slate-100 dark:border-gray-800 pb-4">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Banners Destacados y Video Promocional</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400">Medios de portada para la landing de tu tienda y campañas especiales.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Banner Principal -->
+            <div class="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-800/40">
+                <label class="text-xs font-bold text-slate-900 dark:text-white block">Banner Principal Hero</label>
+                
+                <div class="h-36 rounded-xl bg-slate-200 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 overflow-hidden flex items-center justify-center relative">
+                    @if (form.controls.main_banner_url.value) {
+                        <img [src]="form.controls.main_banner_url.value" alt="Banner Principal" class="w-full h-full object-cover">
+                    } @else {
+                        <div class="text-center text-slate-400 p-4">
+                            <svg class="w-8 h-8 mx-auto mb-1 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-xs">Sin banner configurado</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="flex gap-2">
+                    <input type="url" [formControl]="form.controls.main_banner_url" placeholder="URL del banner..."
+                        class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white">
+                    <button type="button" (click)="openMediaManager('main_banner_url', 'image')"
+                        class="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 transition-colors cursor-pointer">
+                        Biblioteca
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Promocional -->
+            <div class="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-800/40">
+                <label class="text-xs font-bold text-slate-900 dark:text-white block">Video Promocional (MP4 / Embed Link)</label>
+                
+                <div class="h-36 rounded-xl bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center relative">
+                    @if (form.controls.promo_video_url.value) {
+                        <video [src]="form.controls.promo_video_url.value" class="w-full h-full object-cover" controls muted></video>
+                    } @else {
+                        <div class="text-center text-slate-400 p-4">
+                            <svg class="w-8 h-8 mx-auto mb-1 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-xs">Sin video configurado</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="flex gap-2">
+                    <input type="url" [formControl]="form.controls.promo_video_url" placeholder="https://ejemplo.com/video.mp4"
+                        class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white">
+                    <button type="button" (click)="openMediaManager('promo_video_url', 'video')"
+                        class="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 transition-colors cursor-pointer">
+                        Biblioteca
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- SECCIÓN 4: GALERÍA DE MARCA -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-gray-800 pb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white">Galería Fotográfica de Marca</h3>
+                    <p class="text-xs text-slate-500 dark:text-gray-400">Colección de imágenes destacadas para mostrar la personalidad y productos de tu negocio.</p>
+                </div>
+            </div>
+            <button type="button" (click)="openMediaManager('brand_gallery', 'image')"
+                class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Agregar Foto a Galería
+            </button>
+        </div>
+
+        @if (brandGallery().length === 0) {
+            <div class="text-center py-8 px-4 border-2 border-dashed border-slate-200 dark:border-gray-800 rounded-2xl">
+                <p class="text-xs text-slate-500 mb-3">Aún no has agregado fotos a la galería de marca.</p>
+                <button type="button" (click)="openMediaManager('brand_gallery', 'image')"
+                    class="px-3.5 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 transition-colors cursor-pointer">
+                    Seleccionar desde Biblioteca
+                </button>
+            </div>
+        } @else {
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                @for (item of brandGallery(); track item.id) {
+                    <div class="group relative rounded-xl border border-slate-200 dark:border-gray-700 overflow-hidden bg-slate-50 dark:bg-gray-800 flex flex-col">
+                        <div class="aspect-square relative overflow-hidden flex items-center justify-center p-1 bg-white dark:bg-gray-900">
+                            <img [src]="item.url" [alt]="item.caption || 'Foto Galería'" class="max-h-full max-w-full object-contain">
+                            <button type="button" (click)="removeGalleryItem(item.id)" title="Eliminar foto"
+                                class="absolute top-2 right-2 p-1.5 rounded-lg bg-red-600 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-md">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="p-2 border-t border-slate-100 dark:border-gray-700/50">
+                            <input type="text" [value]="item.caption || ''"
+                                (change)="updateGalleryCaption(item.id, $any($event.target).value)"
+                                placeholder="Pie de foto..."
+                                class="w-full text-[11px] px-2 py-1 rounded border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-800 dark:text-white">
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+
+    <!-- SECCIÓN 5: FONDO PERSONALIZADO DE LA TIENDA -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
+        <div class="flex items-center gap-3 border-b border-slate-100 dark:border-gray-800 pb-4">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Fondo Personalizado y Texturas</h3>
+                <p class="text-xs text-slate-500 dark:text-gray-400">Añade imágenes de fondo o patrones abstractos para dar una experiencia única a la tienda.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            <!-- Pattern selection -->
+            <div>
+                <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-2">Patrón de Fondo Sutil</label>
+                <div class="grid grid-cols-2 gap-2">
+                    @for (p of patterns; track p.value) {
+                        <button type="button" (click)="form.controls.background_pattern.setValue(p.value)"
+                            class="px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer text-left"
+                            [class.border-indigo-600]="form.controls.background_pattern.value === p.value"
+                            [class.bg-indigo-50]="form.controls.background_pattern.value === p.value"
+                            [class.text-indigo-600]="form.controls.background_pattern.value === p.value"
+                            [class.border-slate-200]="form.controls.background_pattern.value !== p.value"
+                            [class.text-slate-600]="form.controls.background_pattern.value !== p.value">
+                            {{ p.label }}
+                        </button>
                     }
                 </div>
             </div>
-            <input #logoInput type="file" (change)="onFileSelected($event, 'logo')" accept="image/*" class="hidden">
-        </div>
-    </div>
 
-    <div class="border-t border-gray-100 dark:border-gray-800"></div>
-
-    <!-- ── Favicon ────────────────────────────────────────────── -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Favicon</h3>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Se muestra en la pestaña del navegador.
-            </p>
-        </div>
-        <div class="md:col-span-2">
-            <!-- Drop Zone -->
-            <div (click)="faviconInput.click()"
-                class="group relative flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 px-6 py-8 cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition-all duration-200">
-
-                @if (form.controls.favicon_url.value) {
-                <img [src]="form.controls.favicon_url.value" alt="Favicon" class="w-12 h-12 object-contain rounded-lg">
-                } @else {
-                <div
-                    class="w-12 h-12 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center group-hover:shadow-md transition-shadow">
-                    <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 group-hover:text-indigo-400 transition-colors"
-                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                    </svg>
-                </div>
-                }
-
-                <div class="text-center">
-                    <p
-                        class="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                        Haz clic para {{ form.controls.favicon_url.value ? 'reemplazar' : 'subir' }} el favicon
-                    </p>
-                    <p class="text-xs text-gray-400 mt-0.5">PNG, ICO · Max 2MB · Recommended 32×32px</p>
-                </div>
-
-                @if (form.controls.favicon_url.value) {
-                <button type="button" (click)="$event.stopPropagation(); form.controls.favicon_url.setValue('')"
-                    class="text-xs text-red-500 hover:text-red-600 font-medium transition-colors">
-                    Quitar
-                </button>
-                }
-            </div>
-            <input #faviconInput type="file" (change)="onFileSelected($event, 'favicon')" accept="image/*"
-                class="hidden">
-        </div>
-    </div>
-
-    <div class="border-t border-gray-100 dark:border-gray-800"></div>
-
-    <!-- ── Store Layout ───────────────────────────────────────── -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Diseño de la Tienda</h3>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Elige cómo se organiza el encabezado de tu tienda.
-            </p>
-        </div>
-        <div class="md:col-span-2">
-            <div class="grid grid-cols-3 gap-3">
-                @for (layout of layouts; track layout.id) {
-                <label class="relative cursor-pointer" [for]="'layout-' + layout.id">
-                    <input type="radio" [id]="'layout-' + layout.id" [value]="layout.id" formControlName="layout"
-                        class="sr-only peer">
-
-                    <div class="rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 transition-all
-                        peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20
-                        hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm">
-
-                        <!-- Layout mini-preview -->
-                        <div
-                            class="h-14 w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 overflow-hidden mb-2.5 relative">
-                            <!-- Modern: left-aligned nav -->
-                            @if (layout.id === 'modern') {
-                            <div class="absolute top-1.5 left-2 right-2 flex items-center gap-1.5">
-                                <div class="w-5 h-1.5 rounded-full bg-gray-800 dark:bg-white"></div>
-                                <div class="flex-1"></div>
-                                <div class="w-3 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                                <div class="w-3 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                                <div class="w-3 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                            </div>
-                            <div class="absolute bottom-2 left-2 right-2 h-4 rounded bg-gray-100 dark:bg-gray-800">
-                            </div>
-                            }
-                            <!-- Classic: centered nav -->
-                            @if (layout.id === 'classic') {
-                            <div class="absolute top-1.5 left-2 right-2 flex flex-col items-center gap-1">
-                                <div class="w-6 h-1.5 rounded-full bg-gray-800 dark:bg-white"></div>
-                                <div class="flex items-center gap-1">
-                                    <div class="w-3 h-0.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                                    <div class="w-3 h-0.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                                    <div class="w-3 h-0.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-2 left-2 right-2 h-4 rounded bg-gray-100 dark:bg-gray-800">
-                            </div>
-                            }
-                            <!-- Minimal: slim bar -->
-                            @if (layout.id === 'minimal') {
-                            <div class="absolute top-2 left-2 right-2 flex items-center">
-                                <div class="w-4 h-1 rounded-full bg-gray-800 dark:bg-white"></div>
-                                <div class="flex-1"></div>
-                                <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                            </div>
-                            <div class="absolute bottom-2 left-2 right-2 space-y-0.5">
-                                <div class="h-1 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-                                <div class="h-1 w-3/4 rounded-full bg-gray-100 dark:bg-gray-800"></div>
-                            </div>
-                            }
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{{ layout.name
-                                }}</span>
-                            <div class="w-4 h-4 rounded-full border-2 border-gray-200 dark:border-gray-600 peer-checked:border-indigo-500 peer-checked:bg-indigo-500 flex items-center justify-center transition-all
-                            [input:checked+div_&]:border-indigo-500 [input:checked+div_&]:bg-indigo-500">
-                                <svg class="w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 scale-0 peer-checked:scale-100 transition-all"
-                                    viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="border-t border-gray-100 dark:border-gray-800"></div>
-
-    <!-- ── Typography ────────────────────────────────────────── -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Tipografía</h3>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Elige una fuente que se ajuste a la voz de tu marca.
-            </p>
-        </div>
-        <div class="md:col-span-2">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                @for (font of fonts; track font.name) {
-                <label class="relative cursor-pointer" [for]="'font-' + font.name">
-                    <input type="radio" [id]="'font-' + font.name" [value]="font.value" formControlName="font_family"
-                        class="sr-only peer">
-                    <div class="flex items-center gap-4 p-3.5 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all
-                        peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500/20
-                        hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm cursor-pointer">
-
-                        <!-- Font preview letter -->
-                        <div
-                            class="w-10 h-10 rounded-lg bg-gray-50 dark:bg-gray-900 flex items-center justify-center flex-shrink-0">
-                            <span class="text-xl font-bold text-gray-700 dark:text-gray-200 leading-none"
-                                [style.font-family]="font.value">Aa</span>
-                        </div>
-
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ font.name }}</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500 truncate"
-                                [style.font-family]="font.value">The quick brown fox</p>
-                        </div>
-
-                        <!-- Check indicator -->
-                        <div
-                            class="w-4 h-4 rounded-full border-2 border-gray-200 dark:border-gray-700 peer-checked:border-indigo-500 transition-colors flex-shrink-0">
-                        </div>
-                    </div>
-                </label>
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="border-t border-gray-100 dark:border-gray-800"></div>
-
-    <!-- ── Theme Colors ──────────────────────────────────────── -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Colores del Tema</h3>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Personaliza la paleta de colores de tu tienda.
-            </p>
-        </div>
-        <div class="md:col-span-2 space-y-5">
-
-            <!-- Color Row: Primary -->
-            <div class="rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 p-4">
-                <div class="flex items-center gap-4">
-                    <!-- Swatch picker -->
-                    <label class="relative cursor-pointer group">
-                        <div class="w-10 h-10 rounded-xl shadow-sm ring-2 ring-white dark:ring-gray-900 ring-offset-1 transition-transform group-hover:scale-105"
-                            [style.background-color]="form.controls.primary_color.value"></div>
-                        <input type="color" formControlName="primary_color"
-                            class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-                    </label>
-
-                    <div class="flex-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
-                            Primario</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" formControlName="primary_color"
-                                class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
-                                placeholder="#000000">
-                            <!-- Quick palette -->
-                            <div class="flex gap-1.5">
-                                @for (swatch of primarySwatches; track swatch) {
-                                <button type="button"
-                                    (click)="form.controls.primary_color.setValue(swatch); form.controls.primary_color.markAsDirty()"
-                                    class="w-5 h-5 rounded-md ring-1 ring-black/10 hover:scale-110 transition-transform"
-                                    [style.background-color]="swatch"
-                                    [class.ring-2]="form.controls.primary_color.value === swatch"
-                                    [class.ring-indigo-500]="form.controls.primary_color.value === swatch">
-                                </button>
-                                }
-                            </div>
-                        </div>
-                    </div>
+            <!-- Custom Background Image -->
+            <div class="space-y-3">
+                <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block">Imagen de Fondo Personalizada</label>
+                <div class="flex gap-2">
+                    <input type="url" [formControl]="form.controls.background_image_url" placeholder="https://ejemplo.com/fondo.jpg"
+                        class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white">
+                    <button type="button" (click)="openMediaManager('background_image_url', 'image')"
+                        class="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 transition-colors cursor-pointer">
+                        Biblioteca
+                    </button>
                 </div>
             </div>
 
-            <!-- Color Row: Background -->
-            <div class="rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 p-4">
-                <div class="flex items-center gap-4">
-                    <label class="relative cursor-pointer group">
-                        <div class="w-10 h-10 rounded-xl shadow-sm ring-2 ring-white dark:ring-gray-900 ring-offset-1 transition-transform group-hover:scale-105 border border-gray-200 dark:border-gray-700"
-                            [style.background-color]="form.controls.background_color.value"></div>
-                        <input type="color" formControlName="background_color"
-                            class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-                    </label>
-                    <div class="flex-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
-                            de Fondo</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" formControlName="background_color"
-                                class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
-                                placeholder="#FFFFFF">
-                            <!-- Quick palette -->
-                            <div class="flex gap-1.5">
-                                @for (swatch of backgroundSwatches; track swatch) {
-                                <button type="button"
-                                    (click)="form.controls.background_color.setValue(swatch); form.controls.background_color.markAsDirty()"
-                                    class="w-5 h-5 rounded-md ring-1 ring-black/10 hover:scale-110 transition-transform"
-                                    [style.background-color]="swatch"
-                                    [class.ring-2]="form.controls.background_color.value === swatch"
-                                    [class.ring-indigo-500]="form.controls.background_color.value === swatch">
-                                </button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Color Row: Header -->
-            <div class="rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 p-4">
-                <div class="flex items-center gap-4">
-                    <label class="relative cursor-pointer group">
-                        <div class="w-10 h-10 rounded-xl shadow-sm ring-2 ring-white dark:ring-gray-900 ring-offset-1 transition-transform group-hover:scale-105 border border-gray-200 dark:border-gray-700"
-                            [style.background-color]="form.controls.header_color.value"></div>
-                        <input type="color" formControlName="header_color"
-                            class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-                    </label>
-                    <div class="flex-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
-                            del Cabecero (Header)</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" formControlName="header_color"
-                                class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
-                                placeholder="#FFFFFF">
-                            <div class="flex gap-1.5">
-                                @for (swatch of backgroundSwatches; track swatch) {
-                                <button type="button"
-                                    (click)="form.controls.header_color.setValue(swatch); form.controls.header_color.markAsDirty()"
-                                    class="w-5 h-5 rounded-md ring-1 ring-black/10 hover:scale-110 transition-transform"
-                                    [style.background-color]="swatch"
-                                    [class.ring-2]="form.controls.header_color.value === swatch"
-                                    [class.ring-indigo-500]="form.controls.header_color.value === swatch">
-                                </button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Color Row: Footer -->
-            <div class="rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 p-4">
-                <div class="flex items-center gap-4">
-                    <label class="relative cursor-pointer group">
-                        <div class="w-10 h-10 rounded-xl shadow-sm ring-2 ring-white dark:ring-gray-900 ring-offset-1 transition-transform group-hover:scale-105 border border-gray-200 dark:border-gray-700"
-                            [style.background-color]="form.controls.footer_color.value"></div>
-                        <input type="color" formControlName="footer_color"
-                            class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-                    </label>
-                    <div class="flex-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
-                            del Pie de Página (Footer)</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" formControlName="footer_color"
-                                class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
-                                placeholder="#FFFFFF">
-                            <div class="flex gap-1.5">
-                                @for (swatch of backgroundSwatches; track swatch) {
-                                <button type="button"
-                                    (click)="form.controls.footer_color.setValue(swatch); form.controls.footer_color.markAsDirty()"
-                                    class="w-5 h-5 rounded-md ring-1 ring-black/10 hover:scale-110 transition-transform"
-                                    [style.background-color]="swatch"
-                                    [class.ring-2]="form.controls.footer_color.value === swatch"
-                                    [class.ring-indigo-500]="form.controls.footer_color.value === swatch">
-                                </button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Color Row: Secondary -->
-            <div class="rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 p-4">
-                <div class="flex items-center gap-4">
-                    <label class="relative cursor-pointer group">
-                        <div class="w-10 h-10 rounded-xl shadow-sm ring-2 ring-white dark:ring-gray-900 ring-offset-1 transition-transform group-hover:scale-105 border border-gray-200 dark:border-gray-700"
-                            [style.background-color]="form.controls.secondary_color.value"></div>
-                        <input type="color" formControlName="secondary_color"
-                            class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-                    </label>
-                    <div class="flex-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
-                            Secundario</label>
-                        <input type="text" formControlName="secondary_color"
-                            class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
-                            placeholder="#FFFFFF">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Color Row: Accent -->
-            <div class="rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 p-4">
-                <div class="flex items-center gap-4">
-                    <label class="relative cursor-pointer group">
-                        <div class="w-10 h-10 rounded-xl shadow-sm ring-2 ring-white dark:ring-gray-900 ring-offset-1 transition-transform group-hover:scale-105"
-                            [style.background-color]="form.controls.accent_color.value"></div>
-                        <input type="color" formControlName="accent_color"
-                            class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-                    </label>
-                    <div class="flex-1">
-                        <label
-                            class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Color
-                            de Acento</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" formControlName="accent_color"
-                                class="w-28 rounded-lg border-0 bg-white dark:bg-gray-800 py-1.5 px-3 text-sm font-mono text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-indigo-500 uppercase transition-all"
-                                placeholder="#3B82F6">
-                            <!-- Quick palette -->
-                            <div class="flex gap-1.5">
-                                @for (swatch of accentSwatches; track swatch) {
-                                <button type="button"
-                                    (click)="form.controls.accent_color.setValue(swatch); form.controls.accent_color.markAsDirty()"
-                                    class="w-5 h-5 rounded-md ring-1 ring-black/10 hover:scale-110 transition-transform"
-                                    [style.background-color]="swatch"
-                                    [class.ring-2]="form.controls.accent_color.value === swatch"
-                                    [class.ring-indigo-500]="form.controls.accent_color.value === swatch">
-                                </button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Color Preview Strip -->
-            <div class="flex rounded-xl overflow-hidden h-8 shadow-sm ring-1 ring-black/5">
-                <div class="flex-1 transition-colors duration-300"
-                    [style.background-color]="form.controls.primary_color.value"></div>
-                <div class="flex-1 transition-colors duration-300"
-                    [style.background-color]="form.controls.secondary_color.value"></div>
-                <div class="flex-1 transition-colors duration-300"
-                    [style.background-color]="form.controls.accent_color.value"></div>
-            </div>
-            <p class="text-xs text-gray-400 -mt-2 text-center">Vista previa de la paleta de colores</p>
-
-        </div>
-    </div>
-
-    <div class="border-t border-gray-100 dark:border-gray-800"></div>
-
-    <!-- ── Social Media ─────────────────────────────────────── -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" formGroupName="social_links">
-        <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Redes Sociales</h3>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Conecta con tus clientes a través de tus perfiles sociales.
-            </p>
-        </div>
-        <div class="md:col-span-2 space-y-4">
-            <!-- WhatsApp -->
-            <div>
-                <label
-                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">WhatsApp</label>
-                <div class="relative group">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <svg class="w-4 h-4 text-[#25D366]" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                        </svg>
-                    </div>
-                    <input type="text" formControlName="whatsapp"
-                        class="block w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        placeholder="https://wa.me/...">
-                </div>
-            </div>
-
-            <!-- Facebook -->
-            <div>
-                <label
-                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Facebook</label>
-                <div class="relative group">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <svg class="w-4 h-4 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                        </svg>
-                    </div>
-                    <input type="text" formControlName="facebook"
-                        class="block w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        placeholder="https://facebook.com/...">
-                </div>
-            </div>
-
-            <!-- Instagram -->
-            <div>
-                <label
-                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Instagram</label>
-                <div class="relative group">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <svg class="w-4 h-4 text-[#E4405F]" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.984 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.584-.071 4.85c-.055 1.17-.249 1.805-.415 2.227-.217.562-.477.96-.896 1.382-.419.419-.818.679-1.381.896-.422.164-1.056.36-2.227.413-1.266.057-1.646.07-4.85.07s-3.584-.015-4.85-.071c-1.17-.055-1.805-.249-2.227-.415-.562-.217-.96-.477-1.382-.896-.419-.419-.679-.818-.896-1.381-.164-.422-.36-1.056-.413-2.227-.054-1.266-.07-1.646-.07-4.85s.016-3.584.071-4.85c.055-1.17.249-1.805.415-2.227.217-.562.477-.96.896-1.382.419-.419.819-.679 1.381-.896.422-.164 1.057-.36 2.227-.413 1.265-.054 1.646-.07 4.85-.07zM12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                        </svg>
-                    </div>
-                    <input type="text" formControlName="instagram"
-                        class="block w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        placeholder="https://instagram.com/...">
-                </div>
-            </div>
-
-            <!-- TikTok -->
-            <div>
-                <label
-                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">TikTok</label>
-                <div class="relative group">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <svg class="w-4 h-4 text-[#000000] dark:text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.9-.32-1.98-.23-2.81.36-.54.38-.89.98-1.01 1.62-.13.76.13 1.56.69 2.08.57.52 1.35.74 2.11.66 1.05-.1 1.93-.82 2.22-1.84.14-.54.14-1.1.13-1.66-.02-3.99-.01-7.98-.01-11.97z" />
-                        </svg>
-                    </div>
-                    <input type="text" formControlName="tiktok"
-                        class="block w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                        placeholder="https://tiktok.com/@...">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── Actions ────────────────────────────────────────────── -->
-    <div class="flex items-center justify-between pt-6 border-t border-gray-100 dark:border-gray-800">
-        <div>
-            @if (form.dirty) {
-            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                Cambios sin guardar
-            </span>
-            }
-        </div>
-        <div class="flex gap-3">
-            <button type="button" (click)="cancel()"
-                [disabled]="!form.dirty || isSaving() || !tenantService.isAdminOrOwner()"
-                class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
-                Descartar
-            </button>
-            <button type="submit"
-                [disabled]="!form.dirty || form.invalid || isSaving() || !tenantService.isAdminOrOwner()"
-                class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all hover:-translate-y-px active:translate-y-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0">
-                @if (isSaving()) {
-                <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                </svg>
-                Guardando...
-                } @else {
-                Guardar Cambios
-                }
-            </button>
         </div>
     </div>
 
 </form>
+
+<!-- COMPONENTE REUTILIZABLE MEDIA MANAGER MODAL -->
+<app-media-manager-modal
+    [isOpen]="isMediaManagerOpen()"
+    [allowedFilter]="mediaFilter()"
+    (selectAsset)="handleMediaSelected($event)"
+    (closeModal)="closeMediaManager()">
+</app-media-manager-modal>

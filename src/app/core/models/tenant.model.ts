@@ -1,6 +1,22 @@
+export interface BrandGalleryItem {
+    id: string;
+    url: string;
+    caption?: string;
+    link?: string;
+}
+
+export type BackgroundPatternOption = 'none' | 'dots' | 'grid' | 'mesh' | 'noise';
+
 export interface TenantBranding {
     logo_url: string | null;
+    logo_dark_url?: string | null;
     favicon_url: string | null;
+    social_share_image_url?: string | null;
+    main_banner_url?: string | null;
+    background_image_url?: string | null;
+    background_pattern?: BackgroundPatternOption;
+    promo_video_url?: string | null;
+    brand_gallery?: BrandGalleryItem[];
     business_name: string;
     description: string | null;
     primary_color: string;
@@ -19,6 +35,8 @@ export interface SocialLinks {
     facebook?: string;
     instagram?: string;
     tiktok?: string;
+    youtube?: string;
+    twitter?: string;
 }
 
 export interface TenantAddress {
@@ -98,7 +116,14 @@ export interface Tenant {
     is_verified: boolean;
 
     logo_url: string | null;
+    logo_dark_url?: string | null;
     favicon_url: string | null;
+    social_share_image_url?: string | null;
+    main_banner_url?: string | null;
+    background_image_url?: string | null;
+    background_pattern?: BackgroundPatternOption;
+    promo_video_url?: string | null;
+    brand_gallery?: BrandGalleryItem[];
     primary_color: string;
     secondary_color: string;
     accent_color: string;
@@ -129,7 +154,14 @@ export interface UpdateTenantDto {
     contact_email?: string;
     contact_phone?: string | null;
     logo_url?: string | null;
+    logo_dark_url?: string | null;
     favicon_url?: string | null;
+    social_share_image_url?: string | null;
+    main_banner_url?: string | null;
+    background_image_url?: string | null;
+    background_pattern?: BackgroundPatternOption;
+    promo_video_url?: string | null;
+    brand_gallery?: BrandGalleryItem[];
     primary_color?: string;
     secondary_color?: string;
     accent_color?: string;
