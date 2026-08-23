@@ -7,6 +7,7 @@ import { DiscountsService } from './discounts';
 import { ShippingService } from './shipping';
 import { TenantService } from './tenant';
 import { ToastService } from './toast';
+import { CurrencyPipe } from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,8 @@ export class CartService {
     private readonly shippingService = inject(ShippingService);
     private readonly tenantService = inject(TenantService);
     private readonly toast = inject(ToastService);
+    private readonly currencyPipe = inject(CurrencyPipe);
+    private readonly currency = computed(() => this.tenantService.currency());
 
     private readonly _items = signal<CartItem[]>(this.loadCart());
     private readonly _appliedCoupon = signal<DiscountCode | null>(null);
@@ -101,7 +104,8 @@ export class CartService {
             }
 
             if (coupon.minimum_purchase_amount && this.subtotal() < coupon.minimum_purchase_amount) {
-                this.toast.error(`El pedido mínimo para este cupón es de $${coupon.minimum_purchase_amount}`);
+                const formattedAmount = this.currencyPipe.transform(coupon.minimum_purchase_amount, this.currency(), 'symbol', '1.2-2', 'es');
+                this.toast.error(`El pedido mínimo para este cupón es de ${formattedAmount}`);
                 return false;
             }
 

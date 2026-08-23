@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { BillingPlan } from '@core/models/billing.model';
 
 @Component({
   selector: 'app-plan-card',
-  imports: [CommonModule],
+  imports: [CommonModule, CurrencyPipe],
   template: `
     <div 
       class="relative flex flex-col p-8 bg-white dark:bg-gray-900 rounded-2xl border-2 transition-all duration-300"
@@ -24,7 +24,7 @@ import { BillingPlan } from '@core/models/billing.model';
       <div class="mb-6">
         <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{{ plan.name }}</h3>
         <div class="mt-4 flex items-baseline gap-1">
-          <span class="text-4xl font-extrabold text-gray-900 dark:text-white">\${{ plan.price }}</span>
+          <span class="text-4xl font-extrabold text-gray-900 dark:text-white">{{ plan.price | currency:plan.currency:'symbol':'1.0-0' }}</span>
           <span class="text-gray-500 dark:text-gray-400">/mo</span>
         </div>
         <p class="mt-4 text-sm text-gray-500 dark:text-gray-400 h-10 line-clamp-2">

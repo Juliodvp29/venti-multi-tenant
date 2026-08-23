@@ -20,6 +20,8 @@ export class Coupons implements OnInit {
   private readonly discountsService = inject(DiscountsService);
   private readonly toast = inject(ToastService);
   private readonly tenantService = inject(TenantService);
+  private readonly currencyPipe = inject(CurrencyPipe);
+  readonly currency = this.tenantService.currency;
 
   constructor() {
     effect(() => {
@@ -52,7 +54,7 @@ export class Coupons implements OnInit {
     {
       key: 'value',
       label: 'VALOR',
-      formatter: (val, item) => item.type === 'percentage' ? `${val}% de descuento` : `$${val}`
+      formatter: (val, item) => item.type === 'percentage' ? `${val}% de descuento` : this.currencyPipe.transform(val, this.currency(), 'symbol', '1.2-2', 'es') ?? val
     },
     {
       key: 'usage_count',

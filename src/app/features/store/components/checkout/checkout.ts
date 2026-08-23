@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect } from '@angular/core';
 import { CartItem } from '@core/models/cart';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '@core/services/cart';
@@ -16,7 +16,7 @@ import { AddressForm } from '../account/address-form/address-form';
 @Component({
   selector: 'app-checkout',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterLink, FormsModule, AddressForm],
+  imports: [CommonModule, RouterLink, FormsModule, AddressForm, CurrencyPipe],
   template: `
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
       <!-- Form -->
@@ -123,9 +123,9 @@ import { AddressForm } from '../account/address-form/address-form';
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="font-bold text-slate-900 truncate">{{ item.name }}</p>
-                  <p class="text-sm text-slate-500">{{ item.quantity }} x {{ item.price | currency }}</p>
+                  <p class="text-sm text-slate-500">{{ item.quantity }} x {{ item.price | currency:currency() }}</p>
                 </div>
-                <p class="font-bold">{{ item.price * item.quantity | currency }}</p>
+                <p class="font-bold">{{ item.price * item.quantity | currency:currency() }}</p>
               </div>
             }
           </div>
@@ -133,17 +133,17 @@ import { AddressForm } from '../account/address-form/address-form';
           <div class="space-y-3 pt-6 border-t border-slate-100 text-sm">
             <div class="flex justify-between">
               <span class="text-slate-500">Subtotal</span>
-              <span class="font-medium text-slate-900">{{ cartService.subtotal() | currency }}</span>
+              <span class="font-medium text-slate-900">{{ cartService.subtotal() | currency:currency() }}</span>
             </div>
             @if (cartService.appliedCoupon()) {
               <div class="flex justify-between text-indigo-600 font-bold bg-indigo-50 px-3 py-2 rounded-lg">
                 <span>Descuento ({{ cartService.appliedCoupon()?.code }})</span>
-                <span>-{{ cartService.discountAmount() | currency }}</span>
+                <span>-{{ cartService.discountAmount() | currency:currency() }}</span>
               </div>
             }
             <div class="flex justify-between">
               <span class="text-slate-500">Taxes</span>
-              <span class="font-medium text-slate-900">{{ cartService.tax() | currency }}</span>
+              <span class="font-medium text-slate-900">{{ cartService.tax() | currency:currency() }}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-slate-500">Envío</span>
@@ -151,7 +151,7 @@ import { AddressForm } from '../account/address-form/address-form';
             </div>
             <div class="flex justify-between text-xl font-black pt-4 border-t border-slate-100 mt-4 text-slate-900">
               <span>Monto total</span>
-              <span>{{ cartService.total() | currency }}</span>
+              <span>{{ cartService.total() | currency:currency() }}</span>
             </div>
           </div>
 
@@ -176,7 +176,8 @@ import { AddressForm } from '../account/address-form/address-form';
 })
 export class Checkout implements OnInit {
   readonly cartService = inject(CartService);
-  private readonly tenantService = inject(TenantService);
+  readonly tenantService = inject(TenantService);
+  readonly currency = this.tenantService.currency;
   private readonly router = inject(Router);
   private readonly ordersService = inject(OrdersService);
   private readonly customerAuth = inject(CustomerAuthService);
@@ -345,7 +346,7 @@ export class Checkout implements OnInit {
         tax_amount: this.cartService.tax(),
         shipping_amount: 0,
         total_amount: this.cartService.total(),
-        currency: 'USD',
+        currency: this.currency(),
         payment_method: this.selectedPaymentMethod(),
         customer_email: customer.email,
         customer_first_name: customer.first_name || address.first_name,
