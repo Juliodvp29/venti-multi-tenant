@@ -23,10 +23,7 @@ export class StoreCart {
     readonly total = this.cartService.total;
     readonly discount = this.cartService.discountAmount;
     readonly coupon = this.cartService.appliedCoupon;
-    readonly currency = computed(() => {
-        const settings = this.tenantService.settings() as Record<string, unknown>;
-        return (settings?.['currency'] as string) || 'USD';
-    });
+    readonly currency = this.tenantService.currency;
 
     readonly pageConfig = computed(() => this.tenantService.getPageLayout('cart'));
     readonly sections = computed<StorefrontSection[]>(() => this.pageConfig()?.sections || []);

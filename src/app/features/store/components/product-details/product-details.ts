@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductsService } from '@core/services/products';
 import { CartService } from '@core/services/cart';
@@ -19,7 +19,7 @@ import { SeoService } from '@core/services/seo';
 @Component({
   selector: 'app-product-details',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterLink, ProductCard, FormsModule],
+  imports: [CommonModule, RouterLink, ProductCard, FormsModule, CurrencyPipe],
   template: `
     @if (product()) {
       <div class="space-y-24 animate-in fade-in duration-500">
@@ -104,9 +104,9 @@ import { SeoService } from '@core/services/seo';
 
             <h1 class="text-4xl font-bold text-slate-900 mb-2">{{ product()?.name }}</h1>
             <div class="flex items-center gap-4 mb-6 text-slate-900">
-              <span class="text-3xl font-bold">{{ displayPrice() | currency }}</span>
+              <span class="text-3xl font-bold">{{ displayPrice() | currency:currency() }}</span>
               @if (displayComparePrice()) {
-                <span class="text-xl text-slate-400 line-through">{{ displayComparePrice() | currency }}</span>
+                <span class="text-xl text-slate-400 line-through">{{ displayComparePrice() | currency:currency() }}</span>
               }
             </div>
 
@@ -373,6 +373,7 @@ export class ProductDetails implements OnInit {
 
   readonly pageConfig = computed(() => this.tenantService.getPageLayout('product_detail'));
   readonly sections = computed<StorefrontSection[]>(() => this.pageConfig()?.sections || []);
+  readonly currency = this.tenantService.currency;
 
   readonly product = signal<Product | null>(null);
   readonly relatedProducts = signal<Product[]>([]);
@@ -607,7 +608,7 @@ export class ProductDetails implements OnInit {
       description: product.description || undefined,
       image: product.primary_image_url || product.images?.[0]?.url || undefined,
       price: product.price,
-      currency: 'USD',
+      currency: this.currency(),
       sku: product.sku || undefined,
       availability: product.stock_quantity > 0 ? 'InStock' : 'OutOfStock'
     });

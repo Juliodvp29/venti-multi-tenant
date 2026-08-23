@@ -231,6 +231,11 @@ export class TenantService {
     };
   });
 
+  readonly currency = computed(() => {
+    const currency = this._state().currentTenant?.settings?.['currency'];
+    return typeof currency === 'string' && currency.length === 3 ? currency : 'USD';
+  });
+
   constructor() {
     // Effect: Load tenant when user is authenticated
     effect(() => {

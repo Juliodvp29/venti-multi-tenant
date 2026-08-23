@@ -33,6 +33,7 @@ export class CommissionsList implements OnInit {
     private readonly tenantService = inject(TenantService);
     private readonly toastService = inject(ToastService);
     private readonly currencyPipe = inject(CurrencyPipe);
+    readonly currency = this.tenantService.currency;
 
     private initialized = false;
 
@@ -113,7 +114,7 @@ export class CommissionsList implements OnInit {
                 label: 'Monto Pago',
                 type: 'text',
                 sortable: true,
-                formatter: (val) => this.currencyPipe.transform(val, 'USD') ?? val,
+                formatter: (val) => this.currencyPipe.transform(val, this.currency()) ?? val,
             },
             {
                 key: 'commission_rate_applied',
@@ -127,7 +128,7 @@ export class CommissionsList implements OnInit {
                 label: 'Monto Comisión',
                 type: 'text',
                 sortable: true,
-                formatter: (val) => this.currencyPipe.transform(val, 'USD') ?? val,
+                formatter: (val) => this.currencyPipe.transform(val, this.currency()) ?? val,
             },
             {
                 key: 'status',

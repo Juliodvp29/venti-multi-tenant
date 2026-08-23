@@ -15,11 +15,12 @@ import { StorefrontSection } from '@core/models';
 export class StoreHome {
     private readonly tenantService = inject(TenantService);
 
-    readonly layout = this.tenantService.storefrontLayout;
+    readonly branding = this.tenantService.branding;
+    readonly homeConfig = computed(() => this.tenantService.getPageLayout('home'));
     readonly themeTokens = this.tenantService.themeTokens;
     
     readonly activeSections = computed(() =>
-        this.layout().sections.filter((s: StorefrontSection) => s.isActive)
+        (this.homeConfig()?.sections || []).filter((s: StorefrontSection) => s.isActive)
     );
 
     readonly hasFeaturedProducts = signal(true);

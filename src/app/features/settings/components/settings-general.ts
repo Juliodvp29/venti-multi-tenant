@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, effect, inject, output, signal } fr
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
+import { Dropdown } from '@shared/components/dropdown/dropdown';
 
 @Component({
     selector: 'app-settings-general',
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, Dropdown],
     templateUrl: './settings-general.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -15,9 +16,26 @@ export class SettingsGeneral {
     private readonly toastService = inject(ToastService);
 
     readonly isSaving = signal(false);
+    readonly saveError = signal<string | null>(null);
     readonly isVerifyingDomain = signal(false);
     readonly tenant = this.tenantService.tenant;
     readonly dirtyChange = output<boolean>();
+
+    readonly currencyOptions = [
+        { label: 'USD - Dólar estadounidense', value: 'USD' },
+        { label: 'MXN - Peso mexicano', value: 'MXN' },
+        { label: 'COP - Peso colombiano', value: 'COP' },
+        { label: 'EUR - Euro', value: 'EUR' },
+        { label: 'CAD - Dólar canadiense', value: 'CAD' },
+    ];
+
+    readonly timezoneOptions = [
+        { label: 'Nueva York (ET)', value: 'America/New_York' },
+        { label: 'Ciudad de México (CT)', value: 'America/Mexico_City' },
+        { label: 'Bogotá (COT)', value: 'America/Bogota' },
+        { label: 'Los Ángeles (PT)', value: 'America/Los_Angeles' },
+        { label: 'Madrid (CET)', value: 'Europe/Madrid' },
+    ];
 
     readonly domainStatus = () => {
         const status = this.tenant()?.settings?.['custom_domain_status'];
@@ -54,7 +72,10 @@ export class SettingsGeneral {
             }
         });
 
-        this.form.valueChanges.subscribe(() => this.dirtyChange.emit(this.form.dirty));
+        this.form.valueChanges.subscribe(() => {
+            this.saveError.set(null);
+            this.dirtyChange.emit(this.form.dirty);
+        });
     }
 
     async save() {
@@ -64,6 +85,7 @@ export class SettingsGeneral {
         }
 
         this.isSaving.set(true);
+        this.saveError.set(null);
 
         try {
             const { currency, timezone, custom_domain, ...businessInfo } = this.form.getRawValue();
@@ -91,6 +113,7 @@ export class SettingsGeneral {
             this.dirtyChange.emit(false);
         } catch (error) {
             console.error('Error saving settings:', error);
+            this.saveError.set('No pudimos guardar los cambios. Revisa tu conexión e inténtalo de nuevo.');
             this.toastService.error('Error al guardar la configuración');
         } finally {
             this.isSaving.set(false);

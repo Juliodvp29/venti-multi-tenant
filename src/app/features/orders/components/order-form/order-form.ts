@@ -20,6 +20,7 @@ import { ToastService } from '@core/services/toast';
 import { OrderStatus, PaymentStatus } from '@core/enums';
 import { Dropdown } from '@shared/components/dropdown/dropdown';
 import { CurrencyPipe } from '@angular/common';
+import { TenantService } from '@core/services/tenant';
 
 @Component({
     selector: 'app-order-form',
@@ -35,6 +36,8 @@ export class OrderForm implements OnInit {
     private readonly customersService = inject(CustomersService);
     private readonly toast = inject(ToastService);
     private readonly currencyPipe = inject(CurrencyPipe);
+    readonly tenantService = inject(TenantService);
+    readonly currency = this.tenantService.currency;
 
     saved = output<Order>();
     cancelled = output<void>();
@@ -55,7 +58,7 @@ export class OrderForm implements OnInit {
 
     readonly productOptions = computed(() =>
         this.products().map(p => ({
-            label: `${p.name} - ${this.currencyPipe.transform(p.price)}`,
+            label: `${p.name} - ${this.currencyPipe.transform(p.price, this.currency())}`,
             value: p.id
         }))
     );
@@ -157,7 +160,7 @@ export class OrderForm implements OnInit {
         const product = this.getProductForIndex(index);
         if (!product?.variants) return [];
         return product.variants.map(v => ({
-            label: `${v.name}${v.price && v.price !== product.price ? ' (' + (this.currencyPipe.transform(v.price) || '') + ')' : ''}`,
+            label: `${v.name}${v.price && v.price !== product.price ? ' (' + (this.currencyPipe.transform(v.price, this.currency()) || '') + ')' : ''}`,
             value: v.id
         }));
     }
@@ -297,7 +300,7 @@ export class OrderForm implements OnInit {
                 tax_amount: raw.tax_amount || 0,
                 discount_amount: raw.discount_amount || 0,
                 internal_note: raw.internal_note || undefined,
-                currency: 'USD',
+                currency: this.currency(),
                 customer_email: customer.email,
                 customer_first_name: customer.first_name,
                 customer_last_name: customer.last_name,

@@ -41,6 +41,7 @@ export class OrdersList implements OnInit, AfterViewInit {
     private readonly router = inject(Router);
     private readonly currencyPipe = inject(CurrencyPipe);
     private readonly datePipe = inject(DatePipe);
+    readonly currency = this.tenantService.currency;
 
     private initialized = false;
     private searchSubject = new Subject<string>();
@@ -171,7 +172,7 @@ export class OrdersList implements OnInit, AfterViewInit {
                 label: 'Total',
                 type: 'text',
                 sortable: true,
-                formatter: (val) => this.currencyPipe.transform(val, 'USD') ?? val,
+                formatter: (val) => this.currencyPipe.transform(val, this.currency()) ?? val,
             },
         ]);
     }

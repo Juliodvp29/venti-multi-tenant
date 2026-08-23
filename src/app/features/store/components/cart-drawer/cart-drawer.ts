@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '@core/services/cart';
+import { TenantService } from '@core/services/tenant';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'app-cart-drawer',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, RouterLink, FormsModule],
+    imports: [CommonModule, RouterLink, FormsModule, CurrencyPipe],
     template: `
     <!-- Backdrop -->
     <div (click)="close.emit()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 transition-opacity animate-in fade-in duration-300"></div>
@@ -48,7 +50,7 @@ import { CartService } from '@core/services/cart';
                                 </svg>
                              </button>
                         </div>
-                        <p class="text-indigo-600 font-bold text-sm mb-2">{{ item.price | currency }}</p>
+                        <p class="text-indigo-600 font-bold text-sm mb-2">{{ item.price | currency:currency() }}</p>
                         
                         <div class="mt-auto flex items-center border border-slate-200 rounded-lg overflow-hidden w-fit bg-white">
                             <button (click)="cartService.updateQuantity(item.id, item.quantity - 1)" class="px-2 py-1 hover:bg-slate-50">-</button>
@@ -103,24 +105,24 @@ import { CartService } from '@core/services/cart';
         <div class="p-6 border-t border-slate-100 bg-slate-50/50">
             <div class="flex justify-between mb-2 text-sm text-slate-500">
                 <span>Subtotal</span>
-                <span>{{ cartService.subtotal() | currency }}</span>
+                <span>{{ cartService.subtotal() | currency:currency() }}</span>
             </div>
             
             @if (cartService.appliedCoupon()) {
                 <div class="flex justify-between mb-2 text-sm text-indigo-600 font-bold">
                     <span>Descuento</span>
-                    <span>-{{ cartService.discountAmount() | currency }}</span>
+                    <span>-{{ cartService.discountAmount() | currency:currency() }}</span>
                 </div>
             }
 
             <div class="flex justify-between mb-2 text-sm text-slate-500">
                 <span>Impuestos</span>
-                <span>{{ cartService.tax() | currency }}</span>
+                <span>{{ cartService.tax() | currency:currency() }}</span>
             </div>
 
             <div class="flex justify-between mb-6 text-lg font-bold">
                 <span>Total</span>
-                <span class="text-slate-900 text-xl font-bold">{{ cartService.total() | currency }}</span>
+                <span class="text-slate-900 text-xl font-bold">{{ cartService.total() | currency:currency() }}</span>
             </div>
             
             <button (click)="close.emit()" routerLink="/store/checkout" queryParamsHandling="preserve" [disabled]="items().length === 0" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
@@ -132,6 +134,8 @@ import { CartService } from '@core/services/cart';
 })
 export class CartDrawer {
     readonly cartService = inject(CartService);
+    readonly tenantService = inject(TenantService);
+    readonly currency = this.tenantService.currency;
 
     @Output() close = new EventEmitter<void>();
 
