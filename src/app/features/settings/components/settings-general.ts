@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, effect, inject, output, signal } fr
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
+import { Dropdown } from '@shared/components/dropdown/dropdown';
 
 @Component({
     selector: 'app-settings-general',
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, Dropdown],
     templateUrl: './settings-general.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -19,6 +20,22 @@ export class SettingsGeneral {
     readonly isVerifyingDomain = signal(false);
     readonly tenant = this.tenantService.tenant;
     readonly dirtyChange = output<boolean>();
+
+    readonly currencyOptions = [
+        { label: 'USD - Dólar estadounidense', value: 'USD' },
+        { label: 'MXN - Peso mexicano', value: 'MXN' },
+        { label: 'COP - Peso colombiano', value: 'COP' },
+        { label: 'EUR - Euro', value: 'EUR' },
+        { label: 'CAD - Dólar canadiense', value: 'CAD' },
+    ];
+
+    readonly timezoneOptions = [
+        { label: 'Nueva York (ET)', value: 'America/New_York' },
+        { label: 'Ciudad de México (CT)', value: 'America/Mexico_City' },
+        { label: 'Bogotá (COT)', value: 'America/Bogota' },
+        { label: 'Los Ángeles (PT)', value: 'America/Los_Angeles' },
+        { label: 'Madrid (CET)', value: 'Europe/Madrid' },
+    ];
 
     readonly domainStatus = () => {
         const status = this.tenant()?.settings?.['custom_domain_status'];
