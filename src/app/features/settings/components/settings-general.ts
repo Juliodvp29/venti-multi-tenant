@@ -15,6 +15,7 @@ export class SettingsGeneral {
     private readonly toastService = inject(ToastService);
 
     readonly isSaving = signal(false);
+    readonly saveError = signal<string | null>(null);
     readonly isVerifyingDomain = signal(false);
     readonly tenant = this.tenantService.tenant;
     readonly dirtyChange = output<boolean>();
@@ -54,7 +55,10 @@ export class SettingsGeneral {
             }
         });
 
-        this.form.valueChanges.subscribe(() => this.dirtyChange.emit(this.form.dirty));
+        this.form.valueChanges.subscribe(() => {
+            this.saveError.set(null);
+            this.dirtyChange.emit(this.form.dirty);
+        });
     }
 
     async save() {
@@ -64,6 +68,7 @@ export class SettingsGeneral {
         }
 
         this.isSaving.set(true);
+        this.saveError.set(null);
 
         try {
             const { currency, timezone, custom_domain, ...businessInfo } = this.form.getRawValue();
@@ -91,6 +96,7 @@ export class SettingsGeneral {
             this.dirtyChange.emit(false);
         } catch (error) {
             console.error('Error saving settings:', error);
+            this.saveError.set('No pudimos guardar los cambios. Revisa tu conexión e inténtalo de nuevo.');
             this.toastService.error('Error al guardar la configuración');
         } finally {
             this.isSaving.set(false);
