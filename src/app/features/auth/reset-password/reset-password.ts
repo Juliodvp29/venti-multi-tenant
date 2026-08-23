@@ -9,7 +9,28 @@ import { ToastService } from '@core/services/toast';
   selector: 'app-reset-password',
   imports: [ReactiveFormsModule],
   templateUrl: './reset-password.html',
-  styleUrl: './reset-password.css',
+  styles: [`
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scale-up {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    .animate-slide-up { animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-fade-in { animation: fade-in 0.4s ease-out; }
+    .animate-scale-up { animation: scale-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+  `],
 })
 export class ResetPassword {
   private readonly fb = inject(FormBuilder);
