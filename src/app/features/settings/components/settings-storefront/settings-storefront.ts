@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed, output, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Dropdown } from '@shared/components/dropdown/dropdown';
 import { TenantService } from '@core/services/tenant';
 import {
     StorefrontLayout,
@@ -38,7 +39,7 @@ export interface PageMeta {
 
 @Component({
     selector: 'app-settings-storefront',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, Dropdown],
     templateUrl: './settings-storefront.html',
     styleUrl: './settings-storefront.css',
     changeDetection: ChangeDetectionStrategy.OnPush,

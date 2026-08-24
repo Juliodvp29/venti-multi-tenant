@@ -1,0 +1,290 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+  <div class="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Presets & Historial de Diseño</h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Guarda temas reutilizables o restaura versiones anteriores publicadas</p>
+        </div>
+      </div>
+
+      <button type="button" (click)="close.emit()" aria-label="Cerrar modal"
+        class="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="flex items-center justify-between px-6 pt-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <div class="flex gap-2">
+        <button type="button" (click)="activeTab.set('presets')"
+          class="flex items-center gap-2 pb-3 px-3 text-sm font-semibold border-b-2 transition-all"
+          [class.border-indigo-600]="activeTab() === 'presets'"
+          [class.text-indigo-600]="activeTab() === 'presets'"
+          [class.dark:text-indigo-400]="activeTab() === 'presets'"
+          [class.border-transparent]="activeTab() !== 'presets'"
+          [class.text-gray-500]="activeTab() !== 'presets'">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M16.5 12l3.432-3.432a2.25 2.25 0 0 0 0-3.182l-1.318-1.318a2.25 2.25 0 0 0-3.182 0L12 7.5m4.5 4.5d-4.5 4.5" />
+          </svg>
+          Mis Presets Guardados
+          <span class="ml-1 px-2 py-0.5 text-xs rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-bold">
+            {{ savedPresets().length }}
+          </span>
+        </button>
+
+        <button type="button" (click)="activeTab.set('versions')"
+          class="flex items-center gap-2 pb-3 px-3 text-sm font-semibold border-b-2 transition-all"
+          [class.border-indigo-600]="activeTab() === 'versions'"
+          [class.text-indigo-600]="activeTab() === 'versions'"
+          [class.dark:text-indigo-400]="activeTab() === 'versions'"
+          [class.border-transparent]="activeTab() !== 'versions'"
+          [class.text-gray-500]="activeTab() !== 'versions'">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          Historial de Versiones
+          <span class="ml-1 px-2 py-0.5 text-xs rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-bold">
+            {{ designVersions().length }}
+          </span>
+        </button>
+      </div>
+
+      @if (activeTab() === 'presets') {
+        <button type="button" (click)="openNewPresetModal()"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors mb-2">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Guardar Diseño Actual como Preset
+        </button>
+      }
+    </div>
+
+    <!-- Modal Body -->
+    <div class="flex-1 overflow-y-auto p-6">
+      
+      <!-- New Preset Form Inline Modal -->
+      @if (showNewPresetForm()) {
+        <div class="mb-6 p-5 rounded-xl border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50/50 dark:bg-indigo-950/30">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-gray-900 dark:text-white">Guardar Preset Personalizado</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Guarda una copia de todos los colores, tipografías y secciones del borrador actual.</p>
+            </div>
+            <button type="button" (click)="closeNewPresetModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Nombre del Preset *</label>
+              <input type="text" [ngModel]="newPresetName()" (ngModelChange)="newPresetName.set($event)"
+                placeholder="Ej. Tema Otoño Elegante, Black Friday 2026..."
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Descripción o Notas (Opcional)</label>
+              <input type="text" [ngModel]="newPresetDescription()" (ngModelChange)="newPresetDescription.set($event)"
+                placeholder="Ej. Estilo minimalista con tipografía Serif y Hero centrado"
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+              <button type="button" (click)="closeNewPresetModal()" [disabled]="isSavingPreset()"
+                class="px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                Cancelar
+              </button>
+              <button type="button" (click)="saveCurrentPreset()" [disabled]="isSavingPreset() || !newPresetName().trim()"
+                class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white shadow-sm transition-colors">
+                @if (isSavingPreset()) {
+                  <span class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  Guardando...
+                } @else {
+                  Guardar Preset
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- TAB 1: PRESETS GUARDADOS -->
+      @if (activeTab() === 'presets') {
+        @if (savedPresets().length === 0 && !showNewPresetForm()) {
+          <div class="text-center py-12 px-4">
+            <div class="mx-auto flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-400 mb-4">
+              <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">No tienes presets guardados aún</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-5">
+              Puedes guardar combinaciones personalizadas de temas, colores y estructuras de página para reutilizarlas en promociones, temporadas o eventos especiales.
+            </p>
+            <button type="button" (click)="openNewPresetModal()"
+              class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Guardar diseño actual como primer preset
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @for (preset of savedPresets(); track preset.id) {
+              <div class="flex flex-col justify-between rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 hover:border-indigo-300 dark:hover:border-indigo-800 transition-all hover:shadow-md">
+                <div>
+                  <div class="flex items-start justify-between gap-3 mb-2">
+                    <div class="min-w-0">
+                      <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ preset.name }}</h4>
+                      @if (preset.description) {
+                        <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-0.5">{{ preset.description }}</p>
+                      }
+                    </div>
+
+                    <!-- Color Swatches -->
+                    @if (preset.snapshot.theme_tokens.colors; as c) {
+                      <div class="flex items-center gap-1 shrink-0 p-1 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.backgroundColor]="c.primary" title="Color Primario"></span>
+                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.backgroundColor]="c.secondary" title="Color Secundario"></span>
+                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.backgroundColor]="c.accent" title="Color de Acento"></span>
+                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.backgroundColor]="c.background" title="Fondo"></span>
+                      </div>
+                    }
+                  </div>
+
+                  <div class="flex flex-wrap items-center gap-2 text-[11px] text-gray-400 dark:text-gray-500 mt-2">
+                    <span>Guardado: {{ preset.created_at | date:'shortDate' }}</span>
+                    <span>•</span>
+                    <span class="font-medium text-gray-600 dark:text-gray-300">
+                      Fuente: {{ preset.snapshot.theme_tokens.font_heading || 'Inter' }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between gap-2 border-t border-gray-100 dark:border-gray-800 pt-3 mt-4">
+                  <div class="flex items-center gap-1">
+                    <button type="button" (click)="duplicate(preset)" title="Duplicar preset"
+                      class="p-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v2.25A2.25 2.25 0 0 1 13.5 21.75h-7.5A2.25 2.25 0 0 1 3.75 19.5V12a2.25 2.25 0 0 1 2.25-2.25H6m9.75 7.5H18a2.25 2.25 0 0 0 2.25-2.25V6A2.25 2.25 0 0 0 17.25 3.75h-7.5A2.25 2.25 0 0 0 7.5 6v1.5m9.75 9.75" />
+                      </svg>
+                    </button>
+                    <button type="button" (click)="deletePreset(preset)" title="Eliminar preset"
+                      class="p-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <button type="button" (click)="apply(preset)"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                    Aplicar al Borrador
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+
+      <!-- TAB 2: HISTORIAL DE VERSIONES -->
+      @if (activeTab() === 'versions') {
+        @if (designVersions().length === 0) {
+          <div class="text-center py-12 px-4">
+            <div class="mx-auto flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-400 mb-4">
+              <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">No hay historial de versiones todavía</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+              Cada vez que hagas clic en "Publicar cambios", se creará una versión numerada en este historial para que puedas restaurarla o compararla cuando quieras.
+            </p>
+          </div>
+        } @else {
+          <div class="space-y-4">
+            @for (version of designVersions(); track version.id) {
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 transition-all hover:border-gray-300 dark:hover:border-gray-700">
+                <div class="flex items-start gap-3 min-w-0">
+                  <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-bold text-xs shrink-0">
+                    #{{ version.version_number }}
+                  </div>
+
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                      <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ version.name }}</h4>
+                      @if (isCurrentLiveVersion(version)) {
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 shrink-0">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                          En Vivo
+                        </span>
+                      }
+                    </div>
+
+                    @if (version.notes) {
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ version.notes }}</p>
+                    }
+
+                    <div class="flex flex-wrap items-center gap-2 text-[11px] text-gray-400 dark:text-gray-500 mt-1">
+                      <span>Publicada: {{ version.published_at | date:'medium' }}</span>
+                      @if (version.published_by) {
+                        <span>•</span>
+                        <span>Por: {{ version.published_by }}</span>
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-100 dark:border-gray-800">
+                  <button type="button" (click)="restore(version, false)" [disabled]="isRestoring()"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                    </svg>
+                    Restaurar en Borrador
+                  </button>
+
+                  <button type="button" (click)="restore(version, true)" [disabled]="isRestoring()"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    Publicar Directo
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50 text-xs text-gray-500 dark:text-gray-400">
+      <span>Todos los presets y versiones quedan guardados de forma segura en la nube.</span>
+      <button type="button" (click)="close.emit()"
+        class="px-4 py-2 text-xs font-semibold rounded-xl bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-colors">
+        Cerrar
+      </button>
+    </div>
+
+  </div>
+</div>

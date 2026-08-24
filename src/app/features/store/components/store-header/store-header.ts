@@ -254,8 +254,8 @@ export class StoreHeader {
     @Output() openCart = new EventEmitter<void>();
 
     readonly branding = this.tenantService.branding;
-    readonly themeTokens = this.tenantService.themeTokens;
-    readonly navigation = computed(() => this.tenantService.storefrontLayout().navigation || []);
+    readonly themeTokens = this.tenantService.publishedThemeTokens;
+    readonly navigation = computed(() => this.tenantService.publishedStorefrontLayout().navigation || []);
     readonly cartCount = this.cartService.count;
     readonly user = this.authService.user;
 

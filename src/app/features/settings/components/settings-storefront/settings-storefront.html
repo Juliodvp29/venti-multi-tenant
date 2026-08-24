@@ -254,7 +254,10 @@
                 <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm p-5 space-y-6">
                     <div class="pb-3 border-b border-gray-100 dark:border-gray-800">
                         <h4 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            🎨 Estilos Propios para {{ activePageMeta().label }}
+                            <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                            </svg>
+                            <span>Estilos Propios para {{ activePageMeta().label }}</span>
                         </h4>
                         <p class="text-xs text-gray-400 mt-0.5">Configura fondos, cabecera, pie de página y espaciado exclusivos para esta página.</p>
                     </div>
@@ -278,61 +281,41 @@
                     <!-- Header Style -->
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-gray-700 dark:text-gray-300 block">Estilo de Cabecera (Header)</label>
-                        <select [value]="activePageConfig().styles.headerStyle || 'default'"
-                            (change)="updatePageStyle('headerStyle', $any($event.target).value)"
-                            class="w-full px-3 py-2 text-xs border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                            @for (opt of pageHeaderStyleOptions; track opt.value) {
-                                <option [value]="opt.value">{{ opt.label }} - {{ opt.description }}</option>
-                            }
-                        </select>
+                        <app-dropdown [options]="pageHeaderStyleOptions"
+                            [value]="activePageConfig().styles.headerStyle || 'default'"
+                            (valueChange)="updatePageStyle('headerStyle', $event)" />
                     </div>
 
                     <!-- Footer Style -->
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-gray-700 dark:text-gray-300 block">Estilo de Pie de Página (Footer)</label>
-                        <select [value]="activePageConfig().styles.footerStyle || 'default'"
-                            (change)="updatePageStyle('footerStyle', $any($event.target).value)"
-                            class="w-full px-3 py-2 text-xs border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                            @for (opt of pageFooterStyleOptions; track opt.value) {
-                                <option [value]="opt.value">{{ opt.label }} - {{ opt.description }}</option>
-                            }
-                        </select>
+                        <app-dropdown [options]="pageFooterStyleOptions"
+                            [value]="activePageConfig().styles.footerStyle || 'default'"
+                            (valueChange)="updatePageStyle('footerStyle', $event)" />
                     </div>
 
                     <!-- Container Width & Paddings -->
                     <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">
                         <div>
                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Padding Superior</label>
-                            <select [value]="activePageConfig().styles.paddingTop || 'md'"
-                                (change)="updatePageStyle('paddingTop', $any($event.target).value)"
-                                class="w-full px-2.5 py-1.5 text-xs border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                                @for (opt of spacingOptions; track opt.value) {
-                                    <option [value]="opt.value">{{ opt.label }}</option>
-                                }
-                            </select>
+                            <app-dropdown [options]="spacingOptions"
+                                [value]="activePageConfig().styles.paddingTop || 'md'"
+                                (valueChange)="updatePageStyle('paddingTop', $event)" />
                         </div>
 
                         <div>
                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Padding Inferior</label>
-                            <select [value]="activePageConfig().styles.paddingBottom || 'md'"
-                                (change)="updatePageStyle('paddingBottom', $any($event.target).value)"
-                                class="w-full px-2.5 py-1.5 text-xs border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                                @for (opt of spacingOptions; track opt.value) {
-                                    <option [value]="opt.value">{{ opt.label }}</option>
-                                }
-                            </select>
+                            <app-dropdown [options]="spacingOptions"
+                                [value]="activePageConfig().styles.paddingBottom || 'md'"
+                                (valueChange)="updatePageStyle('paddingBottom', $event)" />
                         </div>
                     </div>
 
                     <div>
                         <label class="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">Ancho Máximo de Contenido</label>
-                        <select [value]="activePageConfig().styles.containerWidth || 'boxed'"
-                            (change)="updatePageStyle('containerWidth', $any($event.target).value)"
-                            class="w-full px-3 py-2 text-xs border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                            @for (opt of containerWidthOptions; track opt.value) {
-                                <option [value]="opt.value">{{ opt.label }}</option>
-                            }
-                        </select>
+                        <app-dropdown [options]="containerWidthOptions"
+                            [value]="activePageConfig().styles.containerWidth || 'boxed'"
+                            (valueChange)="updatePageStyle('containerWidth', $event)" />
                     </div>
                 </div>
             }
@@ -464,14 +447,14 @@
                                     
                                     <!-- Composición Visual -->
                                     <div class="p-4 bg-gray-50 dark:bg-gray-800/60 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 space-y-3">
-                                        <label class="block text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🎨 Estilo de Composición</label>
+                                        <label class="block text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Estilo de Composición</label>
                                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                             <button type="button" (click)="$any(section.content).compositionStyle = 'full-banner'; forceLayoutUpdate()"
                                                 [class.border-indigo-600]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
                                                 [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
                                                 [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
                                                 class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
-                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">🖼️ Full Banner</span>
+                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">Full Banner</span>
                                                 <span class="block text-[10px] text-gray-400">Inmersivo</span>
                                             </button>
 
@@ -480,7 +463,7 @@
                                                 [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'split'"
                                                 [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'split'"
                                                 class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
-                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">🌓 Dividido</span>
+                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">Dividido</span>
                                                 <span class="block text-[10px] text-gray-400">Texto e imagen</span>
                                             </button>
 
@@ -489,7 +472,7 @@
                                                 [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'card-overlay'"
                                                 [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'card-overlay'"
                                                 class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
-                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">🎴 Tarjeta Flotante</span>
+                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">Tarjeta Flotante</span>
                                                 <span class="block text-[10px] text-gray-400">Glassmorphism</span>
                                             </button>
 
@@ -498,7 +481,7 @@
                                                 [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'minimal-centered'"
                                                 [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'minimal-centered'"
                                                 class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
-                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">✨ Minimalista</span>
+                                                <span class="block text-xs font-bold text-gray-900 dark:text-white">Minimalista</span>
                                                 <span class="block text-[10px] text-gray-400">Limpio / Editorial</span>
                                             </button>
                                         </div>
@@ -507,7 +490,7 @@
                                     <!-- Opciones de Layout Dividido (Split) -->
                                     @if ($any(section.content).compositionStyle === 'split') {
                                         <div class="p-4 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-2xl border border-indigo-100 dark:border-indigo-900/50 space-y-3">
-                                            <label class="block text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300">📸 Configuración del Modo Dividido</label>
+                                            <label class="block text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300">Configuración del Modo Dividido</label>
                                             <div class="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Posición de Imagen</label>
@@ -768,7 +751,7 @@
                                         </div>
                                         @for (cat of $any(section.content).categories; track cat.id; let ci = $index) {
                                             <div class="flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700">
-                                                <input type="text" [(ngModel)]="cat.icon" (ngModelChange)="forceLayoutUpdate()" placeholder="Icono (ej. ✨)"
+                                                <input type="text" [(ngModel)]="cat.icon" (ngModelChange)="forceLayoutUpdate()" placeholder="Icono (ej. estrella)"
                                                     class="w-12 px-2 py-1 text-center text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                                                 <input type="text" [(ngModel)]="cat.name" (ngModelChange)="forceLayoutUpdate()" placeholder="Nombre"
                                                     class="flex-1 px-2.5 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
@@ -1196,7 +1179,7 @@
 
                             <!-- BACKGROUND & COLORS -->
                             <div class="pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4">
-                                <h5 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">🎨 Fondo y Colores de la Sección</h5>
+                                <h5 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Fondo y Colores de la Sección</h5>
                                 
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
@@ -1306,7 +1289,7 @@
                 <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/70 dark:bg-gray-800/50">
                     <div>
                         <h4 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            ✨ Catálogo de Bloques para la Tienda
+                            Catálogo de Bloques para la Tienda
                         </h4>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Selecciona el tipo de sección que deseas incorporar a tu página principal</p>
                     </div>

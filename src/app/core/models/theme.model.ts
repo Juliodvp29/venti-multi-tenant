@@ -190,4 +190,63 @@ export interface FontOption {
     googleFontUrl?: string;
 }
 
+// ── Design Presets / Drafts / Publish System ────────────────
+
+/** Complete snapshot of a store's visual design at a point in time */
+export interface ThemeDesignSnapshot {
+    theme_tokens: ThemeTokens;
+    storefront_layout: unknown; // StorefrontLayout from storefront.model
+    branding?: {
+        logo_url?: string | null;
+        logo_dark_url?: string | null;
+        main_banner_url?: string | null;
+        background_image_url?: string | null;
+        background_pattern?: string;
+        promo_video_url?: string | null;
+    };
+}
+
+/** A user-saved custom preset that can be applied or duplicated */
+export interface CustomThemePreset {
+    id: string;
+    name: string;
+    description?: string;
+    created_at: string;
+    updated_at: string;
+    snapshot: ThemeDesignSnapshot;
+    /** Preview colors for the preset card */
+    preview_colors?: {
+        primary: string;
+        secondary: string;
+        background: string;
+        accent: string;
+    };
+}
+
+/** A published version entry in the design history */
+export interface ThemeDesignVersion {
+    id: string;
+    version_number: number;
+    name: string;
+    notes?: string;
+    published_at: string;
+    published_by?: string;
+    snapshot: ThemeDesignSnapshot;
+}
+
+/** Complete design state stored in tenant settings JSONB */
+export interface StoreDesignState {
+    /** Current draft (work in progress, not visible to customers) */
+    draft: ThemeDesignSnapshot;
+    /** Currently published design (visible to store visitors) */
+    published: ThemeDesignSnapshot;
+    /** Last time the design was published */
+    published_at?: string;
+    /** User-created reusable presets */
+    saved_presets: CustomThemePreset[];
+    /** History of published versions for rollback */
+    versions: ThemeDesignVersion[];
+    /** Incremental counter for version numbers */
+    next_version_number: number;
+}
 
