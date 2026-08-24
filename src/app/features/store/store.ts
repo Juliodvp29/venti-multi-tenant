@@ -25,7 +25,7 @@ export class StoreComponent {
 
   readonly isCartOpen = signal(false);
   readonly branding = this.tenantService.branding;
-  readonly themeTokens = this.tenantService.themeTokens;
+  readonly themeTokens = this.tenantService.publishedThemeTokens;
 
   readonly currentUrl = toSignal(
     this.router.events.pipe(

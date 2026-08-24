@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { PreviewSyncService } from '@core/services/preview-sync.service';
-import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, CardOrientationOption, CardBorderStyleOption, CardCartButtonOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption, FooterColumnsOption, FooterThemeModeOption, FooterAlignmentOption, FooterPaymentMethod, FooterLegalLink } from '@core/models';
+import { ThemeTokens, ThemePresetId, BorderRadiusOption, BorderWidthOption, ShadowStyleOption, ButtonShapeOption, ButtonStyleOption, CardStyleOption, CardOrientationOption, CardBorderStyleOption, CardCartButtonOption, HeaderStyleOption, HeroStyleOption, SpacingDensityOption, MaxContentWidthOption, TypographyPairing, FontWeightOption, BaseFontSizeOption, LineHeightOption, LetterSpacingOption, LogoPositionOption, NavAlignOption, LogoSizeOption, NavSpacingOption, FooterColumnsOption, FooterThemeModeOption, FooterAlignmentOption, FooterPaymentMethod, FooterLegalLink, CustomThemePreset } from '@core/models';
 import { THEME_PRESETS, AVAILABLE_FONTS, TYPOGRAPHY_PAIRINGS } from '@core/constants/theme-presets';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
 import { validateAndSanitizeCss, highlightCssToHtml, CSS_VARIABLE_CATALOG, CSS_SNIPPETS, CssValidationMessage, CssVariableCatalogGroup, CssSnippet } from '@core/utils/css-validator';
@@ -25,8 +25,10 @@ export class SettingsTheme {
 
     readonly themeChange = output<ThemeTokens>();
     readonly dirtyChange = output<boolean>();
+    readonly openPresetsManager = output<void>();
 
     readonly presets = Object.values(THEME_PRESETS).filter(p => p.id !== 'custom');
+    readonly savedCustomPresets = this.tenantService.savedCustomPresets;
     readonly fonts = AVAILABLE_FONTS;
     readonly typographyPairings = TYPOGRAPHY_PAIRINGS;
 
@@ -417,6 +419,19 @@ export class SettingsTheme {
         this.tokens.set(structuredClone(preset.tokens));
         this.emitChanges();
         this.toastService.info(`Restablecidos los valores base del tema "${preset.name}"`);
+    }
+
+    applyCustomPreset(preset: CustomThemePreset) {
+        if (preset.snapshot?.theme_tokens) {
+            this.tokens.set(structuredClone(preset.snapshot.theme_tokens));
+            this.emitChanges();
+            this.toastService.success(`Tema cargado desde el preset "${preset.name}"`);
+        }
+    }
+
+    patchTokens(tokens: ThemeTokens) {
+        this.tokens.set(structuredClone(tokens));
+        this.emitChanges();
     }
 
     private emitChanges() {

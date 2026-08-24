@@ -17,7 +17,7 @@ export class StoreHome {
 
     readonly branding = this.tenantService.branding;
     readonly homeConfig = computed(() => this.tenantService.getPageLayout('home'));
-    readonly themeTokens = this.tenantService.themeTokens;
+    readonly themeTokens = this.tenantService.publishedThemeTokens;
     
     readonly activeSections = computed(() =>
         (this.homeConfig()?.sections || []).filter((s: StorefrontSection) => s.isActive)

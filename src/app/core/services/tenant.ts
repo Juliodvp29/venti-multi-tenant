@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks, ThemeTokens, ThemePresetId, StorePageId, PageLayoutConfig, DEFAULT_PAGE_LAYOUTS, getDefaultPageLayout } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks, ThemeTokens, ThemePresetId, StorePageId, PageLayoutConfig, DEFAULT_PAGE_LAYOUTS, getDefaultPageLayout, ThemeDesignSnapshot, CustomThemePreset, ThemeDesignVersion, StoreDesignState } from '@core/models';
 import { THEME_PRESETS } from '@core/constants/theme-presets';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
@@ -244,6 +244,92 @@ export class TenantService {
     const currency = this._state().currentTenant?.settings?.['currency'];
     return typeof currency === 'string' && currency.length === 3 ? currency : 'USD';
   });
+
+  // ── Store Design System State (Draft, Published, Presets, Versions) ──
+  readonly storeDesignState = computed<StoreDesignState>(() => {
+    const settings = this._state().currentTenant?.settings as Record<string, unknown> | undefined;
+    const existing = settings?.['store_design_state'] as StoreDesignState | undefined;
+
+    const publishedTokens = this.themeTokens();
+    const publishedLayout = this.storefrontLayout();
+    const branding = this.branding();
+    const defaultSnapshot: ThemeDesignSnapshot = {
+      theme_tokens: publishedTokens,
+      storefront_layout: publishedLayout,
+      branding: branding ? {
+        logo_url: branding.logo_url,
+        logo_dark_url: branding.logo_dark_url,
+        main_banner_url: branding.main_banner_url,
+        background_image_url: branding.background_image_url,
+        background_pattern: branding.background_pattern,
+        promo_video_url: branding.promo_video_url,
+      } : undefined,
+    };
+
+    if (!existing) {
+      return {
+        draft: structuredClone(defaultSnapshot),
+        published: structuredClone(defaultSnapshot),
+        published_at: this._state().currentTenant?.updated_at || new Date().toISOString(),
+        saved_presets: [],
+        versions: [
+          {
+            id: 'v-initial',
+            version_number: 1,
+            name: 'Versión Inicial Publicada',
+            notes: 'Configuración base de la tienda.',
+            published_at: this._state().currentTenant?.created_at || new Date().toISOString(),
+            snapshot: structuredClone(defaultSnapshot)
+          }
+        ],
+        next_version_number: 2,
+      };
+    }
+
+    return {
+      draft: existing.draft || structuredClone(defaultSnapshot),
+      published: existing.published || structuredClone(defaultSnapshot),
+      published_at: existing.published_at || this._state().currentTenant?.updated_at || new Date().toISOString(),
+      saved_presets: existing.saved_presets || [],
+      versions: existing.versions || [],
+      next_version_number: existing.next_version_number || ((existing.versions?.length || 0) + 1),
+    };
+  });
+
+  readonly draftThemeTokens = computed<ThemeTokens>(() => {
+    return this.storeDesignState().draft?.theme_tokens || this.themeTokens();
+  });
+
+  readonly draftStorefrontLayout = computed<StorefrontLayout>(() => {
+    return (this.storeDesignState().draft?.storefront_layout as StorefrontLayout) || this.storefrontLayout();
+  });
+
+  readonly publishedThemeTokens = computed<ThemeTokens>(() => {
+    return this.storeDesignState().published?.theme_tokens || this.themeTokens();
+  });
+
+  readonly publishedStorefrontLayout = computed<StorefrontLayout>(() => {
+    return (this.storeDesignState().published?.storefront_layout as StorefrontLayout) || this.storefrontLayout();
+  });
+
+  readonly savedCustomPresets = computed<CustomThemePreset[]>(() => {
+    return this.storeDesignState().saved_presets || [];
+  });
+
+  readonly designVersions = computed<ThemeDesignVersion[]>(() => {
+    return this.storeDesignState().versions || [];
+  });
+
+  readonly hasUnpublishedChanges = computed<boolean>(() => {
+    const state = this.storeDesignState();
+    if (!state.draft || !state.published) return false;
+    const draftTokensStr = JSON.stringify(state.draft.theme_tokens);
+    const pubTokensStr = JSON.stringify(state.published.theme_tokens);
+    const draftLayoutStr = JSON.stringify(state.draft.storefront_layout);
+    const pubLayoutStr = JSON.stringify(state.published.storefront_layout);
+    return draftTokensStr !== pubTokensStr || draftLayoutStr !== pubLayoutStr;
+  });
+
 
   constructor() {
     // Effect: Load tenant when user is authenticated
@@ -673,7 +759,7 @@ export class TenantService {
   }
 
   getPageLayout(pageId: StorePageId): PageLayoutConfig {
-    const layout = this.storefrontLayout();
+    const layout = this.publishedStorefrontLayout();
     if (layout?.pages?.[pageId]) {
       return layout.pages[pageId]!;
     }
@@ -735,6 +821,255 @@ export class TenantService {
       this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }
+  }
+
+  // ── Store Design System Methods (Drafts, Publish, Presets, Rollback) ──
+
+  /**
+   * Save the current draft design without publishing to the live store
+   */
+  async saveDraft(snapshot: ThemeDesignSnapshot): Promise<{ success: boolean; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
+
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const currentState = this.storeDesignState();
+      const updatedState: StoreDesignState = {
+        ...currentState,
+        draft: structuredClone(snapshot),
+      };
+
+      await this.updateSetting('store_design_state', updatedState, 'json');
+      this._state.update(s => ({ ...s, loading: false }));
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error saving store draft:', error);
+      const errorMessage = error?.message || 'Error al guardar el borrador de diseño';
+      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Publish the current draft design to the live store, creating a version snapshot
+   */
+  async publishDesign(versionName?: string, notes?: string): Promise<{ success: boolean; error?: string; version?: ThemeDesignVersion }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
+
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const currentState = this.storeDesignState();
+      const currentDraft = currentState.draft;
+      const nextVersionNum = currentState.next_version_number || ((currentState.versions?.length || 0) + 1);
+      const publishedAt = new Date().toISOString();
+
+      const newVersion: ThemeDesignVersion = {
+        id: `v-${nextVersionNum}-${Date.now()}`,
+        version_number: nextVersionNum,
+        name: versionName?.trim() || `Versión ${nextVersionNum}`,
+        notes: notes?.trim() || undefined,
+        published_at: publishedAt,
+        published_by: this.authService.user()?.email || undefined,
+        snapshot: structuredClone(currentDraft),
+      };
+
+      const updatedVersions = [newVersion, ...(currentState.versions || [])].slice(0, 30); // Keep last 30 versions
+
+      const updatedState: StoreDesignState = {
+        ...currentState,
+        draft: structuredClone(currentDraft),
+        published: structuredClone(currentDraft),
+        published_at: publishedAt,
+        versions: updatedVersions,
+        next_version_number: nextVersionNum + 1,
+      };
+
+      const currentTenant = this._state().currentTenant;
+      const currentSettings = (currentTenant?.settings as Record<string, unknown>) || {};
+
+      const updatedSettings = {
+        ...currentSettings,
+        store_design_state: updatedState,
+        theme_config: currentDraft.theme_tokens,
+        theme_id: currentDraft.theme_tokens?.theme_id || 'custom',
+        storefront_layout: currentDraft.storefront_layout,
+        custom_css: currentDraft.theme_tokens?.custom_css || '',
+      };
+
+      const brandingUpdates: Partial<Tenant> & { settings: any } = {
+        settings: updatedSettings,
+        status: 'active',
+      };
+
+      if (currentDraft.theme_tokens?.colors) {
+        brandingUpdates.primary_color = currentDraft.theme_tokens.colors.primary;
+        brandingUpdates.secondary_color = currentDraft.theme_tokens.colors.secondary;
+        brandingUpdates.accent_color = currentDraft.theme_tokens.colors.accent;
+        brandingUpdates.background_color = currentDraft.theme_tokens.colors.background;
+        brandingUpdates.header_color = currentDraft.theme_tokens.colors.header;
+        brandingUpdates.footer_color = currentDraft.theme_tokens.colors.footer;
+      }
+      if (currentDraft.theme_tokens?.font_heading) {
+        brandingUpdates.font_family = currentDraft.theme_tokens.font_heading;
+      }
+      if (currentDraft.branding) {
+        if (currentDraft.branding.logo_url !== undefined) brandingUpdates.logo_url = currentDraft.branding.logo_url;
+        if (currentDraft.branding.logo_dark_url !== undefined) brandingUpdates.logo_dark_url = currentDraft.branding.logo_dark_url;
+        if (currentDraft.branding.main_banner_url !== undefined) brandingUpdates.main_banner_url = currentDraft.branding.main_banner_url;
+        if (currentDraft.branding.background_image_url !== undefined) brandingUpdates.background_image_url = currentDraft.branding.background_image_url;
+        if (currentDraft.branding.background_pattern !== undefined) brandingUpdates.background_pattern = currentDraft.branding.background_pattern as any;
+        if (currentDraft.branding.promo_video_url !== undefined) brandingUpdates.promo_video_url = currentDraft.branding.promo_video_url;
+      }
+
+      await this.updateTenant(tenantId, brandingUpdates as any);
+      this._state.update(s => ({ ...s, loading: false }));
+      return { success: true, version: newVersion };
+    } catch (error: any) {
+      console.error('Error publishing store design:', error);
+      const errorMessage = error?.message || 'Error al publicar los cambios de la tienda';
+      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Revert the draft to match the currently published design
+   */
+  async revertDraftToPublished(): Promise<{ success: boolean; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
+
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const currentState = this.storeDesignState();
+      const updatedState: StoreDesignState = {
+        ...currentState,
+        draft: structuredClone(currentState.published),
+      };
+
+      await this.updateSetting('store_design_state', updatedState, 'json');
+      this._state.update(s => ({ ...s, loading: false }));
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error reverting draft to published:', error);
+      const errorMessage = error?.message || 'Error al restablecer el borrador al diseño publicado';
+      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Save the current design as a reusable custom preset
+   */
+  async saveCurrentAsPreset(name: string, description?: string, snapshot?: ThemeDesignSnapshot): Promise<{ success: boolean; error?: string; preset?: CustomThemePreset }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
+
+    const targetSnapshot = snapshot || this.storeDesignState().draft;
+    if (!targetSnapshot) return { success: false, error: 'No hay diseño disponible para guardar' };
+
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const currentState = this.storeDesignState();
+      const now = new Date().toISOString();
+
+      const newPreset: CustomThemePreset = {
+        id: `preset-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        name: name.trim(),
+        description: description?.trim() || undefined,
+        created_at: now,
+        updated_at: now,
+        snapshot: structuredClone(targetSnapshot),
+        preview_colors: targetSnapshot.theme_tokens?.colors ? {
+          primary: targetSnapshot.theme_tokens.colors.primary,
+          secondary: targetSnapshot.theme_tokens.colors.secondary,
+          background: targetSnapshot.theme_tokens.colors.background,
+          accent: targetSnapshot.theme_tokens.colors.accent,
+        } : undefined,
+      };
+
+      const updatedPresets = [...(currentState.saved_presets || []), newPreset];
+      const updatedState: StoreDesignState = {
+        ...currentState,
+        saved_presets: updatedPresets,
+      };
+
+      await this.updateSetting('store_design_state', updatedState, 'json');
+      this._state.update(s => ({ ...s, loading: false }));
+      return { success: true, preset: newPreset };
+    } catch (error: any) {
+      console.error('Error saving custom preset:', error);
+      const errorMessage = error?.message || 'Error al guardar el preset personalizado';
+      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Duplicate an existing custom preset
+   */
+  async duplicatePreset(presetId: string): Promise<{ success: boolean; error?: string; preset?: CustomThemePreset }> {
+    const currentState = this.storeDesignState();
+    const sourcePreset = currentState.saved_presets?.find(p => p.id === presetId);
+    if (!sourcePreset) return { success: false, error: 'Preset no encontrado' };
+
+    return this.saveCurrentAsPreset(
+      `${sourcePreset.name} (Copia)`,
+      sourcePreset.description ? `Copia de: ${sourcePreset.description}` : 'Diseño duplicado',
+      sourcePreset.snapshot
+    );
+  }
+
+  /**
+   * Delete a custom preset
+   */
+  async deleteCustomPreset(presetId: string): Promise<{ success: boolean; error?: string }> {
+    const tenantId = this.tenantId();
+    if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
+
+    this._state.update(s => ({ ...s, loading: true, error: null }));
+
+    try {
+      const currentState = this.storeDesignState();
+      const updatedPresets = (currentState.saved_presets || []).filter(p => p.id !== presetId);
+      const updatedState: StoreDesignState = {
+        ...currentState,
+        saved_presets: updatedPresets,
+      };
+
+      await this.updateSetting('store_design_state', updatedState, 'json');
+      this._state.update(s => ({ ...s, loading: false }));
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error deleting custom preset:', error);
+      const errorMessage = error?.message || 'Error al eliminar el preset';
+      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      return { success: false, error: errorMessage };
+    }
+  }
+
+  /**
+   * Restore a previous version from the version history into the draft (with optional auto-publish)
+   */
+  async restoreVersion(versionId: string, autoPublish: boolean = false): Promise<{ success: boolean; error?: string }> {
+    const currentState = this.storeDesignState();
+    const version = currentState.versions?.find(v => v.id === versionId);
+    if (!version) return { success: false, error: 'Versión no encontrada en el historial' };
+
+    const saveResult = await this.saveDraft(version.snapshot);
+    if (!saveResult.success) return saveResult;
+
+    if (autoPublish) {
+      return this.publishDesign(`Restaurado: ${version.name}`, `Restaurado desde versión anterior #${version.version_number}`);
+    }
+
+    return { success: true };
   }
 
   /**

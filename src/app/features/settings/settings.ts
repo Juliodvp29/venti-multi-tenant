@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal, computed, inject, effect, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { SettingsGeneral } from './components/settings-general';
 import { SettingsBranding } from './components/settings-branding';
 import { SettingsAddress } from './components/settings-address';
@@ -10,10 +11,11 @@ import { SettingsShippingTaxes } from './components/settings-shipping-taxes';
 import { SettingsStorefront } from './components/settings-storefront/settings-storefront';
 import { SettingsCommissions } from './components/settings-commissions/settings-commissions';
 import { SettingsTheme } from './components/settings-theme/settings-theme';
+import { SettingsDesignPresets } from './components/settings-design-presets/settings-design-presets';
 import { ToastService } from '@core/services/toast';
 import { PreviewSyncService } from '@core/services/preview-sync.service';
 
-import { StorefrontLayout, ThemeTokens } from '@core/models';
+import { StorefrontLayout, ThemeTokens, ThemeDesignSnapshot } from '@core/models';
 
 export interface PreviewData {
   business_name: string;
@@ -47,6 +49,7 @@ type Tab = 'general' | 'theme' | 'branding' | 'address' | 'shipping-taxes' | 'st
   selector: 'app-settings',
   imports: [
     CommonModule,
+    FormsModule,
     SettingsGeneral,
     SettingsTheme,
     SettingsBranding,
@@ -55,7 +58,8 @@ type Tab = 'general' | 'theme' | 'branding' | 'address' | 'shipping-taxes' | 'st
     SettingsStorefront,
     SettingsDangerZone,
     StorePreview,
-    SettingsCommissions
+    SettingsCommissions,
+    SettingsDesignPresets,
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
@@ -75,6 +79,21 @@ export class Settings {
   readonly isTenantLoading = this.tenantService.loading;
   readonly storeUrl = this.tenantService.storeUrl;
   readonly hasUnsavedChanges = signal(false);
+
+  // Design Presets, Drafts & Publishing State
+  readonly isPresetsModalOpen = signal(false);
+  readonly isPublishModalOpen = signal(false);
+  readonly isPublishing = signal(false);
+  readonly isSavingDraft = signal(false);
+  readonly publishVersionName = signal('');
+  readonly publishNotes = signal('');
+  readonly previewDataSource = signal<'draft' | 'published'>('draft');
+
+  readonly hasUnpublishedChanges = this.tenantService.hasUnpublishedChanges;
+  readonly publishedAt = computed(() => this.tenantService.storeDesignState().published_at);
+  readonly versionsCount = computed(() => this.tenantService.designVersions().length);
+  readonly customPresetsCount = computed(() => this.tenantService.savedCustomPresets().length);
+
   readonly themeSection = viewChild(SettingsTheme);
   readonly brandingSection = viewChild(SettingsBranding);
   readonly generalSection = viewChild(SettingsGeneral);
@@ -148,7 +167,23 @@ export class Settings {
     layout: 'modern',
     viewMode: 'desktop',
     storefront_layout: { sections: [] },
-    themeTokens: this.tenantService.themeTokens()
+    themeTokens: this.tenantService.draftThemeTokens()
+  });
+
+  readonly currentDraftSnapshot = computed<ThemeDesignSnapshot>(() => {
+    const data = this.previewData();
+    return {
+      theme_tokens: data.themeTokens || this.tenantService.draftThemeTokens(),
+      storefront_layout: data.storefront_layout || this.tenantService.draftStorefrontLayout(),
+      branding: {
+        logo_url: data.logo_url,
+        logo_dark_url: data.logo_dark_url,
+        main_banner_url: data.main_banner_url,
+        background_image_url: data.background_image_url,
+        background_pattern: data.background_pattern,
+        promo_video_url: data.promo_video_url,
+      }
+    };
   });
 
   constructor() {
@@ -156,7 +191,7 @@ export class Settings {
     effect(() => {
       const t = this.tenantService.tenant();
       const branding = this.tenantService.branding();
-      const tokens = this.tenantService.themeTokens();
+      const tokens = this.tenantService.draftThemeTokens();
       if (t) {
         this.previewData.update(prev => ({
           ...prev,
@@ -180,7 +215,7 @@ export class Settings {
           timezone: String(t.settings?.['timezone'] || 'America/New_York'),
           font_family: tokens.font_heading || t.font_family,
           layout: t.layout || 'modern',
-          storefront_layout: this.tenantService.storefrontLayout(),
+          storefront_layout: this.tenantService.draftStorefrontLayout(),
           themeTokens: tokens
         }));
       }
@@ -192,16 +227,53 @@ export class Settings {
     return this.tabs.find(t => t.id === this.activeTab())?.label || '';
   });
 
-  readonly fullPreviewData = computed(() => ({
-    ...this.previewData(),
-    viewMode: this.viewMode(),
-  }));
+  readonly publishedPreviewData = computed<PreviewData>(() => {
+    const t = this.tenantService.tenant();
+    const branding = this.tenantService.branding();
+    const tokens = this.tenantService.publishedThemeTokens();
+    const layout = this.tenantService.publishedStorefrontLayout();
+    return {
+      business_name: t?.business_name || 'Venti Shop',
+      logo_url: branding?.logo_url || t?.logo_url || null,
+      logo_dark_url: branding?.logo_dark_url || (t?.settings?.['logo_dark_url'] as string) || null,
+      social_share_image_url: branding?.social_share_image_url || null,
+      main_banner_url: branding?.main_banner_url || null,
+      background_image_url: branding?.background_image_url || null,
+      background_pattern: branding?.background_pattern || 'none',
+      promo_video_url: branding?.promo_video_url || null,
+      brand_gallery: branding?.brand_gallery || [],
+      social_links: t?.social_links,
+      primary_color: tokens.colors.primary || '#000000',
+      secondary_color: tokens.colors.secondary || '#ffffff',
+      accent_color: tokens.colors.accent || '#3b82f6',
+      background_color: tokens.colors.background || '#ffffff',
+      header_color: tokens.colors.header || '#ffffff',
+      footer_color: tokens.colors.footer || '#ffffff',
+      currency: String(t?.settings?.['currency'] || 'USD'),
+      timezone: String(t?.settings?.['timezone'] || 'America/New_York'),
+      font_family: tokens.font_heading || '"Inter", sans-serif',
+      layout: t?.layout || 'modern',
+      viewMode: this.viewMode(),
+      storefront_layout: layout,
+      themeTokens: tokens
+    };
+  });
+
+  readonly fullPreviewData = computed(() => {
+    if (this.previewDataSource() === 'published') {
+      return this.publishedPreviewData();
+    }
+    return {
+      ...this.previewData(),
+      viewMode: this.viewMode(),
+    };
+  });
 
   async setActiveTab(tab: Tab) {
     if (tab === this.activeTab()) return;
     if (this.hasUnsavedChanges()) {
       const confirmed = await this.toastService.confirm(
-        'Tienes cambios sin guardar. ¿Quieres descartarlos y cambiar de sección?',
+        'Tienes cambios sin guardar en esta sección. ¿Quieres descartarlos y cambiar de pestaña?',
         'Cambios sin guardar'
       );
       if (!confirmed) return;
@@ -212,6 +284,119 @@ export class Settings {
 
   onDirtyChange(isDirty: boolean) {
     this.hasUnsavedChanges.set(isDirty);
+  }
+
+  // ── Presets Modal Management ──
+  openPresetsModal() {
+    this.isPresetsModalOpen.set(true);
+  }
+
+  closePresetsModal() {
+    this.isPresetsModalOpen.set(false);
+  }
+
+  applySnapshotToDraft(snapshot: ThemeDesignSnapshot) {
+    if (snapshot.theme_tokens) {
+      this.updateThemePreview(snapshot.theme_tokens);
+      this.themeSection()?.patchTokens(snapshot.theme_tokens);
+    }
+    if (snapshot.storefront_layout) {
+      this.updateStorefrontPreview(snapshot.storefront_layout as StorefrontLayout);
+    }
+    if (snapshot.branding) {
+      this.updatePreview(snapshot.branding);
+    }
+    this.hasUnsavedChanges.set(true);
+    this.toastService.success('Diseño cargado en el borrador de trabajo.');
+  }
+
+  // ── Draft & Publish Operations ──
+  async saveDraftOnly() {
+    this.isSavingDraft.set(true);
+    try {
+      // First save local tab form
+      await this.saveChanges();
+
+      const snapshot = this.currentDraftSnapshot();
+      const result = await this.tenantService.saveDraft(snapshot);
+
+      if (result.success) {
+        this.toastService.success('Borrador guardado exitosamente. Los cambios no afectan la tienda pública.');
+        this.hasUnsavedChanges.set(false);
+      } else {
+        this.toastService.error(result.error || 'Error al guardar el borrador.');
+      }
+    } catch {
+      this.toastService.error('Error al guardar el borrador de diseño.');
+    } finally {
+      this.isSavingDraft.set(false);
+    }
+  }
+
+  openPublishModal() {
+    const nextNum = (this.tenantService.designVersions().length || 0) + 1;
+    this.publishVersionName.set(`Versión ${nextNum}`);
+    this.publishNotes.set('');
+    this.isPublishModalOpen.set(true);
+  }
+
+  closePublishModal() {
+    this.isPublishModalOpen.set(false);
+  }
+
+  async confirmPublish() {
+    this.isPublishing.set(true);
+    try {
+      // Save changes in current tab first
+      await this.saveChanges();
+
+      // Save draft
+      const snapshot = this.currentDraftSnapshot();
+      await this.tenantService.saveDraft(snapshot);
+
+      // Publish draft
+      const result = await this.tenantService.publishDesign(
+        this.publishVersionName().trim(),
+        this.publishNotes().trim()
+      );
+
+      if (result.success) {
+        this.toastService.success(`¡Diseño publicado exitosamente! Tu tienda pública ya está actualizada.`);
+        this.hasUnsavedChanges.set(false);
+        this.closePublishModal();
+      } else {
+        this.toastService.error(result.error || 'Error al publicar los cambios.');
+      }
+    } catch {
+      this.toastService.error('Error al publicar el diseño.');
+    } finally {
+      this.isPublishing.set(false);
+    }
+  }
+
+  async revertToPublished() {
+    const confirmed = await this.toastService.confirm(
+      '¿Deseas descartar todos los cambios del borrador y volver al último diseño publicado en vivo?',
+      'Volver al diseño publicado'
+    );
+    if (!confirmed) return;
+
+    try {
+      const result = await this.tenantService.revertDraftToPublished();
+      if (result.success) {
+        const pubTokens = this.tenantService.publishedThemeTokens();
+        const pubLayout = this.tenantService.publishedStorefrontLayout();
+        this.updateThemePreview(pubTokens);
+        this.themeSection()?.patchTokens(pubTokens);
+        this.updateStorefrontPreview(pubLayout);
+        this.hasUnsavedChanges.set(false);
+        this.toastService.info('Borrador restablecido al último diseño publicado.');
+      } else {
+        this.toastService.error(result.error || 'Error al restablecer.');
+      }
+    } catch {
+      this.toastService.error('Error al restablecer el diseño.');
+    }
   }
 
   async saveChanges() {
