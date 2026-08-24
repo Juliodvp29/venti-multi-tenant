@@ -93,8 +93,10 @@ export class AuthService {
   }
 
   async resetPassword(email: string) {
+    // Use standard Supabase flow: user resets password on Supabase's hosted page,
+    // then gets redirected to dashboard with session established
     return this.supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+      redirectTo: `${window.location.origin}/dashboard`,
     });
   }
 

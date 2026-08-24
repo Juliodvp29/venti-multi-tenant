@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth';
@@ -43,6 +43,21 @@ export class ResetPassword {
   readonly showPassword = signal(false);
   readonly showConfirmPassword = signal(false);
   readonly isSuccess = signal(false);
+  readonly isRecoveryFlow = signal(false);
+
+  constructor() {
+    // Detect if we're in a recovery flow (redirected from Supabase after password reset)
+    // Supabase redirects with #access_token=...&type=recovery
+    effect(() => {
+      const hash = window.location.hash;
+      if (hash.includes('type=recovery')) {
+        this.isRecoveryFlow.set(true);
+        this.isSuccess.set(true);
+        // Clear the hash
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    });
+  }
 
   readonly resetPasswordForm = this.fb.nonNullable.group({
     password: ['', [Validators.required, Validators.minLength(8)]],
@@ -119,7 +134,7 @@ export class ResetPassword {
       this.isSuccess.set(true);
       this.toast.success('¡Contraseña actualizada!', 'Tu contraseña ha sido restablecida exitosamente');
       setTimeout(() => {
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/dashboard']);
       }, 2000);
     }
   }
