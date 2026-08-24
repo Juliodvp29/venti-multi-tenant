@@ -104,6 +104,10 @@ export class AuthService {
     return this.supabase.auth.updateUser({ password: newPassword });
   }
 
+  async exchangeCodeForSession(code: string) {
+    return this.supabase.auth.exchangeCodeForSession(code);
+  }
+
   async updateProfile(data: { full_name?: string; avatar_url?: string }) {
     return this.supabase.auth.updateUser({ data });
   }
