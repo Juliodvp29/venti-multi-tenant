@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from '@core/services/auth';
@@ -113,7 +113,7 @@ interface NavItem {
             <svg class="h-4 w-4 mr-2.5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span class="text-xs text-gray-500 dark:text-gray-400 capitalize font-bold tracking-tight truncate">{{ tenantService.memberRole() }}</span>
+            <span class="text-xs text-gray-500 dark:text-gray-400 capitalize font-bold tracking-tight truncate" [title]="tenantService.memberRole()">{{authService.user()?.email}}</span>
           </div>
         }
 
@@ -147,17 +147,21 @@ interface NavItem {
   `]
 })
 export class SidebarComponent {
-  private readonly authService = inject(AuthService);
+
+  protected readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly sanitizer = inject(DomSanitizer);
 
   readonly permissions = inject(PermissionsService);
   readonly tenantService = inject(TenantService);
 
+  
+
   @Input() isOpen = false;
   @Input() isCollapsed = false;
   @Output() toggleCollapse = new EventEmitter<void>();
 
+    
   readonly navItems: NavItem[] = ([
     { label: 'Inicio', link: '/dashboard', icon: '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>', permission: 'dashboard' },
     { label: 'Catálogo de Productos', link: '/products', icon: '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>', permission: 'products' },
