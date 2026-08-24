@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/services/auth';
 import { ToastService } from '@core/services/toast';
 
@@ -36,6 +36,7 @@ export class ResetPassword {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly toast = inject(ToastService);
 
   readonly isLoading = signal(false);
@@ -44,19 +45,43 @@ export class ResetPassword {
   readonly showConfirmPassword = signal(false);
   readonly isSuccess = signal(false);
   readonly isRecoveryFlow = signal(false);
+  readonly isExchangingCode = signal(false);
+  private recoveryCode: string | null = null;
 
   constructor() {
-    // Detect if we're in a recovery flow (redirected from Supabase after password reset)
-    // Supabase redirects with #access_token=...&type=recovery
+    // Handle recovery flow: Supabase redirects to /auth/reset-password?code=...&type=recovery
+    // We need to exchange the code for a session, then allow password update
     effect(() => {
-      const hash = window.location.hash;
-      if (hash.includes('type=recovery')) {
+      const code = this.route.snapshot.queryParamMap.get('code');
+      const type = this.route.snapshot.queryParamMap.get('type');
+      
+      if (code && type === 'recovery') {
+        this.recoveryCode = code;
         this.isRecoveryFlow.set(true);
-        this.isSuccess.set(true);
-        // Clear the hash
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+        this.exchangeCodeForSession(code);
       }
     });
+  }
+
+  private async exchangeCodeForSession(code: string) {
+    this.isExchangingCode.set(true);
+    try {
+      const { error } = await this.authService.exchangeCodeForSession(code);
+      if (error) {
+        this.errorMessage.set('El enlace de recuperación ha expirado o es inválido. Solicita uno nuevo.');
+        this.toast.error('Error', error.message);
+        this.isRecoveryFlow.set(false);
+      } else {
+        // Session established, show password form
+        this.toast.info('Sesión de recuperación iniciada. Establece tu nueva contraseña.');
+      }
+    } catch (error: any) {
+      this.errorMessage.set('Error al procesar el enlace de recuperación.');
+      this.toast.error('Error', error.message);
+      this.isRecoveryFlow.set(false);
+    } finally {
+      this.isExchangingCode.set(false);
+    }
   }
 
   readonly resetPasswordForm = this.fb.nonNullable.group({
