@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit, signal, inject, effect } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, signal, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CustomerAddress } from '@core/models/customer';
@@ -10,6 +10,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
     selector: 'app-address-form',
     imports: [CommonModule, FormsModule, Dropdown],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './address-form.html',
 })
 export class AddressForm implements OnInit {

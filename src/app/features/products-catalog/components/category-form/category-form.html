@@ -69,7 +69,7 @@
             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                 Categoría Padre <span class="text-gray-400 dark:text-gray-500 font-normal">(Opcional)</span>
             </label>
-            <app-dropdown [options]="parentCategoryOptions()" [value]="form.get('parent_id')?.value"
+            <app-dropdown [options]="parentCategoryOptions()" [value]="$safeNavigationMigration(form.get('parent_id')?.value)"
                 (valueChange)="form.patchValue({ parent_id: $event })" placeholder="Seleccionar categoría padre...">
             </app-dropdown>
         </div>

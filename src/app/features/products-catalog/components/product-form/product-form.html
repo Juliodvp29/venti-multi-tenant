@@ -92,7 +92,7 @@
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                         Estado <span class="text-red-500">*</span>
                     </label>
-                    <app-dropdown [options]="statusOptions" [value]="form.get('status')?.value"
+                    <app-dropdown [options]="statusOptions" [value]="$safeNavigationMigration(form.get('status')?.value)"
                         (valueChange)="form.patchValue({ status: $event }); form.get('status')?.markAsTouched()"
                         placeholder="Seleccionar estado...">
                     </app-dropdown>

@@ -28,7 +28,7 @@
             </div>
             @if (currentTenant()?.subscription_ends_at) {
             <div class="mt-2 text-xs text-indigo-600/70 dark:text-indigo-400/70">
-                Expira el {{ currentTenant()?.subscription_ends_at | date:'longDate' }}
+                Expira el {{ $safeNavigationMigration(currentTenant()?.subscription_ends_at) | date:'longDate' }}
             </div>
             }
         </div>

@@ -28,7 +28,7 @@ import { SeoService } from '@core/services/seo';
           <!-- Image Gallery -->
           <div class="space-y-4">
             <div class="aspect-[4/5] bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden shadow-sm cursor-zoom-in relative group" (click)="isZoomed.set(true)">
-              <img [src]="displayImage()" [alt]="product()?.name" loading="lazy" 
+              <img [src]="displayImage()" [alt]="$safeNavigationMigration(product()?.name)" loading="lazy" 
                    class="w-full h-full object-cover object-top transition-all duration-700 hover:scale-105">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                 <div class="bg-white/80 backdrop-blur-md p-3 rounded-full shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
@@ -62,7 +62,7 @@ import { SeoService } from '@core/services/seo';
                      class="aspect-[4/5] bg-white rounded-xl border-2 overflow-hidden cursor-pointer hover:border-indigo-500 transition-all"
                      [class.border-indigo-500]="displayImage() === img.url"
                      [class.border-transparent]="displayImage() !== img.url">
-                  <img [src]="img.url" [alt]="product()?.name + ' view'" loading="lazy" class="w-full h-full object-cover object-top">
+                  <img [src]="img.url" [alt]="$safeNavigationMigration(product()?.name) + ' view'" loading="lazy" class="w-full h-full object-cover object-top">
                 </div>
               }
             </div>
