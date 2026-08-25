@@ -79,7 +79,10 @@ export class SettingsGeneral {
     }
 
     async save() {
-        if (this.form.invalid) {
+          if(this.form.pristine){
+            this.toastService.info('Por favor, completa los campos obligatorios antes de guardar.');
+            return;
+        }else if (this.form.invalid) {
             this.toastService.error('Por favor, corrige los errores en el formulario');
             return;
         }

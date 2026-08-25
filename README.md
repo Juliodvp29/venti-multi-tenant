@@ -80,8 +80,8 @@ The platform is built with scalability and developer experience in mind, using t
 
 | Layer                    | Technology                   | Version        | Purpose                                            |
 | ------------------------ | ---------------------------- | -------------- | -------------------------------------------------- |
-| **Frontend Framework**   | Angular                      | 21.x           | Component-based SPA with standalone components     |
-| **Language**             | TypeScript                   | 5.9            | Static typing, interfaces, decorators              |
+| **Frontend Framework**   | Angular                      | 22.x           | Component-based SPA with standalone components     |
+| **Language**             | TypeScript                   | 6.0            | Static typing, interfaces, decorators              |
 | **Styling**              | Tailwind CSS                 | 4.x            | Utility-first CSS, responsive design               |
 | **Backend as a Service** | Supabase                     | 2.x            | PostgreSQL database, Auth, Storage, Edge Functions |
 | **Database**             | PostgreSQL                   | 15+            | Relational DB via Supabase with RLS                |

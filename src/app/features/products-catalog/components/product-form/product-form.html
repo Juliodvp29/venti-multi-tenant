@@ -1,423 +1,637 @@
 <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col h-full overflow-hidden">
-
-    <!-- Form Header -->
-    <div class="flex-shrink-0 px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div class="flex items-center gap-3">
-            <div
-                class="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-                    {{ isEditMode() ? 'Editar' : 'Nuevo' }} Producto
-                </p>
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-                    {{ isEditMode() ? 'Actualizar producto' : 'Crear nuevo producto' }}
-                </h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Completa la información del producto.</p>
-            </div>
-        </div>
+  <!-- Form Header -->
+  <div
+    class="flex-shrink-0 px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
+  >
+    <div class="flex items-center gap-3">
+      <div
+        class="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-indigo-600 dark:text-indigo-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+          />
+        </svg>
+      </div>
+      <div>
+        <p
+          class="text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400"
+        >
+          {{ isEditMode() ? 'Editar' : 'Nuevo' }} Producto
+        </p>
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+          {{ isEditMode() ? 'Actualizar producto' : 'Crear nuevo producto' }}
+        </h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Completa la información del producto.
+        </p>
+      </div>
     </div>
+  </div>
 
-    <!-- Form Body — scrollable -->
-    <div class="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-900">
-
-        <!-- Section: Basic Information -->
+  <!-- Form Body — scrollable -->
+  <div class="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-900">
+    <!-- Section: Basic Information -->
+    <div>
+      <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">
+        Información Básica
+      </h3>
+      <div class="space-y-4">
+        <!-- Name -->
         <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Información
-                Básica</h3>
-            <div class="space-y-4">
-
-                <!-- Name -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                        Nombre del Producto <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" formControlName="name" (input)="onNameInput($event)"
-                        placeholder="ej. Camiseta de Algodón Premium"
-                        class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        [class.border-red-500]="hasError('name')" [class.focus:ring-red-500]="hasError('name')">
-                    @if (hasError('name')) {
-                    <p class="mt-1.5 text-xs text-red-500">El nombre es obligatorio (mínimo 2 caracteres).</p>
-                    }
-                </div>
-
-                <!-- Slug -->
-                <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Slug <span class="text-red-500">*</span>
-                        </label>
-                        <button type="button" (click)="autoGenerateSlug()"
-                            class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
-                                stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                            </svg>
-                            AUTO-GENERAR
-                        </button>
-                    </div>
-                    <input type="text" formControlName="slug" (input)="onSlugInput()"
-                        placeholder="premium-cotton-t-shirt"
-                        class="block w-full rounded-xl border px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        [class.border-red-500]="hasError('slug')">
-                    @if (hasError('slug')) {
-                    <p class="mt-1.5 text-xs text-red-500">Slug no válido. Solo letras, números y guiones.</p>
-                    }
-                </div>
-
-                <!-- SKU -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">SKU</label>
-                    <input type="text" formControlName="sku" placeholder="e.g. CAM-001-BLK"
-                        class="block w-full rounded-xl border px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-                </div>
-
-                <!-- Description -->
-                <div>
-                    <label
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Descripción</label>
-                    <textarea formControlName="description" rows="3"
-                        placeholder="Describe el producto para tus clientes..."
-                        class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none">
-                    </textarea>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                        Estado <span class="text-red-500">*</span>
-                    </label>
-                    <app-dropdown [options]="statusOptions" [value]="form.get('status')?.value"
-                        (valueChange)="form.patchValue({ status: $event }); form.get('status')?.markAsTouched()"
-                        placeholder="Seleccionar estado...">
-                    </app-dropdown>
-                </div>
-
-                <!-- Categories -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Categorías
-                        @if (selectedCategoryIds().size > 0) {
-                        <span class="ml-1.5 text-xs font-normal text-indigo-600">({{ selectedCategoryIds().size }}
-                            seleccionadas)</span>
-                        }
-                    </label>
-                    @if (categories().length === 0) {
-                    <p class="text-xs text-gray-400 dark:text-gray-500 italic">No hay categorías disponibles. Crea
-                        categorías primero.</p>
-                    } @else {
-                    <div class="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
-                        @for (cat of categories(); track cat.id) {
-                        <button type="button" (click)="toggleCategory(cat.id)"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150"
-                            [class.bg-indigo-600]="selectedCategoryIds().has(cat.id)"
-                            [class.text-white]="selectedCategoryIds().has(cat.id)"
-                            [class.border-indigo-600]="selectedCategoryIds().has(cat.id)"
-                            [class.bg-white]="!selectedCategoryIds().has(cat.id)"
-                            [class.dark:bg-gray-800]="!selectedCategoryIds().has(cat.id)"
-                            [class.text-gray-700]="!selectedCategoryIds().has(cat.id)"
-                            [class.dark:text-gray-300]="!selectedCategoryIds().has(cat.id)"
-                            [class.border-gray-300]="!selectedCategoryIds().has(cat.id)"
-                            [class.dark:border-gray-600]="!selectedCategoryIds().has(cat.id)">
-                            @if (selectedCategoryIds().has(cat.id)) {
-                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                            </svg>
-                            }
-                            {{ cat.name }}
-                        </button>
-                        }
-                    </div>
-                    }
-                </div>
-
-            </div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+            Nombre del Producto <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            formControlName="name"
+            (input)="onNameInput($event)"
+            placeholder="ej. Camiseta de Algodón Premium"
+            class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+            [class.border-red-500]="hasError('name')"
+            [class.focus:ring-red-500]="hasError('name')"
+          />
+          @if (hasError('name')) {
+            <p class="mt-1.5 text-xs text-red-500">
+              El nombre es obligatorio (mínimo 2 caracteres).
+            </p>
+          }
         </div>
 
-        <!-- Divider -->
-        <div class="border-t border-gray-100 dark:border-gray-800"></div>
-
-        <!-- Section: Pricing -->
+        <!-- Slug -->
         <div>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Precios</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                        Precio <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <span
-                            class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none">$</span>
-                        <input type="number" formControlName="price" min="0" step="0.01" placeholder="0.00"
-                            class="block w-full rounded-xl border pl-7 pr-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                            [class.border-red-500]="hasError('price')">
-                    </div>
-                    @if (hasError('price')) {
-                    <p class="mt-1.5 text-xs text-red-500">El precio es obligatorio.</p>
-                    }
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Precio de
-                        comparación</label>
-                    <div class="relative">
-                        <span
-                            class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none">$</span>
-                        <input type="number" formControlName="compare_at_price" min="0" step="0.01" placeholder="0.00"
-                            class="block w-full rounded-xl border pl-7 pr-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Costo</label>
-                    <div class="relative">
-                        <span
-                            class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none">$</span>
-                        <input type="number" formControlName="cost_price" min="0" step="0.01" placeholder="0.00"
-                            class="block w-full rounded-xl border pl-7 pr-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-                    </div>
-                </div>
-            </div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Slug <span class="text-red-500">*</span>
+            </label>
+            <button
+              type="button"
+              (click)="autoGenerateSlug()"
+              class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-3 w-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                />
+              </svg>
+              AUTO-GENERAR
+            </button>
+          </div>
+          <input
+            type="text"
+            formControlName="slug"
+            (input)="onSlugInput()"
+            placeholder="premium-cotton-t-shirt"
+            class="block w-full rounded-xl border px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+            [class.border-red-500]="hasError('slug')"
+          />
+          @if (hasError('slug')) {
+            <p class="mt-1.5 text-xs text-red-500">
+              Slug no válido. Solo letras, números y guiones.
+            </p>
+          }
         </div>
 
-        <!-- Divider -->
-        <div class="border-t border-gray-100 dark:border-gray-800"></div>
-
-        <!-- Section: Inventory -->
-        <div class="pb-2">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Inventario
-            </h3>
-            <div class="space-y-4">
-
-                <!-- Track Inventory Toggle -->
-                <div
-                    class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                    <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Seguir inventario</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Controla el stock disponible para este
-                            producto.</p>
-                    </div>
-                    <button type="button"
-                        (click)="form.patchValue({ track_inventory: !form.getRawValue().track_inventory })"
-                        class="toggle-btn" [class.active]="form.getRawValue().track_inventory">
-                        <span class="toggle-thumb"></span>
-                    </button>
-                </div>
-
-                <!-- Stock Quantity -->
-                @if (form.getRawValue().track_inventory && !hasVariants()) {
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Cantidad de
-                        Stock</label>
-                    <input type="number" formControlName="stock_quantity" min="0" placeholder="0"
-                        class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        [class.border-red-500]="hasError('stock_quantity')">
-                    @if (hasError('stock_quantity')) {
-                    <p class="mt-1.5 text-xs text-red-500">La cantidad debe ser mayor o igual a 0.</p>
-                    }
-                </div>
-                }
-
-                <!-- Featured Toggle -->
-                <div
-                    class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                    <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Producto destacado</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Aparece en secciones especiales de la
-                            tienda.</p>
-                    </div>
-                    <button type="button" (click)="form.patchValue({ is_featured: !form.getRawValue().is_featured })"
-                        class="toggle-btn" [class.active]="form.getRawValue().is_featured">
-                        <span class="toggle-thumb"></span>
-                    </button>
-                </div>
-
-            </div>
+        <!-- SKU -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
+            >SKU</label
+          >
+          <input
+            type="text"
+            formControlName="sku"
+            placeholder="e.g. CAM-001-BLK"
+            class="block w-full rounded-xl border px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+          />
         </div>
 
-        <!-- Divider -->
-        <div class="border-t border-gray-100 dark:border-gray-800"></div>
-
-        <!-- Section: Variants -->
+        <!-- Description -->
         <div>
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Variantes
-                    (Tallas, Colores, etc.)</h3>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-medium text-gray-500">{{ hasVariants() ? 'Activado' : 'Desactivado'
-                        }}</span>
-                    <button type="button" (click)="toggleVariants()" class="toggle-btn scale-90"
-                        [class.active]="hasVariants()">
-                        <span class="toggle-thumb"></span>
-                    </button>
-                </div>
-            </div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
+            >Descripción</label
+          >
+          <textarea
+            formControlName="description"
+            rows="3"
+            placeholder="Describe el producto para tus clientes..."
+            class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+          >
+          </textarea>
+        </div>
 
-            @if (hasVariants()) {
-            <div class="space-y-6 animate-in slide-in-from-top-2 duration-300">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+            Estado <span class="text-red-500">*</span>
+          </label>
+          <app-dropdown
+            [options]="statusOptions"
+            [value]="$safeNavigationMigration(form.get('status')?.value)"
+            (valueChange)="form.patchValue({ status: $event }); form.get('status')?.markAsTouched()"
+            placeholder="Seleccionar estado..."
+          >
+          </app-dropdown>
+        </div>
 
-                <!-- Options Editor -->
-                <div
-                    class="space-y-4 p-4 rounded-2xl bg-indigo-50/30 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30">
-                    <div class="flex items-center justify-between">
-                        <p class="text-sm font-bold text-indigo-900 dark:text-indigo-300">Configurar Opciones</p>
-                        <button type="button" (click)="addOption()"
-                            class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 transition-colors flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                            AÑADIR OPCIÓN
-                        </button>
-                    </div>
-
-                    @for (opt of optionDefinitions(); track $index) {
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700">
-                        <div class="sm:col-span-4">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nombre</label>
-                            <input type="text" [value]="opt.name" (input)="updateOptionName($index, nameInput.value)"
-                                #nameInput placeholder="ej. Talla"
-                                class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500/20">
-                        </div>
-                        <div class="sm:col-span-7">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Valores (separados
-                                por comas)</label>
-                            <input type="text" [value]="opt.values.join(', ')"
-                                (change)="updateOptionValues($index, valInput.value)" #valInput
-                                placeholder="ej. S, M, L"
-                                class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500/20">
-                        </div>
-                        <div class="sm:col-span-1 flex justify-center">
-                            <button type="button" (click)="removeOption($index)"
-                                class="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    } @empty {
-                    <div
-                        class="text-center py-6 border-2 border-dashed border-indigo-200 dark:border-indigo-900/50 rounded-xl">
-                        <p class="text-xs text-indigo-900/40 dark:text-indigo-300/40 font-medium">Haz clic en "Añadir
-                            Opción" para empezar.</p>
-                    </div>
-                    }
-                </div>
-
-                <!-- Variants Grid -->
-                @if (variants.length > 0) {
-                <div class="space-y-4">
-                    <p class="text-sm font-bold text-gray-900 dark:text-white">Vista Previa de Variantes ({{
-                        variants.length }})</p>
-                    <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-xl">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-800/50">
-                                <tr>
-                                    <th
-                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
-                                        Variante</th>
-                                    <th
-                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
-                                        SKU</th>
-                                    <th
-                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest">
-                                        Precio</th>
-                                    <th
-                                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest w-24">
-                                        Stock</th>
-                                    <th class="px-4 py-3"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
-                                <ng-container formArrayName="variants">
-                                    @for (v of variants.controls; track $index) {
-                                    <tr [formGroupName]="$index"
-                                        class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                        <td class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
-                                            {{ v.getRawValue().name }}
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <input type="text" formControlName="sku"
-                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm font-mono placeholder-gray-300 dark:text-white dark:placeholder-gray-500">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-1">
-                                                <span class="text-gray-400 text-xs">$</span>
-                                                <input type="number" formControlName="price"
-                                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm dark:text-white">
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <input type="number" formControlName="stock_quantity"
-                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm text-center dark:text-white">
-                                        </td>
-                                        <td class="px-4 py-3 text-right">
-                                            <button type="button"
-                                                (click)="v.patchValue({ is_active: !v.getRawValue().is_active })"
-                                                class="text-[10px] font-bold px-2 py-1 rounded-full transition-colors"
-                                                [class.bg-green-100]="v.getRawValue().is_active"
-                                                [class.text-green-700]="v.getRawValue().is_active"
-                                                [class.bg-gray-100]="!v.getRawValue().is_active"
-                                                [class.text-gray-500]="!v.getRawValue().is_active">
-                                                {{ v.getRawValue().is_active ? 'ON' : 'OFF' }}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    }
-                                </ng-container>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500 italic">Los cambios en el generador
-                        sobrescribirán los campos anteriores si la combinación de opciones cambia.</p>
-                </div>
-                }
-            </div>
-            } @else {
-            <div class="p-6 text-center border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl">
-                <p class="text-sm text-gray-400 font-medium">Este producto no tiene variantes configuradas.</p>
-            </div>
+        <!-- Categories -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Categorías
+            @if (selectedCategoryIds().size > 0) {
+              <span class="ml-1.5 text-xs font-normal text-indigo-600"
+                >({{ selectedCategoryIds().size }} seleccionadas)</span
+              >
             }
+          </label>
+          @if (categories().length === 0) {
+            <p class="text-xs text-gray-400 dark:text-gray-500 italic">
+              No hay categorías disponibles. Crea categorías primero.
+            </p>
+          } @else {
+            <div class="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
+              @for (cat of categories(); track cat.id) {
+                <button
+                  type="button"
+                  (click)="toggleCategory(cat.id)"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150"
+                  [class.bg-indigo-600]="selectedCategoryIds().has(cat.id)"
+                  [class.text-white]="selectedCategoryIds().has(cat.id)"
+                  [class.border-indigo-600]="selectedCategoryIds().has(cat.id)"
+                  [class.bg-white]="!selectedCategoryIds().has(cat.id)"
+                  [class.dark:bg-gray-800]="!selectedCategoryIds().has(cat.id)"
+                  [class.text-gray-700]="!selectedCategoryIds().has(cat.id)"
+                  [class.dark:text-gray-300]="!selectedCategoryIds().has(cat.id)"
+                  [class.border-gray-300]="!selectedCategoryIds().has(cat.id)"
+                  [class.dark:border-gray-600]="!selectedCategoryIds().has(cat.id)"
+                >
+                  @if (selectedCategoryIds().has(cat.id)) {
+                    <svg
+                      class="h-3 w-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="3"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M4.5 12.75l6 6 9-13.5"
+                      />
+                    </svg>
+                  }
+                  {{ cat.name }}
+                </button>
+              }
+            </div>
+          }
         </div>
-
+      </div>
     </div>
 
     <!-- Divider -->
     <div class="border-t border-gray-100 dark:border-gray-800"></div>
 
-    <!-- Section: Images -->
-    <div class="px-6 py-5">
-        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Imágenes</h3>
-        <app-product-image-uploader [productId]="isEditMode() ? product()?.id ?? null : null"
-            [existingImages]="product()?.images ?? []">
-        </app-product-image-uploader>
+    <!-- Section: Pricing -->
+    <div>
+      <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">
+        Precios
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+            Precio <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none"
+              >$</span
+            >
+            <input
+              type="number"
+              formControlName="price"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              class="block w-full rounded-xl border pl-7 pr-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              [class.border-red-500]="hasError('price')"
+            />
+          </div>
+          @if (hasError('price')) {
+            <p class="mt-1.5 text-xs text-red-500">El precio es obligatorio.</p>
+          }
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
+            >Precio de comparación</label
+          >
+          <div class="relative">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none"
+              >$</span
+            >
+            <input
+              type="number"
+              formControlName="compare_at_price"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              class="block w-full rounded-xl border pl-7 pr-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
+            >Costo</label
+          >
+          <div class="relative">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none"
+              >$</span
+            >
+            <input
+              type="number"
+              formControlName="cost_price"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              class="block w-full rounded-xl border pl-7 pr-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+            />
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Form Footer -->
-    <div
-        class="flex-shrink-0 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center justify-end gap-3">
-        <button type="button" (click)="cancel()"
-            class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
-            Cancelar
-        </button>
-        <button type="submit" [disabled]="isSaving()"
-            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl transition-all duration-200 shadow-sm">
-            @if (isSaving()) {
-            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
-            Guardando...
-            } @else {
-            {{ isEditMode() ? 'Actualizar Producto' : 'Crear Producto' }} →
+    <!-- Divider -->
+    <div class="border-t border-gray-100 dark:border-gray-800"></div>
+
+    <!-- Section: Inventory -->
+    <div class="pb-2">
+      <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">
+        Inventario
+      </h3>
+      <div class="space-y-4">
+        <!-- Track Inventory Toggle -->
+        <div
+          class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+        >
+          <div>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white">Seguir inventario</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Controla el stock disponible para este producto.
+            </p>
+          </div>
+          <button
+            type="button"
+            (click)="form.patchValue({ track_inventory: !form.getRawValue().track_inventory })"
+            class="toggle-btn"
+            [class.active]="form.getRawValue().track_inventory"
+          >
+            <span class="toggle-thumb"></span>
+          </button>
+        </div>
+
+        <!-- Stock Quantity -->
+        @if (form.getRawValue().track_inventory && !hasVariants()) {
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
+              >Cantidad de Stock</label
+            >
+            <input
+              type="number"
+              formControlName="stock_quantity"
+              min="0"
+              placeholder="0"
+              class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              [class.border-red-500]="hasError('stock_quantity')"
+            />
+            @if (hasError('stock_quantity')) {
+              <p class="mt-1.5 text-xs text-red-500">La cantidad debe ser mayor o igual a 0.</p>
             }
-        </button>
+          </div>
+        }
+
+        <!-- Featured Toggle -->
+        <div
+          class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+        >
+          <div>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white">Producto destacado</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Aparece en secciones especiales de la tienda.
+            </p>
+          </div>
+          <button
+            type="button"
+            (click)="form.patchValue({ is_featured: !form.getRawValue().is_featured })"
+            class="toggle-btn"
+            [class.active]="form.getRawValue().is_featured"
+          >
+            <span class="toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
     </div>
 
+    <!-- Divider -->
+    <div class="border-t border-gray-100 dark:border-gray-800"></div>
+
+    <!-- Section: Variants -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+          Variantes (Tallas, Colores, etc.)
+        </h3>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-medium text-gray-500">{{
+            hasVariants() ? 'Activado' : 'Desactivado'
+          }}</span>
+          <button
+            type="button"
+            (click)="toggleVariants()"
+            class="toggle-btn scale-90"
+            [class.active]="hasVariants()"
+          >
+            <span class="toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
+
+      @if (hasVariants()) {
+        <div class="space-y-6 animate-in slide-in-from-top-2 duration-300">
+          <!-- Options Editor -->
+          <div
+            class="space-y-4 p-4 rounded-2xl bg-indigo-50/30 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30"
+          >
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-bold text-indigo-900 dark:text-indigo-300">
+                Configurar Opciones
+              </p>
+              <button
+                type="button"
+                (click)="addOption()"
+                class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 transition-colors flex items-center gap-1"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                AÑADIR OPCIÓN
+              </button>
+            </div>
+
+            @for (opt of optionDefinitions(); track $index) {
+              <div
+                class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700"
+              >
+                <div class="sm:col-span-4">
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1"
+                    >Nombre</label
+                  >
+                  <input
+                    type="text"
+                    [value]="opt.name"
+                    (input)="updateOptionName($index, nameInput.value)"
+                    #nameInput
+                    placeholder="ej. Talla"
+                    class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div class="sm:col-span-7">
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1"
+                    >Valores (separados por comas)</label
+                  >
+                  <input
+                    type="text"
+                    [value]="opt.values.join(', ')"
+                    (change)="updateOptionValues($index, valInput.value)"
+                    #valInput
+                    placeholder="ej. S, M, L"
+                    class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div class="sm:col-span-1 flex justify-center">
+                  <button
+                    type="button"
+                    (click)="removeOption($index)"
+                    class="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            } @empty {
+              <div
+                class="text-center py-6 border-2 border-dashed border-indigo-200 dark:border-indigo-900/50 rounded-xl"
+              >
+                <p class="text-xs text-indigo-900/40 dark:text-indigo-300/40 font-medium">
+                  Haz clic en "Añadir Opción" para empezar.
+                </p>
+              </div>
+            }
+          </div>
+
+          <!-- Variants Grid -->
+          @if (variants.length > 0) {
+            <div class="space-y-4">
+              <p class="text-sm font-bold text-gray-900 dark:text-white">
+                Vista Previa de Variantes ({{ variants.length }})
+              </p>
+              <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-xl">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead class="bg-gray-50 dark:bg-gray-800/50">
+                    <tr>
+                      <th
+                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest"
+                      >
+                        Variante
+                      </th>
+                      <th
+                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest"
+                      >
+                        SKU
+                      </th>
+                      <th
+                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest"
+                      >
+                        Precio
+                      </th>
+                      <th
+                        class="px-4 py-3 text-left text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-widest w-24"
+                      >
+                        Stock
+                      </th>
+                      <th class="px-4 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900"
+                  >
+                    <ng-container formArrayName="variants">
+                      @for (v of variants.controls; track $index) {
+                        <tr
+                          [formGroupName]="$index"
+                          class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                        >
+                          <td class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                            {{ v.getRawValue().name }}
+                          </td>
+                          <td class="px-4 py-2">
+                            <input
+                              type="text"
+                              formControlName="sku"
+                              class="w-full bg-transparent border-0 border-b px-0 py-1 text-sm font-mono placeholder-gray-300 dark:text-white dark:placeholder-gray-500 focus:outline-none transition-colors"
+                              [class.border-gray-100]="!variants.hasError('duplicateSku')"
+                              [class.dark:border-gray-800]="!variants.hasError('duplicateSku')"
+                              [class.focus:border-indigo-500]="!variants.hasError('duplicateSku')"
+                              [class.border-red-500]="variants.hasError('duplicateSku')"
+                              [class.text-red-500]="variants.hasError('duplicateSku')"
+                            />
+
+                            @if (variants.hasError('duplicateSku')) {
+                              <span class="block mt-1 text-[10px] text-red-500 font-medium"
+                                >SKU duplicado</span
+                              >
+                            }
+                          </td>
+                          <td class="px-4 py-2">
+                            <div class="flex items-center gap-1">
+                              <span class="text-gray-400 text-xs">$</span>
+                              <input
+                                type="number"
+                                formControlName="price"
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm dark:text-white"
+                              />
+                            </div>
+                          </td>
+                          <td class="px-4 py-2">
+                            <input
+                              type="number"
+                              formControlName="stock_quantity"
+                              class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 focus:border-indigo-500 px-0 py-1 text-sm text-center dark:text-white"
+                            />
+                          </td>
+                          <td class="px-4 py-3 text-right">
+                            <button
+                              type="button"
+                              (click)="v.patchValue({ is_active: !v.getRawValue().is_active })"
+                              class="text-[10px] font-bold px-2 py-1 rounded-full transition-colors"
+                              [class.bg-green-100]="v.getRawValue().is_active"
+                              [class.text-green-700]="v.getRawValue().is_active"
+                              [class.bg-gray-100]="!v.getRawValue().is_active"
+                              [class.text-gray-500]="!v.getRawValue().is_active"
+                            >
+                              {{ v.getRawValue().is_active ? 'ON' : 'OFF' }}
+                            </button>
+                          </td>
+                        </tr>
+                      }
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+              <p class="text-[10px] text-gray-400 dark:text-gray-500 italic">
+                Los cambios en el generador sobrescribirán los campos anteriores si la combinación
+                de opciones cambia.
+              </p>
+            </div>
+          }
+        </div>
+      } @else {
+        <div
+          class="p-6 text-center border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl"
+        >
+          <p class="text-sm text-gray-400 font-medium">
+            Este producto no tiene variantes configuradas.
+          </p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="border-t border-gray-100 dark:border-gray-800"></div>
+
+  <!-- Section: Images -->
+  <div class="px-6 py-5">
+    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">
+      Imágenes
+    </h3>
+    <app-product-image-uploader
+      [productId]="isEditMode() ? (product()?.id ?? null) : null"
+      [existingImages]="product()?.images ?? []"
+    >
+    </app-product-image-uploader>
+  </div>
+
+  <!-- Form Footer -->
+  <div
+    class="flex-shrink-0 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center justify-end gap-3"
+  >
+    <button
+      type="button"
+      (click)="cancel()"
+      class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+    >
+      Cancelar
+    </button>
+    <button
+      type="submit"
+      [disabled]="isSaving()"
+      class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl transition-all duration-200 shadow-sm"
+    >
+      @if (isSaving()) {
+        <svg
+          class="animate-spin h-4 w-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          ></path>
+        </svg>
+        Guardando...
+      } @else {
+        {{ isEditMode() ? 'Actualizar Producto' : 'Crear Producto' }} →
+      }
+    </button>
+  </div>
 </form>

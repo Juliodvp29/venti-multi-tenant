@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, effect } from '@angular/core';
+import { Component, signal, inject, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReviewsService } from '@core/services/reviews';
 import { ProductReview } from '@core/models/review';
@@ -13,6 +13,7 @@ import { Dropdown } from '@shared/components/dropdown/dropdown';
   selector: 'app-reviews',
   imports: [CommonModule, DynamicTable, ReviewModerationModal, FormsModule, Dropdown],
   templateUrl: './reviews.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reviews.css',
 })
 export class Reviews {

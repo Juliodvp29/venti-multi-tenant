@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CustomersService } from '@core/services/customers';
@@ -12,6 +12,7 @@ import { Customer } from '@core/models/customer';
     selector: 'app-gift-coupon-modal',
     standalone: true,
     imports: [CommonModule, FormsModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './gift-coupon-modal.component.html',
 })
 export class GiftCouponModalComponent {

@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomerAddress } from '@core/models/customer';
 import { CustomersService } from '@core/services/customers';
@@ -9,6 +9,7 @@ import { AddressForm } from '../address-form/address-form';
 @Component({
     selector: 'app-account-addresses',
     imports: [CommonModule, AddressForm],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './addresses.html',
 })
 export class Addresses implements OnInit {
