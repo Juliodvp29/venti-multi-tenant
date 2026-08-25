@@ -119,7 +119,10 @@ export class CategoryForm implements OnInit {
     }
 
     async submit() {
-        if (this.form.invalid) {
+        if(this.form.pristine){
+            this.toast.info('Por favor, completa los campos obligatorios antes de guardar.');
+            return;
+        }else if (this.form.invalid) {
             this.form.markAllAsTouched();
             this.toast.error('Por favor, corrige los errores en el formulario.');
             return;
