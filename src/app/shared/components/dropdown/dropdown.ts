@@ -27,7 +27,15 @@ export class Dropdown {
     isOpen = signal(false);
 
     get selectedOption() {
-        return this.options().find(opt => opt.value === this.value());
+        const currentValue = this.value();
+        return this.options().find(opt => opt.value === currentValue)
+            || (typeof currentValue === 'string'
+                ? this.options().find(opt => typeof opt.value === 'string' && this.normalizeText(opt.value) === this.normalizeText(currentValue))
+                : undefined);
+    }
+
+    private normalizeText(value: string): string {
+        return value.split(',')[0].trim().replace(/^['"]|['"]$/g, '').toLowerCase();
     }
 
     toggle() {

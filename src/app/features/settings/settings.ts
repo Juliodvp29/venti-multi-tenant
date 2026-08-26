@@ -314,10 +314,11 @@ export class Settings {
   async saveDraftOnly() {
     this.isSavingDraft.set(true);
     try {
+      const snapshot = this.currentDraftSnapshot();
+
       // First save local tab form
       await this.saveChanges();
 
-      const snapshot = this.currentDraftSnapshot();
       const result = await this.tenantService.saveDraft(snapshot);
 
       if (result.success) {
@@ -347,11 +348,12 @@ export class Settings {
   async confirmPublish() {
     this.isPublishing.set(true);
     try {
+      const snapshot = this.currentDraftSnapshot();
+
       // Save changes in current tab first
       await this.saveChanges();
 
       // Save draft
-      const snapshot = this.currentDraftSnapshot();
       await this.tenantService.saveDraft(snapshot);
 
       // Publish draft

@@ -429,19 +429,19 @@
                         <div 
                             (click)="applyTypographyPairing(pairing)"
                             class="p-4 rounded-xl border transition-all cursor-pointer hover:border-indigo-500 flex flex-col justify-between"
-                            [class.border-indigo-600]="tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body"
-                            [class.dark:border-indigo-500]="tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body"
-                            [class.bg-indigo-50\/30]="tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body"
-                            [class.dark:bg-indigo-950\/30]="tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body"
-                            [class.border-slate-200]="tokens().font_heading !== pairing.font_heading || tokens().font_body !== pairing.font_body"
-                            [class.dark:border-gray-800]="tokens().font_heading !== pairing.font_heading || tokens().font_body !== pairing.font_body"
-                            [class.bg-white]="tokens().font_heading !== pairing.font_heading || tokens().font_body !== pairing.font_body"
-                            [class.dark:bg-gray-900]="tokens().font_heading !== pairing.font_heading || tokens().font_body !== pairing.font_body">
+                            [class.border-indigo-600]="isTypographyPairingActive(pairing)"
+                            [class.dark:border-indigo-500]="isTypographyPairingActive(pairing)"
+                            [class.bg-indigo-50\/30]="isTypographyPairingActive(pairing)"
+                            [class.dark:bg-indigo-950\/30]="isTypographyPairingActive(pairing)"
+                            [class.border-slate-200]="!isTypographyPairingActive(pairing)"
+                            [class.dark:border-gray-800]="!isTypographyPairingActive(pairing)"
+                            [class.bg-white]="!isTypographyPairingActive(pairing)"
+                            [class.dark:bg-gray-900]="!isTypographyPairingActive(pairing)">
                             
                             <div>
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="font-bold text-slate-900 dark:text-white text-sm">{{ pairing.name }}</span>
-                                    @if (tokens().font_heading === pairing.font_heading && tokens().font_body === pairing.font_body) {
+                                    @if (isTypographyPairingActive(pairing)) {
                                         <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 rounded-full">✓ Activa</span>
                                     }
                                 </div>

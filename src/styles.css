@@ -1,5 +1,24 @@
 @import 'tailwindcss';
 
+.store-theme-root,
+.store-preview-root {
+  font-family: var(--store-font-body, 'Inter', sans-serif);
+  font-size: var(--store-font-size-base, 16px);
+  line-height: var(--store-line-height, 1.5);
+  letter-spacing: var(--store-letter-spacing, 0em);
+}
+
+.store-theme-root :where(h1, h2, h3, h4, h5, h6),
+.store-preview-root :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--store-font-heading, 'Inter', sans-serif) !important;
+  font-weight: var(--store-font-weight-heading, 700) !important;
+}
+
+.store-theme-root :where(button, [type='button'], [type='submit']),
+.store-preview-root :where(button, [type='button'], [type='submit']) {
+  font-family: var(--store-font-button, var(--store-font-body, 'Inter', sans-serif));
+}
+
 :root {
   /* ═══════════════════════════════════════════════════════════
      COLOR SYSTEM

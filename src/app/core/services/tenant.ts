@@ -622,6 +622,9 @@ export class TenantService {
       ...s,
       currentTenant: data as any,
       tenants: s.tenants.map((t) => (t.id === tenantId ? data as any : t)),
+      settings: updates.settings
+        ? (data as Tenant).settings as Record<string, unknown>
+        : s.settings,
     }));
 
     return data as any;
@@ -698,7 +701,31 @@ export class TenantService {
     this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
-      await this.updateTenant(tenantId, branding as any);
+      const {
+        logo_dark_url,
+        social_share_image_url,
+        main_banner_url,
+        background_image_url,
+        background_pattern,
+        promo_video_url,
+        brand_gallery,
+        social_links,
+        ...tenantBranding
+      } = branding;
+      const currentSettings = (this._state().currentTenant?.settings as Record<string, unknown>) || {};
+      const settings = {
+        ...currentSettings,
+        logo_dark_url,
+        social_share_image_url,
+        main_banner_url,
+        background_image_url,
+        background_pattern,
+        promo_video_url,
+        brand_gallery,
+        social_links,
+      };
+
+      await this.updateTenant(tenantId, { ...tenantBranding, settings } as any);
       this._state.update((s) => ({ ...s, loading: false }));
       return { success: true };
     } catch (error) {
@@ -891,7 +918,7 @@ export class TenantService {
       const currentTenant = this._state().currentTenant;
       const currentSettings = (currentTenant?.settings as Record<string, unknown>) || {};
 
-      const updatedSettings = {
+      const updatedSettings: Record<string, unknown> = {
         ...currentSettings,
         store_design_state: updatedState,
         theme_config: currentDraft.theme_tokens,
@@ -918,11 +945,11 @@ export class TenantService {
       }
       if (currentDraft.branding) {
         if (currentDraft.branding.logo_url !== undefined) brandingUpdates.logo_url = currentDraft.branding.logo_url;
-        if (currentDraft.branding.logo_dark_url !== undefined) brandingUpdates.logo_dark_url = currentDraft.branding.logo_dark_url;
-        if (currentDraft.branding.main_banner_url !== undefined) brandingUpdates.main_banner_url = currentDraft.branding.main_banner_url;
-        if (currentDraft.branding.background_image_url !== undefined) brandingUpdates.background_image_url = currentDraft.branding.background_image_url;
-        if (currentDraft.branding.background_pattern !== undefined) brandingUpdates.background_pattern = currentDraft.branding.background_pattern as any;
-        if (currentDraft.branding.promo_video_url !== undefined) brandingUpdates.promo_video_url = currentDraft.branding.promo_video_url;
+        if (currentDraft.branding.logo_dark_url !== undefined) updatedSettings['logo_dark_url'] = currentDraft.branding.logo_dark_url;
+        if (currentDraft.branding.main_banner_url !== undefined) updatedSettings['main_banner_url'] = currentDraft.branding.main_banner_url;
+        if (currentDraft.branding.background_image_url !== undefined) updatedSettings['background_image_url'] = currentDraft.branding.background_image_url;
+        if (currentDraft.branding.background_pattern !== undefined) updatedSettings['background_pattern'] = currentDraft.branding.background_pattern;
+        if (currentDraft.branding.promo_video_url !== undefined) updatedSettings['promo_video_url'] = currentDraft.branding.promo_video_url;
       }
 
       await this.updateTenant(tenantId, brandingUpdates as any);
