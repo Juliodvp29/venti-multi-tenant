@@ -1,7 +1,7 @@
 <div [ngStyle]="dynamicStyles()" 
      [style.backgroundColor]="pageBackgroundColor()"
      [style.color]="'var(--store-color-text, #0f172a)'"
-     class="min-h-screen font-sans flex flex-col transition-colors duration-300 relative">
+    class="store-theme-root min-h-screen font-sans flex flex-col transition-colors duration-300 relative">
 
     <!-- Header -->
     @if (headerStyle() === 'minimal') {

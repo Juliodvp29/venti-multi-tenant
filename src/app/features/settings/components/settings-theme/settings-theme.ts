@@ -361,9 +361,35 @@ export class SettingsTheme {
             if (current) {
                 this.tokens.set(structuredClone(current));
                 this.savedTokens.set(structuredClone(current));
+                this.ensureFontsLoaded(current.font_heading, current.font_body, current.font_button);
                 this.themeChange.emit(current);
             }
         });
+    }
+
+    isTypographyPairingActive(pairing: TypographyPairing): boolean {
+        const current = this.tokens();
+        return current.font_heading === pairing.font_heading
+            && current.font_body === pairing.font_body
+            && (current.font_button || current.font_body) === pairing.font_button
+            && (current.font_weight_heading || '700') === pairing.font_weight_heading;
+    }
+
+    private ensureFontsLoaded(...fontFamilies: (string | undefined)[]): void {
+        for (const fontFamily of fontFamilies) {
+            if (!fontFamily) continue;
+            const font = AVAILABLE_FONTS.find(option => option.family === fontFamily);
+            if (!font?.googleFontUrl) continue;
+
+            const linkId = `settings-google-font-${font.name.toLowerCase().replace(/\s+/g, '-')}`;
+            if (document.getElementById(linkId)) continue;
+
+            const link = document.createElement('link');
+            link.id = linkId;
+            link.rel = 'stylesheet';
+            link.href = font.googleFontUrl;
+            document.head.appendChild(link);
+        }
     }
 
     selectPreset(presetId: ThemePresetId) {
