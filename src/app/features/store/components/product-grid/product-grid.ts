@@ -30,48 +30,48 @@ import { Category } from '@core/models/category';
       }
 
       <!-- Header Area -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 px-1">
         @if (!hideHeaderContent()) {
         <div>
-            <h2 class="text-4xl font-black text-slate-900 tracking-tight mb-2">Descubre lo Nuevo</h2>
-            <p class="text-slate-500 font-medium">Explora nuestra selección de productos destacados para ti.</p>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1" [style.font-family]="'var(--store-font-heading)'">Descubre lo Nuevo</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Explora nuestra selección de productos destacados para ti.</p>
         </div>
         }
         
-        <div class="flex items-center gap-3" [class.ml-auto]="hideHeaderContent()">
-             <div class="relative">
+        <div class="flex items-center gap-2.5 flex-wrap" [class.ml-auto]="hideHeaderContent()">
+             <div class="relative flex-1 sm:flex-initial">
                 <input 
                     type="text" 
                     placeholder="Buscar productos..." 
                     (input)="onSearch($event)"
-                    class="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-sm w-64 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm">
-                <svg class="w-4 h-4 absolute left-4 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="pl-9 pr-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm w-full sm:w-56 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-xs">
+                <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
              </div>
-             
+              
              <div class="relative">
                 <button 
                     (click)="isSortMenuOpen.set(!isSortMenuOpen())"
-                    class="pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm cursor-pointer flex items-center justify-between min-w-[180px] hover:border-slate-300">
-                    <span class="font-medium text-slate-700">{{ sortLabel() }}</span>
-                    <svg class="w-4 h-4 absolute right-4 text-slate-400 transition-transform duration-300" [class.rotate-180]="isSortMenuOpen()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="pl-3.5 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-xs cursor-pointer flex items-center justify-between min-w-[150px] hover:border-slate-300">
+                    <span class="font-medium text-slate-700 truncate">{{ sortLabel() }}</span>
+                    <svg class="w-3.5 h-3.5 absolute right-3 text-slate-400 transition-transform duration-300" [class.rotate-180]="isSortMenuOpen()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
 
                 @if (isSortMenuOpen()) {
-                    <div class="absolute right-0 mt-2 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                    <div class="absolute right-0 mt-2 w-52 bg-white border border-slate-100 rounded-xl shadow-xl z-50 py-1.5 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
                         @for (opt of sortOptions; track opt.value) {
                             <button 
                                 (click)="changeSort(opt.value)"
-                                class="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 transition-colors flex items-center justify-between"
+                                class="w-full text-left px-3.5 py-2 text-xs sm:text-sm hover:bg-slate-50 transition-colors flex items-center justify-between"
                                 [class.text-indigo-600]="sortBy() === opt.value"
                                 [class.font-bold]="sortBy() === opt.value"
                                 [class.bg-indigo-50]="sortBy() === opt.value">
                                 <span>{{ opt.label }}</span>
                                 @if (sortBy() === opt.value) {
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                     </svg>
                                 }
@@ -87,14 +87,16 @@ import { Category } from '@core/models/category';
 
       <!-- Categories Navigation -->
       @if (categories().length > 0) {
-      <div class="flex flex-wrap gap-2 px-2 pb-6 border-b border-slate-100">
+      <div class="flex flex-wrap gap-2 px-1 pb-4 border-b border-slate-100 dark:border-gray-800">
         <button 
             (click)="selectCategory(null)"
             [class.bg-slate-900]="!selectedCategory()"
             [class.text-white]="!selectedCategory()"
             [class.bg-white]="selectedCategory()"
             [class.text-slate-600]="selectedCategory()"
-            class="px-5 py-2.5 rounded-2xl text-sm font-bold shadow-sm transition-all hover:scale-105 active:scale-95">
+            [class.border]="selectedCategory()"
+            [class.border-slate-200]="selectedCategory()"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer">
             Todo
         </button>
         
@@ -105,7 +107,9 @@ import { Category } from '@core/models/category';
                 [class.text-white]="isCategoryActive(cat)"
                 [class.bg-white]="!isCategoryActive(cat)"
                 [class.text-slate-600]="!isCategoryActive(cat)"
-                class="px-5 py-2.5 rounded-2xl text-sm font-bold shadow-sm transition-all hover:scale-105 active:scale-95">
+                [class.border]="!isCategoryActive(cat)"
+                [class.border-slate-200]="!isCategoryActive(cat)"
+                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer">
                 {{ cat.name }}
             </button>
         }
@@ -113,15 +117,16 @@ import { Category } from '@core/models/category';
       
       <!-- Subcategories Navigation -->
       @if (selectedCategory() && selectedCategory()!.children && selectedCategory()!.children!.length > 0) {
-      <div class="flex flex-wrap gap-2 px-6 py-4 bg-slate-50/50 rounded-3xl border border-slate-100 animate-in fade-in slide-in-from-top-2 duration-500">
+      <div class="flex flex-wrap gap-1.5 px-4 py-3 bg-slate-50/70 dark:bg-gray-800/40 rounded-2xl border border-slate-100 dark:border-gray-800 animate-in fade-in slide-in-from-top-2 duration-500">
         @for (sub of selectedCategory()!.children; track sub.id) {
              <button 
                 (click)="selectCategory(sub)"
                 [class.bg-white]="selectedCategoryId() === sub.id"
                 [class.text-indigo-600]="selectedCategoryId() === sub.id"
-                [class.font-black]="selectedCategoryId() === sub.id"
-                [class.text-slate-500]="selectedCategoryId() !== sub.id"
-                class="px-4 py-1.5 rounded-xl text-xs font-bold transition-all hover:text-indigo-600">
+                [class.font-bold]="selectedCategoryId() === sub.id"
+                [class.shadow-xs]="selectedCategoryId() === sub.id"
+                [class.text-slate-600]="selectedCategoryId() !== sub.id"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:text-indigo-600 cursor-pointer">
                 {{ sub.name }}
             </button>
         }
@@ -130,14 +135,14 @@ import { Category } from '@core/models/category';
       }
 
       <!-- Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
         @for (product of products(); track product.id) {
             <app-product-card [product]="product"></app-product-card>
         }
       </div>
 
       @if (isLoading()) {
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 px-1">
             @for (i of [1,2,3,4]; track i) {
                 <div class="animate-pulse space-y-4">
                     <div class="aspect-[4/5] bg-slate-200 rounded-3xl"></div>

@@ -30,7 +30,7 @@ import { TenantService } from '@core/services/tenant';
          [style.border-width]="borderStyle() === 'bordered' ? 'var(--store-border-width, 1px)' : '0px'">
         
         <!-- Image Area -->
-        <div class="bg-slate-50 dark:bg-gray-800/50 relative overflow-hidden shrink-0"
+        <div class="bg-slate-50 dark:bg-gray-800/50 relative overflow-hidden shrink-0 max-h-[280px] sm:max-h-[320px]"
              [class.w-full]="orientation() === 'vertical'"
              [class.sm:w-48]="orientation() === 'horizontal'"
              [class.md:w-56]="orientation() === 'horizontal'"
@@ -56,10 +56,10 @@ import { TenantService } from '@core/services/tenant';
             </a>
             
             <!-- Badges Area (Top Left) -->
-            <div class="absolute top-3 left-3 flex flex-col gap-1.5 z-10 pointer-events-none">
+            <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
                 <!-- Sale Badge -->
                 @if (showSaleBadge() && hasDiscount()) {
-                    <span class="text-white text-[10px] font-black px-2.5 py-1 uppercase tracking-wider shadow-sm"
+                    <span class="text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-wider shadow-sm"
                           [style.background-color]="'var(--store-color-accent, #ef4444)'"
                           [style.border-radius]="'var(--store-radius-badge, 9999px)'">
                         Oferta
@@ -68,7 +68,7 @@ import { TenantService } from '@core/services/tenant';
 
                 <!-- Discount Percentage Badge -->
                 @if (showDiscountBadge() && discountPercent()) {
-                    <span class="text-white text-[10px] font-black px-2 py-0.5 shadow-sm"
+                    <span class="text-white text-[9px] font-black px-1.5 py-0.5 shadow-sm"
                           [style.background-color]="'var(--store-color-primary, #0f172a)'"
                           [style.border-radius]="'var(--store-radius-badge, 9999px)'">
                         -{{ discountPercent() }}%
@@ -77,7 +77,7 @@ import { TenantService } from '@core/services/tenant';
 
                 <!-- New Badge -->
                 @if (showNewBadge() && isNew()) {
-                    <span class="text-white text-[10px] font-black px-2.5 py-1 uppercase tracking-wider shadow-sm bg-indigo-600"
+                    <span class="text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-wider shadow-sm bg-indigo-600"
                           [style.border-radius]="'var(--store-radius-badge, 9999px)'">
                         Nuevo
                     </span>
@@ -108,36 +108,33 @@ import { TenantService } from '@core/services/tenant';
 
             <!-- Quick Action Overlay on Hover -->
             @if (cartButtonStyle() === 'hover') {
-                <div class="absolute inset-x-0 bottom-0 p-3 sm:p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10">
+                <div class="absolute inset-x-0 bottom-0 p-2.5 sm:p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10">
                     @if (!product.variants?.length) {
                         <button 
                             (click)="addToCart($event)" 
-                            class="w-full py-2.5 sm:py-3 font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                            class="w-full py-2 sm:py-2.5 font-bold text-xs shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
                             [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                             [style.text-transform]="'var(--store-btn-transform, none)'"
                             [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'"
                             [style.color]="added() ? '#ffffff' : 'var(--store-color-primary-contrast, #ffffff)'">
                             
                             @if (added()) {
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 animate-in zoom-in duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                </svg>
-                                ¡Añadido!
+                                <span class="flex items-center gap-1 text-white">
+                                    <svg class="w-4 h-4 animate-in zoom-in" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    ¡Listo!
+                                </span>
                             } @else {
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                                Añadir al Carrito
+                                <span>Añadir al Carrito</span>
                             }
                         </button>
                     } @else {
                         <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve"
-                           class="w-full py-2.5 sm:py-3 font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                           [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
-                           [style.text-transform]="'var(--store-btn-transform, none)'"
-                           [style.background-color]="'var(--store-color-primary, #0f172a)'"
-                           [style.color]="'var(--store-color-primary-contrast, #ffffff)'">
-                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="w-full py-2 sm:py-2.5 font-bold text-xs shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 bg-slate-900/90 hover:bg-slate-900 text-white backdrop-blur-md cursor-pointer active:scale-95"
+                            [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
+                            [style.text-transform]="'var(--store-btn-transform, none)'">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
@@ -149,9 +146,9 @@ import { TenantService } from '@core/services/tenant';
         </div>
 
         <!-- Info Area -->
-        <div class="p-4 sm:p-5 flex-1 flex flex-col justify-between gap-3">
+        <div class="p-3.5 sm:p-4 flex-1 flex flex-col justify-between gap-2.5">
             <div>
-                <h3 class="font-bold text-base sm:text-lg leading-tight transition-colors mb-1"
+                <h3 class="font-bold text-sm sm:text-base leading-snug transition-colors mb-0.5 line-clamp-2"
                     [style.color]="'var(--store-color-text, #0a0a0a)'"
                     [style.font-family]="'var(--store-font-heading)'">
                     <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve" class="hover:underline">
@@ -160,7 +157,7 @@ import { TenantService } from '@core/services/tenant';
                 </h3>
 
                 @if (product.sku) {
-                    <p class="text-[11px] font-medium uppercase tracking-widest"
+                    <p class="text-[10px] font-medium uppercase tracking-widest"
                        [style.color]="'var(--store-color-muted, #737373)'">
                         {{ product.sku }}
                     </p>
@@ -168,7 +165,7 @@ import { TenantService } from '@core/services/tenant';
 
                 <!-- Stock Indicator -->
                 @if (showStock()) {
-                    <div class="mt-2 flex items-center gap-1.5 text-xs font-semibold">
+                    <div class="mt-1.5 flex items-center gap-1.5 text-xs font-semibold">
                         @if (product.track_inventory) {
                             @if (product.stock_quantity > 0) {
                                 <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -185,27 +182,27 @@ import { TenantService } from '@core/services/tenant';
                 }
             </div>
             
-            <div class="mt-auto pt-2">
+            <div class="mt-auto pt-1.5">
                 <div class="flex items-end justify-between gap-2">
                     <!-- Price Block -->
                     @if (showPrice()) {
                         <div class="flex flex-col">
                             @if (showOriginalPrice() && product.compare_at_price) {
-                                <span class="text-xs line-through mb-0.5"
+                                <span class="text-[11px] line-through mb-0.5"
                                       [style.color]="'var(--store-color-muted, #737373)'">
                                     {{ product.compare_at_price | currency:currency() }}
                                 </span>
                             }
-                            <span class="text-lg sm:text-xl font-black" [style.color]="'var(--primary-color, var(--store-color-primary))'">
+                            <span class="text-base sm:text-lg font-black" [style.color]="'var(--primary-color, var(--store-color-primary))'">
                                 {{ product.price | currency:currency() }}
                             </span>
                         </div>
                     }
 
                     <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve" 
-                       class="p-2 transition-colors hover:opacity-75"
+                       class="p-1.5 transition-colors hover:opacity-75"
                        [style.color]="'var(--store-color-muted, #737373)'">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
                     </a>

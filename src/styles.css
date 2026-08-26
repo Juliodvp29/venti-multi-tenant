@@ -250,27 +250,6 @@
   --auth-gradient-to: rgba(168, 85, 247, 0.4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --input-bg: #1e293b;
-    --input-text: #f8fafc;
-    --input-border: #334155;
-    --input-border-hover: #475569;
-    --input-border-focus: var(--color-primary-500);
-    --input-placeholder: #64748b;
-    --auth-bg: #020817;
-    --auth-card-bg: #0f172a;
-    --auth-gradient-from: rgba(99, 102, 241, 0.45);
-    --auth-gradient-to: rgba(168, 85, 247, 0.4);
-  }
-
-  html,
-  body {
-    background-color: #020817;
-    color: #f8fafc;
-  }
-}
-
 /* Scoped utility for inputs on dark backgrounds (like tables) */
 .dark-inputs {
   --input-bg: #1e293b; /* gray-800 */
@@ -304,9 +283,9 @@ input[type='url'],
 input[type='date'],
 textarea,
 select {
-  background-color: var(--input-bg) !important;
-  color: var(--input-text) !important;
-  border: 1px solid var(--input-border) !important;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--input-border);
   box-shadow: var(--input-shadow);
   transition: all var(--transition-base);
 }
@@ -318,7 +297,7 @@ input[type='tel']:hover,
 input[type='number']:hover,
 textarea:hover,
 select:hover {
-  border-color: var(--input-border-hover) !important;
+  border-color: var(--input-border-hover);
 }
 
 input[type='text']:focus,
@@ -328,17 +307,17 @@ input[type='tel']:focus,
 input[type='number']:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--input-border-focus) !important;
+  border-color: var(--input-border-focus);
   outline: none;
   box-shadow: 0 0 0 2px var(--input-border-focus);
 }
 
 input[readonly],
 input[disabled] {
-  background-color: var(--input-disabled-bg) !important;
-  color: var(--input-disabled-text) !important;
+  background-color: var(--input-disabled-bg);
+  color: var(--input-disabled-text);
   cursor: not-allowed;
-  border-color: var(--input-border) !important;
+  border-color: var(--input-border);
 }
 
 /* Focus Styles */

@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col h-full overflow-hidden">
+<form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col h-full">
   <!-- Form Header -->
   <div
     class="flex-shrink-0 px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
@@ -213,11 +213,24 @@
       <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">
         Precios
       </h3>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+        <!-- 1. Precio de Venta -->
         <div>
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-            Precio <span class="text-red-500">*</span>
-          </label>
+          <div class="h-6 flex items-center mb-1.5 min-w-0">
+            <label class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">
+              Precio <span class="text-red-500">*</span>
+            </label>
+            <div class="group relative inline-flex items-center ml-1.5 cursor-help shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div class="pointer-events-none absolute bottom-full left-0 mb-2 w-56 max-w-[calc(100vw-2rem)] p-2.5 bg-white dark:bg-slate-900 text-gray-700 dark:text-white text-xs font-normal rounded-xl shadow-xl ring-1 ring-gray-200 dark:ring-transparent opacity-0 group-hover:opacity-100 transition-all duration-200 z-50 text-center leading-relaxed">
+                <p class="font-bold text-indigo-600 dark:text-indigo-300 mb-0.5">Precio de Venta</p>
+                <p>Es el valor real y final que el cliente pagará en tu tienda.</p>
+                <span class="absolute top-full left-4 -mt-1 border-4 border-transparent border-t-white dark:border-t-slate-900"></span>
+              </div>
+            </div>
+          </div>
           <div class="relative">
             <span
               class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none"
@@ -237,10 +250,24 @@
             <p class="mt-1.5 text-xs text-red-500">El precio es obligatorio.</p>
           }
         </div>
+
+        <!-- 2. Precio de Comparación -->
         <div>
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
-            >Precio de comparación</label
-          >
+          <div class="h-6 flex items-center mb-1.5 min-w-0">
+            <label class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">
+              Precio de comparación
+            </label>
+            <div class="group relative inline-flex items-center ml-1.5 cursor-help shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div class="pointer-events-none absolute bottom-full left-0 mb-2 w-64 max-w-[calc(100vw-2rem)] p-2.5 bg-white dark:bg-slate-900 text-gray-700 dark:text-white text-xs font-normal rounded-xl shadow-xl ring-1 ring-gray-200 dark:ring-transparent opacity-0 group-hover:opacity-100 transition-all duration-200 z-50 text-center leading-relaxed">
+                <p class="font-bold text-indigo-600 dark:text-indigo-300 mb-0.5">Precio Original / Oferta</p>
+                <p>Precio anterior para mostrar tachado si el producto está en descuento (debe ser mayor al precio de venta).</p>
+                <span class="absolute top-full left-4 -mt-1 border-4 border-transparent border-t-white dark:border-t-slate-900"></span>
+              </div>
+            </div>
+          </div>
           <div class="relative">
             <span
               class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none"
@@ -256,10 +283,24 @@
             />
           </div>
         </div>
+
+        <!-- 3. Costo -->
         <div>
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
-            >Costo</label
-          >
+          <div class="h-6 flex items-center mb-1.5 min-w-0">
+            <label class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">
+              Costo
+            </label>
+            <div class="group relative inline-flex items-center ml-1.5 cursor-help shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div class="pointer-events-none absolute bottom-full right-0 mb-2 w-60 max-w-[calc(100vw-2rem)] p-2.5 bg-white dark:bg-slate-900 text-gray-700 dark:text-white text-xs font-normal rounded-xl shadow-xl ring-1 ring-gray-200 dark:ring-transparent opacity-0 group-hover:opacity-100 transition-all duration-200 z-50 text-center leading-relaxed">
+                <p class="font-bold text-indigo-600 dark:text-indigo-300 mb-0.5">Costo Unitario (Privado)</p>
+                <p>Lo que te cuesta fabricar o comprar el producto. Los clientes no lo ven; sirve para calcular tus ganancias.</p>
+                <span class="absolute top-full right-3 -mt-1 border-4 border-transparent border-t-white dark:border-t-slate-900"></span>
+              </div>
+            </div>
+          </div>
           <div class="relative">
             <span
               class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500 dark:text-gray-400 text-sm font-medium pointer-events-none"
