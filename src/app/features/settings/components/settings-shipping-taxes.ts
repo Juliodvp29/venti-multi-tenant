@@ -18,6 +18,7 @@ export class SettingsShippingTaxes implements OnInit {
     private readonly shippingService = inject(ShippingService);
     private readonly toastService = inject(ToastService);
     private readonly tenantService = inject(TenantService);
+    readonly currency = this.tenantService.currency;
 
     readonly isLoading = signal(true);
     readonly isSaving = signal(false);

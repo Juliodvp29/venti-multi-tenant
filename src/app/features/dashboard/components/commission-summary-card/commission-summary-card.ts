@@ -19,6 +19,7 @@ export class CommissionSummaryCard {
   readonly stats = signal<{ totalPending: number; totalPaid: number; totalAmount: number; thisMonthAmount: number } | null>(null);
 
   readonly canEdit = this.tenantService.canEdit;
+  readonly currency = this.tenantService.currency;
 
   readonly pendingChange = computed(() => {
     const s = this.stats();

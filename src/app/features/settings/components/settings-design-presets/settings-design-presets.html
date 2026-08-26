@@ -166,7 +166,7 @@
                   </div>
 
                   <div class="flex flex-wrap items-center gap-2 text-[11px] text-gray-400 dark:text-gray-500 mt-2">
-                    <span>Guardado: {{ preset.created_at | date:'shortDate' }}</span>
+                    <span>Guardado: {{ preset.created_at | date:'shortDate':timezone():'es' }}</span>
                     <span>•</span>
                     <span class="font-medium text-gray-600 dark:text-gray-300">
                       Fuente: {{ preset.snapshot.theme_tokens.font_heading || 'Inter' }}
@@ -243,7 +243,7 @@
                     }
 
                     <div class="flex flex-wrap items-center gap-2 text-[11px] text-gray-400 dark:text-gray-500 mt-1">
-                      <span>Publicada: {{ version.published_at | date:'medium' }}</span>
+                      <span>Publicada: {{ version.published_at | date:'medium':timezone():'es' }}</span>
                       @if (version.published_by) {
                         <span>•</span>
                         <span>Por: {{ version.published_by }}</span>

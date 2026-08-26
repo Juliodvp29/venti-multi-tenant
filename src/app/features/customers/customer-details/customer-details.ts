@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CustomersService } from '@core/services/customers';
 import { OrdersService } from '@core/services/orders';
 import { ToastService } from '@core/services/toast';
+import { TenantService } from '@core/services/tenant';
 import { Customer } from '@core/models/customer';
 import { Order } from '@core/models/order';
 
@@ -20,6 +21,10 @@ export class CustomerDetails implements OnInit {
     private readonly customersService = inject(CustomersService);
     private readonly ordersService = inject(OrdersService);
     private readonly toast = inject(ToastService);
+    private readonly tenantService = inject(TenantService);
+
+    readonly currency = this.tenantService.currency;
+    readonly timezone = this.tenantService.timezone;
 
     readonly customer = signal<Customer | null>(null);
     readonly recentOrders = signal<Order[]>([]);

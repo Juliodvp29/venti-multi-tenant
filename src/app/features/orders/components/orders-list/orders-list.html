@@ -92,7 +92,7 @@
                 <div class="h-7 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
                 } @else {
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
-                    {{ stats()?.revenueToday ?? 0 | currency:'USD' }}
+                    {{ stats()?.revenueToday ?? 0 | currency:currency() }}
                     @if (revenueChange() !== null) {
                     <span
                         class="ml-2 text-xs font-semibold {{ revenueChange()! >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500' }}">

@@ -245,6 +245,11 @@ export class TenantService {
     return typeof currency === 'string' && currency.length === 3 ? currency : 'USD';
   });
 
+  readonly timezone = computed(() => {
+    const timezone = this._state().currentTenant?.settings?.['timezone'];
+    return typeof timezone === 'string' && timezone.length > 0 ? timezone : 'America/New_York';
+  });
+
   // ── Store Design System State (Draft, Published, Presets, Versions) ──
   readonly storeDesignState = computed<StoreDesignState>(() => {
     const settings = this._state().currentTenant?.settings as Record<string, unknown> | undefined;

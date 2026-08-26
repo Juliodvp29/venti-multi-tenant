@@ -6,6 +6,8 @@ import { DiscountsService } from '@core/services/discounts';
 import { ToastService } from '@core/services/toast';
 import { DatePicker } from '@shared/components/date-picker/date-picker';
 
+import { TenantService } from '@core/services/tenant';
+
 @Component({
   selector: 'app-coupon-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -96,8 +98,8 @@ import { DatePicker } from '@shared/components/date-picker/date-picker';
                   formControlName="value"
                   class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                 >
-                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                  {{ form.get('type')?.value === 'percentage' ? '%' : '$' }}
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">
+                  {{ form.get('type')?.value === 'percentage' ? '%' : (currencyCode() || '$') }}
                 </span>
               </div>
             </div>
@@ -136,11 +138,11 @@ import { DatePicker } from '@shared/components/date-picker/date-picker';
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Monto Mínimo de Compra</label>
               <div class="relative">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">{{ currencyCode() || '$' }}</span>
                 <input 
                   type="number" 
                   formControlName="minimum_purchase_amount"
-                  class="w-full pl-8 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                  class="w-full pl-12 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                 >
               </div>
               <p class="mt-1 text-xs text-gray-500">Dejar en blanco si no hay requisito de compra mínima.</p>
@@ -201,6 +203,9 @@ export class CouponModalComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly discountsService = inject(DiscountsService);
   private readonly toast = inject(ToastService);
+  private readonly tenantService = inject(TenantService);
+
+  readonly currencyCode = this.tenantService.currency;
 
   coupon = input<DiscountCode | null>(null);
   close = output<void>();

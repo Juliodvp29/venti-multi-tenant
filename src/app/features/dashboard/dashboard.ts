@@ -162,7 +162,7 @@ export class Dashboard {
           customerName: fullName,
           customerInitial: (first?.[0] || 'I') + (last?.[0] || ''),
           product: 'Múltiples artículos',
-          date: new Date(o.created_at).toLocaleDateString(),
+          date: new Date(o.created_at).toLocaleDateString('es', { timeZone: this.tenantService.timezone() }),
           amount: o.total_amount,
           status: this.mapStatus(o.status),
         };

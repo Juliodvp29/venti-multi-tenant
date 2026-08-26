@@ -293,7 +293,7 @@ import { SeoService } from '@core/services/seo';
                         </div>
                         <h4 class="text-xl font-bold text-slate-900">{{ review.title || 'Sin título' }}</h4>
                       </div>
-                      <span class="text-sm text-slate-400 font-medium">{{ review.created_at | date:'mediumDate' }}</span>
+                      <span class="text-sm text-slate-400 font-medium">{{ review.created_at | date:'mediumDate':timezone():'es' }}</span>
                     </div>
 
                     <p class="text-slate-600 leading-relaxed mb-6">{{ review.review || 'Sin reseña.' }}</p>
@@ -374,6 +374,7 @@ export class ProductDetails implements OnInit {
   readonly pageConfig = computed(() => this.tenantService.getPageLayout('product_detail'));
   readonly sections = computed<StorefrontSection[]>(() => this.pageConfig()?.sections || []);
   readonly currency = this.tenantService.currency;
+  readonly timezone = this.tenantService.timezone;
 
   readonly product = signal<Product | null>(null);
   readonly relatedProducts = signal<Product[]>([]);

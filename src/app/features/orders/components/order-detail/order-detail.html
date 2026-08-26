@@ -134,7 +134,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                     </svg>
-                    {{ datePipe.transform(o.created_at, 'dd MMM yyyy, HH:mm') }}
+                    {{ datePipe.transform(o.created_at, 'dd MMM yyyy, HH:mm', timezone(), 'es') }}
                 </p>
             </div>
             <div class="flex items-center gap-2">
@@ -289,7 +289,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
-                                        {{ datePipe.transform(entry.created_at, 'dd MMM yyyy, HH:mm') }}
+                                        {{ datePipe.transform(entry.created_at, 'dd MMM yyyy, HH:mm', timezone(), 'es') }}
                                     </div>
                                 </div>
                             </div>
@@ -397,7 +397,7 @@
                     @if (o.shipped_at) {
                     <p
                         class="text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800">
-                        Enviado el {{ datePipe.transform(o.shipped_at, 'dd MMM yyyy, HH:mm') }}
+                        Enviado el {{ datePipe.transform(o.shipped_at, 'dd MMM yyyy, HH:mm', timezone(), 'es') }}
                     </p>
                     }
 

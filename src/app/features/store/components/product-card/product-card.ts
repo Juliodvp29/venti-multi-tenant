@@ -193,11 +193,11 @@ import { TenantService } from '@core/services/tenant';
                             @if (showOriginalPrice() && product.compare_at_price) {
                                 <span class="text-xs line-through mb-0.5"
                                       [style.color]="'var(--store-color-muted, #737373)'">
-                                    {{ product.compare_at_price | currency }}
+                                    {{ product.compare_at_price | currency:currency() }}
                                 </span>
                             }
                             <span class="text-lg sm:text-xl font-black" [style.color]="'var(--primary-color, var(--store-color-primary))'">
-                                {{ product.price | currency }}
+                                {{ product.price | currency:currency() }}
                             </span>
                         </div>
                     }
@@ -262,6 +262,7 @@ export class ProductCard {
     private readonly cartService = inject(CartService);
     private readonly analytics = inject(AnalyticsService);
     private readonly tenantService = inject(TenantService);
+    readonly currency = this.tenantService.currency;
 
     readonly added = signal(false);
 

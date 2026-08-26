@@ -26,7 +26,7 @@
         @if (isLoading()) {
           <span class="h-8 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse inline-block"></span>
         } @else {
-          {{ stats()?.totalAmount ?? 0 | currency:'USD':'symbol':'1.0-0' }}
+          {{ stats()?.totalAmount ?? 0 | currency:currency():'symbol':'1.0-0' }}
         }
       </h3>
       <p class="text-xs text-slate-500 dark:text-slate-400">Total histórico</p>
@@ -43,7 +43,7 @@
       </div>
       <div class="col-span-2">
         <p class="text-xs text-slate-500 dark:text-slate-400">Este mes</p>
-        <p class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ stats()?.thisMonthAmount ?? 0 | currency:'USD':'symbol':'1.0-0' }}</p>
+        <p class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ stats()?.thisMonthAmount ?? 0 | currency:currency():'symbol':'1.0-0' }}</p>
       </div>
     </div>
   </div>
