@@ -42,6 +42,7 @@ export class OrdersList implements OnInit, AfterViewInit {
     private readonly currencyPipe = inject(CurrencyPipe);
     private readonly datePipe = inject(DatePipe);
     readonly currency = this.tenantService.currency;
+    readonly timezone = this.tenantService.timezone;
 
     private initialized = false;
     private searchSubject = new Subject<string>();
@@ -165,7 +166,7 @@ export class OrdersList implements OnInit, AfterViewInit {
                 label: 'Fecha',
                 type: 'text',
                 sortable: true,
-                formatter: (val) => this.datePipe.transform(val, 'dd MMM yyyy') ?? val,
+                formatter: (val) => this.datePipe.transform(val, 'dd MMM yyyy', this.timezone()) ?? val,
             },
             {
                 key: 'total_amount',

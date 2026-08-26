@@ -15,7 +15,7 @@ import { SettingsDesignPresets } from './components/settings-design-presets/sett
 import { ToastService } from '@core/services/toast';
 import { PreviewSyncService } from '@core/services/preview-sync.service';
 
-import { StorefrontLayout, ThemeTokens, ThemeDesignSnapshot } from '@core/models';
+import { StorefrontLayout, ThemeTokens, ThemeDesignSnapshot, StorePageId } from '@core/models';
 
 export interface PreviewData {
   business_name: string;
@@ -88,6 +88,7 @@ export class Settings {
   readonly publishVersionName = signal('');
   readonly publishNotes = signal('');
   readonly previewDataSource = signal<'draft' | 'published'>('draft');
+  readonly activePreviewPage = signal<StorePageId>('home');
 
   readonly hasUnpublishedChanges = this.tenantService.hasUnpublishedChanges;
   readonly publishedAt = computed(() => this.tenantService.storeDesignState().published_at);

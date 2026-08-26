@@ -87,7 +87,7 @@
                             <tr class="group">
                                 <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ rate.name }}</td>
                                 <td class="px-4 py-3 text-right font-bold text-gray-900 dark:text-white">
-                                    {{ rate.rate_amount | currency }}
+                                    {{ rate.rate_amount | currency:currency() }}
                                 </td>
                                 <td class="px-4 py-3 text-right">
                                     <div

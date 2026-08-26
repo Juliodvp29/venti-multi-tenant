@@ -310,12 +310,10 @@ export class DynamicTable<T extends Record<string, any>> {
   }
 
   private get currencyCode(): string {
-    const currency = this.tenantService.currentTenant()?.settings?.['currency'];
-    return typeof currency === 'string' && currency.length === 3 ? currency : 'USD';
+    return this.tenantService.currency();
   }
 
   private get timezone(): string {
-    const timezone = this.tenantService.currentTenant()?.settings?.['timezone'];
-    return typeof timezone === 'string' && timezone ? timezone : 'UTC';
+    return this.tenantService.timezone();
   }
 }

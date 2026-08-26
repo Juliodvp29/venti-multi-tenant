@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, ViewEncapsulation, Renderer2, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal, ViewEncapsulation, Renderer2, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StorefrontLayout, ThemeTokens, StorePageId, PageLayoutConfig, PageHeaderStyle, PageFooterStyle, StorefrontSection, getDefaultPageLayout } from '@core/models';
 import { themeTokensToCssVars, THEME_PRESETS, getContrastColor } from '@core/constants/theme-presets';
@@ -68,7 +68,7 @@ export class StorePreview {
     private readonly elementRef = inject(ElementRef);
     private styleElement: HTMLStyleElement | null = null;
 
-    readonly previewPage = signal<StorePageId>('home');
+    readonly previewPage = model<StorePageId>('home');
 
     readonly pageOptions: { id: StorePageId; label: string }[] = [
         { id: 'home', label: 'Inicio' },
@@ -238,6 +238,38 @@ export class StorePreview {
         const secondaryColor = d.secondary_color || tokens.colors.secondary;
         const accentColor = d.accent_color || tokens.colors.accent;
 
+        const bgImage = d.background_image_url || tokens.background_image_url;
+        const pattern = d.background_pattern || tokens.background_pattern || 'none';
+
+        let bgStyles: Record<string, string> = {};
+        if (bgImage) {
+            bgStyles = {
+                'background-image': `url('${bgImage}')`,
+                'background-size': 'cover',
+                'background-position': 'center',
+                'background-repeat': 'no-repeat',
+            };
+        } else if (pattern === 'dots') {
+            bgStyles = {
+                'background-image': 'radial-gradient(rgba(0, 0, 0, 0.12) 1px, transparent 1px)',
+                'background-size': '16px 16px',
+            };
+        } else if (pattern === 'grid') {
+            bgStyles = {
+                'background-image': 'linear-gradient(to right, rgba(0, 0, 0, 0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.06) 1px, transparent 1px)',
+                'background-size': '24px 24px',
+            };
+        } else if (pattern === 'mesh') {
+            bgStyles = {
+                'background-image': 'radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.12) 0px, transparent 50%)',
+            };
+        } else if (pattern === 'noise') {
+            bgStyles = {
+                'background-image': 'radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 0)',
+                'background-size': '4px 4px',
+            };
+        }
+
         return {
             ...baseVars,
             '--store-color-primary': primaryColor,
@@ -251,6 +283,7 @@ export class StorePreview {
             '--store-color-footer': d.footer_color || tokens.colors.footer,
             '--store-font-heading': d.font_family || tokens.font_heading,
             '--store-color-btn-text': getContrastColor(primaryColor),
+            ...bgStyles,
         };
     });
 

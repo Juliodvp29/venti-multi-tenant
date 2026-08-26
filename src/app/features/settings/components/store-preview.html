@@ -172,6 +172,313 @@
 
         <!-- MAIN SCROLLABLE CONTENT -->
         <main class="min-h-0 flex-1 overflow-y-auto">
+
+            <!-- ============================================================ -->
+            <!-- PÁGINA: DETALLE DE PRODUCTO (render estático mock)           -->
+            <!-- ============================================================ -->
+            @if (previewPage() === 'product_detail') {
+                <div class="max-w-4xl mx-auto px-4 py-6">
+                    <!-- Breadcrumb -->
+                    <nav class="flex items-center gap-1.5 text-xs text-gray-400 mb-4">
+                        <span class="hover:underline cursor-pointer" [style.color]="data().primary_color">Tienda</span>
+                        <span>/</span>
+                        <span [style.color]="'var(--store-color-text, #0f172a)'">{{ mockProducts[0].name }}</span>
+                    </nav>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Image -->
+                        <div class="space-y-2">
+                            <div class="aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm relative group cursor-zoom-in">
+                                <img [src]="mockProducts[0].image" [alt]="mockProducts[0].name"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute top-2.5 left-2.5 flex flex-col gap-1">
+                                    @if (cardShowSaleBadge && mockProducts[0].original_price) {
+                                        <span class="px-2 py-0.5 text-[9px] font-black text-white uppercase shadow-sm"
+                                            [style.border-radius]="'var(--store-radius-badge, 9999px)'"
+                                            [style.background-color]="data().accent_color || 'var(--store-color-accent, #ef4444)'">Oferta</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-4 gap-1.5">
+                                <div class="aspect-square rounded-lg overflow-hidden border-2 cursor-pointer"
+                                     [style.border-color]="data().primary_color">
+                                    <img [src]="mockProducts[0].image" class="w-full h-full object-cover">
+                                </div>
+                                @for (p of mockProducts.slice(1,4); track p.name) {
+                                    <div class="aspect-square rounded-lg overflow-hidden border-2 border-slate-200 cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <img [src]="p.image" class="w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity">
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="flex flex-col gap-3">
+                            <h1 class="text-base font-black leading-tight" [style.color]="'var(--store-color-text, #0f172a)'" [style.font-family]="activeTokens.font_heading">
+                                {{ mockProducts[0].name }}
+                            </h1>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-base font-bold" [style.color]="data().primary_color || 'var(--store-color-primary)'">
+                                    {{ formatPrice(mockProducts[0].price) }}
+                                </span>
+                                @if (mockProducts[0].original_price) {
+                                    <span class="text-xs text-gray-400 line-through">{{ formatPrice(mockProducts[0].original_price) }}</span>
+                                    <span class="text-[9px] font-bold text-white px-1.5 py-0.5 rounded-full bg-red-500">
+                                        -{{ getDiscountPercent(mockProducts[0].price, mockProducts[0].original_price) }}%
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- Avg Stars -->
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-amber-400 text-xs">★★★★★</span>
+                                <span class="text-xs text-gray-500">4.8 (24 reseñas)</span>
+                            </div>
+
+                            <p class="text-xs text-gray-500 leading-relaxed border-t border-slate-100 pt-3">
+                                Diseño atemporal con materiales de primera calidad. Ideal para cualquier ocasión y estilo de vida activo.
+                            </p>
+
+                            <!-- Variants mock -->
+                            <div class="space-y-2">
+                                <p class="text-[10px] font-bold uppercase tracking-wider" [style.color]="'var(--store-color-text)'">Talla</p>
+                                <div class="flex flex-wrap gap-1.5">
+                                    @for (s of ['38','39','40','41','42','43']; track s) {
+                                        <button class="px-2.5 py-1 rounded-lg border-2 text-[11px] font-semibold transition-colors cursor-pointer"
+                                                [style.border-color]="s === '41' ? (data().primary_color || '#4f46e5') : '#e2e8f0'"
+                                                [style.background-color]="s === '41' ? ((data().primary_color || '#4f46e5') + '15') : 'transparent'"
+                                                [style.color]="s === '41' ? (data().primary_color || '#4f46e5') : 'var(--store-color-text)'">
+                                            {{ s }}
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Qty + CTA -->
+                            <div class="flex items-center gap-3 mt-1">
+                                <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm text-xs">
+                                    <button class="px-3 py-2 hover:bg-slate-50 border-r border-slate-100 font-bold cursor-pointer" [style.color]="'var(--store-color-text)'">−</button>
+                                    <span class="px-3 py-2 font-bold" [style.color]="'var(--store-color-text)'">1</span>
+                                    <button class="px-3 py-2 hover:bg-slate-50 border-l border-slate-100 font-bold cursor-pointer" [style.color]="'var(--store-color-text)'">+</button>
+                                </div>
+                                <button class="flex-1 py-2.5 rounded-xl text-xs font-bold shadow-sm cursor-pointer transition-all hover:opacity-90 store-btn-primary"
+                                        [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                        [style.color]="primaryContrastColor()"
+                                        [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                    Añadir al Carrito
+                                </button>
+                            </div>
+
+                            <!-- Trust badges -->
+                            <div class="flex items-center gap-4 pt-3 border-t border-slate-100 text-[10px] text-gray-400">
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    Envío gratis +$100
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                    Compra protegida
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- ============================================================ -->
+            <!-- PÁGINA: CARRITO (render estático mock)                       -->
+            <!-- ============================================================ -->
+            @if (previewPage() === 'cart') {
+                <div class="max-w-4xl mx-auto px-4 py-6">
+                    <h1 class="text-base font-black mb-6" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">
+                        Mi Carrito
+                        <span class="ml-2 text-xs font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">2</span>
+                    </h1>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-[1fr_280px] gap-6 items-start">
+                        <!-- Items -->
+                        <div class="space-y-3">
+                            @for (p of mockProducts.slice(0,2); track p.name) {
+                                <div class="flex gap-3 p-3 rounded-2xl border border-slate-200 bg-white dark:bg-gray-900/50 shadow-xs">
+                                    <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-50 shrink-0">
+                                        <img [src]="p.image" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-bold truncate" [style.color]="'var(--store-color-text)'">{{ p.name }}</p>
+                                        <p class="text-[10px] text-gray-400 mt-0.5">Talla: 41 · Color: Default</p>
+                                        <div class="flex items-center justify-between mt-2">
+                                            <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden text-[10px]">
+                                                <button class="px-2 py-1 hover:bg-slate-50 border-r border-slate-100 cursor-pointer font-bold" [style.color]="'var(--store-color-text)'">−</button>
+                                                <span class="px-2 py-1 font-bold" [style.color]="'var(--store-color-text)'">1</span>
+                                                <button class="px-2 py-1 hover:bg-slate-50 border-l border-slate-100 cursor-pointer font-bold" [style.color]="'var(--store-color-text)'">+</button>
+                                            </div>
+                                            <span class="text-xs font-black" [style.color]="data().primary_color || 'var(--store-color-primary)'">{{ formatPrice(p.price) }}</span>
+                                        </div>
+                                    </div>
+                                    <button class="text-gray-300 hover:text-red-400 transition-colors self-start shrink-0 cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="p-4 rounded-2xl border border-slate-200 bg-white dark:bg-gray-900/50 shadow-sm space-y-3 sticky top-2">
+                            <h3 class="text-xs font-black uppercase tracking-wider" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">Resumen</h3>
+                            <div class="space-y-2 text-xs" [style.color]="'var(--store-color-text)'">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Subtotal (2 items)</span>
+                                    <span class="font-semibold">{{ formatPrice(mockProducts[0].price + mockProducts[1].price) }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Envío</span>
+                                    <span class="font-semibold text-emerald-600">Gratis</span>
+                                </div>
+                                <div class="flex justify-between pt-2 border-t border-slate-100 font-black text-sm">
+                                    <span>Total</span>
+                                    <span [style.color]="data().primary_color || 'var(--store-color-primary)'">
+                                        {{ formatPrice(mockProducts[0].price + mockProducts[1].price) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Coupon -->
+                            <div class="flex gap-1.5">
+                                <input type="text" placeholder="Código de descuento"
+                                       class="flex-1 px-2.5 py-1.5 text-[10px] rounded-lg border border-slate-200 bg-white text-slate-900 outline-none">
+                                <button class="px-3 py-1.5 text-[10px] font-bold rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer" [style.color]="'var(--store-color-text)'">
+                                    Aplicar
+                                </button>
+                            </div>
+
+                            <button class="w-full py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all hover:opacity-90 store-btn-primary"
+                                    [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                    [style.color]="primaryContrastColor()"
+                                    [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                Ir al Checkout
+                            </button>
+
+                            <p class="text-center text-[9px] text-gray-400">🔒 Pago 100% seguro y encriptado</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- ============================================================ -->
+            <!-- PÁGINA: CHECKOUT (render estático mock)                      -->
+            <!-- ============================================================ -->
+            @if (previewPage() === 'checkout') {
+                <div class="max-w-4xl mx-auto px-4 py-6">
+                    <h1 class="text-base font-black mb-6" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">Finalizar Compra</h1>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-[1fr_260px] gap-6 items-start">
+                        <!-- Shipping Form -->
+                        <div class="space-y-4">
+                            <!-- Contact -->
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-white dark:bg-gray-900/50 space-y-3">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500">Contacto</h3>
+                                <input type="email" placeholder="correo@ejemplo.com"
+                                       class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                <label class="flex items-center gap-2 text-[10px] text-gray-500 cursor-pointer">
+                                    <input type="checkbox" class="rounded"> Recibir novedades y promociones
+                                </label>
+                            </div>
+
+                            <!-- Shipping -->
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-white dark:bg-gray-900/50 space-y-3">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500">Dirección de envío</h3>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="text" placeholder="Nombre"
+                                           class="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                    <input type="text" placeholder="Apellido"
+                                           class="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                </div>
+                                <input type="text" placeholder="Dirección"
+                                       class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="text" placeholder="Ciudad"
+                                           class="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                    <input type="text" placeholder="Código postal"
+                                           class="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                </div>
+                            </div>
+
+                            <!-- Payment -->
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-white dark:bg-gray-900/50 space-y-3">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500">Método de pago</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    @for (method of ['Tarjeta', 'PSE', 'Nequi', 'MercadoPago', 'Efectivo']; track method) {
+                                        <button class="px-3 py-1.5 text-[10px] font-bold rounded-lg border-2 cursor-pointer transition-colors"
+                                                [style.border-color]="method === 'Tarjeta' ? (data().primary_color || '#4f46e5') : '#e2e8f0'"
+                                                [style.color]="method === 'Tarjeta' ? (data().primary_color || '#4f46e5') : 'var(--store-color-text)'"
+                                                [style.background-color]="method === 'Tarjeta' ? ((data().primary_color || '#4f46e5') + '12') : 'transparent'">
+                                            {{ method }}
+                                        </button>
+                                    }
+                                </div>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <input type="text" placeholder="Número de tarjeta"
+                                           class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <input type="text" placeholder="MM/AA"
+                                               class="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                        <input type="text" placeholder="CVV"
+                                               class="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="p-4 rounded-2xl border border-slate-200 bg-white dark:bg-gray-900/50 shadow-sm space-y-3 sticky top-2">
+                            <h3 class="text-xs font-black uppercase tracking-wider" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">Tu Orden</h3>
+                            @for (p of mockProducts.slice(0,2); track p.name) {
+                                <div class="flex gap-2 items-center">
+                                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-50 shrink-0 relative">
+                                        <img [src]="p.image" class="w-full h-full object-cover">
+                                        <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[8px] flex items-center justify-center text-white font-bold"
+                                              [style.background-color]="data().accent_color || 'var(--store-color-accent, #6366f1)'">1</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-[10px] font-semibold truncate" [style.color]="'var(--store-color-text)'">{{ p.name }}</p>
+                                    </div>
+                                    <span class="text-[10px] font-bold shrink-0" [style.color]="'var(--store-color-text)'">{{ formatPrice(p.price) }}</span>
+                                </div>
+                            }
+                            <div class="border-t border-slate-100 pt-2 space-y-1.5 text-xs" [style.color]="'var(--store-color-text)'">
+                                <div class="flex justify-between text-gray-500">
+                                    <span>Subtotal</span>
+                                    <span>{{ formatPrice(mockProducts[0].price + mockProducts[1].price) }}</span>
+                                </div>
+                                <div class="flex justify-between text-gray-500">
+                                    <span>Envío</span>
+                                    <span class="text-emerald-600 font-semibold">Gratis</span>
+                                </div>
+                                <div class="flex justify-between font-black text-sm border-t border-slate-100 pt-2">
+                                    <span>Total</span>
+                                    <span [style.color]="data().primary_color || 'var(--store-color-primary)'">
+                                        {{ formatPrice(mockProducts[0].price + mockProducts[1].price) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <button class="w-full py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all hover:opacity-90 store-btn-primary"
+                                    [style.background-color]="data().primary_color || 'var(--store-color-primary)'"
+                                    [style.color]="primaryContrastColor()"
+                                    [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
+                                Confirmar y Pagar
+                            </button>
+                            <div class="flex items-center justify-center gap-1.5 text-[9px] text-gray-400">
+                                <svg class="w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                Pago 100% seguro · SSL encriptado
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- ============================================================ -->
+            <!-- SECCIONES CONFIGURABLES (Activas por Página)                 -->
+            <!-- ============================================================ -->
             @for (section of activeSections(); track section.id) {
                 @if (section.isActive) {
                     
@@ -196,14 +503,14 @@
                                     <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
                                         <source [src]="asAny(section.content).backgroundVideoUrl">
                                     </video>
-                                } @else if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                                } @else if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url) {
                                     <!-- Imagen de Fondo -->
-                                    <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl"
+                                    <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url"
                                         class="absolute inset-0 w-full h-full object-cover">
                                 }
 
                                 <!-- Overlay Configurable (Color y Opacidad) -->
-                                @if (asAny(section.content).backgroundVideoUrl || asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                                @if (asAny(section.content).backgroundVideoUrl || asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url) {
                                     <div class="absolute inset-0"
                                         [style.backgroundColor]="asAny(section.content).overlayColor || '#000000'"
                                         [style.opacity]="(asAny(section.content).overlayOpacity ?? 40) / 100"></div>
@@ -327,7 +634,7 @@
 
                                                 <div [class.md:order-1]="asAny(section.content).splitImagePosition === 'left'"
                                                     class="relative h-64 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-white/20">
-                                                    <img [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'"
+                                                    <img [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || data().main_banner_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'"
                                                         class="w-full h-full object-cover">
                                                 </div>
                                             </div>
@@ -692,9 +999,9 @@
                                         <p class="text-xs text-gray-500 mb-4">{{ asAny(section.content).subtitle }}</p>
                                     }
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                        @for (item of (asAny(section.content).items || []); track item.id) {
+                                        @for (item of (asAny(section.content).items?.length ? asAny(section.content).items : (data().brand_gallery || [])); track item.id || item.url) {
                                             <div class="aspect-square rounded-xl overflow-hidden group relative shadow-sm">
-                                                <img [src]="item.imageUrl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                <img [src]="item.imageUrl || item.url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                                 @if (item.caption) {
                                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-center text-white text-xs font-bold">
                                                         {{ item.caption }}

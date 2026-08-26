@@ -1,4 +1,4 @@
-@if (isOpen) {
+@if (isOpen()) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
         
@@ -11,7 +11,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ title }}</h2>
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ title() }}</h2>
                     <p class="text-xs text-slate-500 dark:text-gray-400">Selecciona o sube recursos multimedia para tu tienda</p>
                 </div>
             </div>

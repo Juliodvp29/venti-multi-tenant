@@ -15,6 +15,10 @@ import { FormsModule } from '@angular/forms';
 export class AbandonedCarts implements OnInit {
   private readonly cartService = inject(AbandonedCartService);
   private readonly toast = inject(ToastService);
+  private readonly tenantService = inject(TenantService);
+
+  readonly currency = this.tenantService.currency;
+  readonly timezone = this.tenantService.timezone;
 
   readonly carts = signal<AbandonedCart[]>([]);
   readonly isLoading = signal(false);

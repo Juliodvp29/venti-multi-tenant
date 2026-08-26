@@ -7,7 +7,7 @@ import {
     signal,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Order, OrderStatusHistory } from '@core/models/order';
 import { OrderStatus } from '@core/enums';
@@ -15,10 +15,11 @@ import { OrdersService } from '@core/services/orders';
 import { ToastService } from '@core/services/toast';
 import { OrderStatusBadge } from '@shared/components/order-status-badge/order-status-badge';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
+import { TenantService } from '@core/services/tenant';
 
 @Component({
     selector: 'app-order-detail',
-    imports: [CommonModule, FormsModule, OrderStatusBadge, Dropdown],
+    imports: [CommonModule, FormsModule, Dropdown, OrderStatusBadge],
     templateUrl: './order-detail.html',
     styleUrl: './order-detail.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,8 +30,10 @@ export class OrderDetail implements OnInit {
     private readonly router = inject(Router);
     private readonly ordersService = inject(OrdersService);
     private readonly toast = inject(ToastService);
+    private readonly tenantService = inject(TenantService);
     readonly currencyPipe = inject(CurrencyPipe);
     readonly datePipe = inject(DatePipe);
+    readonly timezone = this.tenantService.timezone;
 
     readonly OrderStatus = OrderStatus;
 

@@ -37,6 +37,7 @@ export class SettingsDesignPresets {
   readonly designVersions = this.tenantService.designVersions;
   readonly publishedState = computed(() => this.tenantService.storeDesignState().published);
   readonly publishedAt = computed(() => this.tenantService.storeDesignState().published_at);
+  readonly timezone = this.tenantService.timezone;
 
   openNewPresetModal(): void {
     const currentThemeName = this.tenantService.draftThemeTokens()?.theme_name || 'Mi Diseño';

@@ -34,6 +34,7 @@ export class CommissionsList implements OnInit {
     private readonly toastService = inject(ToastService);
     private readonly currencyPipe = inject(CurrencyPipe);
     readonly currency = this.tenantService.currency;
+    readonly timezone = this.tenantService.timezone;
 
     private initialized = false;
 
@@ -58,9 +59,9 @@ export class CommissionsList implements OnInit {
 
     readonly statusDropdownOptions: DropdownOption[] = [
         { label: 'Todos los estados', value: '' },
-        { label: 'Pendiente', value: CommissionStatus.Pending },
-        { label: 'Pagada', value: CommissionStatus.Paid },
-        { label: 'Cancelada', value: CommissionStatus.Cancelled },
+        { label: 'Pendiente', value: 'pending' },
+        { label: 'Procesada', value: 'processed' },
+        { label: 'Exonerada', value: 'waived' },
     ];
 
     readonly gatewayDropdownOptions = signal<DropdownOption[]>([
@@ -73,8 +74,9 @@ export class CommissionsList implements OnInit {
     readonly totalAmount = computed(() => this.stats()?.totalAmount ?? 0);
     readonly thisMonthAmount = computed(() => this.stats()?.thisMonthAmount ?? 0);
 
-    ngOnInit() {
-        this.updateColumns();
+    async ngOnInit() {
+        await this.loadData();
+        this.initialized = true;
     }
 
     ngAfterViewInit() {
@@ -88,7 +90,7 @@ export class CommissionsList implements OnInit {
                 label: 'Fecha',
                 sortable: true,
                 type: 'text',
-                formatter: (val) => val ? new Date(val).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) : '',
+                formatter: (val) => val ? new Date(val).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', timeZone: this.timezone() }) : '',
             },
             {
                 key: 'gateway',

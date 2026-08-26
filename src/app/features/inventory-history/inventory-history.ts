@@ -24,7 +24,6 @@ export class InventoryHistory implements OnInit {
             key: 'created_at',
             label: 'Fecha',
             type: 'date',
-            formatter: (val) => new Date(val).toLocaleString()
         },
         {
             key: 'product_name',
