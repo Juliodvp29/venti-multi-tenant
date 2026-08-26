@@ -354,6 +354,46 @@ export const DEFAULT_PAGE_LAYOUTS: Record<StorePageId, PageLayoutConfig> = {
                     badge: 'Temporada',
                     title: 'Explora nuestra colección exclusiva',
                     subtitle: 'Encuentra las mejores ofertas y productos con envíos garantizados.',
+                    buttonText: 'Ver Destacados',
+                },
+            },
+            {
+                id: 'catalog-categories',
+                type: 'featured_categories',
+                isActive: true,
+                content: {
+                    title: 'Explorar por Categoría',
+                    description: 'Encuentra rápidamente lo que buscas',
+                    categories: [
+                        { id: '1', name: 'Calzado', icon: '👟' },
+                        { id: '2', name: 'Ropa & Moda', icon: '👕' },
+                        { id: '3', name: 'Accesorios', icon: '🎒' },
+                        { id: '4', name: 'Ofertas Flash', icon: '🔥' },
+                    ],
+                },
+            },
+            {
+                id: 'catalog-products',
+                type: 'product_grid',
+                isActive: true,
+                content: {
+                    title: 'Todos los Productos',
+                    description: 'Catálogo completo disponible para entrega inmediata',
+                    limit: 8,
+                },
+            },
+            {
+                id: 'catalog-benefits',
+                type: 'benefits',
+                isActive: true,
+                content: {
+                    title: 'Ventajas de Comprar con Nosotros',
+                    items: [
+                        { id: '1', icon: '🚚', title: 'Envío Seguro', description: 'Cobertura nacional con seguimiento.' },
+                        { id: '2', icon: '🔒', title: 'Pago 100% Protegido', description: 'Múltiples métodos de pago seguro.' },
+                        { id: '3', icon: '🔄', title: 'Garantía Directa', description: '30 días de satisfacción garantizada.' },
+                        { id: '4', icon: '💬', title: 'Soporte Rápido', description: 'Atención personalizada por WhatsApp.' },
+                    ],
                 },
             },
         ],
@@ -380,6 +420,44 @@ export const DEFAULT_PAGE_LAYOUTS: Record<StorePageId, PageLayoutConfig> = {
                         { id: '1', icon: '🚚', title: 'Envío Rápido', description: 'Entregas a todo el país en 24 a 48 horas.' },
                         { id: '2', icon: '🔒', title: 'Pago Seguro', description: 'Tus transacciones están 100% protegidas y encriptadas.' },
                         { id: '3', icon: '🔄', title: 'Garantía de Devolución', description: '30 días de satisfacción o reembolso directo.' },
+                        { id: '4', icon: '💬', title: 'Atención Personalizada', description: 'Asesoría en tallas y dudas antes de comprar.' },
+                    ],
+                },
+            },
+            {
+                id: 'product-reviews',
+                type: 'reviews',
+                isActive: true,
+                content: {
+                    title: 'Reseñas de Clientes',
+                    overallRating: 4.9,
+                    totalReviews: 48,
+                    items: [
+                        { id: '1', author: 'Valentina R.', title: 'Excelente calidad', comment: 'El producto superó mis expectativas, el material es de primera y llegó súper rápido.', rating: 5 },
+                        { id: '2', author: 'Andrés M.', title: 'Muy recomendado', comment: 'Tal como en las fotos. El proceso de compra fue muy sencillo.', rating: 5 },
+                        { id: '3', author: 'Camila P.', title: 'Buen servicio', comment: 'Llegó en perfecto estado y muy bien empacado.', rating: 5 },
+                    ],
+                },
+            },
+            {
+                id: 'product-related',
+                type: 'product_grid',
+                isActive: true,
+                content: {
+                    title: 'Productos Similares',
+                    description: 'Otros clientes también vieron estos artículos recomendados',
+                    limit: 4,
+                },
+            },
+            {
+                id: 'product-faq',
+                type: 'faq',
+                isActive: true,
+                content: {
+                    title: 'Preguntas Frecuentes sobre el Producto',
+                    items: [
+                        { id: '1', question: '¿Tiene garantía el producto?', answer: 'Sí, todos nuestros productos cuentan con garantía directa de 30 días contra defectos de fábrica.' },
+                        { id: '2', question: '¿Cómo elijo mi talla correcta?', answer: 'Nuestras tallas son estándar. Si tienes dudas, contáctanos por WhatsApp para asesorarte.' },
                     ],
                 },
             },
@@ -398,6 +476,17 @@ export const DEFAULT_PAGE_LAYOUTS: Record<StorePageId, PageLayoutConfig> = {
         },
         sections: [
             {
+                id: 'cart-promo',
+                type: 'promo_banner',
+                isActive: true,
+                content: {
+                    badge: 'OFERTA ESPECIAL',
+                    title: '¡Envío Gratis en compras superiores a $100.000!',
+                    subtitle: 'Aprovecha y completa tu pedido hoy mismo.',
+                    buttonText: 'Seguir Comprando',
+                },
+            },
+            {
                 id: 'cart-benefits',
                 type: 'benefits',
                 isActive: true,
@@ -406,6 +495,30 @@ export const DEFAULT_PAGE_LAYOUTS: Record<StorePageId, PageLayoutConfig> = {
                     items: [
                         { id: '1', icon: '⚡', title: 'Despacho Inmediato', description: 'Procesamiento en menos de 24 horas.' },
                         { id: '2', icon: '🛡️', title: 'Compra Protegida', description: 'Garantía extendida en todos los productos.' },
+                        { id: '3', icon: '🔒', title: 'Pago Seguro', description: 'Transacciones 100% encriptadas con SSL.' },
+                        { id: '4', icon: '🔄', title: 'Devolución Fácil', description: '30 días de satisfacción o reembolso directo.' },
+                    ],
+                },
+            },
+            {
+                id: 'cart-recommendations',
+                type: 'product_grid',
+                isActive: true,
+                content: {
+                    title: 'Te Puede Interesar',
+                    description: 'Completa tu pedido con estos productos recomendados',
+                    limit: 4,
+                },
+            },
+            {
+                id: 'cart-faq',
+                type: 'faq',
+                isActive: true,
+                content: {
+                    title: 'Dudas Frecuentes sobre tu Compra',
+                    items: [
+                        { id: '1', question: '¿Cuándo recibiré mi pedido?', answer: 'Los despachos toman entre 24 y 48 horas hábiles después de confirmar el pago.' },
+                        { id: '2', question: '¿Cuáles son los medios de pago disponibles?', answer: 'Aceptamos tarjetas de crédito/débito, PSE, Nequi, MercadoPago y efectivo contra entrega.' },
                     ],
                 },
             },
@@ -422,7 +535,33 @@ export const DEFAULT_PAGE_LAYOUTS: Record<StorePageId, PageLayoutConfig> = {
             paddingTop: 'md',
             paddingBottom: 'lg',
         },
-        sections: [],
+        sections: [
+            {
+                id: 'checkout-benefits',
+                type: 'benefits',
+                isActive: true,
+                content: {
+                    title: 'Compra 100% Segura y Garantizada',
+                    items: [
+                        { id: '1', icon: '🔒', title: 'Encriptación SSL 256-bit', description: 'Tus datos bancarios están protegidos.' },
+                        { id: '2', icon: '🛡️', title: 'Garantía de Satisfacción', description: 'Reembolso garantizado ante cualquier novedad.' },
+                        { id: '3', icon: '⚡', title: 'Despacho Prioritario', description: 'Seguimiento en línea en tiempo real.' },
+                    ],
+                },
+            },
+            {
+                id: 'checkout-faq',
+                type: 'faq',
+                isActive: true,
+                content: {
+                    title: 'Preguntas Frecuentes antes de Pagar',
+                    items: [
+                        { id: '1', question: '¿Es seguro ingresar mis datos de tarjeta?', answer: 'Totalmente. No almacenamos los datos de tu tarjeta y todo el procesamiento se realiza bajo estándares bancarios PCI-DSS.' },
+                        { id: '2', question: '¿Cuándo me llega la confirmación?', answer: 'Inmediatamente se apruebe el pago recibirás un correo y mensaje de WhatsApp con el número de orden.' },
+                    ],
+                },
+            },
+        ],
     },
     contact: {
         pageId: 'contact',

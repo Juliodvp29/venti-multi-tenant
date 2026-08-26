@@ -56,11 +56,11 @@
                     [class.dark:hover:bg-gray-700]="activePageId() !== page.id">
                     <span [innerHTML]="page.icon"></span>
                     <span>{{ page.label }}</span>
-                    <span class="text-[10px] px-1.5 py-0.2 rounded-full"
+                    <span class="text-[10px] px-1.5 py-0.2 rounded-full font-mono"
                           [class.bg-white\/20]="activePageId() === page.id"
                           [class.bg-slate-100]="activePageId() !== page.id"
                           [class.dark:bg-gray-700]="activePageId() !== page.id">
-                        {{ page.id === 'home' ? (layout().sections.length) : ((layout().pages?.[page.id]?.sections?.length) || 0) }}
+                        {{ getPageSectionsCount(page.id) }}
                     </span>
                 </button>
             }
@@ -74,51 +74,53 @@
         <div class="lg:col-span-5 space-y-6">
 
             <!-- PAGE LEVEL SUB-NAV -->
-            <div class="flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1">
+            <div class="grid grid-cols-2 rounded-xl bg-gray-100 dark:bg-gray-800 p-1 gap-1 w-full">
                 <button (click)="activePageTab.set('sections')"
-                    class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
+                    class="py-2 px-2 text-xs font-bold rounded-lg transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer min-w-0"
                     [class.bg-white]="activePageTab() === 'sections'"
                     [class.dark:bg-gray-900]="activePageTab() === 'sections'"
                     [class.text-slate-900]="activePageTab() === 'sections'"
                     [class.dark:text-white]="activePageTab() === 'sections'"
                     [class.shadow-xs]="activePageTab() === 'sections'"
                     [class.text-gray-500]="activePageTab() !== 'sections'">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
-                    <span>Bloques de {{ activePageMeta().label }}</span>
+                    <span class="truncate">Bloques</span>
                 </button>
 
                 <button (click)="activePageTab.set('styles')"
-                    class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
+                    class="py-2 px-2 text-xs font-bold rounded-lg transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer min-w-0"
                     [class.bg-white]="activePageTab() === 'styles'"
                     [class.dark:bg-gray-900]="activePageTab() === 'styles'"
                     [class.text-slate-900]="activePageTab() === 'styles'"
                     [class.dark:text-white]="activePageTab() === 'styles'"
                     [class.shadow-xs]="activePageTab() === 'styles'"
                     [class.text-gray-500]="activePageTab() !== 'styles'">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 5 5 0 013-4.5V11a7 7 0 1114 0v1.5a5 5 0 013 4.5 4 4 0 01-4 4H7z" />
                     </svg>
-                    <span>Estilos de Página</span>
+                    <span class="truncate">Estilos</span>
                 </button>
             </div>
 
             <!-- TAB 1: SECTIONS LIST FOR ACTIVE PAGE -->
             @if (activePageTab() === 'sections') {
                 <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
-                    <div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 flex items-center justify-between gap-2">
-                        <div class="min-w-0">
-                            <span class="text-xs font-black uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5 truncate">
-                                <span class="text-indigo-600 dark:text-indigo-400" [innerHTML]="activePageMeta().icon"></span>
-                                <span>Estructura de {{ activePageMeta().label }}</span>
-                            </span>
-                            <p class="text-[11px] text-gray-400 truncate">Ruta: <code class="text-indigo-600 dark:text-indigo-400 font-mono">{{ activePageMeta().path }}</code></p>
+                    <div class="p-3.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 flex items-center justify-between gap-3 min-w-0">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <span class="text-indigo-600 dark:text-indigo-400 shrink-0" [innerHTML]="activePageMeta().icon"></span>
+                                <span class="text-xs font-black uppercase tracking-wider text-gray-800 dark:text-gray-200 truncate">
+                                    Estructura · {{ activePageMeta().label }}
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-gray-400 truncate mt-0.5">Ruta: <code class="text-indigo-600 dark:text-indigo-400 font-mono">{{ activePageMeta().path }}</code></p>
                         </div>
 
                         <button (click)="isAddModalOpen.set(true)"
-                            class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 shrink-0 whitespace-nowrap">
-                            + Agregar Bloque
+                            class="px-2.5 py-1 text-xs font-bold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg flex items-center gap-1 shrink-0 whitespace-nowrap transition-colors cursor-pointer">
+                            + Bloque
                         </button>
                     </div>
 

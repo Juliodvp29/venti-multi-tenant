@@ -52,6 +52,7 @@ export class SettingsStorefront {
 
     readonly layoutChange = output<StorefrontLayout>();
     readonly dirtyChange = output<boolean>();
+    readonly pageChange = output<StorePageId>();
 
     readonly layout = signal<StorefrontLayout>(this.tenantService.storefrontLayout());
     readonly savedLayout = signal<StorefrontLayout>(structuredClone(this.tenantService.storefrontLayout()));
@@ -133,6 +134,17 @@ export class SettingsStorefront {
     readonly activeSections = computed<StorefrontSection[]>(() =>
         this.activePageConfig()?.sections || []
     );
+
+    getPageSectionsCount(pageId: StorePageId): number {
+        if (pageId === 'home') {
+            return this.layout().sections?.length || 0;
+        }
+        const pages = this.layout().pages;
+        if (pages && pages[pageId]?.sections !== undefined) {
+            return pages[pageId]!.sections.length;
+        }
+        return getDefaultPageLayout(pageId, this.layout().sections)?.sections?.length || 0;
+    }
 
     readonly selectedSection = computed(() => {
         const id = this.selectedSectionId();
@@ -312,6 +324,7 @@ export class SettingsStorefront {
     switchPage(pageId: StorePageId) {
         this.activePageId.set(pageId);
         this.selectedSectionId.set(null);
+        this.pageChange.emit(pageId);
     }
 
     updatePageStyle<K extends keyof PageStylesConfig>(key: K, value: PageStylesConfig[K]) {

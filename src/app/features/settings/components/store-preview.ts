@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, ViewEncapsulation, Renderer2, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal, ViewEncapsulation, Renderer2, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StorefrontLayout, ThemeTokens, StorePageId, PageLayoutConfig, PageHeaderStyle, PageFooterStyle, StorefrontSection, getDefaultPageLayout } from '@core/models';
 import { themeTokensToCssVars, THEME_PRESETS, getContrastColor } from '@core/constants/theme-presets';
@@ -68,7 +68,7 @@ export class StorePreview {
     private readonly elementRef = inject(ElementRef);
     private styleElement: HTMLStyleElement | null = null;
 
-    readonly previewPage = signal<StorePageId>('home');
+    readonly previewPage = model<StorePageId>('home');
 
     readonly pageOptions: { id: StorePageId; label: string }[] = [
         { id: 'home', label: 'Inicio' },

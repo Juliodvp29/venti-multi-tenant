@@ -176,7 +176,7 @@
                 @case ('address') { <app-settings-address (dirtyChange)="onDirtyChange($event)" /> }
                 @case ('shipping-taxes') { <app-settings-shipping-taxes /> }
                 @case ('commissions') { <app-settings-commissions /> }
-                @case ('storefront') { <app-settings-storefront (layoutChange)="updateStorefrontPreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
+                @case ('storefront') { <app-settings-storefront (layoutChange)="updateStorefrontPreview($event)" (dirtyChange)="onDirtyChange($event)" (pageChange)="activePreviewPage.set($event)" /> }
                 }
 
                 <!-- Danger Zone -->
@@ -201,7 +201,7 @@
                         </button>
                     </div>
                     <div class="h-180 overflow-hidden rounded-2xl border border-gray-200 bg-slate-50 dark:border-gray-800">
-                        <app-store-preview [data]="fullPreviewData()" />
+                        <app-store-preview [data]="fullPreviewData()" [(previewPage)]="activePreviewPage" />
                     </div>
                 </section>
                 }
@@ -322,7 +322,7 @@
 
         <!-- Preview Area -->
         <div class="flex-1 min-h-0 overflow-hidden">
-            <app-store-preview [data]="fullPreviewData()" />
+            <app-store-preview [data]="fullPreviewData()" [(previewPage)]="activePreviewPage" />
         </div>
     </div>
     }

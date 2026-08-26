@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed, HostListener } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductsService } from '@core/services/products';
 import { CartService } from '@core/services/cart';
@@ -19,20 +19,20 @@ import { SeoService } from '@core/services/seo';
 @Component({
   selector: 'app-product-details',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterLink, ProductCard, FormsModule, CurrencyPipe],
+  imports: [CommonModule, RouterLink, ProductCard, FormsModule, CurrencyPipe, DecimalPipe],
   template: `
     @if (product()) {
-      <div class="space-y-24 animate-in fade-in duration-500">
+      <div class="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10 space-y-16 animate-in fade-in duration-500">
         <!-- Main Product Info -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           <!-- Image Gallery -->
-          <div class="space-y-4">
-            <div class="aspect-[4/5] bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden shadow-sm cursor-zoom-in relative group" (click)="isZoomed.set(true)">
+          <div class="space-y-3">
+            <div class="aspect-square md:aspect-[4/5] max-h-[520px] w-full bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm cursor-zoom-in relative group" (click)="isZoomed.set(true)">
               <img [src]="displayImage()" [alt]="$safeNavigationMigration(product()?.name)" loading="lazy" 
                    class="w-full h-full object-cover object-top transition-all duration-700 hover:scale-105">
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                 <div class="bg-white/80 backdrop-blur-md p-3 rounded-full shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
-                  <svg class="w-6 h-6 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                   </svg>
                 </div>
@@ -41,31 +41,33 @@ import { SeoService } from '@core/services/seo';
               <!-- Navigation Arrows -->
               @if ((product()?.images?.length || 0) > 1) {
                 <button (click)="prevImage($event)" 
-                        class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 text-slate-900 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 z-10 shadow-lg border border-white/30"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-slate-900 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 z-10 shadow-md border border-slate-200/60"
                         title="Previous image">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <button (click)="nextImage($event)" 
-                        class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 text-slate-900 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 z-10 shadow-lg border border-white/30"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-slate-900 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 z-10 shadow-md border border-slate-200/60"
                         title="Next image">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               }
             </div>
-            <div class="grid grid-cols-4 gap-4">
-              @for (img of product()?.images; track img.id) {
-                <div (click)="selectedImage.set(img.url)" 
-                     class="aspect-[4/5] bg-white rounded-xl border-2 overflow-hidden cursor-pointer hover:border-indigo-500 transition-all"
-                     [class.border-indigo-500]="displayImage() === img.url"
-                     [class.border-transparent]="displayImage() !== img.url">
-                  <img [src]="img.url" [alt]="$safeNavigationMigration(product()?.name) + ' view'" loading="lazy" class="w-full h-full object-cover object-top">
-                </div>
-              }
-            </div>
+            @if ((product()?.images?.length || 0) > 1) {
+              <div class="grid grid-cols-5 gap-2">
+                @for (img of product()?.images; track img.id) {
+                  <div (click)="selectedImage.set(img.url)" 
+                       class="aspect-square bg-white rounded-lg border-2 overflow-hidden cursor-pointer hover:border-indigo-500 transition-all"
+                       [class.border-indigo-500]="displayImage() === img.url"
+                       [class.border-slate-200]="displayImage() !== img.url">
+                    <img [src]="img.url" [alt]="$safeNavigationMigration(product()?.name) + ' view'" loading="lazy" class="w-full h-full object-cover object-top">
+                  </div>
+                }
+              </div>
+            }
           </div>
 
           <!-- Zoom Overlay -->
@@ -94,35 +96,39 @@ import { SeoService } from '@core/services/seo';
             </div>
           }
 
-          <!-- Info -->
-          <div class="flex flex-col">
-            <nav class="flex mb-4 text-sm text-slate-500">
-              <a routerLink="/store" queryParamsHandling="preserve" class="hover:text-slate-900">Tienda</a>
+          <!-- Info panel -->
+          <div class="flex flex-col md:sticky md:top-6 md:self-start">
+            <nav class="flex mb-3 text-sm text-slate-500">
+              <a routerLink="/store" queryParamsHandling="preserve" class="hover:text-slate-900 transition-colors">Tienda</a>
               <span class="mx-2">/</span>
-              <span class="text-slate-900 font-medium">{{ product()?.name }}</span>
+              <span class="text-slate-900 font-medium truncate max-w-[200px]">{{ product()?.name }}</span>
             </nav>
 
-            <h1 class="text-4xl font-bold text-slate-900 mb-2">{{ product()?.name }}</h1>
-            <div class="flex items-center gap-4 mb-6 text-slate-900">
-              <span class="text-3xl font-bold">{{ displayPrice() | currency:currency() }}</span>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2 leading-tight">{{ product()?.name }}</h1>
+
+            <div class="flex items-center flex-wrap gap-3 mb-4">
+              <span class="text-xl md:text-2xl font-bold text-slate-900">{{ displayPrice() | currency:currency() }}</span>
               @if (displayComparePrice()) {
-                <span class="text-xl text-slate-400 line-through">{{ displayComparePrice() | currency:currency() }}</span>
+                <span class="text-base text-slate-400 line-through">{{ displayComparePrice() | currency:currency() }}</span>
+                <span class="text-xs font-bold text-white bg-red-500 px-2 py-0.5 rounded-full">
+                  -{{ ((displayComparePrice()! - displayPrice()) / displayComparePrice()! * 100) | number:'1.0-0' }}%
+                </span>
               }
             </div>
 
-            <p class="text-slate-600 mb-8 leading-relaxed">{{ product()?.description }}</p>
+            <p class="text-slate-600 mb-5 leading-relaxed text-sm">{{ product()?.description }}</p>
 
             <!-- Variants Selection -->
             @if (product()?.variants?.length) {
-              <div class="space-y-6 mb-8">
+              <div class="space-y-4 mb-5">
                 @for (opt of product()?.options; track opt.name) {
-                  <div class="space-y-3">
-                    <p class="text-sm font-bold text-slate-900 uppercase tracking-wider">{{ opt.name }}</p>
+                  <div class="space-y-2">
+                    <p class="text-xs font-bold text-slate-900 uppercase tracking-wider">{{ opt.name }}</p>
                     <div class="flex flex-wrap gap-2">
                       @for (val of opt.values; track val) {
                         <button 
                           (click)="selectOption(opt.name, val)"
-                          class="px-4 py-2 rounded-xl border-2 text-sm font-semibold transition-all cursor-pointer"
+                          class="px-3 py-1.5 rounded-lg border-2 text-sm font-semibold transition-all cursor-pointer"
                           [class.border-indigo-600]="selectedOptions()[opt.name] === val"
                           [class.bg-indigo-50]="selectedOptions()[opt.name] === val"
                           [class.text-indigo-700]="selectedOptions()[opt.name] === val"
@@ -138,18 +144,18 @@ import { SeoService } from '@core/services/seo';
               </div>
             }
 
-            <div class="mt-auto space-y-4">
+            <div class="mt-auto space-y-3 pt-4 border-t border-slate-100">
               <div class="flex items-center gap-4">
                 <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                  <button (click)="qty.set(math.max(1, qty() - 1))" class="px-4 py-2 hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer border-r border-slate-100">-</button>
-                  <span class="px-4 py-2 font-bold min-w-[3rem] text-center text-slate-900">{{ qty() }}</span>
-                  <button (click)="qty.set(qty() + 1)" class="px-4 py-2 hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer border-l border-slate-100">+</button>
+                  <button (click)="qty.set(math.max(1, qty() - 1))" class="px-4 py-2.5 hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer border-r border-slate-100 text-slate-700 font-bold">−</button>
+                  <span class="px-4 py-2.5 font-bold min-w-[3rem] text-center text-slate-900">{{ qty() }}</span>
+                  <button (click)="qty.set(qty() + 1)" class="px-4 py-2.5 hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer border-l border-slate-100 text-slate-700 font-bold">+</button>
                 </div>
                 <p class="text-sm text-slate-500">
                   @if (selectedVariant()) {
                     {{ selectedVariant()?.stock_quantity }} disponibles
                   } @else {
-                    Solo {{ product()?.stock_quantity }} disponibles
+                    {{ product()?.stock_quantity }} disponibles
                   }
                 </p>
               </div>
@@ -157,12 +163,12 @@ import { SeoService } from '@core/services/seo';
               <button 
                 (click)="addToCart()" 
                 [disabled]="!isSelectionComplete()"
-                class="w-full py-4 rounded-2xl font-bold shadow-lg shadow-slate-200 transition-all duration-300 transform active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full py-3.5 rounded-xl font-bold shadow-lg shadow-slate-200 transition-all duration-300 transform active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-base"
                 [class]="added() ? 'bg-green-500 text-white shadow-green-100' : 'bg-slate-900 text-white hover:bg-slate-800'">
                 
                 @if (added()) {
                   <span class="flex items-center justify-center gap-2 animate-in zoom-in duration-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                     </svg>
                     ¡Añadido al Carrito!
