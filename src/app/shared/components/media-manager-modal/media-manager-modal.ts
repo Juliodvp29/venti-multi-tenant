@@ -2,10 +2,10 @@ import {
     ChangeDetectionStrategy,
     Component,
     EventEmitter,
-    Input,
     Output,
     computed,
     inject,
+    input,
     signal,
     effect
 } from '@angular/core';
@@ -33,9 +33,9 @@ export class MediaManagerModal {
     private readonly tenantService = inject(TenantService);
     private readonly toastService = inject(ToastService);
 
-    @Input() isOpen = false;
-    @Input() title = 'Administrador de Recursos de Marca';
-    @Input() allowedFilter: 'all' | 'image' | 'video' = 'all';
+    readonly isOpen = input(false);
+    readonly title = input('Administrador de Recursos de Marca');
+    readonly allowedFilter = input<'all' | 'image' | 'video'>('all');
 
     @Output() selectAsset = new EventEmitter<string>();
     @Output() closeModal = new EventEmitter<void>();
@@ -64,7 +64,7 @@ export class MediaManagerModal {
 
     constructor() {
         effect(() => {
-            if (this.isOpen) {
+            if (this.isOpen()) {
                 this.loadMedia();
             }
         });

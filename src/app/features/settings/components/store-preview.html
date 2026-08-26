@@ -196,14 +196,14 @@
                                     <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
                                         <source [src]="asAny(section.content).backgroundVideoUrl">
                                     </video>
-                                } @else if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                                } @else if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url) {
                                     <!-- Imagen de Fondo -->
-                                    <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl"
+                                    <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url"
                                         class="absolute inset-0 w-full h-full object-cover">
                                 }
 
                                 <!-- Overlay Configurable (Color y Opacidad) -->
-                                @if (asAny(section.content).backgroundVideoUrl || asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl) {
+                                @if (asAny(section.content).backgroundVideoUrl || asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url) {
                                     <div class="absolute inset-0"
                                         [style.backgroundColor]="asAny(section.content).overlayColor || '#000000'"
                                         [style.opacity]="(asAny(section.content).overlayOpacity ?? 40) / 100"></div>
@@ -327,7 +327,7 @@
 
                                                 <div [class.md:order-1]="asAny(section.content).splitImagePosition === 'left'"
                                                     class="relative h-64 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-white/20">
-                                                    <img [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'"
+                                                    <img [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || data().main_banner_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'"
                                                         class="w-full h-full object-cover">
                                                 </div>
                                             </div>
@@ -692,9 +692,9 @@
                                         <p class="text-xs text-gray-500 mb-4">{{ asAny(section.content).subtitle }}</p>
                                     }
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                        @for (item of (asAny(section.content).items || []); track item.id) {
+                                        @for (item of (asAny(section.content).items?.length ? asAny(section.content).items : (data().brand_gallery || [])); track item.id || item.url) {
                                             <div class="aspect-square rounded-xl overflow-hidden group relative shadow-sm">
-                                                <img [src]="item.imageUrl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                <img [src]="item.imageUrl || item.url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                                 @if (item.caption) {
                                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-center text-white text-xs font-bold">
                                                         {{ item.caption }}
