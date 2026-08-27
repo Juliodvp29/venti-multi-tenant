@@ -57,7 +57,7 @@ import { TenantService } from '@core/services/tenant';
               class="w-16 h-16 rounded-xl object-cover border border-white shadow-sm"
             />
             <div>
-              <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest"
+              <span class="text-[10px] font-black text-sky-600 uppercase tracking-widest"
                 >Producto</span
               >
               <h4 class="font-bold text-slate-900">{{ review().product?.name }}</h4>
@@ -78,7 +78,7 @@ import { TenantService } from '@core/services/tenant';
                   }}</span>
                   @if (review().is_verified_purchase) {
                     <span
-                      class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase rounded-full tracking-wider border border-emerald-100"
+                      class="px-2 py-0.5 bg-sky-50 text-sky-600 text-[10px] font-black uppercase rounded-full tracking-wider border border-sky-100"
                     >
                       Compra Verificada
                     </span>
@@ -137,7 +137,7 @@ import { TenantService } from '@core/services/tenant';
             </button>
             <button
               (click)="onAction('approved')"
-              class="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors text-sm shadow-lg shadow-emerald-200"
+              class="px-8 py-3 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 transition-colors text-sm shadow-lg shadow-sky-200"
             >
               Aprobar Reseña
             </button>

@@ -39,7 +39,7 @@ export class InventoryHistory implements OnInit {
                 const types: Record<string, { label: string, class: string }> = {
                     sale: { label: 'Venta', class: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
                     adjustment: { label: 'Ajuste', class: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
-                    manual: { label: 'Inicial', class: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' },
+                    manual: { label: 'Inicial', class: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400' },
                     return: { label: 'Devolución', class: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' }
                 };
                 const config = types[val] || { label: val, class: 'bg-gray-100 text-gray-700' };
@@ -51,7 +51,7 @@ export class InventoryHistory implements OnInit {
             label: 'Cantidad',
             formatter: (val) => {
                 if (val === 0) return '<span class="text-gray-400 dark:text-gray-500">N/D</span>';
-                const color = val > 0 ? 'text-emerald-600' : 'text-red-600';
+                const color = val > 0 ? 'text-sky-600' : 'text-red-600';
                 return `<span class="font-mono font-bold ${color}">${val > 0 ? '+' : ''}${val}</span>`;
             }
         },

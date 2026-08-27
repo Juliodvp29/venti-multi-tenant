@@ -31,7 +31,7 @@ import { TenantService } from '@core/services/tenant';
           class="flex bg-slate-100/80 dark:bg-slate-800/50 p-1 rounded-lg border border-slate-200/50 dark:border-slate-850/50"
         >
           <button
-            class="px-3 py-1 text-xs font-bold rounded-md bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all"
+            class="px-3 py-1 text-xs font-bold rounded-md bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all"
           >
             Ingresos
           </button>
@@ -102,7 +102,7 @@ export class SalesChart {
         fontFamily: 'inherit',
         foreColor: dark ? '#94a3b8' : '#64748b',
       },
-      colors: ['#5D5FEF'],
+      colors: ['#349EDB'],
       dataLabels: { enabled: false },
       stroke: {
         curve: 'smooth' as const,
@@ -140,7 +140,7 @@ export class SalesChart {
       },
       markers: {
         size: 0,
-        colors: ['#5D5FEF'],
+        colors: ['#349EDB'],
         strokeColors: dark ? '#1e293b' : '#fff',
         strokeWidth: 2,
         hover: { size: 6 },

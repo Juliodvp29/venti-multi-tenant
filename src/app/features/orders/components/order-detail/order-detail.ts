@@ -355,7 +355,7 @@ export class OrderDetail implements OnInit {
         const colors: Partial<Record<OrderStatus, string>> = {
             [OrderStatus.Delivered]: 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400',
             [OrderStatus.Shipped]: 'text-cyan-600 bg-cyan-100 dark:bg-cyan-900/30 dark:text-cyan-400',
-            [OrderStatus.Paid]: 'text-indigo-600 bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400',
+            [OrderStatus.Paid]: 'text-sky-600 bg-sky-100 dark:bg-sky-900/30 dark:text-sky-400',
             [OrderStatus.Processing]: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400',
             [OrderStatus.Pending]: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400',
             [OrderStatus.Cancelled]: 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400',

@@ -33,6 +33,8 @@ export class Subscription implements OnInit {
   async ngOnInit() {
     this.plans.set(this.subscriptionService.getPlans());
     await Promise.all([this.loadHistory(), this.loadUsage()]);
+
+    console.log('Plan actual:', this.activePlan());
   }
 
   async loadUsage() {

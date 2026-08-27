@@ -2,11 +2,11 @@
 
     <!-- Trigger button -->
     <button type="button" (click)="toggleOpen()"
-        class="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-2.5 px-4 text-sm transition-all focus:ring-2 focus:ring-indigo-500 whitespace-nowrap active:scale-[0.98] group text-gray-600 dark:text-gray-400"
-        [class.ring-2]="open()" [class.ring-indigo-500]="open()" [class.border-indigo-500]="open()">
+        class="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-2.5 px-4 text-sm transition-all focus:ring-2 focus:ring-sky-500 whitespace-nowrap active:scale-[0.98] group text-gray-600 dark:text-gray-400"
+        [class.ring-2]="open()" [class.ring-sky-500]="open()" [class.border-sky-500]="open()">
 
         <svg xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-400 group-hover:text-indigo-500 transition-colors" fill="none"
+            class="h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-400 group-hover:text-sky-500 transition-colors" fill="none"
             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"
                 d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
@@ -42,7 +42,7 @@
                 </svg>
             </button>
             <div class="flex flex-col items-center">
-                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">{{
+                <span class="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest">{{
                     viewYear() }}</span>
                 <span class="text-sm font-bold text-gray-900 dark:text-white">
                     {{ MONTHS[viewMonth()] }}
@@ -75,13 +75,13 @@
             <button type="button" (click)="selectDay(day)" (mouseenter)="hoverDay.set(day)"
                 (mouseleave)="hoverDay.set(null)"
                 class="relative h-8 w-full flex items-center justify-center text-sm transition-all duration-150 rounded-lg focus:outline-none"
-                [class.bg-indigo-600]="isStart(day) || isEnd(day)" [class.text-white]="isStart(day) || isEnd(day)"
+                [class.bg-sky-600]="isStart(day) || isEnd(day)" [class.text-white]="isStart(day) || isEnd(day)"
                 [class.font-bold]="isStart(day) || isEnd(day)" [class.shadow-lg]="isStart(day) || isEnd(day)"
-                [class.shadow-indigo-200]="isStart(day) || isEnd(day)"
-                [class.dark:shadow-none]="isStart(day) || isEnd(day)" [class.bg-indigo-50]="isInRange(day)"
-                [class.dark:bg-indigo-900\/30]="isInRange(day)"
-                [class.text-indigo-700]="isInRange(day) && !isStart(day) && !isEnd(day)"
-                [class.dark:text-indigo-300]="isInRange(day) && !isStart(day) && !isEnd(day)"
+                [class.shadow-sky-200]="isStart(day) || isEnd(day)"
+                [class.dark:shadow-none]="isStart(day) || isEnd(day)" [class.bg-sky-50]="isInRange(day)"
+                [class.dark:bg-sky-900\/30]="isInRange(day)"
+                [class.text-sky-700]="isInRange(day) && !isStart(day) && !isEnd(day)"
+                [class.dark:text-sky-300]="isInRange(day) && !isStart(day) && !isEnd(day)"
                 [class.hover:bg-gray-100]="!isStart(day) && !isEnd(day) && !isInRange(day)"
                 [class.dark:hover:bg-gray-800]="!isStart(day) && !isEnd(day) && !isInRange(day)"
                 [class.text-gray-700]="!isStart(day) && !isEnd(day)"

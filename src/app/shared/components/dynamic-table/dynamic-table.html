@@ -22,7 +22,7 @@
             <!-- Consolidated Export Dropdown -->
             <div class="relative">
                 <button type="button" (click)="toggleExportMenu($event)"
-                    class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-all">
+                    class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 transition-all">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -40,12 +40,12 @@
                     <div class="py-1">
                         <button type="button" (click)="exportToCsv(); closeMenu()"
                             class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                            <span class="text-indigo-500 font-bold text-[10px] w-5 text-center">CSV</span>
+                            <span class="text-sky-500 font-bold text-[10px] w-5 text-center">CSV</span>
                             CSV
                         </button>
                         <button type="button" (click)="exportToExcel(); closeMenu()"
                             class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                            <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V4.5m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125h-7.5c-.621 0-1.125.504-1.125 1.125m0-11.25V4.5m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m11.25-11.25V4.5m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125h-7.5c-.621 0-1.125.504-1.125 1.125m0-11.25V4.5" />
@@ -71,7 +71,7 @@
                 </svg>
             </div>
             <input type="text" [value]="searchQuery()" (input)="onSearch($event)"
-                class="block w-full rounded-xl border-0 bg-white py-2.5 pl-10 pr-10 text-gray-900 dark:text-white dark:bg-gray-800  ring-1 ring-inset ring-gray-200 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 text-sm transition-all"
+                class="block w-full rounded-xl border-0 bg-white py-2.5 pl-10 pr-10 text-gray-900 dark:text-white dark:bg-gray-800  ring-1 ring-inset ring-gray-200 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 text-sm transition-all"
                 [placeholder]="searchPlaceholder()">
 
             <!-- In-input quick clear for search specifically -->
@@ -114,11 +114,11 @@
                             @if (col.sortable) {
                             <div class="flex flex-col">
                                 @if (sortState()?.key === col.key && sortState()?.direction === 'asc') {
-                                <svg class="h-3 w-3 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 3l-7 7h14l-7-7z" />
                                 </svg>
                                 } @else if (sortState()?.key === col.key && sortState()?.direction === 'desc') {
-                                <svg class="h-3 w-3 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 17l7-7H3l7 7z" />
                                 </svg>
                                 } @else {
@@ -145,18 +145,18 @@
             <tbody class="divide-y divide-gray-50 dark:divide-gray-800/80 bg-white dark:bg-transparent">
                 @for (item of paginatedData(); track item['id']) {
                 <tr (click)="rowClick.emit(item)"
-                    class="hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition-colors duration-150 cursor-pointer group">
+                    class="hover:bg-sky-50/30 dark:hover:bg-sky-900/10 transition-colors duration-150 cursor-pointer group">
 
                     @for (col of columns(); track col.key) {
                     <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm">
 
                         @if (col.type === 'image') {
                         <div
-                            class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-gray-700 bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center">
+                            class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-gray-700 bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center">
                             @if (formatValue(col, item)) {
                             <img class="h-10 w-10 object-cover" [src]="formatValue(col, item)" alt="">
                             } @else {
-                            <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            <svg class="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -169,11 +169,11 @@
                         <div class="flex items-center gap-2.5">
                             @if (formatValue(col, item) === 'active') {
                             <!-- Toggle ON -->
-                            <div class="relative flex-shrink-0 w-9 h-5 bg-indigo-500 rounded-full transition-colors">
+                            <div class="relative flex-shrink-0 w-9 h-5 bg-sky-500 rounded-full transition-colors">
                                 <div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div>
                             </div>
                             <span
-                                class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">
                                 Activo
                             </span>
                             } @else {
@@ -245,7 +245,7 @@
             @for (action of actions(); track action['id']) {
             @if (!action.show || action.show(openMenuItem()!)) {
             <button type="button" (click)="action.callback(openMenuItem()!); closeMenu()"
-                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-left"
+                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-left"
                 [ngClass]="action.className || ''">
                 @if (action.icon) {
                 <span class="flex-shrink-0" [innerHTML]="action.icon"></span>

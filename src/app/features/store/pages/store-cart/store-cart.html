@@ -12,7 +12,7 @@
     @if (items().length === 0) {
         <!-- Empty State -->
         <div class="p-12 text-center bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xs max-w-md mx-auto space-y-4">
-            <div class="w-16 h-16 rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+            <div class="w-16 h-16 rounded-3xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 flex items-center justify-center mx-auto">
                 <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
@@ -20,7 +20,7 @@
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Tu carrito está vacío</h3>
             <p class="text-xs text-gray-500">Aún no has agregado ningún producto a tu pedido.</p>
             <a routerLink="/store/productos"
-                class="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                class="inline-block px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
                 Explorar Catálogo de Productos
             </a>
         </div>
@@ -43,7 +43,7 @@
                                     
                                     <div class="min-w-0 flex-1">
                                         <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ item.name }}</h4>
-                                        <p class="text-xs font-semibold text-indigo-600 mt-0.5">
+                                        <p class="text-xs font-semibold text-sky-600 mt-0.5">
                                             {{ item.price | currency: (currency() || 'USD') }}
                                         </p>
                                     </div>
@@ -94,15 +94,15 @@
                             <input type="text" [(ngModel)]="couponCode" placeholder="CUPÓN"
                                 class="flex-1 px-3 py-2 text-xs uppercase font-mono rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none">
                             <button (click)="applyCoupon()" [disabled]="isApplyingCoupon() || !couponCode()"
-                                class="px-4 py-2 bg-slate-900 dark:bg-indigo-600 text-white rounded-xl text-xs font-bold disabled:opacity-40 cursor-pointer">
+                                class="px-4 py-2 bg-slate-900 dark:bg-sky-600 text-white rounded-xl text-xs font-bold disabled:opacity-40 cursor-pointer">
                                 Aplicar
                             </button>
                         </div>
 
                         @if (coupon()) {
-                            <div class="flex items-center justify-between text-xs px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 rounded-xl border border-emerald-100 dark:border-emerald-800">
+                            <div class="flex items-center justify-between text-xs px-3 py-2 bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 rounded-xl border border-sky-100 dark:border-sky-800">
                                 <span class="flex items-center gap-1.5">
-                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-3.5 h-3.5 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                     </svg>
                                     <span>Cupón: <b>{{ coupon()?.code }}</b></span>
@@ -120,7 +120,7 @@
                         </div>
 
                         @if (discount() > 0) {
-                            <div class="flex justify-between text-emerald-600 font-bold">
+                            <div class="flex justify-between text-sky-600 font-bold">
                                 <span>Descuento</span>
                                 <span>-{{ discount() | currency: (currency() || 'USD') }}</span>
                             </div>
@@ -128,7 +128,7 @@
 
                         <div class="flex justify-between text-gray-500">
                             <span>Envío</span>
-                            <span class="text-emerald-600 font-bold">Calculado en checkout</span>
+                            <span class="text-sky-600 font-bold">Calculado en checkout</span>
                         </div>
 
                         <div class="flex justify-between text-base font-extrabold text-gray-900 dark:text-white pt-3 border-t border-gray-100 dark:border-gray-800">
@@ -139,7 +139,7 @@
 
                     <!-- Checkout CTA -->
                     <a routerLink="/store/checkout"
-                        class="w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold text-center flex items-center justify-center gap-2 transition-all shadow-md">
+                        class="w-full py-3.5 px-6 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-bold text-center flex items-center justify-center gap-2 transition-all shadow-md">
                         <span>Proceder al Checkout Seguro</span>
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -161,7 +161,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         @for (item of (asAny(section.content).items || []); track item.id) {
                             <div class="p-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center space-y-2">
-                                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+                                <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 flex items-center justify-center mx-auto">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                     </svg>

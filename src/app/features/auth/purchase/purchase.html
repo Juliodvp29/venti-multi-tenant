@@ -1,10 +1,10 @@
 <div
     class="min-h-screen bg-slate-50 dark:bg-gray-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-[250px] -left-[250px] w-[500px] h-[500px] rounded-full bg-indigo-500/10 blur-[80px]">
+        <div class="absolute -top-[250px] -left-[250px] w-[500px] h-[500px] rounded-full bg-sky-500/10 blur-[80px]">
         </div>
         <div
-            class="absolute -bottom-[200px] -right-[200px] w-[400px] h-[400px] rounded-full bg-violet-500/10 blur-[80px]">
+            class="absolute -bottom-[200px] -right-[200px] w-[400px] h-[400px] rounded-full bg-sky-500/10 blur-[80px]">
         </div>
     </div>
 
@@ -13,14 +13,14 @@
             <svg viewBox="0 0 500 150" class="h-16 max-w-full drop-shadow-md"
                 style="font-family: 'Outfit', sans-serif;">
                 <g transform="translate(10, 5)">
-                    <path d="M 35 45 L 65 92 L 95 45 L 145 45" class="stroke-indigo-600 dark:stroke-white"
+                    <path d="M 35 45 L 65 92 L 95 45 L 145 45" class="stroke-sky-600 dark:stroke-white"
                         stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                    <circle cx="50" cy="112" r="7.5" class="fill-indigo-600 dark:fill-white" />
-                    <circle cx="80" cy="112" r="7.5" class="fill-indigo-600 dark:fill-white" />
+                    <circle cx="50" cy="112" r="7.5" class="fill-sky-600 dark:fill-white" />
+                    <circle cx="80" cy="112" r="7.5" class="fill-sky-600 dark:fill-white" />
                 </g>
                 <text x="105" y="100">
                     <tspan class="fill-gray-900 dark:fill-white" font-weight="700" font-size="64px">enti </tspan>
-                    <tspan class="fill-indigo-600 dark:fill-indigo-400" opacity="0.9" font-weight="800"
+                    <tspan class="fill-sky-600 dark:fill-sky-400" opacity="0.9" font-weight="800"
                         font-size="64px">Shop</tspan>
                 </text>
             </svg>
@@ -37,7 +37,7 @@
             class="p-10 md:p-14 bg-gray-50/50 dark:bg-gray-800/30 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800">
             <div>
                 <div
-                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-10">
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 text-sky-600 dark:text-sky-400 text-[10px] font-bold uppercase tracking-widest mb-10">
                     Resumen del Pedido
                 </div>
 
@@ -49,8 +49,8 @@
                     @for (feature of plan()?.features; track feature) {
                     <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300 font-medium">
                         <div
-                            class="w-6 h-6 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
-                            <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            class="w-6 h-6 rounded-full bg-sky-50 dark:bg-sky-500/10 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                     d="M5 13l4 4L19 7" />
                             </svg>
@@ -104,7 +104,7 @@
             <div
                 class="absolute inset-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-fade-in">
                 <div
-                    class="w-24 h-24 bg-indigo-100 dark:bg-indigo-500/10 rounded-full flex items-center justify-center text-indigo-600 mb-8 scale-up">
+                    class="w-24 h-24 bg-sky-100 dark:bg-sky-500/10 rounded-full flex items-center justify-center text-sky-600 mb-8 scale-up">
                     @if (!isSuccess()) {
                     <svg class="w-12 h-12 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
@@ -114,7 +114,7 @@
                         </path>
                     </svg>
                     } @else {
-                    <svg class="w-12 h-12 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-12 h-12 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                     </svg>
                     }
@@ -134,7 +134,7 @@
                         class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Nombre
                         del Titular</label>
                     <input type="text" placeholder="John Doe"
-                        class="w-full bg-gray-50 dark:bg-gray-800 dark:[color-scheme:dark] border border-gray-100 dark:border-gray-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600">
+                        class="w-full bg-gray-50 dark:bg-gray-800 dark:[color-scheme:dark] border border-gray-100 dark:border-gray-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-sky-500 outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600">
                 </div>
 
                 <div class="space-y-2">
@@ -143,7 +143,7 @@
                         de Tarjeta</label>
                     <div class="relative">
                         <input type="text" placeholder="•••• •••• •••• ••••"
-                            class="w-full bg-gray-50 dark:bg-gray-800 dark:[color-scheme:dark] border border-gray-100 dark:border-gray-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
+                            class="w-full bg-gray-50 dark:bg-gray-800 dark:[color-scheme:dark] border border-gray-100 dark:border-gray-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-sky-500 outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
                         <div class="absolute right-5 top-1/2 -translate-y-1/2 flex gap-2">
                             <div class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
                                 <span class="text-[8px] font-black italic text-gray-500">VISA</span>
@@ -158,19 +158,19 @@
                             class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">Fecha
                             de Expiración</label>
                         <input type="text" placeholder="MM/YY" (input)="onExpiryInput($event)" maxlength="5"
-                            class="w-full bg-gray-50 dark:bg-gray-800 dark:[color-scheme:dark] border border-gray-100 dark:border-gray-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
+                            class="w-full bg-gray-50 dark:bg-gray-800 dark:[color-scheme:dark] border border-gray-100 dark:border-gray-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-sky-500 outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
                     </div>
                     <div class="space-y-2">
                         <label
                             class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">CVC</label>
                         <input type="text" placeholder="•••" maxlength="3" (input)="onCvcInput($event)"
-                            class="w-full bg-gray-50 dark:bg-gray-800 dark:[color-scheme:dark] border border-gray-100 dark:border-gray-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
+                            class="w-full bg-gray-50 dark:bg-gray-800 dark:[color-scheme:dark] border border-gray-100 dark:border-gray-700 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-sky-500 outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 tracking-widest font-mono">
                     </div>
                 </div>
 
                 <div class="pt-6">
                     <button type="submit"
-                        class="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-2xl shadow-indigo-500/30 transition-all hover:-translate-y-1 active:scale-[0.98] tracking-tight uppercase">
+                        class="w-full py-5 bg-sky-600 hover:bg-sky-700 text-white font-black rounded-2xl shadow-2xl shadow-sky-500/30 transition-all hover:-translate-y-1 active:scale-[0.98] tracking-tight uppercase">
                         Iniciar Suscripción
                     </button>
                     <div

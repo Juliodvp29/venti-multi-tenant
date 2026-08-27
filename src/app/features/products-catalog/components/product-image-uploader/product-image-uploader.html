@@ -2,15 +2,15 @@
 
     <!-- Dropzone -->
     <div class="relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed transition-all duration-150 cursor-pointer py-6 px-4 text-center"
-        [class.border-indigo-400]="isDragging()" [class.bg-indigo-50]="isDragging()"
-        [class.dark:bg-indigo-950]="isDragging()" [class.border-gray-300]="!isDragging()"
-        [class.dark:border-gray-600]="!isDragging()" [class.hover:border-indigo-400]="!isDragging()"
+        [class.border-sky-400]="isDragging()" [class.bg-sky-50]="isDragging()"
+        [class.dark:bg-sky-950]="isDragging()" [class.border-gray-300]="!isDragging()"
+        [class.dark:border-gray-600]="!isDragging()" [class.hover:border-sky-400]="!isDragging()"
         (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event)" (click)="openFilePicker()">
 
         <input #fileInput type="file" multiple accept="image/*" class="hidden" (change)="onFileSelected($event)" />
 
-        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/40">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24"
+        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-sky-50 dark:bg-sky-900/40">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-500" fill="none" viewBox="0 0 24 24"
                 stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -18,7 +18,7 @@
         </div>
         <div>
             <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                <span class="text-indigo-600 dark:text-indigo-400">Haz clic para subir</span> o arrastra imágenes aquí
+                <span class="text-sky-600 dark:text-sky-400">Haz clic para subir</span> o arrastra imágenes aquí
             </p>
             <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">PNG, JPG, WebP — máx. 5 MB por imagen</p>
         </div>
@@ -37,7 +37,7 @@
             <!-- Primary badge -->
             @if (img.is_primary) {
             <div
-                class="absolute top-1 left-1 bg-indigo-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                class="absolute top-1 left-1 bg-sky-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
                 Principal
             </div>
             }
@@ -70,14 +70,14 @@
         <!-- Pending images (not yet uploaded) -->
         @for (item of pendingImages(); track item.previewUrl) {
         <div
-            class="group relative rounded-lg overflow-hidden border border-dashed border-indigo-300 dark:border-indigo-700 aspect-square bg-indigo-50/50 dark:bg-indigo-950/30">
+            class="group relative rounded-lg overflow-hidden border border-dashed border-sky-300 dark:border-sky-700 aspect-square bg-sky-50/50 dark:bg-sky-950/30">
             <img [src]="item.previewUrl" alt="Preview" class="w-full h-full object-cover"
                 [class.opacity-50]="item.uploading" />
 
             <!-- Uploading spinner -->
             @if (item.uploading) {
             <div class="absolute inset-0 flex items-center justify-center">
-                <svg class="animate-spin h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin h-6 w-6 text-sky-500" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor"
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.823 3 7.938l3-2.647z">
@@ -114,7 +114,7 @@
     <p class="text-xs text-gray-400 dark:text-gray-400">
         {{ savedImages().length }} guardadas
         @if (pendingImages().length > 0) {
-        · <span class="text-indigo-500">{{ pendingImages().length }} pendientes (se subirán al guardar)</span>
+        · <span class="text-sky-500">{{ pendingImages().length }} pendientes (se subirán al guardar)</span>
         }
     </p>
     }

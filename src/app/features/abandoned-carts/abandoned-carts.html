@@ -24,17 +24,17 @@
             <p class="text-4xl font-black text-slate-900 dark:text-white">{{ carts().length }}</p>
         </div>
         <div
-            class="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-3xl border border-indigo-100 dark:border-indigo-900/20 shadow-sm">
-            <p class="text-xs font-black text-indigo-400 dark:text-indigo-500 uppercase tracking-widest mb-1">Potencial
+            class="bg-sky-50 dark:bg-sky-900/10 p-6 rounded-3xl border border-sky-100 dark:border-sky-900/20 shadow-sm">
+            <p class="text-xs font-black text-sky-400 dark:text-sky-500 uppercase tracking-widest mb-1">Potencial
                 de
                 Recuperación</p>
-            <p class="text-4xl font-black text-indigo-600 dark:text-indigo-400">{{ totalPotential() | currency:currency() }}</p>
+            <p class="text-4xl font-black text-sky-600 dark:text-sky-400">{{ totalPotential() | currency:currency() }}</p>
         </div>
         <div
-            class="bg-emerald-50 dark:bg-emerald-900/10 p-6 rounded-3xl border border-emerald-100 dark:border-emerald-900/20 shadow-sm">
-            <p class="text-xs font-black text-emerald-400 dark:text-emerald-500 uppercase tracking-widest mb-1">Tiempo
+            class="bg-sky-50 dark:bg-sky-900/10 p-6 rounded-3xl border border-sky-100 dark:border-sky-900/20 shadow-sm">
+            <p class="text-xs font-black text-sky-400 dark:text-sky-500 uppercase tracking-widest mb-1">Tiempo
                 Límite</p>
-            <p class="text-4xl font-black text-emerald-600 dark:text-emerald-400">2h+</p>
+            <p class="text-4xl font-black text-sky-600 dark:text-sky-400">2h+</p>
         </div>
     </div>
 
@@ -43,7 +43,7 @@
         class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl overflow-hidden">
         @if (isLoading()) {
         <div class="p-20 flex flex-col items-center justify-center text-slate-400">
-            <div class="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+            <div class="w-12 h-12 border-4 border-slate-200 border-t-sky-600 rounded-full animate-spin mb-4"></div>
             <p class="font-bold uppercase tracking-widest text-xs">Buscando carritos abandonados...</p>
         </div>
         } @else if (carts().length === 0) {
@@ -79,7 +79,7 @@
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-black">
+                                    class="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center text-sky-600 dark:text-sky-400 font-black">
                                     {{ cart.customer_name[0] }}
                                 </div>
                                 <div>
@@ -112,7 +112,7 @@
                         </td>
                         <td class="px-6 py-5 text-right">
                             <button (click)="sendRecovery(cart)"
-                                class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100 dark:shadow-none">
+                                class="px-4 py-2 bg-sky-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-sky-700 transition-all active:scale-95 shadow-lg shadow-sky-100 dark:shadow-none">
                                 Recuperar
                             </button>
                         </td>

@@ -4,134 +4,204 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angu
 import { TenantRole } from '@core/enums';
 
 @Component({
-    selector: 'app-invite-member-modal',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
-    template: `
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div class="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-gray-900 border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200">
+  selector: 'app-invite-member-modal',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  template: `
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-gray-900 border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in duration-200"
+      >
         <!-- Header -->
-        <div class="px-6 py-6 border-b border-gray-50 dark:border-gray-800 flex items-center justify-between">
-            <div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Invitar Nuevo Miembro</h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Añade a una persona a tu tienda Venti para ayudar a gestionar tu negocio.</p>
-            </div>
-            <button (click)="close.emit()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
+        <div
+          class="px-6 py-6 border-b border-gray-50 dark:border-gray-800 flex items-center justify-between"
+        >
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Invitar Nuevo Miembro</h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Añade a una persona a tu tienda Venti para ayudar a gestionar tu negocio.
+            </p>
+          </div>
+          <button
+            (click)="close.emit()"
+            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          >
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
 
         <!-- Body -->
         <form [formGroup]="inviteForm" (ngSubmit)="onSubmit()" class="px-6 py-6 space-y-6">
-            <!-- Email Address -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Correo Electrónico</label>
-                <input type="email" formControlName="email" 
-                       class="w-full px-4 py-3 bg-slate-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-medium text-slate-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-gray-500"
-                       placeholder="name@example.com">
+          <!-- Email Address -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+              >Correo Electrónico</label
+            >
+            <input
+              type="email"
+              formControlName="email"
+              class="w-full px-4 py-3 bg-slate-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-medium text-slate-700 dark:text-gray-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-gray-500"
+              placeholder="name@example.com"
+            />
+          </div>
+
+          <!-- Role Selection -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+              >Seleccionar Rol</label
+            >
+            <select
+              formControlName="role"
+              class="w-full px-4 py-3 bg-slate-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-slate-700 dark:text-gray-200 focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer appearance-none transition-all"
+            >
+              @for (role of roleOptions; track role.value) {
+                <option [value]="role.value">{{ role.label }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Permissions (Simulated as per design) -->
+          <div class="space-y-4 pt-2">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="p-1.5 bg-sky-50 dark:bg-sky-900/30 rounded-lg">
+                <svg
+                  class="h-4 w-4 text-sky-600 dark:text-sky-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  />
+                </svg>
+              </div>
+              <span class="text-sm font-bold text-gray-900 dark:text-white">Permisos</span>
             </div>
 
-            <!-- Role Selection -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Seleccionar Rol</label>
-                <select formControlName="role" 
-                        class="w-full px-4 py-3 bg-slate-50 dark:bg-gray-800 border-none rounded-2xl text-sm font-bold text-slate-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer appearance-none transition-all">
-                    @for (role of roleOptions; track role.value) {
-                        <option [value]="role.value">{{ role.label }}</option>
-                    }
-                </select>
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="text-sm font-semibold text-gray-900 dark:text-white">
+                  Gestionar Productos
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  Crear, editar y eliminar productos de la tienda
+                </p>
+              </div>
+              <label class="inline-flex relative items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" checked />
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"
+                ></div>
+              </label>
             </div>
 
-            <!-- Permissions (Simulated as per design) -->
-            <div class="space-y-4 pt-2">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="p-1.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
-                        <svg class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                    </div>
-                    <span class="text-sm font-bold text-gray-900 dark:text-white">Permisos</span>
-                </div>
-
-                <div class="flex items-start justify-between">
-                    <div>
-                        <div class="text-sm font-semibold text-gray-900 dark:text-white">Gestionar Productos</div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Crear, editar y eliminar productos de la tienda</p>
-                    </div>
-                    <label class="inline-flex relative items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer" checked>
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                    </label>
-                </div>
-
-                <div class="flex items-start justify-between">
-                    <div>
-                        <div class="text-sm font-semibold text-gray-900 dark:text-white">Ver Órdenes</div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Acceder al historial y detalles de las órdenes de clientes</p>
-                    </div>
-                    <label class="inline-flex relative items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer" checked>
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                    </label>
-                </div>
-
-                <div class="flex items-start justify-between">
-                    <div>
-                        <div class="text-sm font-semibold text-gray-900 dark:text-white">Editar Configuración de Tienda</div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Modificar métodos de pago e identidad visual</p>
-                    </div>
-                    <label class="inline-flex relative items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                    </label>
-                </div>
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="text-sm font-semibold text-gray-900 dark:text-white">Ver Órdenes</div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  Acceder al historial y detalles de las órdenes de clientes
+                </p>
+              </div>
+              <label class="inline-flex relative items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" checked />
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"
+                ></div>
+              </label>
             </div>
 
-            <!-- Actions -->
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-50 dark:border-gray-800">
-                <button type="button" (click)="close.emit()" 
-                        class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-all">
-                    Cancelar
-                </button>
-                <button type="submit" [disabled]="inviteForm.invalid || loading()"
-                        class="px-6 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all">
-                    {{ loading() ? 'Enviando...' : 'Enviar Invitación' }}
-                    @if (!loading()) {
-                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
-                    }
-                </button>
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="text-sm font-semibold text-gray-900 dark:text-white">
+                  Editar Configuración de Tienda
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  Modificar métodos de pago e identidad visual
+                </p>
+              </div>
+              <label class="inline-flex relative items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" />
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"
+                ></div>
+              </label>
             </div>
+          </div>
+
+          <!-- Actions -->
+          <div
+            class="flex items-center justify-end gap-3 pt-4 border-t border-gray-50 dark:border-gray-800"
+          >
+            <button
+              type="button"
+              (click)="close.emit()"
+              class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-all"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              [disabled]="inviteForm.invalid || loading()"
+              class="px-6 py-2.5 bg-sky-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-sky-200 dark:shadow-none hover:bg-sky-700 disabled:opacity-50 flex items-center gap-2 transition-all"
+            >
+              {{ loading() ? 'Enviando...' : 'Enviar Invitación' }}
+              @if (!loading()) {
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                  />
+                </svg>
+              }
+            </button>
+          </div>
         </form>
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InviteMemberModalComponent {
-    submit = output<void>();
-    memberInvite = output<{ email: string; role: TenantRole }>();
-    close = output<void>();
-    private readonly fb = inject(FormBuilder);
+  submit = output<void>();
+  memberInvite = output<{ email: string; role: TenantRole }>();
+  close = output<void>();
+  private readonly fb = inject(FormBuilder);
 
-    loading = signal(false);
+  loading = signal(false);
 
-    TenantRole = TenantRole;
-    inviteForm = this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        role: [TenantRole.Viewer, [Validators.required]],
-    });
+  TenantRole = TenantRole;
+  inviteForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    role: [TenantRole.Viewer, [Validators.required]],
+  });
 
-    roleOptions = [
-        { label: 'Espectador (Viewer)', value: TenantRole.Viewer },
-        { label: 'Editor', value: TenantRole.Editor },
-        { label: 'Administrador (Admin)', value: TenantRole.Admin },
-        { label: 'Repartidor (Delivery)', value: TenantRole.Delivery },
-    ];
+  roleOptions = [
+    { label: 'Espectador (Viewer)', value: TenantRole.Viewer },
+    { label: 'Editor', value: TenantRole.Editor },
+    { label: 'Administrador (Admin)', value: TenantRole.Admin },
+    { label: 'Repartidor (Delivery)', value: TenantRole.Delivery },
+  ];
 
-    constructor() { }
+  constructor() {}
 
-    onSubmit() {
-        if (this.inviteForm.valid && !this.loading()) {
-            this.loading.set(true);
-            const { email, role } = this.inviteForm.getRawValue();
-            this.memberInvite.emit({ email: email!, role: role! });
-        }
+  onSubmit() {
+    if (this.inviteForm.valid && !this.loading()) {
+      this.loading.set(true);
+      const { email, role } = this.inviteForm.getRawValue();
+      this.memberInvite.emit({ email: email!, role: role! });
     }
+  }
 }
