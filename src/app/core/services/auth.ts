@@ -39,6 +39,7 @@ export class AuthService {
 
   constructor() {
     this.initAuth();
+
   }
 
 
@@ -61,6 +62,7 @@ export class AuthService {
         loading: false,
       }));
     });
+
   }
 
 
@@ -173,4 +175,22 @@ export class AuthService {
     if (createError) throw createError;
     return created;
   }
+
+  /**
+ * A promise that resolves only when initAuth() has finished verifying the session.
+ */
+  async ensureInitialized(): Promise<void> {
+  if (this.isInitialized()) return;
+
+  return new Promise((resolve) => {
+    const checkState = () => {
+      if (this.isInitialized()) {
+        resolve();
+      } else {
+        setTimeout(checkState, 50);
+      }
+    };
+    checkState();
+  });
+}
 }
