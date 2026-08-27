@@ -4,87 +4,99 @@ import { TenantService } from './tenant';
 import { BILLING_PLANS, SubscriptionHistoryEntry, BillingPlan } from '@core/models/billing.model';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class SubscriptionService {
-    private readonly supabase = inject(Supabase);
-    private readonly tenantService = inject(TenantService);
+  private readonly supabase = inject(Supabase);
+  private readonly tenantService = inject(TenantService);
 
-    /**
-     * Get all available billing plans
-     */
-    getPlans(): BillingPlan[] {
-        return BILLING_PLANS;
+  /**
+   * Get all available billing plans
+   */
+  getPlans(): BillingPlan[] {
+    return BILLING_PLANS;
+  }
+
+  /**
+   * Get current subscription history for the current tenant
+   */
+  async getSubscriptionHistory(): Promise<SubscriptionHistoryEntry[]> {
+    const tenantId = this.tenantService.tenant()?.id;
+    if (!tenantId) return [];
+
+    const { data, error } = await this.supabase.client
+      .from('subscription_history')
+      .select('*')
+      .eq('tenant_id', tenantId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching subscription history:', error);
+      throw error;
     }
 
-    /**
-     * Get current subscription history for the current tenant
-     */
-    async getSubscriptionHistory(): Promise<SubscriptionHistoryEntry[]> {
-        const tenantId = this.tenantService.tenant()?.id;
-        if (!tenantId) return [];
+    return (data || []).map((entry) => ({
+      ...entry,
+      amount: entry.amount || 0,
+    })) as any;
+  }
 
-        const { data, error } = await this.supabase.client
-            .from('subscription_history')
-            .select('*')
-            .eq('tenant_id', tenantId)
-            .order('created_at', { ascending: false });
+  /**
+   * Get the current active plan details
+   */
+  getCurrentPlanDetails(): BillingPlan | undefined {
+    const planId = this.tenantService.tenant()?.plan;
+    return BILLING_PLANS.find((p) => p.id === planId);
+  }
 
-        if (error) {
-            console.error('Error fetching subscription history:', error);
-            throw error;
-        }
-
-        return (data || []).map(entry => ({
-            ...entry,
-            amount: entry.amount || 0
-        })) as any;
-    }
-
-    /**
-     * Get the current active plan details
-     */
-    getCurrentPlanDetails(): BillingPlan | undefined {
-        const planId = this.tenantService.tenant()?.plan;
-        return BILLING_PLANS.find(p => p.id === planId);
-    }
-
-    /**
+  /**
    * Get current resource usage for the tenant
    */
-    async getUsage(): Promise<{ products: number; members: number; categories: number }> {
-        const tenantId = this.tenantService.tenant()?.id;
-        if (!tenantId) return { products: 0, members: 0, categories: 0 };
+  async getUsage(): Promise<{ products: number; members: number; categories: number }> {
+    const tenantId = this.tenantService.tenant()?.id;
+    if (!tenantId) return { products: 0, members: 0, categories: 0 };
 
-        const [products, members, categories] = await Promise.all([
-            this.supabase.client.from('products').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId),
-            this.supabase.client.from('tenant_members').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId),
-            this.supabase.client.from('categories').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId),
-        ]);
+    const [products, members, categories] = await Promise.all([
+      this.supabase.client
+        .from('products')
+        .select('*', { count: 'exact', head: true })
+        .eq('tenant_id', tenantId),
+      this.supabase.client
+        .from('tenant_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('tenant_id', tenantId),
+      this.supabase.client
+        .from('categories')
+        .select('*', { count: 'exact', head: true })
+        .eq('tenant_id', tenantId),
+    ]);
 
-        return {
-            products: products.count || 0,
-            members: members.count || 0,
-            categories: categories.count || 0,
-        };
+    return {
+      products: products.count || 0,
+      members: members.count || 0,
+      categories: categories.count || 0,
+    };
+  }
+
+  /**
+   * Check if a resource can be added
+   */
+  async canAddResource(resourceType: 'products' | 'members' | 'categories'): Promise<boolean> {
+    const plan = this.getCurrentPlanDetails();
+    if (!plan) return false;
+
+    const usage = await this.getUsage();
+    const limit = plan.limitations[resourceType];
+
+    if (limit === null) {
+      return true; // No limit for this resource type
     }
 
-    /**
-     * Check if a resource can be added
-     */
-    async canAddResource(resourceType: 'products' | 'members' | 'categories'): Promise<boolean> {
-        const plan = this.getCurrentPlanDetails();
-        if (!plan) return false;
+    return usage[resourceType] < limit;
+  }
 
-        const usage = await this.getUsage();
-        const limit = plan.limitations[resourceType];
-
-        return usage[resourceType] < limit;
-    }
-
-  
-    async changePlan(planId: string) {
-        // Implementation for changing plan
-        return Promise.resolve({ success: true });
-    }
+  async changePlan(planId: string) {
+    // Implementation for changing plan
+    return Promise.resolve({ success: true });
+  }
 }

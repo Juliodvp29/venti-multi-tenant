@@ -27,11 +27,13 @@ import { BillingPlan } from '@core/models/billing.model';
         <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
           {{ plan.name }}
         </h3>
-        <div class="mt-4 flex items-baseline gap-1">
-          <span class="text-4xl font-extrabold text-gray-900 dark:text-white">{{
-            plan.price | currency: plan.currency : 'symbol' : '1.0-0'
-          }}</span>
-          <span class="text-gray-500 dark:text-gray-400">/mo</span>
+        <div class="mt-4 flex flex-wrap items-baseline gap-x-1 gap-y-0">
+          <span
+            class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white break-words"
+          >
+            {{ plan.price | currency: plan.currency : 'symbol' : '1.0-0' }}
+          </span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">/mo</span>
         </div>
         <p class="mt-4 text-sm text-gray-500 dark:text-gray-400 h-10 line-clamp-2">
           {{ plan.description }}
