@@ -11,14 +11,17 @@ import { CommonModule } from '@angular/common';
 export class UsageProgress {
   @Input({ required: true }) label!: string;
   @Input({ required: true }) used!: number;
-  @Input({ required: true }) limit!: number;
+  @Input({ required: true }) limit!: number | null;
 
   get isUnlimited(): boolean {
-    return this.limit === 9999 || this.limit >= 999999;
+    return this.limit === null;
   }
 
   get percentage(): number {
-    if (!this.limit || this.limit === 0 || this.isUnlimited) return 0;
-    return (this.used / this.limit) * 100;
+    if (this.isUnlimited || this.limit === 0) {
+      return 0;
+    }
+
+    return Math.min((this.used / this.limit!) * 100, 100);
   }
 }
