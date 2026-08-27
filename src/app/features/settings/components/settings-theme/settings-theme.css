@@ -126,3 +126,9 @@
     color: #38bdf8 !important;
     font-weight: 500 !important;
 }
+
+h2{
+    background-color: var(--color-slate-600);
+}
+
+

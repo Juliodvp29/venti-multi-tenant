@@ -317,7 +317,7 @@ export class StorePreview {
         this.styleElement = this.renderer.createElement('style');
         this.renderer.setProperty(this.styleElement, 'textContent', css);
         this.renderer.appendChild(root, this.styleElement);
-    }, { allowSignalWrites: true });
+    });
 
     primaryContrastColor(): string {
         return getContrastColor(this.data().primary_color || this.activeTokens.colors.primary);

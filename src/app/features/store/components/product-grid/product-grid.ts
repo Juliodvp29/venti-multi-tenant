@@ -211,7 +211,7 @@ export class ProductGrid {
             if (initialized && tenantId) {
                 this.loadCategories();
             }
-        }, { allowSignalWrites: true });
+        });
 
         // Re-load products whenever any dependency changes
         effect(() => {

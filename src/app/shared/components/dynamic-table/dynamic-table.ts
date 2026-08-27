@@ -301,7 +301,7 @@ export class DynamicTable<T extends Record<string, any>> {
 
     switch (col.type) {
       case 'currency':
-        return this.currencyPipe.transform(value, this.currencyCode, 'symbol', '1.2-2', 'es');
+        return this.currencyPipe.transform(value, this.currencyCode, 'symbol', '1.0-0', 'es');
       case 'date':
         return this.datePipe.transform(value, 'mediumDate', this.timezone, 'es');
       default:
