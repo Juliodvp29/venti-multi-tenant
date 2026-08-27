@@ -51,7 +51,7 @@ import { BillingPlan } from '@core/models/billing.model';
         [class.dark:bg-gray-800]="isCurrent"
         [class.text-gray-500]="isCurrent"
       >
-        {{ isCurrent ? 'Current Plan' : 'Switch to ' + plan.name }}
+        {{ isCurrent ? 'Plan actual' : 'Cambiar a ' + plan.name }}
       </button>
 
       <ul class="mt-8 space-y-4 flex-1">
