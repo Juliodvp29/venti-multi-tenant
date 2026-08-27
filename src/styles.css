@@ -283,7 +283,6 @@ input[type='url'],
 input[type='date'],
 textarea,
 select {
-  color: var(--input-text);
   border: 1px solid var(--input-border);
   box-shadow: var(--input-shadow);
   transition: all var(--transition-base);
