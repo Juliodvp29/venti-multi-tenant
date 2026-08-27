@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { Routes } from '@angular/router';
+import { Routes, Router } from '@angular/router';
 import { guestGuard } from '@core/guards/guest.guard';
 import { authGuard } from '@core/guards/auth.guard';
 import { AuthService } from '@core/services/auth';
@@ -13,13 +13,22 @@ export const routes: Routes = [
     path: 'home',
     loadComponent: () => import('@features/landing/landing').then((m) => m.Landing),
   },
-  {
+ {
     path: '',
     pathMatch: 'full',
-    redirectTo: () => {
-      const auth = inject(AuthService);
-      return auth.isAuthenticated() ? 'dashboard' : 'home';
-    },
+    canActivate: [
+      async () => {
+        const auth = inject(AuthService);
+        const router = inject(Router);
+
+        await auth.ensureInitialized();
+
+        return auth.isAuthenticated()
+          ? router.createUrlTree(['/dashboard'])
+          : router.createUrlTree(['/home']);
+      },
+    ],
+    children: [],
   },
   {
     path: 'auth',
