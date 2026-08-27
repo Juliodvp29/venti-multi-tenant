@@ -3,7 +3,7 @@
     <!-- SECCIÓN 1: LOGOTIPOS E IDENTIDAD VISUAL -->
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
         <div class="flex items-center gap-3 border-b border-slate-100 dark:border-gray-800 pb-4">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -42,7 +42,7 @@
                 <!-- Action Buttons -->
                 <div class="grid grid-cols-2 gap-2">
                     <button type="button" (click)="openMediaManager('logo_url', 'image')"
-                        class="px-2 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
+                        class="px-2 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 hover:bg-sky-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
                         <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
@@ -84,7 +84,7 @@
                 <!-- Action Buttons -->
                 <div class="grid grid-cols-2 gap-2">
                     <button type="button" (click)="openMediaManager('logo_dark_url', 'image')"
-                        class="px-2 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
+                        class="px-2 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 hover:bg-sky-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
                         <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
@@ -113,7 +113,7 @@
                             @if (form.controls.favicon_url.value) {
                                 <img [src]="form.controls.favicon_url.value" alt="Favicon" class="w-full h-full object-contain">
                             } @else {
-                                <div class="w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-sky-500"></div>
                             }
                         </div>
                         <span class="text-[11px] font-medium text-slate-700 dark:text-gray-300 truncate">Pestaña Tienda</span>
@@ -123,7 +123,7 @@
                 <!-- Action Buttons -->
                 <div class="grid grid-cols-2 gap-2">
                     <button type="button" (click)="openMediaManager('favicon_url', 'image')"
-                        class="px-2 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
+                        class="px-2 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 hover:bg-sky-100 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 min-w-0">
                         <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
@@ -143,7 +143,7 @@
     <!-- SECCIÓN 2: IMAGEN SOCIAL Y REDES SOCIALES -->
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
         <div class="flex items-center gap-3 border-b border-slate-100 dark:border-gray-800 pb-4">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
@@ -185,7 +185,7 @@
                     <div class="p-3 bg-white dark:bg-gray-800 border-t border-slate-200 dark:border-gray-700">
                         <p class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ tenant()?.business_name || 'Venti Store' }}</p>
                         <p class="text-[11px] text-slate-500 dark:text-gray-400 line-clamp-1 mt-0.5">{{ tenant()?.description || 'Descubre nuestras últimas novedades y productos exclusivos.' }}</p>
-                        <p class="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 mt-1">ventishop.app/store</p>
+                        <p class="text-[10px] font-mono text-sky-600 dark:text-sky-400 mt-1">ventishop.app/store</p>
                     </div>
                 </div>
 
@@ -193,9 +193,9 @@
                 <div class="flex gap-2">
                     <input type="url" [formControl]="form.controls.social_share_image_url"
                         placeholder="https://ejemplo.com/imagen-social.jpg"
-                        class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     <button type="button" (click)="openMediaManager('social_share_image_url', 'image')"
-                        class="px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shrink-0">
+                        class="px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 hover:bg-sky-100 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shrink-0">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
@@ -213,42 +213,42 @@
                     <div>
                         <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">WhatsApp</label>
                         <input type="text" formControlName="whatsapp" placeholder="+57 300 000 0000"
-                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     <!-- Instagram -->
                     <div>
                         <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">Instagram</label>
                         <input type="text" formControlName="instagram" placeholder="https://instagram.com/mitienda"
-                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     <!-- Facebook -->
                     <div>
                         <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">Facebook</label>
                         <input type="text" formControlName="facebook" placeholder="https://facebook.com/mitienda"
-                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     <!-- TikTok -->
                     <div>
                         <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">TikTok</label>
                         <input type="text" formControlName="tiktok" placeholder="https://tiktok.com/@mitienda"
-                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     <!-- YouTube -->
                     <div>
                         <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">YouTube</label>
                         <input type="text" formControlName="youtube" placeholder="https://youtube.com/@mitienda"
-                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     <!-- Twitter / X -->
                     <div>
                         <label class="text-[11px] font-semibold text-slate-600 dark:text-gray-400 block mb-1">X / Twitter</label>
                         <input type="text" formControlName="twitter" placeholder="https://x.com/mitienda"
-                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
                 </div>
             </div>
@@ -260,7 +260,7 @@
     <!-- SECCIÓN 3: BANNERS Y VIDEO PROMOCIONAL -->
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
         <div class="flex items-center gap-3 border-b border-slate-100 dark:border-gray-800 pb-4">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
@@ -294,7 +294,7 @@
                     <input type="url" [formControl]="form.controls.main_banner_url" placeholder="URL del banner..."
                         class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white">
                     <button type="button" (click)="openMediaManager('main_banner_url', 'image')"
-                        class="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 transition-colors cursor-pointer">
+                        class="px-3 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 text-xs font-bold hover:bg-sky-100 transition-colors cursor-pointer">
                         Biblioteca
                     </button>
                 </div>
@@ -322,7 +322,7 @@
                     <input type="url" [formControl]="form.controls.promo_video_url" placeholder="https://ejemplo.com/video.mp4"
                         class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white">
                     <button type="button" (click)="openMediaManager('promo_video_url', 'video')"
-                        class="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 transition-colors cursor-pointer">
+                        class="px-3 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 text-xs font-bold hover:bg-sky-100 transition-colors cursor-pointer">
                         Biblioteca
                     </button>
                 </div>
@@ -336,7 +336,7 @@
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-gray-800 pb-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
@@ -347,7 +347,7 @@
                 </div>
             </div>
             <button type="button" (click)="openMediaManager('brand_gallery', 'image')"
-                class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
+                class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -359,7 +359,7 @@
             <div class="text-center py-8 px-4 border-2 border-dashed border-slate-200 dark:border-gray-800 rounded-2xl">
                 <p class="text-xs text-slate-500 mb-3">Aún no has agregado fotos a la galería de marca.</p>
                 <button type="button" (click)="openMediaManager('brand_gallery', 'image')"
-                    class="px-3.5 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 transition-colors cursor-pointer">
+                    class="px-3.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 text-xs font-bold hover:bg-sky-100 transition-colors cursor-pointer">
                     Seleccionar desde Biblioteca
                 </button>
             </div>
@@ -392,7 +392,7 @@
     <!-- SECCIÓN 5: FONDO PERSONALIZADO DE LA TIENDA -->
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-xs space-y-6">
         <div class="flex items-center gap-3 border-b border-slate-100 dark:border-gray-800 pb-4">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                 </svg>
@@ -412,9 +412,9 @@
                     @for (p of patterns; track p.value) {
                         <button type="button" (click)="form.controls.background_pattern.setValue(p.value)"
                             class="px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer text-left"
-                            [class.border-indigo-600]="form.controls.background_pattern.value === p.value"
-                            [class.bg-indigo-50]="form.controls.background_pattern.value === p.value"
-                            [class.text-indigo-600]="form.controls.background_pattern.value === p.value"
+                            [class.border-sky-600]="form.controls.background_pattern.value === p.value"
+                            [class.bg-sky-50]="form.controls.background_pattern.value === p.value"
+                            [class.text-sky-600]="form.controls.background_pattern.value === p.value"
                             [class.border-slate-200]="form.controls.background_pattern.value !== p.value"
                             [class.text-slate-600]="form.controls.background_pattern.value !== p.value">
                             {{ p.label }}
@@ -430,7 +430,7 @@
                     <input type="url" [formControl]="form.controls.background_image_url" placeholder="https://ejemplo.com/fondo.jpg"
                         class="flex-1 text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white">
                     <button type="button" (click)="openMediaManager('background_image_url', 'image')"
-                        class="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-100 transition-colors cursor-pointer">
+                        class="px-3 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 text-xs font-bold hover:bg-sky-100 transition-colors cursor-pointer">
                         Biblioteca
                     </button>
                 </div>

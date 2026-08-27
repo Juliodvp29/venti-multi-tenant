@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div
-      class="bg-white/85 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md p-6 rounded-2xl shadow-xs hover:shadow-md dark:hover:shadow-none hover:-translate-y-1 hover:border-indigo-500/30 dark:hover:border-indigo-500/30 transition-all duration-300 group cursor-default"
+      class="bg-white/85 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md p-6 rounded-2xl shadow-xs hover:shadow-md dark:hover:shadow-none hover:-translate-y-1 hover:border-sky-500/30 dark:hover:border-sky-500/30 transition-all duration-300 group cursor-default"
     >
       <div class="flex items-center justify-between mb-4">
         <div
@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
             class="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold font-mono border"
             [ngClass]="
               t.value >= 0
-                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 dark:border-emerald-500/10'
+                ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20 dark:border-sky-500/10'
                 : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 dark:border-rose-500/10'
             "
           >
@@ -70,5 +70,5 @@ export class StatCard {
   label = input.required<string>();
   value = input.required<string | number | null>();
   trend = input<{ value: number } | null>(null);
-  iconBgClass = input<string>('bg-indigo-50 text-indigo-600 dark:bg-gray-800 dark:text-indigo-400');
+  iconBgClass = input<string>('bg-sky-50 text-sky-600 dark:bg-gray-800 dark:text-sky-400');
 }

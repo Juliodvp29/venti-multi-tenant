@@ -77,7 +77,7 @@ import { TenantService } from '@core/services/tenant';
 
                 <!-- New Badge -->
                 @if (showNewBadge() && isNew()) {
-                    <span class="text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-wider shadow-sm bg-indigo-600"
+                    <span class="text-white text-[9px] font-black px-2 py-0.5 uppercase tracking-wider shadow-sm bg-sky-600"
                           [style.border-radius]="'var(--store-radius-badge, 9999px)'">
                         Nuevo
                     </span>
@@ -168,15 +168,15 @@ import { TenantService } from '@core/services/tenant';
                     <div class="mt-1.5 flex items-center gap-1.5 text-xs font-semibold">
                         @if (product.track_inventory) {
                             @if (product.stock_quantity > 0) {
-                                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
-                                <span class="text-emerald-600 dark:text-emerald-400">{{ product.stock_quantity }} en stock</span>
+                                <span class="inline-block w-2 h-2 rounded-full bg-sky-500"></span>
+                                <span class="text-sky-600 dark:text-sky-400">{{ product.stock_quantity }} en stock</span>
                             } @else {
                                 <span class="inline-block w-2 h-2 rounded-full bg-rose-500"></span>
                                 <span class="text-rose-600 dark:text-rose-400">Agotado</span>
                             }
                         } @else {
-                            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
-                            <span class="text-emerald-600 dark:text-emerald-400">Disponible</span>
+                            <span class="inline-block w-2 h-2 rounded-full bg-sky-500"></span>
+                            <span class="text-sky-600 dark:text-sky-400">Disponible</span>
                         }
                     </div>
                 }

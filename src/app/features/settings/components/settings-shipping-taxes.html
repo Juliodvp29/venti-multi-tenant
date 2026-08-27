@@ -10,7 +10,7 @@
 
     @if (isLoading()) {
     <div class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
     </div>
     } @else {
     @if (loadError(); as errorMessage) {
@@ -30,7 +30,7 @@
         <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Zonas de Envío</h3>
             <button (click)="openZoneModal()"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm">
                 Agregar Zona de Envío
             </button>
         </div>
@@ -54,7 +54,7 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <button (click)="openZoneModal(zone)"
-                            class="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+                            class="p-2 text-gray-400 hover:text-sky-600 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -93,7 +93,7 @@
                                     <div
                                         class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button (click)="openRateModal(zone.id, rate)"
-                                            class="p-1 px-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded">Editar</button>
+                                            class="p-1 px-2 text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/20 rounded">Editar</button>
                                         <button (click)="deleteRate(rate.id)"
                                             class="p-1 px-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">Eliminar</button>
                                     </div>
@@ -103,7 +103,7 @@
                         </tbody>
                     </table>
                     <button (click)="openRateModal(zone.id)"
-                        class="w-full py-3 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors uppercase tracking-widest border-t border-gray-100 dark:border-gray-800">
+                        class="w-full py-3 text-xs font-bold text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/20 transition-colors uppercase tracking-widest border-t border-gray-100 dark:border-gray-800">
                         + Agregar Tarifa de Envío
                     </button>
                 </div>
@@ -119,7 +119,7 @@
         <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Reglas de Impuestos (IVA/VAT)</h3>
             <button (click)="openTaxModal()"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm">
                 Agregar Tasa de Impuesto
             </button>
         </div>
@@ -144,14 +144,14 @@
                         </td>
                         <td class="px-6 py-4 text-center">
                             <span
-                                class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-bold px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-800">
+                                class="bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 font-bold px-3 py-1 rounded-full border border-sky-100 dark:border-sky-800">
                                 {{ tax.rate | percent:'1.0-2' }}
                             </span>
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <button (click)="openTaxModal(tax)"
-                                    class="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+                                    class="p-2 text-gray-400 hover:text-sky-600 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -201,12 +201,12 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nombre de la Zona</label>
                 <input formControlName="name" type="text" placeholder="p. ej. Nacional, Internacional"
-                    class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all">
+                    class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all">
             </div>
 
             <div class="flex items-center gap-2 pt-2">
                 <input formControlName="is_active" type="checkbox" id="zone-active"
-                    class="w-4 h-4 text-indigo-600 rounded">
+                    class="w-4 h-4 text-sky-600 rounded">
                 <label for="zone-active" class="text-sm text-gray-700 dark:text-gray-300">Zona Activa</label>
             </div>
 
@@ -216,7 +216,7 @@
                     Cancelar
                 </button>
                 <button type="submit" [disabled]="isSaving()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
+                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
                     {{ isSaving() ? 'Guardando...' : 'Guardar Zona' }}
                 </button>
             </div>
@@ -248,19 +248,19 @@
             <div>
                 <label for="rate-name" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nombre de la tarifa</label>
                 <input id="rate-name" formControlName="name" type="text" placeholder="p. ej. Envío Estándar"
-                    class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label for="rate-amount" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Precio</label>
                     <input id="rate-amount" formControlName="rate_amount" type="number" min="0" step="0.01"
-                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
                 <div>
                     <label for="rate-type" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Calculada por</label>
                     <select id="rate-type" formControlName="rate_type"
-                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                         @for (type of shippingRateTypes; track type.value) {
                         <option [value]="type.value">{{ type.label }}</option>
                         }
@@ -272,17 +272,17 @@
                 <div>
                     <label for="rate-days-min" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Entrega desde (días)</label>
                     <input id="rate-days-min" formControlName="estimated_days_min" type="number" min="1"
-                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
                 <div>
                     <label for="rate-days-max" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Entrega hasta (días)</label>
                     <input id="rate-days-max" formControlName="estimated_days_max" type="number" min="1"
-                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
             </div>
 
             <div class="flex items-center gap-2 pt-2">
-                <input formControlName="is_active" type="checkbox" id="rate-active" class="w-4 h-4 text-indigo-600 rounded">
+                <input formControlName="is_active" type="checkbox" id="rate-active" class="w-4 h-4 text-sky-600 rounded">
                 <label for="rate-active" class="text-sm text-gray-700 dark:text-gray-300">Tarifa activa</label>
             </div>
 
@@ -292,7 +292,7 @@
                     Cancelar
                 </button>
                 <button type="submit" [disabled]="rateForm.invalid || isSaving()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
+                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
                     {{ isSaving() ? 'Guardando...' : 'Guardar Tarifa' }}
                 </button>
             </div>
@@ -321,25 +321,25 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nombre del Impuesto</label>
                 <input formControlName="name" type="text" placeholder="p. ej. IVA, Impuesto a las Ventas"
-                    class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Porcentaje (%)</label>
                     <input formControlName="rate" type="number" step="0.01" placeholder="e.g. 15"
-                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">País (ISO)</label>
                     <input formControlName="country" type="text" placeholder="p. ej. MX, US"
-                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
             </div>
 
             <div class="flex items-center gap-2 pt-2">
                 <input formControlName="is_active" type="checkbox" id="tax-active"
-                    class="w-4 h-4 text-indigo-600 rounded">
+                    class="w-4 h-4 text-sky-600 rounded">
                 <label for="tax-active" class="text-sm text-gray-700 dark:text-gray-300">Regla Activa</label>
             </div>
 
@@ -349,7 +349,7 @@
                     Cancelar
                 </button>
                 <button type="submit" [disabled]="isSaving()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
+                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
                     {{ isSaving() ? 'Guardando...' : 'Guardar Regla de Impuesto' }}
                 </button>
             </div>

@@ -11,7 +11,7 @@ interface BadgeConfig {
 const ORDER_STATUS_MAP: Record<OrderStatus, BadgeConfig> = {
     [OrderStatus.Pending]: { label: 'Pending', classes: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 ring-yellow-200 dark:ring-yellow-800' },
     [OrderStatus.Processing]: { label: 'Processing', classes: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 ring-blue-200 dark:ring-blue-800' },
-    [OrderStatus.Paid]: { label: 'Paid', classes: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 ring-indigo-200 dark:ring-indigo-800' },
+    [OrderStatus.Paid]: { label: 'Paid', classes: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400 ring-sky-200 dark:ring-sky-800' },
     [OrderStatus.Shipped]: { label: 'Shipped', classes: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400 ring-cyan-200 dark:ring-cyan-800' },
     [OrderStatus.Delivered]: { label: 'Delivered', classes: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 ring-green-200 dark:ring-green-800' },
     [OrderStatus.Cancelled]: { label: 'Cancelled', classes: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 ring-red-200 dark:ring-red-800' },

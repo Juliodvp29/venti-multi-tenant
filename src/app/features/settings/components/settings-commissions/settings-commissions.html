@@ -7,11 +7,11 @@
   </div>
 
   <!-- Current Plan Commission Card -->
-  <div class="card p-6 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border-indigo-200 dark:border-indigo-800">
+  <div class="card p-6 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 border-sky-200 dark:border-sky-800">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div class="flex items-center gap-4">
-        <div class="w-16 h-16 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <div class="w-16 h-16 rounded-2xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182C9.464 5.781 10.232 6 11 6c.776 0 1.579-.22 2.243-.659.855-.558 1.873-.659 2.756-.275a48.215 48.215 0 015.111 5.5" />
           </svg>
         </div>
@@ -22,7 +22,7 @@
       </div>
       <div class="text-center md:text-right">
         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Comisión por venta</p>
-        <p class="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">{{ currentPlanCommission() }}%</p>
+        <p class="text-4xl font-extrabold text-sky-600 dark:text-sky-400">{{ currentPlanCommission() }}%</p>
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Se descuenta automáticamente de cada transacción</p>
       </div>
     </div>
@@ -46,7 +46,7 @@
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
           @for (p of plansInfo; track p.plan) {
-            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50" [class.bg-indigo-50]="p.plan === currentPlan()?.plan" [class.dark:bg-indigo-900/10]="p.plan === currentPlan()?.plan">
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50" [class.bg-sky-50]="p.plan === currentPlan()?.plan" [class.dark:bg-sky-900/10]="p.plan === currentPlan()?.plan">
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="px-3 py-1 text-xs font-medium rounded-full"
                       [class.bg-blue-100]="p.plan === 'free'"
@@ -66,7 +66,7 @@
               <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ p.description }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-center">
                 @if (p.plan === currentPlan()?.plan) {
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400">
                     ✓ Actual
                   </span>
                 }

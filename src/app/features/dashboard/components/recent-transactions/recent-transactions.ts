@@ -29,7 +29,7 @@ export interface DashboardTransaction {
         </h3>
         <a
           [routerLink]="['/orders']"
-          class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors cursor-pointer"
+          class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors cursor-pointer"
           >Ver todo</a
         >
       </div>
@@ -53,7 +53,7 @@ export interface DashboardTransaction {
                 <td class="px-6 py-3.5">
                   <div class="flex items-center gap-3">
                     <div
-                      class="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold border border-indigo-500/20 dark:border-indigo-500/10"
+                      class="w-8 h-8 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xs font-bold border border-sky-500/20 dark:border-sky-500/10"
                     >
                       {{ tx.customerInitial }}
                     </div>
@@ -76,7 +76,7 @@ export interface DashboardTransaction {
                     <span
                       class="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono border"
                       [ngClass]="{
-                        'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 dark:border-emerald-500/10':
+                        'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20 dark:border-sky-500/10':
                           tx.status === 'Completada',
                         'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 dark:border-amber-500/10':
                           tx.status === 'Pendiente',

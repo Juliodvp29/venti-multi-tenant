@@ -37,7 +37,7 @@ export interface DashboardProduct {
                 class="relative flex-shrink-0 w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200/50 dark:border-slate-800/50 shadow-inner"
               >
                 <span
-                  class="absolute -top-1.5 -left-1.5 w-5 h-5 bg-indigo-600 text-white text-[9px] font-extrabold flex items-center justify-center rounded-full border border-white dark:border-slate-900 z-10 shadow-xs font-mono"
+                  class="absolute -top-1.5 -left-1.5 w-5 h-5 bg-sky-600 text-white text-[9px] font-extrabold flex items-center justify-center rounded-full border border-white dark:border-slate-900 z-10 shadow-xs font-mono"
                   >{{ $index + 1 }}</span
                 >
                 @if (product.image) {
@@ -66,7 +66,7 @@ export interface DashboardProduct {
 
               <div class="flex-1 min-w-0">
                 <h4
-                  class="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
+                  class="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors"
                 >
                   {{ product.name }}
                 </h4>
@@ -81,9 +81,7 @@ export interface DashboardProduct {
                 <p class="text-xs font-bold text-slate-900 dark:text-white font-mono">
                   {{ product.sales }} ventas
                 </p>
-                <p
-                  class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-0.5"
-                >
+                <p class="text-[10px] font-bold text-sky-600 dark:text-sky-400 font-mono mt-0.5">
                   {{ product.revenue }}
                 </p>
               </div>

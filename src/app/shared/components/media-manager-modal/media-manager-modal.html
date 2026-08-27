@@ -5,7 +5,7 @@
         <!-- Header -->
         <div class="px-6 py-4 border-b border-slate-200 dark:border-gray-800 flex items-center justify-between bg-slate-50/50 dark:bg-gray-800/50">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <div class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -26,10 +26,10 @@
         <div class="px-6 border-b border-slate-200 dark:border-gray-800 flex items-center justify-between gap-4 bg-white dark:bg-gray-900">
             <div class="flex gap-2 py-2">
                 <button (click)="activeTab.set('library')"
-                    [class.bg-indigo-50]="activeTab() === 'library'"
-                    [class.text-indigo-600]="activeTab() === 'library'"
-                    [class.dark:bg-indigo-950\/50]="activeTab() === 'library'"
-                    [class.dark:text-indigo-400]="activeTab() === 'library'"
+                    [class.bg-sky-50]="activeTab() === 'library'"
+                    [class.text-sky-600]="activeTab() === 'library'"
+                    [class.dark:bg-sky-950\/50]="activeTab() === 'library'"
+                    [class.dark:text-sky-400]="activeTab() === 'library'"
                     [class.text-slate-600]="activeTab() !== 'library'"
                     [class.dark:text-gray-400]="activeTab() !== 'library'"
                     class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-800">
@@ -39,10 +39,10 @@
                     Biblioteca ({{ assets().length }})
                 </button>
                 <button (click)="activeTab.set('upload')"
-                    [class.bg-indigo-50]="activeTab() === 'upload'"
-                    [class.text-indigo-600]="activeTab() === 'upload'"
-                    [class.dark:bg-indigo-950\/50]="activeTab() === 'upload'"
-                    [class.dark:text-indigo-400]="activeTab() === 'upload'"
+                    [class.bg-sky-50]="activeTab() === 'upload'"
+                    [class.text-sky-600]="activeTab() === 'upload'"
+                    [class.dark:bg-sky-950\/50]="activeTab() === 'upload'"
+                    [class.dark:text-sky-400]="activeTab() === 'upload'"
                     [class.text-slate-600]="activeTab() !== 'upload'"
                     [class.dark:text-gray-400]="activeTab() !== 'upload'"
                     class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-800">
@@ -52,10 +52,10 @@
                     Subir Nuevo
                 </button>
                 <button (click)="activeTab.set('url')"
-                    [class.bg-indigo-50]="activeTab() === 'url'"
-                    [class.text-indigo-600]="activeTab() === 'url'"
-                    [class.dark:bg-indigo-950\/50]="activeTab() === 'url'"
-                    [class.dark:text-indigo-400]="activeTab() === 'url'"
+                    [class.bg-sky-50]="activeTab() === 'url'"
+                    [class.text-sky-600]="activeTab() === 'url'"
+                    [class.dark:bg-sky-950\/50]="activeTab() === 'url'"
+                    [class.dark:text-sky-400]="activeTab() === 'url'"
                     [class.text-slate-600]="activeTab() !== 'url'"
                     [class.dark:text-gray-400]="activeTab() !== 'url'"
                     class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-800">
@@ -74,7 +74,7 @@
                         </svg>
                         <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
                             placeholder="Buscar recurso..."
-                            class="w-full text-xs pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full text-xs pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
                 </div>
             }
@@ -87,7 +87,7 @@
             @if (activeTab() === 'library') {
                 @if (isLoading()) {
                     <div class="flex flex-col items-center justify-center h-64 gap-3">
-                        <div class="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div class="w-8 h-8 border-3 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
                         <p class="text-xs text-slate-500">Cargando biblioteca de recursos...</p>
                     </div>
                 } @else if (filteredAssets().length === 0) {
@@ -99,7 +99,7 @@
                         </div>
                         <p class="text-sm font-bold text-slate-900 dark:text-white mb-1">No hay recursos en la biblioteca</p>
                         <p class="text-xs text-slate-500 mb-4 max-w-sm">Sube tus logotipos, imágenes o videos para reutilizarlos en toda tu tienda.</p>
-                        <button (click)="activeTab.set('upload')" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all cursor-pointer">
+                        <button (click)="activeTab.set('upload')" class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold hover:bg-sky-700 transition-all cursor-pointer">
                             Subir primer recurso
                         </button>
                     </div>
@@ -108,9 +108,9 @@
                         @for (item of filteredAssets(); track item.url) {
                             <div (click)="selectItem(item.url)"
                                 class="group relative rounded-2xl border-2 transition-all cursor-pointer overflow-hidden bg-slate-50 dark:bg-gray-800 flex flex-col aspect-square"
-                                [class.border-indigo-600]="selectedAssetUrl() === item.url"
+                                [class.border-sky-600]="selectedAssetUrl() === item.url"
                                 [class.ring-2]="selectedAssetUrl() === item.url"
-                                [class.ring-indigo-500\/30]="selectedAssetUrl() === item.url"
+                                [class.ring-sky-500\/30]="selectedAssetUrl() === item.url"
                                 [class.border-slate-200]="selectedAssetUrl() !== item.url"
                                 [class.dark:border-gray-700]="selectedAssetUrl() !== item.url">
 
@@ -129,7 +129,7 @@
 
                                     <!-- Selected Badge -->
                                     @if (selectedAssetUrl() === item.url) {
-                                        <div class="absolute top-2 right-2 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-md">
+                                        <div class="absolute top-2 right-2 w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center shadow-md">
                                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                             </svg>
@@ -165,11 +165,11 @@
 
             <!-- TAB 2: UPLOAD -->
             @if (activeTab() === 'upload') {
-                <div class="flex flex-col items-center justify-center h-72 border-2 border-dashed border-indigo-200 dark:border-indigo-900/50 rounded-2xl bg-indigo-50/30 dark:bg-indigo-950/10 p-8 text-center relative group">
+                <div class="flex flex-col items-center justify-center h-72 border-2 border-dashed border-sky-200 dark:border-sky-900/50 rounded-2xl bg-sky-50/30 dark:bg-sky-950/10 p-8 text-center relative group">
                     <input type="file" (change)="onFileSelected($event)" accept="image/*,video/*"
                         class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                     
-                    <div class="w-16 h-16 rounded-2xl bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div class="w-16 h-16 rounded-2xl bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
@@ -178,13 +178,13 @@
                     <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Arrastra o haz clic para subir</h3>
                     <p class="text-xs text-slate-500 mb-4">Formatos soportados: PNG, JPG, WebP, SVG, MP4 (Máx 5MB)</p>
                     
-                    <button class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all cursor-pointer shadow-sm">
+                    <button class="px-5 py-2.5 rounded-xl bg-sky-600 text-white text-xs font-bold hover:bg-sky-700 transition-all cursor-pointer shadow-sm">
                         Examinar archivos
                     </button>
 
                     @if (isUploading()) {
                         <div class="absolute inset-0 bg-white/90 dark:bg-gray-900/90 rounded-2xl flex flex-col items-center justify-center p-6 z-20">
-                            <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+                            <div class="w-12 h-12 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mb-3"></div>
                             <p class="text-xs font-bold text-slate-900 dark:text-white">Subiendo y optimizando archivo...</p>
                         </div>
                     }
@@ -198,7 +198,7 @@
                         <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">URL directa del recurso multimedia</label>
                         <input type="url" [ngModel]="externalUrl()" (ngModelChange)="externalUrl.set($event)"
                             placeholder="https://ejemplo.com/mi-imagen.jpg"
-                            class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
                     </div>
 
                     @if (externalUrl()) {
@@ -218,7 +218,7 @@
         <div class="px-6 py-4 border-t border-slate-200 dark:border-gray-800 flex items-center justify-between bg-slate-50/50 dark:bg-gray-800/50">
             <div class="text-xs text-slate-500">
                 @if (selectedAssetUrl()) {
-                    <span class="font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                    <span class="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
@@ -234,7 +234,7 @@
                 </button>
                 <button (click)="confirmSelection()"
                     [disabled]="!selectedAssetUrl() && !externalUrl()"
-                    class="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm">
+                    class="px-5 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm">
                     Usar Recurso Seleccionado
                 </button>
             </div>

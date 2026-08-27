@@ -9,35 +9,36 @@ import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assista
   selector: 'app-main-layout',
   imports: [RouterOutlet, SidebarComponent, HeaderComponent, AiAssistantComponent],
   template: `
-    <div class="flex h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden">
+    <div class="flex h-screen bg-[#f9f9f9] dark:bg-gray-800 overflow-hidden">
       <!-- Mobile sidebar backdrop -->
       @if (isSidebarOpen()) {
-        <div 
+        <div
           class="fixed inset-0 z-40 bg-gray-600 dark:bg-gray-900 bg-opacity-75 transition-opacity md:hidden"
           (click)="closeSidebar()"
         ></div>
       }
 
       <!-- Sidebar -->
-      <app-sidebar 
-        [isOpen]="isSidebarOpen()" 
+      <app-sidebar
+        [isOpen]="isSidebarOpen()"
         [isCollapsed]="isSidebarCollapsed()"
         (toggleCollapse)="toggleCollapse()"
       />
-
 
       <!-- Content area -->
       <div class="flex-1 flex flex-col overflow-hidden w-full">
         <app-header (toggleSidebar)="toggleSidebar()" />
 
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-950 p-4 sm:p-6 lg:p-8">
+        <main
+          class="flex-1 overflow-x-hidden overflow-y-auto bg-[#f9f9f9] dark:bg-gray-800 p-4 sm:p-6 lg:p-8"
+        >
           <router-outlet />
         </main>
       </div>
 
       <!-- AI Assistant (Only shown in Main Layout) -->
-      @if(false){
-      <app-ai-assistant />
+      @if (false) {
+        <app-ai-assistant />
       }
     </div>
   `,
@@ -47,15 +48,14 @@ export class MainLayoutComponent {
   readonly isSidebarCollapsed = signal(false);
 
   toggleSidebar() {
-    this.isSidebarOpen.update(v => !v);
+    this.isSidebarOpen.update((v) => !v);
   }
 
   toggleCollapse() {
-    this.isSidebarCollapsed.update(v => !v);
+    this.isSidebarCollapsed.update((v) => !v);
   }
 
   closeSidebar() {
     this.isSidebarOpen.set(false);
   }
 }
-

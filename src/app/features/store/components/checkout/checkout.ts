@@ -21,59 +21,119 @@ import { AddressForm } from '../account/address-form/address-form';
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
       <!-- Form -->
       <div class="lg:col-span-12">
-         <nav class="flex mb-8 text-sm text-slate-500">
-          <a routerLink="/store" queryParamsHandling="preserve" class="hover:text-slate-900 transition-colors">Tienda</a>
+        <nav class="flex mb-8 text-sm text-slate-500">
+          <a
+            routerLink="/store"
+            queryParamsHandling="preserve"
+            class="hover:text-slate-900 transition-colors"
+            >Tienda</a
+          >
           <span class="mx-2">/</span>
           <span class="text-slate-900 font-medium">Pago</span>
         </nav>
       </div>
 
       <div class="lg:col-span-7 space-y-8">
-        <section class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/60 shadow-sm relative">
+        <section
+          class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/60 shadow-sm relative"
+        >
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Información de Envío</h2>
-          
+
           @if (isLoadingAddresses()) {
             <div class="flex justify-center py-8">
-                <svg class="animate-spin h-6 w-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                </svg>
+              <svg
+                class="animate-spin h-6 w-6 text-sky-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
+              </svg>
             </div>
           } @else {
-              @if (savedAddresses().length > 0 && !showNewAddressForm()) {
-                <!-- Address Selection -->
-                <div class="space-y-4">
-                  @for (addr of savedAddresses(); track addr.id) {
-                    <label class="flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all"
-                           [ngClass]="selectedAddressId() === addr.id ? 'border-indigo-600 bg-indigo-50/30' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50/50'">
-                      <input type="radio" name="addressSelection" [value]="addr.id"
-                             [checked]="selectedAddressId() === addr.id"
-                             (change)="selectedAddressId.set(addr.id)"
-                             class="mt-1 h-4 w-4 text-indigo-600 focus:ring-indigo-600 border-gray-300">
-                      <div class="flex-1">
-                        <p class="font-bold text-gray-900">{{ addr.first_name }} {{ addr.last_name }}</p>
-                        <p class="text-sm text-gray-600 mt-1">{{ addr.address_line1 }} {{ addr.address_line2 || '' }}</p>
-                        <p class="text-sm text-gray-600">{{ addr.city }}, {{ addr.state || '' }} {{ addr.postal_code }} - {{ addr.country }}</p>
-                        <p class="text-sm text-gray-500 mt-2 flex items-center gap-1.5 font-medium">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-                            {{ addr.phone }}
-                        </p>
-                      </div>
-                    </label>
-                  }
-                </div>
-                
-                <button (click)="showNewAddressForm.set(true)" type="button" class="mt-6 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                  Usar una dirección diferente
-                </button>
-              } @else {
-                <!-- New Address Form Inline -->
-                <app-address-form 
-                    (save)="onAddressFormSaved($event)"
-                    (cancel)="onAddressFormCanceled()">
-                </app-address-form>
-              }
+            @if (savedAddresses().length > 0 && !showNewAddressForm()) {
+              <!-- Address Selection -->
+              <div class="space-y-4">
+                @for (addr of savedAddresses(); track addr.id) {
+                  <label
+                    class="flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all"
+                    [ngClass]="
+                      selectedAddressId() === addr.id
+                        ? 'border-sky-600 bg-sky-50/30'
+                        : 'border-gray-200 hover:border-sky-200 hover:bg-gray-50/50'
+                    "
+                  >
+                    <input
+                      type="radio"
+                      name="addressSelection"
+                      [value]="addr.id"
+                      [checked]="selectedAddressId() === addr.id"
+                      (change)="selectedAddressId.set(addr.id)"
+                      class="mt-1 h-4 w-4 text-sky-600 focus:ring-sky-600 border-gray-300"
+                    />
+                    <div class="flex-1">
+                      <p class="font-bold text-gray-900">
+                        {{ addr.first_name }} {{ addr.last_name }}
+                      </p>
+                      <p class="text-sm text-gray-600 mt-1">
+                        {{ addr.address_line1 }} {{ addr.address_line2 || '' }}
+                      </p>
+                      <p class="text-sm text-gray-600">
+                        {{ addr.city }}, {{ addr.state || '' }} {{ addr.postal_code }} -
+                        {{ addr.country }}
+                      </p>
+                      <p class="text-sm text-gray-500 mt-2 flex items-center gap-1.5 font-medium">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                          />
+                        </svg>
+                        {{ addr.phone }}
+                      </p>
+                    </div>
+                  </label>
+                }
+              </div>
+
+              <button
+                (click)="showNewAddressForm.set(true)"
+                type="button"
+                class="mt-6 text-sm font-semibold text-sky-600 hover:text-sky-800 transition-colors flex items-center gap-1"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Usar una dirección diferente
+              </button>
+            } @else {
+              <!-- New Address Form Inline -->
+              <app-address-form
+                (save)="onAddressFormSaved($event)"
+                (cancel)="onAddressFormCanceled()"
+              >
+              </app-address-form>
+            }
           }
         </section>
 
@@ -81,21 +141,61 @@ import { AddressForm } from '../account/address-form/address-form';
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Método de Pago</h2>
           <div class="grid grid-cols-1 gap-4">
             @for (method of paymentMethods; track method.id) {
-              <label class="flex items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all"
-                     [ngClass]="selectedPaymentMethod() === method.id ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'">
+              <label
+                class="flex items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all"
+                [ngClass]="
+                  selectedPaymentMethod() === method.id
+                    ? 'border-sky-600 bg-sky-50/50'
+                    : 'border-slate-100 hover:border-slate-200 bg-white'
+                "
+              >
                 <div class="flex items-center gap-4">
-                  <input type="radio" name="paymentMethod" [value]="method.id"
-                         [checked]="selectedPaymentMethod() === method.id"
-                         (change)="selectedPaymentMethod.set(method.id)"
-                         class="h-4 w-4 text-indigo-600 focus:ring-indigo-600 border-gray-300">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    [value]="method.id"
+                    [checked]="selectedPaymentMethod() === method.id"
+                    (change)="selectedPaymentMethod.set(method.id)"
+                    class="h-4 w-4 text-sky-600 focus:ring-sky-600 border-gray-300"
+                  />
                   <div>
-                    <p class="font-bold text-lg" [ngClass]="selectedPaymentMethod() === method.id ? 'text-indigo-900' : 'text-slate-900'">{{ method.label }}</p>
-                    <p class="mt-1 text-sm" [ngClass]="selectedPaymentMethod() === method.id ? 'text-indigo-700' : 'text-slate-500'">{{ method.description }}</p>
+                    <p
+                      class="font-bold text-lg"
+                      [ngClass]="
+                        selectedPaymentMethod() === method.id ? 'text-sky-900' : 'text-slate-900'
+                      "
+                    >
+                      {{ method.label }}
+                    </p>
+                    <p
+                      class="mt-1 text-sm"
+                      [ngClass]="
+                        selectedPaymentMethod() === method.id ? 'text-sky-700' : 'text-slate-500'
+                      "
+                    >
+                      {{ method.description }}
+                    </p>
                   </div>
                 </div>
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm" [ngClass]="{'border border-indigo-100': selectedPaymentMethod() === method.id}">
-                  <svg class="w-6 h-6" [ngClass]="selectedPaymentMethod() === method.id ? 'text-indigo-600' : 'text-slate-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="method.icon" />
+                <div
+                  class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm"
+                  [ngClass]="{ 'border border-sky-100': selectedPaymentMethod() === method.id }"
+                >
+                  <svg
+                    class="w-6 h-6"
+                    [ngClass]="
+                      selectedPaymentMethod() === method.id ? 'text-sky-600' : 'text-slate-400'
+                    "
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      [attr.d]="method.icon"
+                    />
                   </svg>
                 </div>
               </label>
@@ -106,26 +206,46 @@ import { AddressForm } from '../account/address-form/address-form';
 
       <!-- Summary -->
       <div class="lg:col-span-5">
-        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/60 shadow-sm sticky top-24">
+        <div
+          class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/60 shadow-sm sticky top-24"
+        >
           <h2 class="text-xl font-bold mb-6">Resumen del Pedido</h2>
-          
+
           <div class="space-y-4 mb-6 max-h-96 overflow-y-auto pr-2">
             @for (item of cartService.items(); track item.id) {
               <div class="flex gap-4">
-                <div class="w-16 h-16 rounded-xl border border-slate-100 overflow-hidden flex-shrink-0 bg-slate-50 flex items-center justify-center">
+                <div
+                  class="w-16 h-16 rounded-xl border border-slate-100 overflow-hidden flex-shrink-0 bg-slate-50 flex items-center justify-center"
+                >
                   @if (getItemImage(item)) {
-                    <img [src]="getItemImage(item)" [alt]="item.name" class="w-full h-full object-cover">
+                    <img
+                      [src]="getItemImage(item)"
+                      [alt]="item.name"
+                      class="w-full h-full object-cover"
+                    />
                   } @else {
-                    <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <svg
+                      class="w-6 h-6 text-slate-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
                     </svg>
                   }
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="font-bold text-slate-900 truncate">{{ item.name }}</p>
-                  <p class="text-sm text-slate-500">{{ item.quantity }} x {{ item.price | currency:currency() }}</p>
+                  <p class="text-sm text-slate-500">
+                    {{ item.quantity }} x {{ item.price | currency: currency() }}
+                  </p>
                 </div>
-                <p class="font-bold">{{ item.price * item.quantity | currency:currency() }}</p>
+                <p class="font-bold">{{ item.price * item.quantity | currency: currency() }}</p>
               </div>
             }
           </div>
@@ -133,40 +253,69 @@ import { AddressForm } from '../account/address-form/address-form';
           <div class="space-y-3 pt-6 border-t border-slate-100 text-sm">
             <div class="flex justify-between">
               <span class="text-slate-500">Subtotal</span>
-              <span class="font-medium text-slate-900">{{ cartService.subtotal() | currency:currency() }}</span>
+              <span class="font-medium text-slate-900">{{
+                cartService.subtotal() | currency: currency()
+              }}</span>
             </div>
             @if (cartService.appliedCoupon()) {
-              <div class="flex justify-between text-indigo-600 font-bold bg-indigo-50 px-3 py-2 rounded-lg">
+              <div
+                class="flex justify-between text-sky-600 font-bold bg-sky-50 px-3 py-2 rounded-lg"
+              >
                 <span>Descuento ({{ cartService.appliedCoupon()?.code }})</span>
-                <span>-{{ cartService.discountAmount() | currency:currency() }}</span>
+                <span>-{{ cartService.discountAmount() | currency: currency() }}</span>
               </div>
             }
             <div class="flex justify-between">
               <span class="text-slate-500">Taxes</span>
-              <span class="font-medium text-slate-900">{{ cartService.tax() | currency:currency() }}</span>
+              <span class="font-medium text-slate-900">{{
+                cartService.tax() | currency: currency()
+              }}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-slate-500">Envío</span>
-              <span class="font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-md">Gratis</span>
+              <span class="font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-md"
+                >Gratis</span
+              >
             </div>
-            <div class="flex justify-between text-xl font-black pt-4 border-t border-slate-100 mt-4 text-slate-900">
+            <div
+              class="flex justify-between text-xl font-black pt-4 border-t border-slate-100 mt-4 text-slate-900"
+            >
               <span>Monto total</span>
-              <span>{{ cartService.total() | currency:currency() }}</span>
+              <span>{{ cartService.total() | currency: currency() }}</span>
             </div>
           </div>
 
-          <button (click)="placeOrder()" [disabled]="isSubmitting() || showNewAddressForm() || isLoadingAddresses()" 
-              class="w-full mt-8 py-4 bg-gray-900 text-white rounded-2xl font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-            @if(isSubmitting()) {
-                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                </svg>
-                Procesando...
+          <button
+            (click)="placeOrder()"
+            [disabled]="isSubmitting() || showNewAddressForm() || isLoadingAddresses()"
+            class="w-full mt-8 py-4 bg-gray-900 text-white rounded-2xl font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            @if (isSubmitting()) {
+              <svg
+                class="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
+              </svg>
+              Procesando...
             } @else if (showNewAddressForm()) {
-                Guarda la dirección primero
+              Guarda la dirección primero
             } @else {
-                Confirmar Pedido
+              Confirmar Pedido
             }
           </button>
         </div>
@@ -199,26 +348,26 @@ export class Checkout implements OnInit {
       id: PaymentMethod.CashOnDelivery,
       label: 'Pago contra entrega',
       description: 'Paga en efectivo al recibir tu pedido.',
-      icon: 'M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+      icon: 'M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
     },
     {
       id: PaymentMethod.BankTransfer,
       label: 'Transferencia bancaria',
       description: 'Realiza tu pago vía transferencia directa.',
-      icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4'
+      icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4',
     },
     {
       id: PaymentMethod.PSE,
       label: 'PSE',
       description: 'Pago seguro en línea desde tu banco.',
-      icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'
+      icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
     },
     {
       id: PaymentMethod.CreditCard,
       label: 'Tarjeta débito y crédito',
       description: 'Paga con Visa, Mastercard o American Express.',
-      icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'
-    }
+      icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+    },
   ];
 
   private customerId = signal<string | null>(null);
@@ -229,7 +378,7 @@ export class Checkout implements OnInit {
       const id = this.selectedAddressId();
       const addresses = this.savedAddresses();
       if (id && addresses.length > 0) {
-        const address = addresses.find(a => a.id === id);
+        const address = addresses.find((a) => a.id === id);
         if (address) {
           this.cartService.setShippingLocation(address.country, address.state || undefined);
         }
@@ -247,11 +396,13 @@ export class Checkout implements OnInit {
       this.resolvedCustomer = await this.customerAuth.ensureCustomer();
       if (this.resolvedCustomer) {
         this.customerId.set(this.resolvedCustomer.id);
-        const addresses = await this.customersService.getCustomerAddresses(this.resolvedCustomer.id);
+        const addresses = await this.customersService.getCustomerAddresses(
+          this.resolvedCustomer.id,
+        );
         this.savedAddresses.set(addresses);
 
         if (addresses.length > 0) {
-          const defaultAddr = addresses.find(a => a.is_default);
+          const defaultAddr = addresses.find((a) => a.is_default);
           this.selectedAddressId.set(defaultAddr ? defaultAddr.id : addresses[0].id);
           this.showNewAddressForm.set(false);
         } else {
@@ -275,7 +426,9 @@ export class Checkout implements OnInit {
       const tenantId = this.tenantService.tenantId();
       if (!tenantId) {
         console.error('[Checkout] Cannot save address: Tenant ID is missing');
-        this.toast.error('Error de sesión: No se pudo identificar la tienda. Por favor, recarga la página.');
+        this.toast.error(
+          'Error de sesión: No se pudo identificar la tienda. Por favor, recarga la página.',
+        );
         return;
       }
 
@@ -332,7 +485,7 @@ export class Checkout implements OnInit {
       }
 
       // Find the selected address from our list
-      const address = this.savedAddresses().find(a => a.id === this.selectedAddressId());
+      const address = this.savedAddresses().find((a) => a.id === this.selectedAddressId());
       if (!address) {
         throw new Error('Selected address not found');
       }
@@ -365,7 +518,7 @@ export class Checkout implements OnInit {
         shipping_phone: address.phone || undefined,
       };
 
-      const orderItems = this.cartService.items().map(item => ({
+      const orderItems = this.cartService.items().map((item) => ({
         product_id: item.product.id,
         variant_id: item.variantId,
         product_name: item.name,
@@ -373,7 +526,7 @@ export class Checkout implements OnInit {
         unit_price: item.price,
         discount_amount: 0,
         tax_amount: 0,
-        total_amount: item.price * item.quantity
+        total_amount: item.price * item.quantity,
       }));
 
       await this.ordersService.createOrder(orderData, orderItems);
@@ -394,9 +547,11 @@ export class Checkout implements OnInit {
     if (item.imageUrl) return item.imageUrl;
     const p = item.product;
     if (!p) return null;
-    return p.primary_image_url ||
-      p.images?.find(img => img.is_primary)?.url ||
+    return (
+      p.primary_image_url ||
+      p.images?.find((img) => img.is_primary)?.url ||
       p.images?.[0]?.url ||
-      null;
+      null
+    );
   }
 }

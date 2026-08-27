@@ -75,7 +75,7 @@ export class CategoriesList implements OnInit {
         {
             id: 'edit',
             label: 'Editar',
-            className: 'hover:text-indigo-600 dark:hover:text-indigo-400 font-medium',
+            className: 'hover:text-sky-600 dark:hover:text-sky-400 font-medium',
             callback: (item) => this.openEdit(item),
         },
         {

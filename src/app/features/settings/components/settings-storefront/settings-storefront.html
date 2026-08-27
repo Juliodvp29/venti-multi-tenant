@@ -4,9 +4,9 @@
         <div>
             <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 Constructor de Tienda & Páginas
-                <span class="text-xs px-2.5 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-bold rounded-full border border-indigo-100 dark:border-indigo-800">
+                <!-- <span class="text-xs px-2.5 py-0.5 bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 font-bold rounded-full border border-sky-100 dark:border-sky-800">
                     {{ activePageMeta().label }} ({{ activeSections().length }} Bloques)
-                </span>
+                </span> -->
             </h3>
             <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                 Personaliza la estructura, fondo, cabecera, pie de página y bloques individuales para cada página de tu comercio.
@@ -15,7 +15,7 @@
         
         <div class="flex items-center gap-2">
             <button (click)="isAddModalOpen.set(true)"
-                class="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-indigo-100 dark:border-indigo-800">
+                class="px-4 py-2 bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/50 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-sky-100 dark:border-sky-800">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -23,7 +23,7 @@
             </button>
 
             <button (click)="saveLayout()" [disabled]="isSaving()"
-                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
+                class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
                 @if (isSaving()) {
                     <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 }
@@ -44,8 +44,8 @@
                     [class.bg-slate-900]="activePageId() === page.id"
                     [class.text-white]="activePageId() === page.id"
                     [class.border-slate-900]="activePageId() === page.id"
-                    [class.dark:bg-indigo-600]="activePageId() === page.id"
-                    [class.dark:border-indigo-600]="activePageId() === page.id"
+                    [class.dark:bg-sky-600]="activePageId() === page.id"
+                    [class.dark:border-sky-600]="activePageId() === page.id"
                     [class.bg-white]="activePageId() !== page.id"
                     [class.text-slate-700]="activePageId() !== page.id"
                     [class.dark:bg-gray-800]="activePageId() !== page.id"
@@ -110,16 +110,16 @@
                     <div class="p-3.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 flex items-center justify-between gap-3 min-w-0">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5 min-w-0">
-                                <span class="text-indigo-600 dark:text-indigo-400 shrink-0" [innerHTML]="activePageMeta().icon"></span>
+                                <span class="text-sky-600 dark:text-sky-400 shrink-0" [innerHTML]="activePageMeta().icon"></span>
                                 <span class="text-xs font-black uppercase tracking-wider text-gray-800 dark:text-gray-200 truncate">
                                     Estructura · {{ activePageMeta().label }}
                                 </span>
                             </div>
-                            <p class="text-[11px] text-gray-400 truncate mt-0.5">Ruta: <code class="text-indigo-600 dark:text-indigo-400 font-mono">{{ activePageMeta().path }}</code></p>
+                            <p class="text-[11px] text-gray-400 truncate mt-0.5">Ruta: <code class="text-sky-600 dark:text-sky-400 font-mono">{{ activePageMeta().path }}</code></p>
                         </div>
 
                         <button (click)="isAddModalOpen.set(true)"
-                            class="px-2.5 py-1 text-xs font-bold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg flex items-center gap-1 shrink-0 whitespace-nowrap transition-colors cursor-pointer">
+                            class="px-2.5 py-1 text-xs font-bold bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50 rounded-lg flex items-center gap-1 shrink-0 whitespace-nowrap transition-colors cursor-pointer">
                             + Bloque
                         </button>
                     </div>
@@ -127,11 +127,11 @@
                     <div class="p-3 max-h-[550px] overflow-y-auto space-y-2.5">
                         @if (activeSections().length === 0) {
                             <div class="p-8 text-center space-y-3">
-                                <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto" [innerHTML]="activePageMeta().icon"></div>
+                                <div class="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 flex items-center justify-center mx-auto" [innerHTML]="activePageMeta().icon"></div>
                                 <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">No hay bloques configurados para {{ activePageMeta().label }}</p>
                                 <p class="text-xs text-gray-400 max-w-xs mx-auto">Agrega secciones o promociones personalizadas para enriquecer esta página.</p>
                                 <button (click)="isAddModalOpen.set(true)"
-                                    class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all cursor-pointer">
+                                    class="px-4 py-2 bg-sky-600 text-white rounded-xl text-xs font-bold hover:bg-sky-700 transition-all cursor-pointer">
                                     Explorar Catálogo de Bloques
                                 </button>
                             </div>
@@ -139,19 +139,19 @@
 
                         @for (section of activeSections(); track section.id; let i = $index) {
                             <div (click)="selectedSectionId.set(section.id)"
-                                [class.bg-indigo-50\/50]="selectedSectionId() === section.id"
-                                [class.dark:bg-indigo-950\/40]="selectedSectionId() === section.id"
-                                [class.border-indigo-600]="selectedSectionId() === section.id"
-                                [class.dark:border-indigo-500]="selectedSectionId() === section.id"
+                                [class.bg-sky-50\/50]="selectedSectionId() === section.id"
+                                [class.dark:bg-sky-950\/40]="selectedSectionId() === section.id"
+                                [class.border-sky-600]="selectedSectionId() === section.id"
+                                [class.dark:border-sky-500]="selectedSectionId() === section.id"
                                 [class.border-gray-200]="selectedSectionId() !== section.id"
                                 [class.dark:border-gray-800]="selectedSectionId() !== section.id"
-                                class="p-3.5 rounded-xl border transition-all cursor-pointer hover:border-indigo-300 dark:hover:border-gray-700 bg-white dark:bg-gray-900/80 shadow-xs space-y-2.5 group">
+                                class="p-3.5 rounded-xl border transition-all cursor-pointer hover:border-sky-300 dark:hover:border-gray-700 bg-white dark:bg-gray-900/80 shadow-xs space-y-2.5 group">
                                 
                                 <!-- Top Row: Icon + Title + Status Badges -->
                                 <div class="flex items-center justify-between gap-2 min-w-0">
                                     <div class="flex items-center gap-2.5 min-w-0 flex-1">
                                         <span class="text-xs font-mono font-bold text-gray-400 dark:text-gray-500 w-4 text-center shrink-0">{{ i + 1 }}</span>
-                                        <span class="text-indigo-600 dark:text-indigo-400 shrink-0" [innerHTML]="getSectionIcon(section.type)"></span>
+                                        <span class="text-sky-600 dark:text-sky-400 shrink-0" [innerHTML]="getSectionIcon(section.type)"></span>
                                         <span class="text-xs font-bold text-gray-900 dark:text-white truncate">
                                             {{ section.titleCustom || getSectionName(section.type) }}
                                         </span>
@@ -160,10 +160,10 @@
                                     <!-- Badges -->
                                     <div class="flex items-center gap-1 shrink-0">
                                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                                              [class.bg-emerald-100]="section.isActive"
-                                              [class.text-emerald-700]="section.isActive"
-                                              [class.dark:bg-emerald-900\/40]="section.isActive"
-                                              [class.dark:text-emerald-400]="section.isActive"
+                                              [class.bg-sky-100]="section.isActive"
+                                              [class.text-sky-700]="section.isActive"
+                                              [class.dark:bg-sky-900\/40]="section.isActive"
+                                              [class.dark:text-sky-400]="section.isActive"
                                               [class.bg-gray-100]="!section.isActive"
                                               [class.text-gray-500]="!section.isActive"
                                               [class.dark:bg-gray-800]="!section.isActive"
@@ -195,9 +195,9 @@
                                         <!-- Active Toggle -->
                                         <button (click)="$event.stopPropagation(); toggleSectionActive(section.id)"
                                             [title]="section.isActive ? 'Ocultar sección' : 'Mostrar sección'"
-                                            class="p-1 rounded text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                                            class="p-1 rounded text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-white dark:hover:bg-gray-700 transition-colors">
                                             @if (section.isActive) {
-                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <svg class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
@@ -211,7 +211,7 @@
                                         <!-- Duplicate -->
                                         <button (click)="$event.stopPropagation(); duplicateSection(section.id)"
                                             title="Duplicar sección"
-                                            class="p-1 rounded text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                                            class="p-1 rounded text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-white dark:hover:bg-gray-700 transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
@@ -220,7 +220,7 @@
                                         <!-- Move Up -->
                                         <button (click)="$event.stopPropagation(); moveSection(section.id, 'up')" [disabled]="i === 0"
                                             title="Subir"
-                                            class="p-1 rounded text-gray-400 hover:text-indigo-600 disabled:opacity-20 hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                                            class="p-1 rounded text-gray-400 hover:text-sky-600 disabled:opacity-20 hover:bg-white dark:hover:bg-gray-700 transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                             </svg>
@@ -229,7 +229,7 @@
                                         <!-- Move Down -->
                                         <button (click)="$event.stopPropagation(); moveSection(section.id, 'down')" [disabled]="i === activeSections().length - 1"
                                             title="Bajar"
-                                            class="p-1 rounded text-gray-400 hover:text-indigo-600 disabled:opacity-20 hover:bg-white dark:hover:bg-gray-700 transition-colors">
+                                            class="p-1 rounded text-gray-400 hover:text-sky-600 disabled:opacity-20 hover:bg-white dark:hover:bg-gray-700 transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                             </svg>
@@ -256,7 +256,7 @@
                 <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm p-5 space-y-6">
                     <div class="pb-3 border-b border-gray-100 dark:border-gray-800">
                         <h4 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <svg class="w-4 h-4 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                             </svg>
                             <span>Estilos Propios para {{ activePageMeta().label }}</span>
@@ -331,7 +331,7 @@
                     </div>
 
                     <button (click)="addNavigationLink()"
-                        class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 text-xs font-bold flex items-center gap-1">
+                        class="text-sky-600 dark:text-sky-400 hover:text-sky-700 text-xs font-bold flex items-center gap-1">
                         + Agregar Enlace
                     </button>
                 </div>
@@ -343,13 +343,13 @@
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">Enlace {{ $index + 1 }}</span>
                                 <div class="flex items-center gap-1">
                                     <button (click)="moveNavigationLink($index, 'up')" [disabled]="$index === 0"
-                                        class="p-1 hover:text-indigo-600 disabled:opacity-20 text-gray-400">
+                                        class="p-1 hover:text-sky-600 disabled:opacity-20 text-gray-400">
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                         </svg>
                                     </button>
                                     <button (click)="moveNavigationLink($index, 'down')" [disabled]="$index === (layout().navigation || []).length - 1"
-                                        class="p-1 hover:text-indigo-600 disabled:opacity-20 text-gray-400">
+                                        class="p-1 hover:text-sky-600 disabled:opacity-20 text-gray-400">
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                         </svg>
@@ -365,10 +365,10 @@
                             <div class="grid grid-cols-2 gap-2">
                                 <input type="text" [(ngModel)]="link.label" (ngModelChange)="forceLayoutUpdate()"
                                     placeholder="Nombre del enlace"
-                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-indigo-500">
+                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-sky-500">
                                 <input type="text" [(ngModel)]="link.url" (ngModelChange)="forceLayoutUpdate()"
                                     placeholder="/store/productos"
-                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-indigo-500">
+                                    class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-1 focus:ring-sky-500">
                             </div>
                         </div>
                     }
@@ -381,7 +381,7 @@
         <div class="lg:col-span-7">
             @if (!selectedSection()) {
                 <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl h-[450px] flex flex-col items-center justify-center text-center p-8 space-y-3">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
@@ -389,7 +389,7 @@
                     <h4 class="text-sm font-bold text-gray-900 dark:text-white">Selecciona o agrega una sección</h4>
                     <p class="text-xs text-gray-400 max-w-sm">Haz clic en cualquier sección de la lista izquierda para editar su contenido, colores, fondo, márgenes y visibilidad.</p>
                     <button (click)="isAddModalOpen.set(true)"
-                        class="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 rounded-xl text-xs font-bold transition-all border border-indigo-100 dark:border-indigo-800">
+                        class="px-4 py-2 bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 hover:bg-sky-100 rounded-xl text-xs font-bold transition-all border border-sky-100 dark:border-sky-800">
                         + Agregar Bloque a la Tienda
                     </button>
                 </div>
@@ -401,11 +401,11 @@
                     <!-- EDITOR TOP BAR -->
                     <div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/50 flex flex-wrap items-center justify-between gap-3">
                         <div class="flex items-center gap-2.5">
-                            <span class="text-indigo-600 dark:text-indigo-400" [innerHTML]="getSectionIcon(section.type)"></span>
+                            <span class="text-sky-600 dark:text-sky-400" [innerHTML]="getSectionIcon(section.type)"></span>
                             <div>
                                 <input type="text" [(ngModel)]="section.titleCustom" (ngModelChange)="forceLayoutUpdate()"
                                     [placeholder]="getSectionName(section.type)"
-                                    class="text-sm font-bold text-gray-900 dark:text-white bg-transparent border-b border-transparent hover:border-gray-300 focus:border-indigo-500 outline-none px-1 py-0.5">
+                                    class="text-sm font-bold text-gray-900 dark:text-white bg-transparent border-b border-transparent hover:border-gray-300 focus:border-sky-500 outline-none px-1 py-0.5">
                                 <p class="text-[10px] text-gray-400 px-1">Tipo: {{ section.type }}</p>
                             </div>
                         </div>
@@ -416,7 +416,7 @@
                                 [class.bg-white]="activeSectionTab() === 'content'"
                                 [class.dark:bg-gray-700]="activeSectionTab() === 'content'"
                                 [class.shadow-sm]="activeSectionTab() === 'content'"
-                                [class.text-indigo-600]="activeSectionTab() === 'content'"
+                                [class.text-sky-600]="activeSectionTab() === 'content'"
                                 [class.dark:text-white]="activeSectionTab() === 'content'"
                                 class="px-3 py-1 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 transition-all cursor-pointer flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -428,7 +428,7 @@
                                 [class.bg-white]="activeSectionTab() === 'styles'"
                                 [class.dark:bg-gray-700]="activeSectionTab() === 'styles'"
                                 [class.shadow-sm]="activeSectionTab() === 'styles'"
-                                [class.text-indigo-600]="activeSectionTab() === 'styles'"
+                                [class.text-sky-600]="activeSectionTab() === 'styles'"
                                 [class.dark:text-white]="activeSectionTab() === 'styles'"
                                 class="px-3 py-1 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 transition-all cursor-pointer flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -449,40 +449,40 @@
                                     
                                     <!-- Composición Visual -->
                                     <div class="p-4 bg-gray-50 dark:bg-gray-800/60 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 space-y-3">
-                                        <label class="block text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Estilo de Composición</label>
+                                        <label class="block text-xs font-black uppercase tracking-wider text-sky-600 dark:text-sky-400">Estilo de Composición</label>
                                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                             <button type="button" (click)="$any(section.content).compositionStyle = 'full-banner'; forceLayoutUpdate()"
-                                                [class.border-indigo-600]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
-                                                [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
-                                                [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
-                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
+                                                [class.border-sky-600]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
+                                                [class.bg-sky-50\/80]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
+                                                [class.dark:bg-sky-950\/40]="$any(section.content).compositionStyle === 'full-banner' || !$any(section.content).compositionStyle"
+                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-sky-400 transition-all">
                                                 <span class="block text-xs font-bold text-gray-900 dark:text-white">Full Banner</span>
                                                 <span class="block text-[10px] text-gray-400">Inmersivo</span>
                                             </button>
 
                                             <button type="button" (click)="$any(section.content).compositionStyle = 'split'; forceLayoutUpdate()"
-                                                [class.border-indigo-600]="$any(section.content).compositionStyle === 'split'"
-                                                [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'split'"
-                                                [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'split'"
-                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
+                                                [class.border-sky-600]="$any(section.content).compositionStyle === 'split'"
+                                                [class.bg-sky-50\/80]="$any(section.content).compositionStyle === 'split'"
+                                                [class.dark:bg-sky-950\/40]="$any(section.content).compositionStyle === 'split'"
+                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-sky-400 transition-all">
                                                 <span class="block text-xs font-bold text-gray-900 dark:text-white">Dividido</span>
                                                 <span class="block text-[10px] text-gray-400">Texto e imagen</span>
                                             </button>
 
                                             <button type="button" (click)="$any(section.content).compositionStyle = 'card-overlay'; forceLayoutUpdate()"
-                                                [class.border-indigo-600]="$any(section.content).compositionStyle === 'card-overlay'"
-                                                [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'card-overlay'"
-                                                [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'card-overlay'"
-                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
+                                                [class.border-sky-600]="$any(section.content).compositionStyle === 'card-overlay'"
+                                                [class.bg-sky-50\/80]="$any(section.content).compositionStyle === 'card-overlay'"
+                                                [class.dark:bg-sky-950\/40]="$any(section.content).compositionStyle === 'card-overlay'"
+                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-sky-400 transition-all">
                                                 <span class="block text-xs font-bold text-gray-900 dark:text-white">Tarjeta Flotante</span>
                                                 <span class="block text-[10px] text-gray-400">Glassmorphism</span>
                                             </button>
 
                                             <button type="button" (click)="$any(section.content).compositionStyle = 'minimal-centered'; forceLayoutUpdate()"
-                                                [class.border-indigo-600]="$any(section.content).compositionStyle === 'minimal-centered'"
-                                                [class.bg-indigo-50\/80]="$any(section.content).compositionStyle === 'minimal-centered'"
-                                                [class.dark:bg-indigo-950\/40]="$any(section.content).compositionStyle === 'minimal-centered'"
-                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-indigo-400 transition-all">
+                                                [class.border-sky-600]="$any(section.content).compositionStyle === 'minimal-centered'"
+                                                [class.bg-sky-50\/80]="$any(section.content).compositionStyle === 'minimal-centered'"
+                                                [class.dark:bg-sky-950\/40]="$any(section.content).compositionStyle === 'minimal-centered'"
+                                                class="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-left hover:border-sky-400 transition-all">
                                                 <span class="block text-xs font-bold text-gray-900 dark:text-white">Minimalista</span>
                                                 <span class="block text-[10px] text-gray-400">Limpio / Editorial</span>
                                             </button>
@@ -491,8 +491,8 @@
 
                                     <!-- Opciones de Layout Dividido (Split) -->
                                     @if ($any(section.content).compositionStyle === 'split') {
-                                        <div class="p-4 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-2xl border border-indigo-100 dark:border-indigo-900/50 space-y-3">
-                                            <label class="block text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300">Configuración del Modo Dividido</label>
+                                        <div class="p-4 bg-sky-50/50 dark:bg-sky-950/30 rounded-2xl border border-sky-100 dark:border-sky-900/50 space-y-3">
+                                            <label class="block text-xs font-black uppercase tracking-wider text-sky-700 dark:text-sky-300">Configuración del Modo Dividido</label>
                                             <div class="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Posición de Imagen</label>
@@ -508,7 +508,7 @@
                                                     <div class="flex items-center gap-2">
                                                         <input type="text" [(ngModel)]="$any(section.content).splitImageUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://..."
                                                             class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                                                        <label class="px-3 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 cursor-pointer shrink-0">
+                                                        <label class="px-3 py-2 bg-sky-600 text-white rounded-xl text-xs font-bold hover:bg-sky-700 cursor-pointer shrink-0">
                                                             Subir
                                                             <input type="file" accept="image/*" class="hidden" (change)="onHeroSplitImageUpload($event, section)">
                                                         </label>
@@ -523,7 +523,7 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Altura del Banner</label>
                                             <select [(ngModel)]="$any(section.content).height" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                                 <option value="compact">Compacto (~400px)</option>
                                                 <option value="medium">Mediano (~550px)</option>
                                                 <option value="tall">Alto (~700px)</option>
@@ -534,7 +534,7 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Tamaño de Texto</label>
                                             <select [(ngModel)]="$any(section.content).textSize" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                                 <option value="compact">Compacto</option>
                                                 <option value="normal">Normal</option>
                                                 <option value="large">Grande</option>
@@ -545,7 +545,7 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Alineación del Texto</label>
                                             <select [(ngModel)]="$any(section.content).alignment" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                                 <option value="left">Izquierda</option>
                                                 <option value="center">Centrado</option>
                                                 <option value="right">Derecha</option>
@@ -557,7 +557,7 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Animación de Entrada</label>
                                             <select [(ngModel)]="$any(section.content).animation" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                                 <option value="none">Sin animación</option>
                                                 <option value="fade-in">Desvanecer (Fade In)</option>
                                                 <option value="slide-up">Deslizar arriba (Slide Up)</option>
@@ -568,13 +568,13 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Badge Superior</label>
                                             <input type="text" [(ngModel)]="$any(section.content).badgeText" (ngModelChange)="forceLayoutUpdate()" placeholder="Edición Limitada"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
 
                                     <!-- Medios: Fondo de Imagen, Video y Overlay -->
                                     <div class="p-4 bg-gray-50 dark:bg-gray-800/60 rounded-2xl border border-gray-200/80 dark:border-gray-700/80 space-y-4">
-                                        <label class="block text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🎥 Fondo y Medios de la Sección</label>
+                                        <label class="block text-xs font-black uppercase tracking-wider text-sky-600 dark:text-sky-400">🎥 Fondo y Medios de la Sección</label>
 
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
@@ -582,7 +582,7 @@
                                                 <div class="flex items-center gap-2">
                                                     <input type="text" [(ngModel)]="$any(section.content).backgroundImageUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://..."
                                                         class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                                                    <label class="px-3 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 cursor-pointer shrink-0">
+                                                    <label class="px-3 py-2 bg-sky-600 text-white rounded-xl text-xs font-bold hover:bg-sky-700 cursor-pointer shrink-0">
                                                         Subir
                                                         <input type="file" accept="image/*" class="hidden" (change)="onHeroBannerUpload($event, section)">
                                                     </label>
@@ -600,10 +600,10 @@
                                             <div>
                                                 <div class="flex items-center justify-between mb-1">
                                                     <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Opacidad de Capa / Overlay</label>
-                                                    <span class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">{{ $any(section.content).overlayOpacity || 40 }}%</span>
+                                                    <span class="text-xs font-mono font-bold text-sky-600 dark:text-sky-400">{{ $any(section.content).overlayOpacity || 40 }}%</span>
                                                 </div>
                                                 <input type="range" min="0" max="100" [(ngModel)]="$any(section.content).overlayOpacity" (ngModelChange)="forceLayoutUpdate()"
-                                                    class="w-full accent-indigo-600">
+                                                    class="w-full accent-sky-600">
                                             </div>
 
                                             <div>
@@ -622,13 +622,13 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título Principal</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()" placeholder="Título impactante"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
 
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Subtítulo</label>
                                         <textarea [(ngModel)]="$any(section.content).subtitle" (ngModelChange)="forceLayoutUpdate()" rows="2" placeholder="Descripción breve..."
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500"></textarea>
                                     </div>
 
                                     <!-- Botones -->
@@ -636,12 +636,12 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Botón Principal</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Comprar ahora"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace Principal</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonLink" (ngModelChange)="forceLayoutUpdate()" placeholder="/store/productos"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
 
@@ -649,12 +649,12 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Botón Secundario (Opcional)</label>
                                             <input type="text" [(ngModel)]="$any(section.content).secondaryButtonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Ver catálogo"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace Secundario</label>
                                             <input type="text" [(ngModel)]="$any(section.content).secondaryButtonLink" (ngModelChange)="forceLayoutUpdate()" placeholder="/store/productos"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                 </div>
@@ -667,34 +667,34 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Badge / Tag</label>
                                             <input type="text" [(ngModel)]="$any(section.content).badge" (ngModelChange)="forceLayoutUpdate()" placeholder="OFERTA FLASH"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">% Descuento</label>
                                             <input type="text" [(ngModel)]="$any(section.content).discountPercent" (ngModelChange)="forceLayoutUpdate()" placeholder="30% OFF"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título del Banner</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Subtítulo</label>
                                         <input type="text" [(ngModel)]="$any(section.content).subtitle" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Texto del Botón</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Ver Ofertas"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace del Botón</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonLink" (ngModelChange)="forceLayoutUpdate()" placeholder="/store/productos"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                 </div>
@@ -706,23 +706,23 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título de la Sección</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
                                         <input type="text" [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Límite de Productos</label>
                                             <input type="number" [(ngModel)]="$any(section.content).limit" (ngModelChange)="forceLayoutUpdate()" min="2" max="24"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Columnas</label>
                                             <select [(ngModel)]="$any(section.content).columns" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                                 <option [ngValue]="2">2 Columnas</option>
                                                 <option [ngValue]="3">3 Columnas</option>
                                                 <option [ngValue]="4">4 Columnas</option>
@@ -738,18 +738,18 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
                                         <input type="text" [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
 
                                     <div class="space-y-2 pt-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Categorías Destacadas</label>
-                                            <button (click)="addCategoryItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar</button>
+                                            <button (click)="addCategoryItem(section)" class="text-xs text-sky-600 font-bold hover:underline">+ Agregar</button>
                                         </div>
                                         @for (cat of $any(section.content).categories; track cat.id; let ci = $index) {
                                             <div class="flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700">
@@ -771,34 +771,34 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Badge</label>
                                             <input type="text" [(ngModel)]="$any(section.content).badge" (ngModelChange)="forceLayoutUpdate()" placeholder="FLASH SALE"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descuento</label>
                                             <input type="text" [(ngModel)]="$any(section.content).discountBadge" (ngModelChange)="forceLayoutUpdate()" placeholder="50% OFF"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
                                         <textarea [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()" rows="2"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500"></textarea>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Botón</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonLink" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                 </div>
@@ -810,18 +810,18 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Subtítulo</label>
                                         <input type="text" [(ngModel)]="$any(section.content).subtitle" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
 
                                     <div class="space-y-3 pt-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Testimonios ({{ $any(section.content).items?.length || 0 }})</label>
-                                            <button (click)="addTestimonialItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Testimonio</button>
+                                            <button (click)="addTestimonialItem(section)" class="text-xs text-sky-600 font-bold hover:underline">+ Agregar Testimonio</button>
                                         </div>
                                         @for (item of $any(section.content).items; track item.id; let ti = $index) {
                                             <div class="p-3.5 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 space-y-2">
@@ -850,18 +850,18 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                             <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Calificación General</label>
                                             <input type="number" [(ngModel)]="$any(section.content).overallRating" (ngModelChange)="forceLayoutUpdate()" step="0.1" min="1" max="5"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                     <div class="space-y-3 pt-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Reseñas Individuales</label>
-                                            <button (click)="addReviewItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Reseña</button>
+                                            <button (click)="addReviewItem(section)" class="text-xs text-sky-600 font-bold hover:underline">+ Agregar Reseña</button>
                                         </div>
                                         @for (rev of $any(section.content).items; track rev.id; let ri = $index) {
                                             <div class="p-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 space-y-2">
@@ -887,12 +887,12 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                             <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Posición de Imagen</label>
                                             <select [(ngModel)]="$any(section.content).imagePosition" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                                 <option value="left">Izquierda</option>
                                                 <option value="right">Derecha</option>
                                             </select>
@@ -901,12 +901,12 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">URL de la Imagen</label>
                                         <input type="text" [(ngModel)]="$any(section.content).imageUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://..."
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Historia / Contenido</label>
                                         <textarea [(ngModel)]="$any(section.content).content" (ngModelChange)="forceLayoutUpdate()" rows="4"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500"></textarea>
                                     </div>
                                 </div>
                             }
@@ -918,12 +918,12 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título de la Galería</label>
                                             <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Columnas</label>
                                             <select [(ngModel)]="$any(section.content).columns" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                                 <option [ngValue]="2">2 Columnas</option>
                                                 <option [ngValue]="3">3 Columnas</option>
                                                 <option [ngValue]="4">4 Columnas</option>
@@ -933,7 +933,7 @@
                                     <div class="space-y-2 pt-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Imágenes ({{ $any(section.content).items?.length || 0 }})</label>
-                                            <button (click)="addGalleryItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Imagen</button>
+                                            <button (click)="addGalleryItem(section)" class="text-xs text-sky-600 font-bold hover:underline">+ Agregar Imagen</button>
                                         </div>
                                         @for (img of $any(section.content).items; track img.id; let gi = $index) {
                                             <div class="flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700">
@@ -954,23 +954,23 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título de la Suscripción</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción / Beneficio</label>
                                         <textarea [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()" rows="2"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500"></textarea>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Placeholder</label>
                                             <input type="text" [(ngModel)]="$any(section.content).placeholderText" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Texto del Botón</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                 </div>
@@ -982,12 +982,12 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div class="space-y-3 pt-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Preguntas & Respuestas</label>
-                                            <button (click)="addFaqItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar FAQ</button>
+                                            <button (click)="addFaqItem(section)" class="text-xs text-sky-600 font-bold hover:underline">+ Agregar FAQ</button>
                                         </div>
                                         @for (faq of $any(section.content).items; track faq.id; let fi = $index) {
                                             <div class="p-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 space-y-2">
@@ -1011,12 +1011,12 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título de la Sección</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div class="space-y-3 pt-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Beneficios Clave</label>
-                                            <button (click)="addBenefitItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Beneficio</button>
+                                            <button (click)="addBenefitItem(section)" class="text-xs text-sky-600 font-bold hover:underline">+ Agregar Beneficio</button>
                                         </div>
                                         @for (ben of $any(section.content).items; track ben.id; let bi = $index) {
                                             <div class="p-3 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700 space-y-2">
@@ -1041,12 +1041,12 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div class="space-y-2 pt-2">
                                         <div class="flex items-center justify-between">
                                             <label class="text-xs font-bold text-gray-700 dark:text-gray-300">Marcas ({{ $any(section.content).items?.length || 0 }})</label>
-                                            <button (click)="addBrandLogoItem(section)" class="text-xs text-indigo-600 font-bold hover:underline">+ Agregar Marca</button>
+                                            <button (click)="addBrandLogoItem(section)" class="text-xs text-sky-600 font-bold hover:underline">+ Agregar Marca</button>
                                         </div>
                                         @for (brand of $any(section.content).items; track brand.id; let bli = $index) {
                                             <div class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700">
@@ -1067,23 +1067,23 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título del Evento / Venta</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
                                         <textarea [(ngModel)]="$any(section.content).description" (ngModelChange)="forceLayoutUpdate()" rows="2"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500"></textarea>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Texto del Botón</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonText" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace del Botón</label>
                                             <input type="text" [(ngModel)]="$any(section.content).buttonLink" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                 </div>
@@ -1096,24 +1096,24 @@
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                             <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Usuario Instagram (ej. @mitienda)</label>
                                             <input type="text" [(ngModel)]="$any(section.content).handle" (ngModelChange)="forceLayoutUpdate()"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Texto del Botón</label>
                                             <input type="text" [(ngModel)]="$any(section.content).followButtonText" (ngModelChange)="forceLayoutUpdate()" placeholder="Seguir en Instagram"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Enlace del Perfil</label>
                                             <input type="text" [(ngModel)]="$any(section.content).profileUrl" (ngModelChange)="forceLayoutUpdate()" placeholder="https://instagram.com/..."
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                 </div>
@@ -1125,23 +1125,23 @@
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Título</label>
                                         <input type="text" [(ngModel)]="$any(section.content).title" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Dirección Física</label>
                                         <input type="text" [(ngModel)]="$any(section.content).address" (ngModelChange)="forceLayoutUpdate()" placeholder="Av. Principal 1234..."
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Teléfono</label>
                                             <input type="text" [(ngModel)]="$any(section.content).phone" (ngModelChange)="forceLayoutUpdate()" placeholder="+52 55 1234 5678"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Horarios</label>
                                             <input type="text" [(ngModel)]="$any(section.content).hours" (ngModelChange)="forceLayoutUpdate()" placeholder="Lun - Sáb: 10am - 8pm"
-                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                                class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         </div>
                                     </div>
                                 </div>
@@ -1161,7 +1161,7 @@
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Espaciado Superior (Padding Top)</label>
                                         <select [(ngModel)]="ensureSectionStyles(section).paddingTop" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                             @for (opt of spacingOptions; track opt.value) {
                                                 <option [value]="opt.value">{{ opt.label }}</option>
                                             }
@@ -1170,7 +1170,7 @@
                                     <div>
                                         <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Espaciado Inferior (Padding Bottom)</label>
                                         <select [(ngModel)]="ensureSectionStyles(section).paddingBottom" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                            class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                             @for (opt of spacingOptions; track opt.value) {
                                                 <option [value]="opt.value">{{ opt.label }}</option>
                                             }
@@ -1230,10 +1230,10 @@
                                     <div>
                                         <div class="flex items-center justify-between mb-1">
                                             <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Opacidad de Capa Oscura (Overlay)</label>
-                                            <span class="text-xs font-bold font-mono text-indigo-600">{{ ensureSectionStyles(section).overlayOpacity ?? 40 }}%</span>
+                                            <span class="text-xs font-bold font-mono text-sky-600">{{ ensureSectionStyles(section).overlayOpacity ?? 40 }}%</span>
                                         </div>
                                         <input type="range" [(ngModel)]="ensureSectionStyles(section).overlayOpacity" (ngModelChange)="forceLayoutUpdate()" min="0" max="90" step="5"
-                                            class="w-full accent-indigo-600">
+                                            class="w-full accent-sky-600">
                                     </div>
                                 }
                             </div>
@@ -1245,7 +1245,7 @@
                                 <div>
                                     <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Ancho del Contenido</label>
                                     <select [(ngModel)]="ensureSectionStyles(section).containerWidth" (ngModelChange)="forceLayoutUpdate()"
-                                        class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                        class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-sky-500">
                                         @for (opt of containerWidthOptions; track opt.value) {
                                             <option [value]="opt.value">{{ opt.label }}</option>
                                         }
@@ -1259,7 +1259,7 @@
                                             <p class="text-[10px] text-gray-400">No mostrar en celulares</p>
                                         </div>
                                         <input type="checkbox" [(ngModel)]="ensureSectionStyles(section).hideOnMobile" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-4 h-4 rounded text-indigo-600 accent-indigo-600">
+                                            class="w-4 h-4 rounded text-sky-600 accent-sky-600">
                                     </label>
 
                                     <label class="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/40 cursor-pointer">
@@ -1268,7 +1268,7 @@
                                             <p class="text-[10px] text-gray-400">No mostrar en computadoras</p>
                                         </div>
                                         <input type="checkbox" [(ngModel)]="ensureSectionStyles(section).hideOnDesktop" (ngModelChange)="forceLayoutUpdate()"
-                                            class="w-4 h-4 rounded text-indigo-600 accent-indigo-600">
+                                            class="w-4 h-4 rounded text-sky-600 accent-sky-600">
                                     </label>
                                 </div>
                             </div>
@@ -1307,7 +1307,7 @@
                 <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex flex-wrap gap-2 bg-gray-50/30 dark:bg-gray-800/20">
                     @for (cat of catalogCategories; track cat) {
                         <button (click)="addCategoryFilter.set(cat)"
-                            [class.bg-indigo-600]="addCategoryFilter() === cat"
+                            [class.bg-sky-600]="addCategoryFilter() === cat"
                             [class.text-white]="addCategoryFilter() === cat"
                             [class.bg-gray-100]="addCategoryFilter() !== cat"
                             [class.dark:bg-gray-800]="addCategoryFilter() !== cat"
@@ -1323,14 +1323,14 @@
                 <div class="p-5 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5 flex-1">
                     @for (item of filteredCatalog(); track item.type) {
                         <div (click)="addSection(item.type)"
-                            class="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/60 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-md cursor-pointer transition-all flex items-start gap-3.5 group">
+                            class="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/60 hover:border-sky-500 dark:hover:border-sky-500 hover:shadow-md cursor-pointer transition-all flex items-start gap-3.5 group">
                             
-                            <div class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform shrink-0" [innerHTML]="item.icon">
+                            <div class="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 group-hover:scale-110 transition-transform shrink-0" [innerHTML]="item.icon">
                             </div>
 
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center justify-between">
-                                    <h5 class="text-xs font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                    <h5 class="text-xs font-bold text-gray-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                                         {{ item.name }}
                                     </h5>
                                     <span class="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">

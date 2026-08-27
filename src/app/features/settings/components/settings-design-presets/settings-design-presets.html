@@ -4,7 +4,7 @@
     <!-- Modal Header -->
     <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50">
       <div class="flex items-center gap-3">
-        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
           </svg>
@@ -28,9 +28,9 @@
       <div class="flex gap-2">
         <button type="button" (click)="activeTab.set('presets')"
           class="flex items-center gap-2 pb-3 px-3 text-sm font-semibold border-b-2 transition-all"
-          [class.border-indigo-600]="activeTab() === 'presets'"
-          [class.text-indigo-600]="activeTab() === 'presets'"
-          [class.dark:text-indigo-400]="activeTab() === 'presets'"
+          [class.border-sky-600]="activeTab() === 'presets'"
+          [class.text-sky-600]="activeTab() === 'presets'"
+          [class.dark:text-sky-400]="activeTab() === 'presets'"
           [class.border-transparent]="activeTab() !== 'presets'"
           [class.text-gray-500]="activeTab() !== 'presets'">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -44,9 +44,9 @@
 
         <button type="button" (click)="activeTab.set('versions')"
           class="flex items-center gap-2 pb-3 px-3 text-sm font-semibold border-b-2 transition-all"
-          [class.border-indigo-600]="activeTab() === 'versions'"
-          [class.text-indigo-600]="activeTab() === 'versions'"
-          [class.dark:text-indigo-400]="activeTab() === 'versions'"
+          [class.border-sky-600]="activeTab() === 'versions'"
+          [class.text-sky-600]="activeTab() === 'versions'"
+          [class.dark:text-sky-400]="activeTab() === 'versions'"
           [class.border-transparent]="activeTab() !== 'versions'"
           [class.text-gray-500]="activeTab() !== 'versions'">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -61,7 +61,7 @@
 
       @if (activeTab() === 'presets') {
         <button type="button" (click)="openNewPresetModal()"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors mb-2">
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors mb-2">
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
@@ -75,7 +75,7 @@
       
       <!-- New Preset Form Inline Modal -->
       @if (showNewPresetForm()) {
-        <div class="mb-6 p-5 rounded-xl border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50/50 dark:bg-indigo-950/30">
+        <div class="mb-6 p-5 rounded-xl border border-sky-200 dark:border-sky-900/50 bg-sky-50/50 dark:bg-sky-950/30">
           <div class="flex items-start justify-between gap-4 mb-4">
             <div>
               <h3 class="text-sm font-bold text-gray-900 dark:text-white">Guardar Preset Personalizado</h3>
@@ -91,14 +91,14 @@
               <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Nombre del Preset *</label>
               <input type="text" [ngModel]="newPresetName()" (ngModelChange)="newPresetName.set($event)"
                 placeholder="Ej. Tema Otoño Elegante, Black Friday 2026..."
-                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Descripción o Notas (Opcional)</label>
               <input type="text" [ngModel]="newPresetDescription()" (ngModelChange)="newPresetDescription.set($event)"
                 placeholder="Ej. Estilo minimalista con tipografía Serif y Hero centrado"
-                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />
             </div>
 
             <div class="flex items-center justify-end gap-2 pt-2">
@@ -107,7 +107,7 @@
                 Cancelar
               </button>
               <button type="button" (click)="saveCurrentPreset()" [disabled]="isSavingPreset() || !newPresetName().trim()"
-                class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white shadow-sm transition-colors">
+                class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white shadow-sm transition-colors">
                 @if (isSavingPreset()) {
                   <span class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                   Guardando...
@@ -134,7 +134,7 @@
               Puedes guardar combinaciones personalizadas de temas, colores y estructuras de página para reutilizarlas en promociones, temporadas o eventos especiales.
             </p>
             <button type="button" (click)="openNewPresetModal()"
-              class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-colors">
+              class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
@@ -144,7 +144,7 @@
         } @else {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @for (preset of savedPresets(); track preset.id) {
-              <div class="flex flex-col justify-between rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 hover:border-indigo-300 dark:hover:border-indigo-800 transition-all hover:shadow-md">
+              <div class="flex flex-col justify-between rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 hover:border-sky-300 dark:hover:border-sky-800 transition-all hover:shadow-md">
                 <div>
                   <div class="flex items-start justify-between gap-3 mb-2">
                     <div class="min-w-0">
@@ -177,7 +177,7 @@
                 <div class="flex items-center justify-between gap-2 border-t border-gray-100 dark:border-gray-800 pt-3 mt-4">
                   <div class="flex items-center gap-1">
                     <button type="button" (click)="duplicate(preset)" title="Duplicar preset"
-                      class="p-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                      class="p-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v2.25A2.25 2.25 0 0 1 13.5 21.75h-7.5A2.25 2.25 0 0 1 3.75 19.5V12a2.25 2.25 0 0 1 2.25-2.25H6m9.75 7.5H18a2.25 2.25 0 0 0 2.25-2.25V6A2.25 2.25 0 0 0 17.25 3.75h-7.5A2.25 2.25 0 0 0 7.5 6v1.5m9.75 9.75" />
                       </svg>
@@ -191,7 +191,7 @@
                   </div>
 
                   <button type="button" (click)="apply(preset)"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors">
+                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:hover:bg-sky-900/50 dark:text-sky-300 transition-colors">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
@@ -223,7 +223,7 @@
             @for (version of designVersions(); track version.id) {
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 transition-all hover:border-gray-300 dark:hover:border-gray-700">
                 <div class="flex items-start gap-3 min-w-0">
-                  <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-bold text-xs shrink-0">
+                  <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 font-bold text-xs shrink-0">
                     #{{ version.version_number }}
                   </div>
 
@@ -231,8 +231,8 @@
                     <div class="flex items-center gap-2">
                       <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ version.name }}</h4>
                       @if (isCurrentLiveVersion(version)) {
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 shrink-0">
-                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300 shrink-0">
+                          <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
                           En Vivo
                         </span>
                       }
@@ -262,7 +262,7 @@
                   </button>
 
                   <button type="button" (click)="restore(version, true)" [disabled]="isRestoring()"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-colors">
+                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 text-white shadow-xs transition-colors">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                     </svg>
