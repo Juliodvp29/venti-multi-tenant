@@ -241,6 +241,15 @@
 }
 
 /* Global dark mode theme overrides for inputs/dropdowns */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --auth-bg: #020817; /* slate-950 */
+    --auth-card-bg: #0f172a; /* slate-900 */
+    --auth-gradient-from: rgba(99, 102, 241, 0.45);
+    --auth-gradient-to: rgba(168, 85, 247, 0.4);
+  }
+}
+
 .dark,
 :host-context(.dark) {
   --input-bg: #1e293b; /* slate-800 */

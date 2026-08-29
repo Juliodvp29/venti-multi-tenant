@@ -44,6 +44,7 @@ export class TenantService {
   readonly loading = computed(() => this._state().loading); // Alias for Settings
   readonly error = computed(() => this._state().error);
   readonly initialized = computed(() => this._state().initialized);
+  readonly memberInfo = computed(() => this._state().memberInfo);
   readonly memberRole = computed(() => {
     const memberRole = this._state().memberInfo?.role;
     if (memberRole) return memberRole.toLowerCase() as string;

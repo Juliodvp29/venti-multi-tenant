@@ -152,6 +152,22 @@ import { Supabase } from '@core/services/supabase';
             <div class="space-y-2">
               <label
                 class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1"
+                >Tu Nombre Completo</label
+              >
+              <input
+                type="text"
+                formControlName="fullName"
+                placeholder="Ej. Juan Pérez"
+                class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-sky-500 outline-none transition-all dark:text-white"
+              />
+              @if (fullNameError()) {
+                <p class="text-[10px] text-red-500 font-bold px-1">{{ fullNameError() }}</p>
+              }
+            </div>
+
+            <div class="space-y-2">
+              <label
+                class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1"
                 >Correo Electrónico</label
               >
               <input
@@ -360,6 +376,7 @@ export class Singup implements OnInit {
 
   // ── Form ─────────────────────────────────────────────────
   readonly signupForm = this.fb.nonNullable.group({
+    fullName: ['', [Validators.required, Validators.minLength(2)]],
     businessName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
@@ -367,6 +384,15 @@ export class Singup implements OnInit {
   });
 
   readonly isFormValid = computed(() => this.signupForm.valid && this.passwordsMatch());
+
+  readonly fullNameError = computed(() => {
+    const control = this.signupForm.controls.fullName;
+    if (control.touched && control.errors) {
+      if (control.errors['required']) return 'Tu nombre completo es obligatorio';
+      if (control.errors['minlength']) return 'Mínimo 2 caracteres';
+    }
+    return null;
+  });
 
   readonly businessNameError = computed(() => {
     const control = this.signupForm.controls.businessName;
@@ -479,7 +505,7 @@ export class Singup implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const { businessName, email, password } = this.signupForm.getRawValue();
+    const { fullName, businessName, email, password } = this.signupForm.getRawValue();
     const token = this.inviteToken();
     const plan = this.selectedPlan();
 
@@ -487,7 +513,10 @@ export class Singup implements OnInit {
       email,
       password,
       {
-        business_name: this.isInviteFlow() ? null : businessName,
+        display_name: fullName.trim(),
+        full_name: fullName.trim(),
+        name: fullName.trim(),
+        business_name: this.isInviteFlow() ? null : businessName.trim(),
         plan: plan,
       },
       `${window.location.origin}/dashboard`,

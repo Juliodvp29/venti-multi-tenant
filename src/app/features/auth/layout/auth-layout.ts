@@ -6,7 +6,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-auth-layout',
   imports: [RouterOutlet],
   template: `
-    <div class="auth-layout">
+    <div class="auth-layout min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden transition-colors">
       <!-- Background Gradient -->
       <div class="auth-background">
         <div class="gradient-orb orb-1"></div>
@@ -37,7 +37,7 @@ import { RouterOutlet } from '@angular/router';
               </text>
             </svg>
           </div>
-          <p class="logo-subtitle mt-2 text-center text-sm font-medium tracking-widest uppercase">
+          <p class="logo-subtitle mt-2 text-center text-sm font-medium tracking-widest uppercase text-gray-600 dark:text-gray-400">
             Plataforma Multi-Tenant
           </p>
         </div>
@@ -53,10 +53,21 @@ import { RouterOutlet } from '@angular/router';
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: var(--spacing-4);
+      padding: var(--spacing-4, 1rem);
       position: relative;
       overflow: hidden;
-      background: var(--auth-bg);
+      background: var(--auth-bg, #f8fafc);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .auth-layout {
+        background: #020817;
+      }
+    }
+
+    :host-context(.dark) .auth-layout,
+    .dark .auth-layout {
+      background: #020817;
     }
 
     .auth-background {

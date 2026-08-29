@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   OnInit,
@@ -184,8 +185,8 @@ interface NavItem {
             </svg>
             <span
               class="text-xs text-gray-500 dark:text-gray-400 capitalize font-bold tracking-tight truncate"
-              [title]="tenantService.memberRole()"
-              >{{ authService.user()?.email }}</span
+              [title]="authService.user()?.email ? authService.user()?.email + ' (' + (tenantService.memberRole() ?? '') + ')' : (tenantService.memberRole() ?? '')"
+              >{{ userDisplayName() }}</span
             >
           </div>
         }
@@ -245,6 +246,8 @@ export class SidebarComponent {
   readonly isOpen = input(false);
   readonly isCollapsed = input(false);
   readonly toggleCollapse = output<void>();
+
+  readonly userDisplayName = this.authService.userDisplayName;
 
   readonly navItems: NavItem[] = (
     [
