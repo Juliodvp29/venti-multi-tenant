@@ -76,7 +76,7 @@
 
             <!-- In-input quick clear for search specifically -->
             @if (searchQuery()) {
-            <button class="absolute inset-y-0 right-0 flex items-center pr-3 group" (click)="onClearFilters()">
+            <button type="button" aria-label="Limpiar búsqueda" class="absolute inset-y-0 right-0 flex items-center pr-3 group" (click)="onClearFilters()">
                 <div
                     class="bg-gray-100 dark:bg-gray-700 rounded-full p-1 group-hover:bg-gray-200 dark:group-hover:bg-gray-600 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-500" fill="none"
@@ -91,7 +91,7 @@
         <div class="flex-shrink-0 flex items-center gap-2">
             <ng-content select="[filters]"></ng-content>
             @if (hasActiveFilters()) {
-            <button (click)="onClearFilters()"
+            <button type="button" (click)="onClearFilters()"
                 class="text-xs bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 px-3 py-2 rounded-xl border border-red-100 dark:border-red-900/30 font-semibold transition-colors flex items-center gap-1.5 shadow-sm">
                 Limpiar Filtros
             </button>
@@ -207,7 +207,7 @@
                     @if (actions().length > 0) {
                     <td class="whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm">
                         <div class="relative inline-block">
-                            <button type="button" (click)="toggleMenu($event, item)"
+                            <button type="button" (click)="toggleMenu($event, item)" aria-label="Opciones de fila"
                                 class="actions-menu-button inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
                                 [class.is-open]="openMenuId() === item['id']">
                                 <!-- Horizontal dots -->
@@ -267,7 +267,7 @@
         </p>
         <nav class="isolate inline-flex -space-x-px rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
             aria-label="Pagination">
-            <button (click)="prevPage()" [disabled]="currentPage() === 1"
+            <button type="button" (click)="prevPage()" [disabled]="currentPage() === 1" aria-label="Página anterior"
                 class="relative inline-flex items-center rounded-l-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all">
                 <span class="sr-only">Anterior</span>
                 <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -280,7 +280,7 @@
                 class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-100 dark:ring-gray-800">
                 Página {{ currentPage() }} de {{ totalPages() || 1 }}
             </span>
-            <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+            <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()" aria-label="Página siguiente"
                 class="relative inline-flex items-center rounded-r-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all">
                 <span class="sr-only">Siguiente</span>
                 <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

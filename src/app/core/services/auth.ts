@@ -33,6 +33,20 @@ export class AuthService {
   readonly userEmail = computed(() => this._state().user?.email ?? null);
   readonly userId = computed(() => this._state().user?.id ?? null);
   readonly userMetadata = computed(() => this._state().user?.user_metadata ?? null);
+  readonly userDisplayName = computed(() => {
+    const user = this._state().user;
+    if (!user) return '';
+    const metadata = user.user_metadata;
+    return (
+      metadata?.['display_name'] ||
+      metadata?.['full_name'] ||
+      metadata?.['name'] ||
+      metadata?.['user_name'] ||
+      metadata?.['username'] ||
+      user.email ||
+      ''
+    );
+  });
   readonly isSuperAdmin = computed(
     () => this._state().user?.user_metadata?.['role'] === 'superadmin'
   );

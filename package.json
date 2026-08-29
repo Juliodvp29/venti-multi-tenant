@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js serve",
     "prebuild": "node scripts/set-env.js",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "build": "node --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js build",
+    "watch": "node --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js build --watch --configuration development",
+    "test": "node --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js test"
   },
   "prettier": {
     "printWidth": 100,

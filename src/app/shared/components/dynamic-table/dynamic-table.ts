@@ -16,7 +16,6 @@ import { ColumnDef, TableAction, TableSort } from '@core/types/table';
 import { ToastService } from '@core/services/toast';
 import { FileProcessorService } from '@core/services/file-processor';
 import { TenantService } from '@core/services/tenant';
-import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -252,7 +251,7 @@ export class DynamicTable<T extends Record<string, any>> {
     this.exportData('xlsx');
   }
 
-  private exportData(format: 'csv' | 'xlsx') {
+  private async exportData(format: 'csv' | 'xlsx') {
     if (this.filteredData().length === 0) {
       this.toast.error('No hay datos para exportar');
       return;
@@ -278,6 +277,7 @@ export class DynamicTable<T extends Record<string, any>> {
       this.downloadFile(blob, `${this.title() || 'export'}_${new Date().getTime()}.csv`);
     } else {
       try {
+        const XLSX = await import('xlsx');
         const worksheet = XLSX.utils.json_to_sheet(dataToExport);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte");
@@ -285,6 +285,7 @@ export class DynamicTable<T extends Record<string, any>> {
       } catch (error) {
         console.error('Error al exportar a Excel:', error);
         this.toast.error('Error al generar archivo Excel');
+        return;
       }
     }
 

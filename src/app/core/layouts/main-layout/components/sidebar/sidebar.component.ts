@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   OnInit,
@@ -82,6 +83,8 @@ interface NavItem {
 
         <!-- Collapse Toggle Button -->
         <button
+          type="button"
+          [attr.aria-label]="isCollapsed() ? 'Expandir menú lateral' : 'Colapsar menú lateral'"
           (click)="toggleCollapse.emit()"
           class="hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 w-7 h-7 items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full shadow-md text-gray-500 hover:text-sky-600 dark:hover:text-sky-400 transition-all hover:scale-110"
           [class.right-2]="!isCollapsed()"
@@ -182,13 +185,15 @@ interface NavItem {
             </svg>
             <span
               class="text-xs text-gray-500 dark:text-gray-400 capitalize font-bold tracking-tight truncate"
-              [title]="tenantService.memberRole()"
-              >{{ authService.user()?.email }}</span
+              [title]="authService.user()?.email ? authService.user()?.email + ' (' + (tenantService.memberRole() ?? '') + ')' : (tenantService.memberRole() ?? '')"
+              >{{ userDisplayName() }}</span
             >
           </div>
         }
 
         <button
+          type="button"
+          aria-label="Cerrar Sesión"
           (click)="onLogout()"
           class="flex items-center w-full px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all group"
           [class.justify-center]="isCollapsed()"
@@ -241,6 +246,8 @@ export class SidebarComponent {
   readonly isOpen = input(false);
   readonly isCollapsed = input(false);
   readonly toggleCollapse = output<void>();
+
+  readonly userDisplayName = this.authService.userDisplayName;
 
   readonly navItems: NavItem[] = (
     [

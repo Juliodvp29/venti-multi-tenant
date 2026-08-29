@@ -34,6 +34,8 @@ import { CurrencyPipe } from '@angular/common';
           <span class="text-sm font-medium text-slate-400">({{ items().length }} artículos)</span>
         </h2>
         <button
+          type="button"
+          aria-label="Cerrar carrito"
           (click)="close.emit()"
           class="p-2 hover:bg-slate-100 rounded-full transition-colors"
         >
@@ -80,6 +82,8 @@ import { CurrencyPipe } from '@angular/common';
               <div class="flex justify-between items-start gap-2">
                 <h4 class="font-bold text-slate-900 truncate">{{ item.name }}</h4>
                 <button
+                  type="button"
+                  aria-label="Eliminar producto del carrito"
                   (click)="cartService.removeFromCart(item.id)"
                   class="text-slate-300 hover:text-red-500 transition-colors"
                 >
@@ -100,6 +104,8 @@ import { CurrencyPipe } from '@angular/common';
                 class="mt-auto flex items-center border border-slate-200 rounded-lg overflow-hidden w-fit bg-white"
               >
                 <button
+                  type="button"
+                  aria-label="Disminuir cantidad"
                   (click)="cartService.updateQuantity(item.id, item.quantity - 1)"
                   class="px-2 py-1 hover:bg-slate-50"
                 >
@@ -107,6 +113,8 @@ import { CurrencyPipe } from '@angular/common';
                 </button>
                 <span class="px-3 py-1 text-sm font-bold">{{ item.quantity }}</span>
                 <button
+                  type="button"
+                  aria-label="Aumentar cantidad"
                   (click)="cartService.updateQuantity(item.id, item.quantity + 1)"
                   class="px-2 py-1 hover:bg-slate-50"
                 >
@@ -124,7 +132,7 @@ import { CurrencyPipe } from '@angular/common';
             </div>
             <p class="font-bold text-slate-900 mb-1">Tu carrito está vacío</p>
             <p class="text-sm text-slate-500 mb-6">¡Comienza a comprar y añade productos!</p>
-            <button (click)="close.emit()" class="text-sky-600 font-bold hover:underline">
+            <button type="button" (click)="close.emit()" class="text-sky-600 font-bold hover:underline">
               Continuar comprando
             </button>
           </div>

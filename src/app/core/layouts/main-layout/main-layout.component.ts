@@ -2,12 +2,11 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
-import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assistant';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-main-layout',
-  imports: [RouterOutlet, SidebarComponent, HeaderComponent, AiAssistantComponent],
+  imports: [RouterOutlet, SidebarComponent, HeaderComponent],
   template: `
     <div class="flex h-screen bg-[#f9f9f9] dark:bg-gray-800 overflow-hidden">
       <!-- Mobile sidebar backdrop -->
@@ -35,11 +34,6 @@ import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assista
           <router-outlet />
         </main>
       </div>
-
-      <!-- AI Assistant (Only shown in Main Layout) -->
-      @if (false) {
-        <app-ai-assistant />
-      }
     </div>
   `,
 })

@@ -31,36 +31,35 @@ import { Supabase } from '@core/services/supabase';
       </div>
 
       <!-- Logo -->
-      <div class="relative z-10 mb-10 text-center">
-        <div class="flex items-center justify-center mb-4">
-          <svg
-            viewBox="0 0 500 150"
-            class="h-16 max-w-full drop-shadow-md"
-            style="font-family: 'Outfit', sans-serif;"
-          >
-            <g transform="translate(10, 5)">
+      <div class="relative z-10 mb-8 text-center">
+        <div class="flex items-center justify-center mb-3">
+          <svg viewBox="0 0 520 150" class="h-12 w-auto drop-shadow-sm" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+            <defs>
+              <linearGradient id="signupVentiGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0284c7" />
+                <stop offset="100%" stop-color="#38bdf8" />
+              </linearGradient>
+            </defs>
+
+            <!-- Icono: V tipo checkmark con trazos redondeados -->
+            <g transform="translate(15, 10)">
               <path
-                d="M 35 45 L 65 92 L 95 45 L 145 45"
-                class="stroke-sky-600 dark:stroke-white"
-                stroke-width="11"
+                d="M 12 45 L 45 100 L 90 15"
+                stroke="url(#signupVentiGrad)"
+                stroke-width="30"
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 fill="none"
               />
-              <circle cx="50" cy="112" r="7.5" class="fill-sky-600 dark:fill-white" />
-              <circle cx="80" cy="112" r="7.5" class="fill-sky-600 dark:fill-white" />
             </g>
-            <text x="105" y="100">
-              <tspan class="fill-gray-900 dark:fill-white" font-weight="700" font-size="64px">
-                enti
-              </tspan>
+
+            <text x="150" y="100">
               <tspan
-                class="fill-sky-600 dark:fill-sky-400"
-                opacity="0.9"
+                class="fill-gray-900 dark:fill-white italic"
                 font-weight="800"
-                font-size="64px"
+                font-size="58px"
               >
-                Shop
+                Venti Shop
               </tspan>
             </text>
           </svg>
@@ -148,6 +147,22 @@ import { Supabase } from '@core/services/supabase';
                 }
               </div>
             }
+
+            <div class="space-y-2">
+              <label
+                class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 pl-1"
+                >Tu Nombre Completo</label
+              >
+              <input
+                type="text"
+                formControlName="fullName"
+                placeholder="Ej. Juan Pérez"
+                class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-sky-500 outline-none transition-all dark:text-white"
+              />
+              @if (fullNameError()) {
+                <p class="text-[10px] text-red-500 font-bold px-1">{{ fullNameError() }}</p>
+              }
+            </div>
 
             <div class="space-y-2">
               <label
@@ -360,6 +375,7 @@ export class Singup implements OnInit {
 
   // ── Form ─────────────────────────────────────────────────
   readonly signupForm = this.fb.nonNullable.group({
+    fullName: ['', [Validators.required, Validators.minLength(2)]],
     businessName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
@@ -367,6 +383,15 @@ export class Singup implements OnInit {
   });
 
   readonly isFormValid = computed(() => this.signupForm.valid && this.passwordsMatch());
+
+  readonly fullNameError = computed(() => {
+    const control = this.signupForm.controls.fullName;
+    if (control.touched && control.errors) {
+      if (control.errors['required']) return 'Tu nombre completo es obligatorio';
+      if (control.errors['minlength']) return 'Mínimo 2 caracteres';
+    }
+    return null;
+  });
 
   readonly businessNameError = computed(() => {
     const control = this.signupForm.controls.businessName;
@@ -479,7 +504,7 @@ export class Singup implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const { businessName, email, password } = this.signupForm.getRawValue();
+    const { fullName, businessName, email, password } = this.signupForm.getRawValue();
     const token = this.inviteToken();
     const plan = this.selectedPlan();
 
@@ -487,7 +512,10 @@ export class Singup implements OnInit {
       email,
       password,
       {
-        business_name: this.isInviteFlow() ? null : businessName,
+        display_name: fullName.trim(),
+        full_name: fullName.trim(),
+        name: fullName.trim(),
+        business_name: this.isInviteFlow() ? null : businessName.trim(),
         plan: plan,
       },
       `${window.location.origin}/dashboard`,

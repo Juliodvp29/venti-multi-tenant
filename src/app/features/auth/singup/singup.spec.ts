@@ -55,4 +55,19 @@ describe('Singup', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should validate fullName along with businessName and email', () => {
+    expect(component.signupForm.valid).toBe(false);
+
+    component.signupForm.setValue({
+      fullName: 'Julio Dev',
+      businessName: 'Venti Shop',
+      email: 'julio@example.com',
+      password: 'Password123!',
+      confirmPassword: 'Password123!',
+    });
+
+    expect(component.signupForm.valid).toBe(true);
+    expect(component.passwordsMatch()).toBe(true);
+  });
 });

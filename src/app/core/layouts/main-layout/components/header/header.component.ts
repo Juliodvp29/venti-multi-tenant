@@ -11,6 +11,7 @@ import { TenantService } from '@core/services/tenant';
       <!-- Mobile menu button -->
       <button
         type="button"
+        aria-label="Abrir menú lateral"
         class="md:hidden -ml-2 mr-2 p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sky-500"
         (click)="toggleSidebar.emit()"
       >
@@ -55,6 +56,7 @@ import { TenantService } from '@core/services/tenant';
 
           <button
             type="button"
+            aria-label="Ver notificaciones"
             class="bg-white dark:bg-gray-800 p-1 rounded-full text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 dark:ring-offset-gray-900"
           >
             <span class="sr-only">Ver notificaciones</span>

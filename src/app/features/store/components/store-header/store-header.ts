@@ -192,6 +192,8 @@ import { getContrastColor } from '@core/constants/theme-presets';
     <ng-template #actionsTemplate>
       @if (showSearch()) {
         <button
+          type="button"
+          aria-label="Buscar"
           class="p-2 transition-opacity rounded-full hover:opacity-75 cursor-pointer"
           [style.color]="'var(--store-color-text, #0f172a)'"
         >
@@ -208,6 +210,8 @@ import { getContrastColor } from '@core/constants/theme-presets';
 
       @if (user()) {
         <button
+          type="button"
+          aria-label="Cerrar sesión"
           (click)="onLogout()"
           class="hidden md:block text-xs font-bold uppercase tracking-widest transition-opacity hover:opacity-75 cursor-pointer"
           [style.color]="'var(--store-color-muted, #64748b)'"
@@ -222,6 +226,8 @@ import { getContrastColor } from '@core/constants/theme-presets';
         </div>
       } @else {
         <button
+          type="button"
+          aria-label="Iniciar sesión"
           (click)="customerAuth.openLogin()"
           class="p-2 rounded-full transition-opacity hover:opacity-75 cursor-pointer"
           [style.color]="'var(--store-color-text, #0f172a)'"
@@ -239,6 +245,8 @@ import { getContrastColor } from '@core/constants/theme-presets';
 
       @if (showCart()) {
         <button
+          type="button"
+          aria-label="Ver carrito de compras"
           (click)="openCart.emit()"
           class="relative p-2.5 rounded-2xl transition-all active:scale-95 shadow-md hover:opacity-90 cursor-pointer"
           [style.background-color]="
@@ -268,6 +276,8 @@ import { getContrastColor } from '@core/constants/theme-presets';
 
       <!-- Hamburger button -->
       <button
+        type="button"
+        [attr.aria-label]="mobileMenuOpen() ? 'Cerrar menú' : 'Abrir menú'"
         (click)="mobileMenuOpen.set(!mobileMenuOpen())"
         class="p-2 rounded-lg transition-opacity hover:opacity-75 cursor-pointer"
         [class.md:hidden]="!isHamburger()"
