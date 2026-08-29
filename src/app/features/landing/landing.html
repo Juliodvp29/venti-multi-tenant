@@ -5,16 +5,35 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <!-- Logo -->
-                <div class="flex items-center gap-2">
-                    <div
-                        class="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center shadow-lg shadow-sky-500/20">
-                        <span class="text-white font-bold text-xl italic">V</span>
-                    </div>
-                    <span
-                        class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-sky-600 dark:from-sky-400 dark:to-sky-400">
-                        Venti
-                    </span>
-                </div>
+                <a routerLink="/" class="flex items-center">
+                    <svg viewBox="0 0 520 150" class="h-9 w-auto" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                        <defs>
+                            <linearGradient id="landingNavVentiGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#0284c7" />
+                                <stop offset="100%" stop-color="#38bdf8" />
+                            </linearGradient>
+                        </defs>
+                        <g transform="translate(15, 10)">
+                            <path
+                                d="M 12 45 L 45 100 L 90 15"
+                                stroke="url(#landingNavVentiGrad)"
+                                stroke-width="30"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                fill="none"
+                            />
+                        </g>
+                        <text x="150" y="100">
+                            <tspan
+                                class="fill-gray-900 dark:fill-white italic"
+                                font-weight="800"
+                                font-size="58px"
+                            >
+                                Venti Shop
+                            </tspan>
+                        </text>
+                    </svg>
+                </a>
 
                 <!-- Links desktop -->
                 <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600 dark:text-gray-400">
@@ -622,14 +641,37 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                 <div class="md:col-span-1">
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold text-xl italic">V</span>
-                        </div>
-                        <span class="text-xl font-bold tracking-tight dark:text-white">Venti</span>
+                    <div class="flex items-center mb-6">
+                        <svg viewBox="0 0 520 150" class="h-9 w-auto" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                            <defs>
+                                <linearGradient id="landingFootVentiGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#0284c7" />
+                                    <stop offset="100%" stop-color="#38bdf8" />
+                                </linearGradient>
+                            </defs>
+                            <g transform="translate(15, 10)">
+                                <path
+                                    d="M 12 45 L 45 100 L 90 15"
+                                    stroke="url(#landingFootVentiGrad)"
+                                    stroke-width="30"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    fill="none"
+                                />
+                            </g>
+                            <text x="150" y="100">
+                                <tspan
+                                    class="fill-gray-900 dark:fill-white italic"
+                                    font-weight="800"
+                                    font-size="58px"
+                                >
+                                    Venti Shop
+                                </tspan>
+                            </text>
+                        </svg>
                     </div>
                     <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                        La forma moderna de construir y escalar tu aplicación SaaS multi-inquilino.
+                        La plataforma moderna de comercio electrónico multi-tenant para crear y escalar tu tienda online.
                     </p>
                 </div>
 

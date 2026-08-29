@@ -16,39 +16,36 @@ import { ToastService } from '@core/services/toast';
         <div class="flex justify-center">
           <!-- Vcart Logo -->
           <svg
-            viewBox="0 0 500 150"
-            class="h-16 w-auto drop-shadow-md animate-fade-in"
-            style="font-family: 'Outfit', sans-serif;"
+            viewBox="0 0 520 150"
+            class="h-12 w-auto drop-shadow-sm animate-fade-in"
+            style="font-family: 'Plus Jakarta Sans', sans-serif;"
           >
             <defs>
-              <style>
-                @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&display=swap');
-              </style>
+              <linearGradient id="acceptInviteGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0284c7" />
+                <stop offset="100%" stop-color="#38bdf8" />
+              </linearGradient>
             </defs>
-            <g transform="translate(10, 5)">
+
+            <!-- Icono: V tipo checkmark con trazos redondeados -->
+            <g transform="translate(15, 10)">
               <path
-                d="M 35 45 L 65 92 L 95 45 L 145 45"
-                class="stroke-sky-600 dark:stroke-white"
-                stroke-width="11"
+                d="M 12 45 L 45 100 L 90 15"
+                stroke="url(#acceptInviteGrad)"
+                stroke-width="30"
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 fill="none"
               />
-              <circle cx="50" cy="112" r="7.5" class="fill-sky-600 dark:fill-white" />
-              <circle cx="80" cy="112" r="7.5" class="fill-sky-600 dark:fill-white" />
             </g>
 
-            <text x="105" y="100">
-              <tspan class="fill-gray-900 dark:fill-white" font-weight="700" font-size="64px">
-                enti
-              </tspan>
+            <text x="150" y="100">
               <tspan
-                class="fill-sky-600 dark:fill-sky-400"
-                opacity="0.9"
+                class="fill-gray-900 dark:fill-white italic"
                 font-weight="800"
-                font-size="64px"
+                font-size="58px"
               >
-                Shop
+                Venti Shop
               </tspan>
             </text>
           </svg>
