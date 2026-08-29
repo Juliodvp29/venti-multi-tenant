@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as XLSX from 'xlsx';
 
 @Injectable({
     providedIn: 'root'
@@ -56,8 +55,9 @@ export class FileProcessorService {
     private parseExcel(file: File): Promise<Record<string, any>[]> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 try {
+                    const XLSX = await import('xlsx');
                     const data = new Uint8Array(e.target!.result as ArrayBuffer);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const sheetName = workbook.SheetNames[0];

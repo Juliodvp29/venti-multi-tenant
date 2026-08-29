@@ -166,23 +166,67 @@
                 [class.max-w-5xl]="isPopoutOpen()">
                 @switch (activeTab()) {
                 @case ('theme') { 
-                    <app-settings-theme 
-                        (themeChange)="updateThemePreview($event)" 
-                        (dirtyChange)="onDirtyChange($event)"
-                        (openPresetsManager)="openPresetsModal()" /> 
+                    @defer {
+                        <app-settings-theme 
+                            (themeChange)="updateThemePreview($event)" 
+                            (dirtyChange)="onDirtyChange($event)"
+                            (openPresetsManager)="openPresetsModal()" /> 
+                    } @placeholder {
+                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+                    }
                 }
-                @case ('branding') { <app-settings-branding (brandingChange)="updatePreview($event)" (dirtyChange)="onDirtyChange($event)" /> }
-                @case ('general') { <app-settings-general (dirtyChange)="onDirtyChange($event)" /> }
-                @case ('address') { <app-settings-address (dirtyChange)="onDirtyChange($event)" /> }
-                @case ('shipping-taxes') { <app-settings-shipping-taxes /> }
-                @case ('commissions') { <app-settings-commissions /> }
-                @case ('storefront') { <app-settings-storefront (layoutChange)="updateStorefrontPreview($event)" (dirtyChange)="onDirtyChange($event)" (pageChange)="activePreviewPage.set($event)" /> }
+                @case ('branding') { 
+                    @defer {
+                        <app-settings-branding (brandingChange)="updatePreview($event)" (dirtyChange)="onDirtyChange($event)" /> 
+                    } @placeholder {
+                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+                    }
+                }
+                @case ('general') { 
+                    @defer {
+                        <app-settings-general (dirtyChange)="onDirtyChange($event)" /> 
+                    } @placeholder {
+                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+                    }
+                }
+                @case ('address') { 
+                    @defer {
+                        <app-settings-address (dirtyChange)="onDirtyChange($event)" /> 
+                    } @placeholder {
+                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+                    }
+                }
+                @case ('shipping-taxes') { 
+                    @defer {
+                        <app-settings-shipping-taxes /> 
+                    } @placeholder {
+                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+                    }
+                }
+                @case ('commissions') { 
+                    @defer {
+                        <app-settings-commissions /> 
+                    } @placeholder {
+                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+                    }
+                }
+                @case ('storefront') { 
+                    @defer {
+                        <app-settings-storefront (layoutChange)="updateStorefrontPreview($event)" (dirtyChange)="onDirtyChange($event)" (pageChange)="activePreviewPage.set($event)" /> 
+                    } @placeholder {
+                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+                    }
+                }
                 }
 
                 <!-- Danger Zone -->
                 @if (activeTab() === 'advanced') {
                 <div class="mt-16 pt-10 border-t border-red-100 dark:border-red-900/30">
-                    <app-settings-danger-zone />
+                    @defer {
+                        <app-settings-danger-zone />
+                    } @placeholder {
+                        <div class="animate-pulse h-32 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+                    }
                 </div>
                 }
 
@@ -329,10 +373,12 @@
 
     <!-- Modal Presets & Versiones -->
     @if (isPresetsModalOpen()) {
-        <app-settings-design-presets
-            [currentDraftSnapshot]="currentDraftSnapshot()"
-            (applyPresetSnapshot)="applySnapshotToDraft($event)"
-            (close)="closePresetsModal()" />
+        @defer {
+            <app-settings-design-presets
+                [currentDraftSnapshot]="currentDraftSnapshot()"
+                (applyPresetSnapshot)="applySnapshotToDraft($event)"
+                (close)="closePresetsModal()" />
+        }
     }
 
     <!-- Modal Publicar Cambios -->
