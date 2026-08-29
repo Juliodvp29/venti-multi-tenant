@@ -53,6 +53,7 @@ export class DynamicTable<T extends Record<string, any>> {
   importData = output<Record<string, any>[]>();
   pageChange = output<number>();
   searchChange = output<string>();
+  sortChange = output<TableSort | null>();
   clearFilters = output<void>();
 
   // Reactive State
@@ -72,13 +73,11 @@ export class DynamicTable<T extends Record<string, any>> {
   }
 
   filteredData = computed(() => {
-    if (this.totalItemsOverride() !== null) return [...this.data()];
-
     let result = [...this.data()];
     const query = this.searchQuery().toLowerCase().trim();
 
-    // 1. Filter — match raw value OR formatter output
-    if (query) {
+    // 1. Filter (Client-side when not overridden) — match raw value OR formatter output
+    if (this.totalItemsOverride() === null && query) {
       result = result.filter((item) => {
         return this.columns().some((col) => {
           const rawValue = item[col.key];
@@ -97,13 +96,41 @@ export class DynamicTable<T extends Record<string, any>> {
     // 2. Sort
     const sort = this.sortState();
     if (sort) {
+      const col = this.columns().find((c) => c.key === sort.key);
       result.sort((a, b) => {
-        const valA = a[sort.key];
-        const valB = b[sort.key];
+        const valA = col?.sortValue ? col.sortValue(a) : a[sort.key];
+        const valB = col?.sortValue ? col.sortValue(b) : b[sort.key];
 
-        if (valA < valB) return sort.direction === 'asc' ? -1 : 1;
-        if (valA > valB) return sort.direction === 'asc' ? 1 : -1;
-        return 0;
+        if (valA === valB) return 0;
+        if (valA == null || valA === '') return 1;
+        if (valB == null || valB === '') return -1;
+
+        let comp = 0;
+        if (
+          col?.type === 'number' ||
+          col?.type === 'currency' ||
+          (typeof valA === 'number' && typeof valB === 'number')
+        ) {
+          const numA = Number(valA);
+          const numB = Number(valB);
+          if (!isNaN(numA) && !isNaN(numB)) {
+            comp = numA - numB;
+          } else {
+            comp = String(valA).localeCompare(String(valB), 'es', { numeric: true, sensitivity: 'base' });
+          }
+        } else if (col?.type === 'date' || valA instanceof Date || valB instanceof Date) {
+          const dateA = new Date(valA).getTime();
+          const dateB = new Date(valB).getTime();
+          if (!isNaN(dateA) && !isNaN(dateB)) {
+            comp = dateA - dateB;
+          } else {
+            comp = String(valA).localeCompare(String(valB), 'es', { numeric: true, sensitivity: 'base' });
+          }
+        } else {
+          comp = String(valA).localeCompare(String(valB), 'es', { numeric: true, sensitivity: 'base' });
+        }
+
+        return sort.direction === 'asc' ? comp : -comp;
       });
     }
 
@@ -128,16 +155,19 @@ export class DynamicTable<T extends Record<string, any>> {
   // Handlers
   onSort(key: string) {
     const current = this.sortState();
+    let nextSort: TableSort | null = null;
     if (current?.key === key) {
       if (current.direction === 'asc') {
-        this.sortState.set({ key, direction: 'desc' });
+        nextSort = { key, direction: 'desc' };
       } else {
-        this.sortState.set(null);
+        nextSort = null;
       }
     } else {
-      this.sortState.set({ key, direction: 'asc' });
+      nextSort = { key, direction: 'asc' };
     }
+    this.sortState.set(nextSort);
     this.currentPage.set(1);
+    this.sortChange.emit(nextSort);
   }
 
   onSearch(event: Event) {
@@ -153,7 +183,9 @@ export class DynamicTable<T extends Record<string, any>> {
 
   onClearFilters() {
     this.searchQuery.set('');
+    this.sortState.set(null);
     this.searchChange.emit('');
+    this.sortChange.emit(null);
     if (this.currentPage() !== 1) {
       this.currentPage.set(1);
       this.pageChange.emit(1);

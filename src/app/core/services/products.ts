@@ -41,24 +41,44 @@ export class ProductsService {
             }
         }
 
-        const sortBy = filters?.['sortBy'] || 'newest';
-        switch (sortBy) {
-            case 'price_asc':
-                query = query.order('price', { ascending: true });
-                break;
-            case 'price_desc':
-                query = query.order('price', { ascending: false });
-                break;
-            case 'popular':
-                query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false });
-                break;
-            case 'best_sellers':
-                query = query.order('created_at', { ascending: false });
-                break;
-            case 'newest':
-            default:
-                query = query.order('created_at', { ascending: false });
-                break;
+        if (filters?.['sortField']) {
+            const field = filters['sortField'];
+            const ascending = filters['sortDirection'] === 'asc';
+            if (field === 'price') {
+                query = query.order('price', { ascending });
+            } else if (field === 'name') {
+                query = query.order('name', { ascending });
+            } else if (field === 'stock_quantity') {
+                query = query.order('stock_quantity', { ascending });
+            } else if (field === 'sku') {
+                query = query.order('sku', { ascending });
+            } else if (field === 'status') {
+                query = query.order('status', { ascending });
+            } else if (field === 'created_at') {
+                query = query.order('created_at', { ascending });
+            } else {
+                query = query.order(field, { ascending });
+            }
+        } else {
+            const sortBy = filters?.['sortBy'] || 'newest';
+            switch (sortBy) {
+                case 'price_asc':
+                    query = query.order('price', { ascending: true });
+                    break;
+                case 'price_desc':
+                    query = query.order('price', { ascending: false });
+                    break;
+                case 'popular':
+                    query = query.order('is_featured', { ascending: false }).order('created_at', { ascending: false });
+                    break;
+                case 'best_sellers':
+                    query = query.order('created_at', { ascending: false });
+                    break;
+                case 'newest':
+                default:
+                    query = query.order('created_at', { ascending: false });
+                    break;
+            }
         }
 
         if (filters?.['search']) {

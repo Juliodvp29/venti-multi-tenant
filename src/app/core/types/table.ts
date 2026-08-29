@@ -9,6 +9,7 @@ export interface ColumnDef<T> {
     className?: string;
     template?: TemplateRef<any>;
     formatter?: (value: any, item: T) => string;
+    sortValue?: (item: T) => any;
 }
 
 export interface TableAction<T> {

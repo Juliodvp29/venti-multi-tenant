@@ -20,7 +20,7 @@ import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { DateRangePicker, DateRange } from '@shared/components/date-range-picker/date-range-picker';
 import { OrderStatusBadge } from '@shared/components/order-status-badge/order-status-badge';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
-import { ColumnDef } from '@core/types/table';
+import { ColumnDef, TableSort } from '@core/types/table';
 import { TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
 import { OrderForm } from '../order-form/order-form';
 
@@ -83,6 +83,7 @@ export class OrdersList implements OnInit, AfterViewInit {
   readonly dateFilter = signal<'7d' | '30d' | '90d' | 'all'>('30d');
   readonly searchQuery = signal('');
   readonly dateRange = signal<DateRange>({ start: null, end: null });
+  readonly sortState = signal<TableSort | null>(null);
   readonly PAGE_SIZE = PAGE_SIZE;
 
   readonly statusDropdownOptions: DropdownOption[] = [
@@ -183,6 +184,10 @@ export class OrdersList implements OnInit, AfterViewInit {
     const filters: OrderFilters = {};
     if (this.statusFilter()) filters.status = this.statusFilter() as OrderStatus;
     if (this.searchQuery().trim()) filters.search = this.searchQuery().trim();
+    if (this.sortState()) {
+      filters.sortField = this.sortState()!.key;
+      filters.sortDirection = this.sortState()!.direction;
+    }
     const range = this.dateRange();
     if (range.start) {
       filters.startDate = range.start + 'T00:00:00.000Z';
@@ -197,6 +202,11 @@ export class OrdersList implements OnInit, AfterViewInit {
       }
     }
     return filters;
+  }
+
+  onSortChange(sort: TableSort | null) {
+    this.sortState.set(sort);
+    this.loadOrders(1);
   }
 
   async loadOrders(page: number = 1) {
