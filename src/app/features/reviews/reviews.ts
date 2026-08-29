@@ -13,7 +13,7 @@ import { Dropdown } from '@shared/components/dropdown/dropdown';
   selector: 'app-reviews',
   imports: [CommonModule, DynamicTable, ReviewModerationModal, FormsModule, Dropdown],
   templateUrl: './reviews.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './reviews.css',
 })
 export class Reviews {

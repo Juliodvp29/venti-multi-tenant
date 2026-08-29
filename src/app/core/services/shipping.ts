@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
+import { ShippingRate, ShippingZone, TaxRate } from '@core/models';
 import { TenantService } from './tenant';
-import { ShippingZone, ShippingRate, TaxRate } from '@core/models';
+import { Database } from '../types/database.types';
 
 @Injectable({
     providedIn: 'root',
@@ -11,20 +12,20 @@ export class ShippingService {
     private readonly tenantService = inject(TenantService);
 
     private get tenantId() {
-        const id = this.tenantService.tenantId();
-        if (!id) throw new Error('No tenant ID found');
-        return id;
+        return this.tenantService.tenantId() || '';
     }
-
 
     async getShippingZones() {
         const { data, error } = await this.supabase.client
             .from('shipping_zones')
-            .select('*, rates:shipping_rates(*)')
+            .select(`
+        *,
+        rates:shipping_rates(*)
+      `)
             .eq('tenant_id', this.tenantId);
 
         if (error) throw error;
-        return data as ShippingZone[];
+        return (data as unknown as ShippingZone[]) || [];
     }
 
     async createShippingZone(zone: Partial<ShippingZone>) {
@@ -33,12 +34,12 @@ export class ShippingService {
             .insert({
                 ...zone,
                 tenant_id: this.tenantId,
-            } as any)
+            } as unknown as Database['public']['Tables']['shipping_zones']['Insert'])
             .select()
             .single();
 
         if (error) throw error;
-        return data as ShippingZone;
+        return data as unknown as ShippingZone;
     }
 
     async updateShippingZone(id: string, updates: Partial<ShippingZone>) {
@@ -47,14 +48,14 @@ export class ShippingService {
             .update({
                 ...updates,
                 updated_at: new Date().toISOString(),
-            })
+            } as unknown as Database['public']['Tables']['shipping_zones']['Update'])
             .eq('id', id)
             .eq('tenant_id', this.tenantId)
             .select()
             .single();
 
         if (error) throw error;
-        return data as ShippingZone;
+        return data as unknown as ShippingZone;
     }
 
     async deleteShippingZone(id: string) {
@@ -74,12 +75,12 @@ export class ShippingService {
             .insert({
                 ...rate,
                 tenant_id: this.tenantId,
-            } as any)
+            } as unknown as Database['public']['Tables']['shipping_rates']['Insert'])
             .select()
             .single();
 
         if (error) throw error;
-        return data as ShippingRate;
+        return data as unknown as ShippingRate;
     }
 
     async updateShippingRate(id: string, updates: Partial<ShippingRate>) {
@@ -88,14 +89,14 @@ export class ShippingService {
             .update({
                 ...updates,
                 updated_at: new Date().toISOString(),
-            })
+            } as unknown as Database['public']['Tables']['shipping_rates']['Update'])
             .eq('id', id)
             .eq('tenant_id', this.tenantId)
             .select()
             .single();
 
         if (error) throw error;
-        return data as ShippingRate;
+        return data as unknown as ShippingRate;
     }
 
     async deleteShippingRate(id: string) {
@@ -116,7 +117,7 @@ export class ShippingService {
             .eq('tenant_id', this.tenantId);
 
         if (error) throw error;
-        return data as TaxRate[];
+        return (data as unknown as TaxRate[]) || [];
     }
 
     async createTaxRate(rate: Partial<TaxRate>) {
@@ -125,12 +126,12 @@ export class ShippingService {
             .insert({
                 ...rate,
                 tenant_id: this.tenantId,
-            } as any)
+            } as unknown as Database['public']['Tables']['tax_rates']['Insert'])
             .select()
             .single();
 
         if (error) throw error;
-        return data as TaxRate;
+        return data as unknown as TaxRate;
     }
 
     async updateTaxRate(id: string, updates: Partial<TaxRate>) {

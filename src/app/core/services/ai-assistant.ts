@@ -84,12 +84,11 @@ export class AiAssistantService {
                             properties: {
                                 period: {
                                     type: SchemaType.STRING,
-                                    enum: ['today', 'yesterday', 'this_week', 'this_month', 'last_month'],
-                                    description: 'The time period to query',
+                                    description: 'The time period to query: today, yesterday, this_week, this_month, last_month',
                                 }
                             },
                             required: ['period']
-                        } as any
+                        }
                     },
                     {
                         name: 'get_inventory_alerts',
@@ -99,7 +98,7 @@ export class AiAssistantService {
                             properties: {
                                 onlyOutOfStock: { type: SchemaType.BOOLEAN, description: 'If true, only shows those with 0 stock' }
                             }
-                        } as any
+                        }
                     },
                     {
                         name: 'get_product_performance',
@@ -109,7 +108,7 @@ export class AiAssistantService {
                             properties: {
                                 limit: { type: SchemaType.NUMBER, description: 'Number of products to show (default 5)' }
                             }
-                        } as any
+                        }
                     },
                     {
                         name: 'analyze_customer_segment',
@@ -119,12 +118,11 @@ export class AiAssistantService {
                             properties: {
                                 segment: {
                                     type: SchemaType.STRING,
-                                    enum: ['VIP', 'Loyal', 'Repeat', 'New', 'Prospect'],
-                                    description: 'The customer segment to filter',
+                                    description: 'The customer segment to filter (VIP, Loyal, Repeat, New, Prospect)',
                                 },
                                 email: { type: SchemaType.STRING, description: 'Optional email to search for a specific customer' }
                             }
-                        } as any
+                        }
                     },
                     {
                         name: 'get_active_promotions',
@@ -143,7 +141,7 @@ export class AiAssistantService {
                                 resourceType: { type: SchemaType.STRING, description: 'Filter by resource type: product, order, tenant, payment' },
                                 limit: { type: SchemaType.NUMBER, description: 'Number of records to fetch' }
                             }
-                        } as any
+                        }
                     },
                     {
                         name: 'get_app_guide',
@@ -163,12 +161,11 @@ export class AiAssistantService {
                             properties: {
                                 page: {
                                     type: SchemaType.STRING,
-                                    enum: ['dashboard', 'products', 'orders', 'customers', 'members', 'settings'],
-                                    description: 'The page to navigate to'
+                                    description: 'The page to navigate to: dashboard, products, orders, customers, members, settings'
                                 }
                             },
                             required: ['page']
-                        } as any
+                        }
                     }
                 ]
             }
@@ -274,7 +271,7 @@ export class AiAssistantService {
                 for (const call of toolCalls) {
                     if (call.functionCall) {
                         const { name, args } = call.functionCall;
-                        const data = await this.executeTool(name, args as any);
+                        const data = await this.executeTool(name, (args as Record<string, any>) || {});
                         toolResults.push({
                             functionResponse: {
                                 name,
@@ -320,7 +317,7 @@ export class AiAssistantService {
         }
     }
 
-    private async executeTool(name: string, args: any): Promise<any> {
+    private async executeTool(name: string, args: Record<string, any>): Promise<unknown> {
         const tenantId = this.tenantService.tenantId();
 
         switch (name) {

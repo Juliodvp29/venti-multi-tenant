@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
 import { ProductReview } from '@core/models/review';
 import { TenantService } from './tenant';
+import { Database } from '../types/database.types';
 
 @Injectable({
     providedIn: 'root',
@@ -56,12 +57,12 @@ export class ReviewsService {
                 ...review,
                 tenant_id: tenantId,
                 status: 'pending'
-            } as any)
+            } as unknown as Database['public']['Tables']['product_reviews']['Insert'])
             .select()
             .single();
 
         if (error) throw error;
-        return data as ProductReview;
+        return data as unknown as ProductReview;
     }
 
 

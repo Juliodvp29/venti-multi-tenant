@@ -1,11 +1,10 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    EventEmitter,
-    Output,
     computed,
     inject,
     input,
+    output,
     signal,
     effect
 } from '@angular/core';
@@ -37,8 +36,8 @@ export class MediaManagerModal {
     readonly title = input('Administrador de Recursos de Marca');
     readonly allowedFilter = input<'all' | 'image' | 'video'>('all');
 
-    @Output() selectAsset = new EventEmitter<string>();
-    @Output() closeModal = new EventEmitter<void>();
+    readonly selectAsset = output<string>();
+    readonly closeModal = output<void>();
 
     readonly activeTab = signal<'library' | 'upload' | 'url'>('library');
     readonly isLoading = signal(false);

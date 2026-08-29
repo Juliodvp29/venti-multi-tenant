@@ -1,11 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   inject,
-  Input,
+  input,
   OnInit,
-  Output,
+  output,
 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -30,24 +29,24 @@ interface NavItem {
   template: `
     <aside
       class="fixed inset-y-0 left-0 z-50 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transform transition-all duration-300 ease-in-out md:translate-x-0 md:static md:inset-auto md:flex md:flex-col"
-      [class.w-64]="!isCollapsed"
-      [class.w-20]="isCollapsed"
-      [class.translate-x-0]="isOpen"
-      [class.-translate-x-full]="!isOpen"
+      [class.w-64]="!isCollapsed()"
+      [class.w-20]="isCollapsed()"
+      [class.translate-x-0]="isOpen()"
+      [class.-translate-x-full]="!isOpen()"
     >
       <!-- Logo & Toggle -->
       <div
         class="flex items-center h-16 relative transition-all duration-300"
-        [class.border-b]="!isCollapsed"
-        [class.border-gray-200]="!isCollapsed"
-        [class.dark:border-gray-800]="!isCollapsed"
-        [class.px-4]="!isCollapsed"
-        [class.px-0]="isCollapsed"
+        [class.border-b]="!isCollapsed()"
+        [class.border-gray-200]="!isCollapsed()"
+        [class.dark:border-gray-800]="!isCollapsed()"
+        [class.px-4]="!isCollapsed()"
+        [class.px-0]="isCollapsed()"
       >
         <div
           class="flex items-center gap-3 transition-opacity duration-300"
-          [class.opacity-0]="isCollapsed"
-          [class.invisible]="isCollapsed"
+          [class.opacity-0]="isCollapsed()"
+          [class.invisible]="isCollapsed()"
         >
           <svg viewBox="0 0 520 150" class="h-10 w-auto" style="font-family: 'Plus Jakarta Sans', sans-serif;">
             <defs>
@@ -85,13 +84,13 @@ interface NavItem {
         <button
           (click)="toggleCollapse.emit()"
           class="hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 w-7 h-7 items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full shadow-md text-gray-500 hover:text-sky-600 dark:hover:text-sky-400 transition-all hover:scale-110"
-          [class.right-2]="!isCollapsed"
-          [class.left-1/2]="isCollapsed"
-          [class.-translate-x-1/2]="isCollapsed"
+          [class.right-2]="!isCollapsed()"
+          [class.left-1/2]="isCollapsed()"
+          [class.-translate-x-1/2]="isCollapsed()"
         >
           <svg
             class="h-4 w-4 transition-transform duration-300"
-            [class.rotate-180]="isCollapsed"
+            [class.rotate-180]="isCollapsed()"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -107,7 +106,7 @@ interface NavItem {
       </div>
 
       <!-- Delivery restricted banner -->
-      @if (permissions.isDeliveryUser() && !isCollapsed) {
+      @if (permissions.isDeliveryUser() && !isCollapsed()) {
         <div
           class="mx-3 mt-3 px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 flex items-center gap-2 overflow-hidden animate-in fade-in duration-300"
         >
@@ -139,14 +138,14 @@ interface NavItem {
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: item.link === '/dashboard' }"
               class="flex items-center py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-all duration-200 [&.active]:bg-sky-50 [&.active]:text-sky-600 dark:[&.active]:bg-gray-800 dark:[&.active]:text-sky-400"
-              [class.px-3]="!isCollapsed"
-              [class.justify-center]="isCollapsed"
-              [class.w-12]="isCollapsed"
-              [class.mx-auto]="isCollapsed"
-              [title]="isCollapsed ? item.label : ''"
+              [class.px-3]="!isCollapsed()"
+              [class.justify-center]="isCollapsed()"
+              [class.w-12]="isCollapsed()"
+              [class.mx-auto]="isCollapsed()"
+              [title]="isCollapsed() ? item.label : ''"
             >
-              <div class="shrink-0" [class.mr-3]="!isCollapsed" [innerHTML]="item.icon"></div>
-              @if (!isCollapsed) {
+              <div class="shrink-0" [class.mr-3]="!isCollapsed()" [innerHTML]="item.icon"></div>
+              @if (!isCollapsed()) {
                 <span class="truncate animate-in fade-in slide-in-from-left-1 duration-200">{{
                   item.label
                 }}</span>
@@ -164,7 +163,7 @@ interface NavItem {
 
       <!-- Bottom Actions -->
       <div class="border-t border-gray-200 dark:border-gray-800 p-4 space-y-3">
-        @if (!isCollapsed && tenantService.memberRole()) {
+        @if (!isCollapsed() && tenantService.memberRole()) {
           <div
             class="flex items-center px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 animate-in fade-in duration-300"
           >
@@ -192,12 +191,12 @@ interface NavItem {
         <button
           (click)="onLogout()"
           class="flex items-center w-full px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all group"
-          [class.justify-center]="isCollapsed"
-          [title]="isCollapsed ? 'Cerrar Sesión' : ''"
+          [class.justify-center]="isCollapsed()"
+          [title]="isCollapsed() ? 'Cerrar Sesión' : ''"
         >
           <svg
             class="shrink-0 h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"
-            [class.mr-3]="!isCollapsed"
+            [class.mr-3]="!isCollapsed()"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -209,7 +208,7 @@ interface NavItem {
               d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
             />
           </svg>
-          @if (!isCollapsed) {
+          @if (!isCollapsed()) {
             <span class="animate-in fade-in slide-in-from-left-1 duration-200">Cerrar Sesión</span>
           }
         </button>
@@ -239,9 +238,9 @@ export class SidebarComponent {
   readonly permissions = inject(PermissionsService);
   readonly tenantService = inject(TenantService);
 
-  @Input() isOpen = false;
-  @Input() isCollapsed = false;
-  @Output() toggleCollapse = new EventEmitter<void>();
+  readonly isOpen = input(false);
+  readonly isCollapsed = input(false);
+  readonly toggleCollapse = output<void>();
 
   readonly navItems: NavItem[] = (
     [

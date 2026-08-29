@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
 import { DiscountCode } from '@core/models/discount.model';
 import { TenantService } from './tenant';
+import { Database } from '../types/database.types';
 
 @Injectable({
     providedIn: 'root',
@@ -70,14 +71,14 @@ export class DiscountsService {
             .insert({
                 ...discount,
                 tenant_id: tenantId,
-                code: discount.code?.toUpperCase(),
+                code: discount.code?.toUpperCase() ?? '',
                 usage_count: 0
-            } as any)
+            } as unknown as Database['public']['Tables']['discount_codes']['Insert'])
             .select()
             .single();
 
         if (error) throw error;
-        return data as DiscountCode;
+        return data as unknown as DiscountCode;
     }
 
     async updateDiscountCode(id: string, discount: Partial<DiscountCode>): Promise<DiscountCode> {

@@ -1,11 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   HostListener,
-  Output,
   computed,
   inject,
+  output,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -340,7 +339,7 @@ export class StoreHeader {
   private readonly authService = inject(AuthService);
   protected readonly customerAuth = inject(CustomerAuthService);
 
-  @Output() openCart = new EventEmitter<void>();
+  readonly openCart = output<void>();
 
   readonly branding = this.tenantService.branding;
   readonly themeTokens = this.tenantService.publishedThemeTokens;

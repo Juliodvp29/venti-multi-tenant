@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit, signal, inject, effect, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, inject, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CustomerAddress } from '@core/models/customer';
@@ -16,11 +16,11 @@ import { firstValueFrom } from 'rxjs';
 export class AddressForm implements OnInit {
     private readonly geographyService = inject(GeographyService);
 
-    @Input() initialAddress?: Partial<CustomerAddress>;
-    @Input() isSubmitting = false;
+    readonly initialAddress = input<Partial<CustomerAddress>>();
+    readonly isSubmitting = input(false);
 
-    @Output() save = new EventEmitter<Partial<CustomerAddress>>();
-    @Output() cancel = new EventEmitter<void>();
+    readonly save = output<Partial<CustomerAddress>>();
+    readonly cancel = output<void>();
 
     readonly departamentoOptions = signal<DropdownOption[]>([]);
     readonly ciudadOptions = signal<DropdownOption[]>([]);
@@ -45,11 +45,12 @@ export class AddressForm implements OnInit {
     async ngOnInit() {
         await this.loadDepartments();
         
-        if (this.initialAddress) {
-            this.address = { ...this.initialAddress };
-            if (this.initialAddress.state) {
-                this.selectedDepartamento.set(this.initialAddress.state);
-                const dept = this.departments.find(d => d.name === this.initialAddress!.state);
+        const init = this.initialAddress();
+        if (init) {
+            this.address = { ...init };
+            if (init.state) {
+                this.selectedDepartamento.set(init.state);
+                const dept = this.departments.find(d => d.name === init.state);
                 if (dept) {
                     await this.loadCities(dept.id);
                 }

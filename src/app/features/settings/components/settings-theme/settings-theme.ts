@@ -512,8 +512,12 @@ export class SettingsTheme {
         this.toastService.success(`Copiado: var(${variable})`);
     }
 
-    clearCustomCss() {
-        if (confirm('¿Estás seguro de que deseas borrar todo el CSS personalizado?')) {
+    async clearCustomCss() {
+        const confirmed = await this.toastService.confirm(
+            '¿Estás seguro de que deseas borrar todo el CSS personalizado?',
+            'Limpiar CSS'
+        );
+        if (confirmed) {
             this.updateCustomCss('');
             this.toastService.info('CSS personalizado limpiado');
         }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { TenantService } from '@core/services/tenant';
 
 @Component({
@@ -80,6 +80,6 @@ import { TenantService } from '@core/services/tenant';
   `,
 })
 export class HeaderComponent {
-  @Output() toggleSidebar = new EventEmitter<void>();
+  readonly toggleSidebar = output<void>();
   protected readonly tenantService = inject(TenantService);
 }

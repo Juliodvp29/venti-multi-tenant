@@ -61,9 +61,10 @@ export class ProductsList implements OnInit {
     readonly editingProduct = signal<Product | null>(null);
 
     readonly categoryDropdownOptions = computed<DropdownOption[]>(() => {
+        const cats = this.categories();
         return [
             { label: 'Todas las categorías', value: '' },
-            ...this.categories().map(cat => ({ label: cat.name, value: cat.id }))
+            ...(Array.isArray(cats) ? cats : []).map(cat => ({ label: cat.name, value: cat.id }))
         ];
     });
 

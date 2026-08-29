@@ -71,9 +71,9 @@
             class="px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors ring-1 ring-inset ring-gray-200">
             Cancelar
         </button>
-        <button type="submit" [disabled]="form.invalid || isSubmitting"
+        <button type="submit" [disabled]="form.invalid || isSubmitting()"
             class="px-6 py-2.5 text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
-            @if (isSubmitting) {
+            @if (isSubmitting()) {
             <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

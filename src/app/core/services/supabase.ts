@@ -36,7 +36,7 @@ export class Supabase {
   }
 
   /** Typed query builder shortcut */
-  from<T = unknown>(table: string): any {
-    return this._client.from(table as any);
+  from<T extends string & (keyof Database['public']['Tables'] | keyof Database['public']['Views'])>(table: T) {
+    return (this._client.from as (table: string) => ReturnType<SupabaseClient<Database>['from']>)(table);
   }
 }

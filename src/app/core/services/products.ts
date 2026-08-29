@@ -4,6 +4,7 @@ import { CreateProductDto, Product, ProductImage, ProductVariant, UpdateProductD
 import { Nullable, PaginatedState } from '@core/types';
 import { TenantService } from './tenant';
 import { StorageService } from './storage';
+import { Database } from '../types/database.types';
 
 @Injectable({
     providedIn: 'root',
@@ -101,7 +102,7 @@ export class ProductsService {
 
         if (error) throw error;
 
-        return { data: data as any[], count: count ?? 0 };
+        return { data: (data as unknown as Product[]) ?? [], count: count ?? 0 };
     }
 
     async getProduct(id: string): Promise<Product | null> {
@@ -117,7 +118,7 @@ export class ProductsService {
             .single();
 
         if (error) throw error;
-        return data as any;
+        return (data as unknown as Product) || null;
     }
 
     async createProduct(product: CreateProductDto): Promise<Product> {
@@ -134,7 +135,7 @@ export class ProductsService {
             .single();
 
         if (error) throw error;
-        return data as any;
+        return data as unknown as Product;
     }
 
     async updateProduct(id: string, product: UpdateProductDto): Promise<Product> {
@@ -143,13 +144,13 @@ export class ProductsService {
             .update({
                 ...product,
                 updated_at: new Date().toISOString(),
-            } as any)
+            } as unknown as Database['public']['Tables']['products']['Update'])
             .eq('id', id)
             .select()
             .single();
 
         if (error) throw error;
-        return data as any;
+        return data as unknown as Product;
     }
 
     async deleteProduct(id: string): Promise<void> {

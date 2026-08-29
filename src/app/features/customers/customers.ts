@@ -4,9 +4,10 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-customers',
   imports: [],
   templateUrl: './customers.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './customers.css',
 })
 export class Customers {
 
 }
+

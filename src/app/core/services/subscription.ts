@@ -39,7 +39,7 @@ export class SubscriptionService {
     return (data || []).map((entry) => ({
       ...entry,
       amount: entry.amount != null ? Number(entry.amount) : 0,
-    })) as any;
+    })) as unknown as SubscriptionHistoryEntry[];
   }
 
   /**
