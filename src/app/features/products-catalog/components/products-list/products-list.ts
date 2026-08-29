@@ -18,7 +18,7 @@ import { ToastService } from '@core/services/toast';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { DateRangePicker, DateRange } from '@shared/components/date-range-picker/date-range-picker';
 import { Dropdown, DropdownOption } from '@shared/components/dropdown/dropdown';
-import { ColumnDef, TableAction } from '@core/types/table';
+import { ColumnDef, TableAction, TableSort } from '@core/types/table';
 import { ProductForm } from '../product-form/product-form';
 import { ProductStatus } from '@core/enums';
 
@@ -78,9 +78,10 @@ export class ProductsList implements OnInit {
     readonly categoryFilter = signal<string>('');
     readonly dateRange = signal<DateRange>({ start: null, end: null });
     readonly searchQuery = signal('');
+    readonly sortState = signal<TableSort | null>(null);
 
     readonly hasActiveFilters = computed(() => {
-        return !!this.statusFilter() || !!this.categoryFilter();
+        return !!this.statusFilter() || !!this.categoryFilter() || !!this.sortState();
     });
 
     // Server-side pagination
@@ -148,6 +149,7 @@ export class ProductsList implements OnInit {
         {
             key: 'sku',
             label: 'SKU',
+            sortable: true,
             type: 'text',
             formatter: (val) => val ?? '—',
         },
@@ -162,6 +164,7 @@ export class ProductsList implements OnInit {
             label: 'Stock',
             sortable: true,
             type: 'number',
+            sortValue: (item) => this.getProductStock(item),
             formatter: (val, item) => {
                 if (!item['track_inventory']) return 'Ilimitado';
                 return String(this.getProductStock(item));
@@ -209,6 +212,10 @@ export class ProductsList implements OnInit {
             if (this.searchQuery().trim()) filters['search'] = this.searchQuery().trim();
             if (this.statusFilter()) filters['status'] = this.statusFilter();
             if (this.categoryFilter()) filters['categoryId'] = this.categoryFilter();
+            if (this.sortState()) {
+                filters['sortField'] = this.sortState()!.key;
+                filters['sortDirection'] = this.sortState()!.direction;
+            }
             const { data, count } = await this.productsService.getProducts(page, PAGE_SIZE, filters);
             this.products.set(data);
             this.totalCount.set(count);
@@ -220,10 +227,16 @@ export class ProductsList implements OnInit {
         }
     }
 
+    onSortChange(sort: TableSort | null) {
+        this.sortState.set(sort);
+        this.loadProducts(1);
+    }
+
     clearFilters() {
         this.searchQuery.set('');
         this.statusFilter.set('');
         this.categoryFilter.set('');
+        this.sortState.set(null);
         this.loadProducts(1);
     }
 

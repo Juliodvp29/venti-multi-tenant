@@ -92,7 +92,7 @@
             description="Administra tu catálogo completo de productos." searchPlaceholder="Buscar por nombre, SKU..."
             [allowImport]="true" (importData)="onImportData($event)" [totalItemsOverride]="totalCount()"
             [pageSize]="PAGE_SIZE" (pageChange)="loadProducts($event)" (searchChange)="onSearchChange($event)"
-            [hasActiveFilters]="hasActiveFilters()" (clearFilters)="clearFilters()">
+            (sortChange)="onSortChange($event)" [hasActiveFilters]="hasActiveFilters()" (clearFilters)="clearFilters()">
 
             <!-- Actions Slot -->
             <div actions>

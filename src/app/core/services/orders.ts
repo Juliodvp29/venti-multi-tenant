@@ -19,6 +19,8 @@ export interface OrderFilters {
     startDate?: string;
     endDate?: string;
     customer_id?: string;
+    sortField?: string;
+    sortDirection?: 'asc' | 'desc';
 }
 
 @Injectable({
@@ -75,9 +77,13 @@ export class OrdersService {
             query = query.lte('created_at', filters.endDate);
         }
 
-        query = query
-            .order('created_at', { ascending: false })
-            .range((page - 1) * pageSize, page * pageSize - 1);
+        if (filters?.sortField) {
+            query = query.order(filters.sortField, { ascending: filters.sortDirection === 'asc' });
+        } else {
+            query = query.order('created_at', { ascending: false });
+        }
+
+        query = query.range((page - 1) * pageSize, page * pageSize - 1);
 
         const { data, error, count } = await query;
 

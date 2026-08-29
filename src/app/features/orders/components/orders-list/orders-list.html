@@ -129,7 +129,8 @@
         <app-dynamic-table [data]="orders()" [columns]="columns()" title="Órdenes"
             description="Haz clic en una orden para ver los detalles completos."
             searchPlaceholder="Buscar por #orden o email..." [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE"
-            (pageChange)="loadOrders($event)" (rowClick)="onRowClick($event)" (searchChange)="onSearchChange($event)">
+            (pageChange)="loadOrders($event)" (rowClick)="onRowClick($event)" (searchChange)="onSearchChange($event)"
+            (sortChange)="onSortChange($event)">
 
             <!-- Filters Slot -->
             <div filters class="flex items-center gap-2">
