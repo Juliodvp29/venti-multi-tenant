@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { SubscriptionHistoryEntry } from '@core/models/billing.model';
 
@@ -9,79 +9,94 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
     <div
       class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden"
     >
-      <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
-        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Billing History</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-          Check your previous payments and download your invoices.
-        </p>
+      <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Historial de Facturación</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            Revisa tus pagos anteriores, períodos activos y cambios de suscripción.
+          </p>
+        </div>
       </div>
 
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-gray-50/50 dark:bg-gray-800/50">
+            <tr class="bg-gray-50/70 dark:bg-gray-800/50">
               <th
-                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500"
+                class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500"
               >
                 Fecha
               </th>
               <th
-                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500"
+                class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500"
               >
                 Plan
               </th>
               <th
-                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500"
+                class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+              >
+                Período
+              </th>
+              <th
+                class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500"
               >
                 Monto
               </th>
               <th
-                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500"
+                class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 text-right"
               >
                 Estado
-              </th>
-              <th
-                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 text-right"
-              >
-                Acción
               </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-            @for (entry of history; track entry.id) {
-              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+            @for (entry of history(); track entry.id || $index) {
+              <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/40 transition-colors">
                 <td class="px-6 py-4">
                   <span class="text-sm font-medium text-gray-900 dark:text-white">
                     {{ entry.created_at | date: 'mediumDate' }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400 capitalize">
-                  {{ entry.plan }}
-                </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
-                  {{ entry.amount | currency: entry.currency }}
-                </td>
                 <td class="px-6 py-4">
-                  <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-widest"
-                    [class.bg-sky-50]="entry.status === 'active'"
-                    [class.text-sky-600]="entry.status === 'active'"
-                    [class.bg-amber-50]="entry.status === 'trial'"
-                    [class.text-amber-600]="entry.status === 'trial'"
-                    [class.bg-red-50]="entry.status === 'cancelled' || entry.status === 'expired'"
-                    [class.text-red-600]="
-                      entry.status === 'cancelled' || entry.status === 'expired'
-                    "
-                  >
-                    {{ entry.status }}
+                  <span class="text-sm font-bold text-gray-800 dark:text-gray-200 capitalize">
+                    {{ entry.plan }}
                   </span>
                 </td>
+                <td class="px-6 py-4 text-xs text-gray-500 dark:text-gray-400 font-mono">
+                  @if (entry.billing_period_start && entry.billing_period_end) {
+                    {{ entry.billing_period_start | date: 'dd/MM/yy' }} - {{ entry.billing_period_end | date: 'dd/MM/yy' }}
+                  } @else {
+                    —
+                  }
+                </td>
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
+                  {{ (entry.amount || 0) | currency: (entry.currency || 'USD') : 'symbol' : '1.0-0' : 'es' }}
+                </td>
                 <td class="px-6 py-4 text-right">
-                  <button
-                    class="text-sm font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400 transition-colors"
+                  <span
+                    class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                    [class.bg-green-50]="entry.status === 'active'"
+                    [class.text-green-700]="entry.status === 'active'"
+                    [class.dark:bg-green-950/30]="entry.status === 'active'"
+                    [class.dark:text-green-400]="entry.status === 'active'"
+                    [class.bg-amber-50]="entry.status === 'trial' || entry.status === 'cancelled'"
+                    [class.text-amber-700]="entry.status === 'trial' || entry.status === 'cancelled'"
+                    [class.dark:bg-amber-950/30]="entry.status === 'trial' || entry.status === 'cancelled'"
+                    [class.dark:text-amber-400]="entry.status === 'trial' || entry.status === 'cancelled'"
+                    [class.bg-red-50]="entry.status === 'expired' || entry.status === 'suspended'"
+                    [class.text-red-700]="entry.status === 'expired' || entry.status === 'suspended'"
+                    [class.dark:bg-red-950/30]="entry.status === 'expired' || entry.status === 'suspended'"
+                    [class.dark:text-red-400]="entry.status === 'expired' || entry.status === 'suspended'"
                   >
-                    Ver Factura
-                  </button>
+                    @switch (entry.status) {
+                      @case ('active') { Activo }
+                      @case ('cancelled') { Cancelado }
+                      @case ('trial') { Prueba }
+                      @case ('expired') { Expirado }
+                      @case ('suspended') { Suspendido }
+                      @default { {{ entry.status }} }
+                    }
+                  </span>
                 </td>
               </tr>
             } @empty {
@@ -101,7 +116,7 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                       />
                     </svg>
-                    <span>No hay facturas registradas aún.</span>
+                    <span class="text-sm font-medium">No hay registros de facturación aún.</span>
                   </div>
                 </td>
               </tr>
@@ -114,5 +129,6 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BillingHistory {
-  @Input() history: SubscriptionHistoryEntry[] = [];
+  history = input<SubscriptionHistoryEntry[]>([]);
 }
+
