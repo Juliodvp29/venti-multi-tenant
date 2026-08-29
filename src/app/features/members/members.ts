@@ -109,7 +109,11 @@ export class Members implements OnInit {
   }
 
   async onMemberRemove(member: TenantMember) {
-    if (confirm(`¿Estás seguro de que quieres eliminar a este miembro?`)) {
+    const confirmed = await this.toast.confirm(
+      '¿Estás seguro de que quieres eliminar a este miembro?',
+      'Eliminar miembro'
+    );
+    if (confirmed) {
       try {
         await this.tenantService.removeMember(member.id);
         this.toast.success('Miembro eliminado');
@@ -121,15 +125,18 @@ export class Members implements OnInit {
   }
 
   async onMemberRoleUpdate(member: TenantMember) {
-    const newRole = prompt('Ingresa el nuevo rol (viewer, editor, admin):', member.role) as TenantRole;
-    if (newRole && Object.values(TenantRole).includes(newRole)) {
+    // El cambio de rol se gestiona desde la UI del componente MembersListComponent.
+    // Si se llama directamente, se valida el rol recibido.
+    if (member.role && Object.values(TenantRole).includes(member.role as TenantRole)) {
       try {
-        await this.tenantService.updateMemberRole(member.id, newRole);
+        await this.tenantService.updateMemberRole(member.id, member.role as TenantRole);
         this.toast.success('Rol actualizado');
         await this.loadMembers();
       } catch (error) {
         this.toast.error('Error al actualizar el rol');
       }
+    } else {
+      this.toast.error('Rol inválido. Los roles disponibles son: viewer, editor, admin');
     }
   }
 }
