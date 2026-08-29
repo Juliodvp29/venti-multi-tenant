@@ -1,9 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Output,
   inject,
+  output,
   signal,
 } from '@angular/core';
 import { CartItem } from '@core/models/cart';
@@ -219,7 +218,7 @@ export class CartDrawer {
   readonly tenantService = inject(TenantService);
   readonly currency = this.tenantService.currency;
 
-  @Output() close = new EventEmitter<void>();
+  readonly close = output<void>();
 
   readonly items = this.cartService.items;
   couponCode = signal('');

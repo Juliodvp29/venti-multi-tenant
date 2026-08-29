@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy, effect } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TenantService } from '@core/services/tenant';
 import { SubscriptionService } from '@core/services/subscription';
@@ -21,7 +21,7 @@ import { InviteMemberModalComponent } from './components/invite-member-modal';
   templateUrl: './members.html',
   styleUrl: './members.css',
 })
-export class Members implements OnInit {
+export class Members {
   private readonly tenantService = inject(TenantService);
   private readonly subscriptionService = inject(SubscriptionService);
   private readonly toast = inject(ToastService);
@@ -45,9 +45,6 @@ export class Members implements OnInit {
   totalMembers = computed(() => this.members().filter(m => !m['is_invite']).length);
   adminCount = computed(() => this.members().filter(m => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner)).length);
   pendingInvites = signal(0);
-
-  ngOnInit() {
-  }
 
   async openInviteModal() {
     const canAdd = await this.subscriptionService.canAddResource('members');

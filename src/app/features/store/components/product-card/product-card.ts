@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product } from '@core/models/product';
@@ -37,10 +37,10 @@ import { TenantService } from '@core/services/tenant';
              [ngClass]="imageAspectClass()"
              [style.border-radius]="orientation() === 'horizontal' ? 'var(--store-radius-card, 1rem) 0 0 var(--store-radius-card, 1rem)' : 'var(--store-radius-card, 1rem)'">
             
-            <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve" class="block w-full h-full cursor-pointer relative">
+            <a [routerLink]="['/store/product', product().id]" queryParamsHandling="preserve" class="block w-full h-full cursor-pointer relative">
                 <!-- Primary Image -->
                 <img [src]="primaryImage()" 
-                     [alt]="product.name" 
+                     [alt]="product().name" 
                      loading="lazy"
                      class="w-full h-full object-cover object-top transition-all duration-700"
                      [class.group-hover:scale-105]="!hoverSecondaryImage() || !secondaryImage()"
@@ -49,7 +49,7 @@ import { TenantService } from '@core/services/tenant';
                 <!-- Secondary Image on Hover -->
                 @if (hoverSecondaryImage() && secondaryImage()) {
                     <img [src]="secondaryImage()" 
-                         [alt]="product.name + ' - Vista 2'" 
+                         [alt]="product().name + ' - Vista 2'" 
                          loading="lazy"
                          class="w-full h-full object-cover object-top absolute inset-0 opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
                 }
@@ -109,7 +109,7 @@ import { TenantService } from '@core/services/tenant';
             <!-- Quick Action Overlay on Hover -->
             @if (cartButtonStyle() === 'hover') {
                 <div class="absolute inset-x-0 bottom-0 p-2.5 sm:p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10">
-                    @if (!product.variants?.length) {
+                    @if (!product().variants?.length) {
                         <button 
                             (click)="addToCart($event)" 
                             class="w-full py-2 sm:py-2.5 font-bold text-xs shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
@@ -130,7 +130,7 @@ import { TenantService } from '@core/services/tenant';
                             }
                         </button>
                     } @else {
-                        <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve"
+                        <a [routerLink]="['/store/product', product().id]" queryParamsHandling="preserve"
                             class="w-full py-2 sm:py-2.5 font-bold text-xs shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 bg-slate-900/90 hover:bg-slate-900 text-white backdrop-blur-md cursor-pointer active:scale-95"
                             [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                             [style.text-transform]="'var(--store-btn-transform, none)'">
@@ -151,25 +151,25 @@ import { TenantService } from '@core/services/tenant';
                 <h3 class="font-bold text-sm sm:text-base leading-snug transition-colors mb-0.5 line-clamp-2"
                     [style.color]="'var(--store-color-text, #0a0a0a)'"
                     [style.font-family]="'var(--store-font-heading)'">
-                    <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve" class="hover:underline">
-                        {{ product.name }}
+                    <a [routerLink]="['/store/product', product().id]" queryParamsHandling="preserve" class="hover:underline">
+                        {{ product().name }}
                     </a>
                 </h3>
 
-                @if (product.sku) {
+                @if (product().sku) {
                     <p class="text-[10px] font-medium uppercase tracking-widest"
                        [style.color]="'var(--store-color-muted, #737373)'">
-                        {{ product.sku }}
+                        {{ product().sku }}
                     </p>
                 }
 
                 <!-- Stock Indicator -->
                 @if (showStock()) {
                     <div class="mt-1.5 flex items-center gap-1.5 text-xs font-semibold">
-                        @if (product.track_inventory) {
-                            @if (product.stock_quantity > 0) {
+                        @if (product().track_inventory) {
+                            @if (product().stock_quantity > 0) {
                                 <span class="inline-block w-2 h-2 rounded-full bg-sky-500"></span>
-                                <span class="text-sky-600 dark:text-sky-400">{{ product.stock_quantity }} en stock</span>
+                                <span class="text-sky-600 dark:text-sky-400">{{ product().stock_quantity }} en stock</span>
                             } @else {
                                 <span class="inline-block w-2 h-2 rounded-full bg-rose-500"></span>
                                 <span class="text-rose-600 dark:text-rose-400">Agotado</span>
@@ -187,19 +187,19 @@ import { TenantService } from '@core/services/tenant';
                     <!-- Price Block -->
                     @if (showPrice()) {
                         <div class="flex flex-col">
-                            @if (showOriginalPrice() && product.compare_at_price) {
+                            @if (showOriginalPrice() && product().compare_at_price) {
                                 <span class="text-[11px] line-through mb-0.5"
                                       [style.color]="'var(--store-color-muted, #737373)'">
-                                    {{ product.compare_at_price | currency:currency() }}
+                                    {{ product().compare_at_price | currency:currency() }}
                                 </span>
                             }
                             <span class="text-base sm:text-lg font-black" [style.color]="'var(--primary-color, var(--store-color-primary))'">
-                                {{ product.price | currency:currency() }}
+                                {{ product().price | currency:currency() }}
                             </span>
                         </div>
                     }
 
-                    <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve" 
+                    <a [routerLink]="['/store/product', product().id]" queryParamsHandling="preserve" 
                        class="p-1.5 transition-colors hover:opacity-75"
                        [style.color]="'var(--store-color-muted, #737373)'">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,7 +211,7 @@ import { TenantService } from '@core/services/tenant';
                 <!-- Always Visible Cart Button -->
                 @if (cartButtonStyle() === 'always') {
                     <div class="mt-3">
-                        @if (!product.variants?.length) {
+                        @if (!product().variants?.length) {
                             <button 
                                 (click)="addToCart($event)" 
                                 class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
@@ -232,7 +232,7 @@ import { TenantService } from '@core/services/tenant';
                                 }
                             </button>
                         } @else {
-                            <a [routerLink]="['/store/product', product.id]" queryParamsHandling="preserve"
+                            <a [routerLink]="['/store/product', product().id]" queryParamsHandling="preserve"
                                class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
                                [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                                [style.text-transform]="'var(--store-btn-transform, none)'"
@@ -253,8 +253,8 @@ import { TenantService } from '@core/services/tenant';
   `,
 })
 export class ProductCard {
-    @Input({ required: true }) product!: Product;
-    @Input() config?: Partial<ThemeTokens>;
+    readonly product = input.required<Product>();
+    readonly config = input<Partial<ThemeTokens>>();
 
     private readonly cartService = inject(CartService);
     private readonly analytics = inject(AnalyticsService);
@@ -265,22 +265,22 @@ export class ProductCard {
 
     readonly activeTokens = computed<Partial<ThemeTokens>>(() => {
         const storeTokens = this.tenantService.themeTokens();
-        return { ...(storeTokens || {}), ...(this.config || {}) };
+        return { ...(storeTokens || {}), ...(this.config() || {}) };
     });
 
     readonly orientation = computed(() => this.activeTokens().card_orientation ?? 'vertical');
     readonly borderStyle = computed(() => this.activeTokens().card_border_style ?? 'bordered');
     readonly showPrice = computed(() => this.activeTokens().card_show_price ?? true);
-    readonly showOriginalPrice = computed(() => this.activeTokens().card_show_original_price ?? true);
+    readonly showOriginalPrice = computed(() => this.activeTokens().card_show_original_price ?? true);
     readonly showDiscountBadge = computed(() => this.activeTokens().card_show_discount_badge ?? true);
-    readonly showStock = computed(() => this.activeTokens().card_show_stock ?? false);
-    readonly showNewBadge = computed(() => this.activeTokens().card_show_new_badge ?? true);
     readonly showSaleBadge = computed(() => this.activeTokens().card_show_sale_badge ?? true);
+    readonly showNewBadge = computed(() => this.activeTokens().card_show_new_badge ?? true);
+    readonly showStock = computed(() => this.activeTokens().card_show_stock ?? false);
     readonly cartButtonStyle = computed(() => this.activeTokens().card_cart_button_style ?? 'hover');
     readonly hoverSecondaryImage = computed(() => this.activeTokens().card_hover_secondary_image ?? true);
 
     readonly imageAspectClass = computed(() => {
-        const aspect = this.activeTokens().card_image_aspect;
+        const aspect = this.activeTokens().card_image_aspect ?? '4/5';
         switch (aspect) {
             case '1/1': return 'aspect-square';
             case '3/4': return 'aspect-[3/4]';
@@ -292,27 +292,31 @@ export class ProductCard {
     });
 
     readonly primaryImage = computed(() => {
-        return this.product.images?.[0]?.url || this.product.primary_image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80';
+        const p = this.product();
+        return p.images?.[0]?.url || p.primary_image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80';
     });
 
     readonly secondaryImage = computed(() => {
-        return this.product.images?.[1]?.url || null;
+        return this.product().images?.[1]?.url || null;
     });
 
     readonly hasDiscount = computed(() => {
-        return !!(this.product.compare_at_price && this.product.compare_at_price > this.product.price);
+        const p = this.product();
+        return !!(p.compare_at_price && p.compare_at_price > p.price);
     });
 
     readonly discountPercent = computed(() => {
-        if (this.hasDiscount() && this.product.compare_at_price) {
-            return Math.round(((this.product.compare_at_price - this.product.price) / this.product.compare_at_price) * 100);
+        const p = this.product();
+        if (this.hasDiscount() && p.compare_at_price) {
+            return Math.round(((p.compare_at_price - p.price) / p.compare_at_price) * 100);
         }
         return null;
     });
 
     readonly isNew = computed(() => {
-        if (!this.product.created_at) return false;
-        const diffDays = (Date.now() - new Date(this.product.created_at).getTime()) / (1000 * 3600 * 24);
+        const p = this.product();
+        if (!p.created_at) return false;
+        const diffDays = (Date.now() - new Date(p.created_at).getTime()) / (1000 * 3600 * 24);
         return diffDays <= 30;
     });
 
@@ -320,12 +324,12 @@ export class ProductCard {
         event.stopPropagation();
         event.preventDefault();
 
-        this.cartService.addToCart(this.product, 1);
-        this.analytics.trackAddToCart(this.product.id, 1);
+        const p = this.product();
+        this.cartService.addToCart(p, 1);
+        this.analytics.trackAddToCart(p.id, 1);
 
         // Show feedback
         this.added.set(true);
         setTimeout(() => this.added.set(false), 2000);
     }
 }
-
