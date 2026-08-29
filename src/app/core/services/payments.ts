@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
 import { Payment, Refund } from '@core/models/payment';
 import { TenantService } from './tenant';
+import { Database } from '../types/database.types';
 
 @Injectable({
     providedIn: 'root',
@@ -10,33 +11,19 @@ export class PaymentsService {
     private readonly supabase = inject(Supabase);
     private readonly tenantService = inject(TenantService);
 
-    async getPayments(
-        page: number = 1,
-        pageSize: number = 20,
-        filters?: Record<string, any>
-    ): Promise<{ data: Payment[]; count: number }> {
+    async getPayments(page: number = 1, pageSize: number = 20): Promise<{ data: Payment[]; count: number }> {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');
 
-        let query = this.supabase.client
+        const { data, error, count } = await this.supabase.client
             .from('payments')
             .select('*', { count: 'exact' })
             .eq('tenant_id', tenantId)
-            .order('created_at', { ascending: false })
-            .range((page - 1) * pageSize, page * pageSize - 1);
-
-        if (filters?.['order_id']) {
-            query = query.eq('order_id', filters['order_id']);
-        }
-
-        if (filters?.['status']) {
-            query = query.eq('status', filters['status']);
-        }
-
-        const { data, error, count } = await query;
+            .range((page - 1) * pageSize, page * pageSize - 1)
+            .order('created_at', { ascending: false });
 
         if (error) throw error;
-        return { data: data as Payment[], count: count ?? 0 };
+        return { data: (data as unknown as Payment[]) || [], count: count ?? 0 };
     }
 
     async getPayment(id: string): Promise<Payment | null> {
@@ -47,7 +34,7 @@ export class PaymentsService {
             .single();
 
         if (error) throw error;
-        return data as Payment;
+        return data as unknown as Payment;
     }
 
     async createRefund(refund: Partial<Refund>): Promise<Refund> {
@@ -58,11 +45,11 @@ export class PaymentsService {
             .insert({
                 ...refund,
                 tenant_id: tenantId,
-            } as any)
+            } as unknown as Database['public']['Tables']['refunds']['Insert'])
             .select()
             .single();
 
         if (error) throw error;
-        return data as Refund;
+        return data as unknown as Refund;
     }
 }

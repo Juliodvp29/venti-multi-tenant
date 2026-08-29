@@ -3,6 +3,7 @@ import { Supabase } from './supabase';
 import { TenantService } from './tenant';
 import { Commission, CommissionRule, CommissionFilters, CommissionStats, CommissionStatus } from '@core/models/commission';
 import { SubscriptionPlan } from '@core/enums';
+import { Database } from '../types/database.types';
 
 @Injectable({
     providedIn: 'root',
@@ -23,7 +24,7 @@ export class CommissionsService {
         filters?: CommissionFilters
     ): Promise<{ data: Commission[]; count: number }> {
         let query = this.supabase.client
-            .from('commissions' as any)
+            .from('commissions')
             .select('*, payment:payments(*)', { count: 'exact' })
             .eq('tenant_id', this.tenantId)
             .order('created_at', { ascending: false })
@@ -54,24 +55,24 @@ export class CommissionsService {
         const { data, error, count } = await query;
 
         if (error) throw error;
-        return { data: data as unknown as Commission[], count: count ?? 0 };
+        return { data: (data as unknown as Commission[]) || [], count: count ?? 0 };
     }
 
     async getCommission(id: string): Promise<Commission | null> {
         const { data, error } = await this.supabase.client
-            .from('commissions' as any)
+            .from('commissions')
             .select('*, payment:payments(*)')
             .eq('id', id)
             .eq('tenant_id', this.tenantId)
             .maybeSingle();
 
         if (error) throw error;
-        return data as unknown as Commission | null;
+        return (data as unknown as Commission) || null;
     }
 
     async getCommissionRules(): Promise<CommissionRule[]> {
         const { data, error } = await this.supabase.client
-            .from('commission_rules' as any)
+            .from('commission_rules')
             .select('*')
             .eq('is_active', true)
             .or(`tenant_id.eq.${this.tenantId},tenant_id.is.null`)
@@ -96,10 +97,10 @@ export class CommissionsService {
             ...rule,
             tenant_id: this.tenantId,
             updated_at: new Date().toISOString(),
-        } as any;
+        } as unknown as Database['public']['Tables']['commission_rules']['Insert'];
 
         const { data, error } = await this.supabase.client
-            .from('commission_rules' as any)
+            .from('commission_rules')
             .upsert(payload, { onConflict: 'id' })
             .select()
             .single();
@@ -110,7 +111,7 @@ export class CommissionsService {
 
     async deleteCommissionRule(id: string): Promise<void> {
         const { error } = await this.supabase.client
-            .from('commission_rules' as any)
+            .from('commission_rules')
             .delete()
             .eq('id', id)
             .eq('tenant_id', this.tenantId);
@@ -124,28 +125,28 @@ export class CommissionsService {
 
         const [pendingRes, paidRes, totalRes, monthRes] = await Promise.all([
             this.supabase.client
-                .from('commissions' as any)
+                .from('commissions')
                 .select('commission_amount', { count: 'exact', head: true })
                 .eq('tenant_id', this.tenantId)
                 .eq('status', CommissionStatus.Pending),
             this.supabase.client
-                .from('commissions' as any)
+                .from('commissions')
                 .select('commission_amount', { count: 'exact', head: true })
                 .eq('tenant_id', this.tenantId)
                 .eq('status', CommissionStatus.Paid),
             this.supabase.client
-                .from('commissions' as any)
+                .from('commissions')
                 .select('commission_amount')
                 .eq('tenant_id', this.tenantId),
             this.supabase.client
-                .from('commissions' as any)
+                .from('commissions')
                 .select('commission_amount')
                 .eq('tenant_id', this.tenantId)
                 .gte('created_at', startOfMonth),
         ]);
 
-        const totalAmount = (totalRes.data ?? []).reduce((sum, c) => sum + Number((c as any).commission_amount ?? 0), 0);
-        const thisMonthAmount = (monthRes.data ?? []).reduce((sum, c) => sum + Number((c as any).commission_amount ?? 0), 0);
+        const totalAmount = (totalRes.data ?? []).reduce((sum, c) => sum + Number(c.commission_amount ?? 0), 0);
+        const thisMonthAmount = (monthRes.data ?? []).reduce((sum, c) => sum + Number(c.commission_amount ?? 0), 0);
 
         return {
             totalPending: pendingRes.count ?? 0,
@@ -157,7 +158,7 @@ export class CommissionsService {
 
     async exportCommissions(filters?: CommissionFilters): Promise<Commission[]> {
         let query = this.supabase.client
-            .from('commissions' as any)
+            .from('commissions')
             .select('*, payment:payments(*)')
             .eq('tenant_id', this.tenantId)
             .order('created_at', { ascending: false });
@@ -187,6 +188,6 @@ export class CommissionsService {
         const { data, error } = await query;
 
         if (error) throw error;
-        return data as unknown as Commission[];
+        return (data as unknown as Commission[]) || [];
     }
 }

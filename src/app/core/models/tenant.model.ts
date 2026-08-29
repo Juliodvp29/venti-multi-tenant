@@ -70,10 +70,10 @@ export interface TenantMember {
     permissions: string[];
     is_active: boolean;
     invited_by?: string;
-    invited_at: string;
+    invited_at?: string | null;
     joined_at?: string;
     created_at: string;
-    updated_at: string;
+    updated_at?: string | null;
     email?: string;
     is_invite?: boolean;
 }
@@ -101,7 +101,7 @@ export interface Tenant {
     slug: string;
     subdomain: string;
     custom_domain: string | null;
-    description: string | null;
+    description?: string | null;
 
     owner_id: string;
     contact_email: string;

@@ -4,6 +4,20 @@ import { InventoryMovement, InventoryMovementType } from '@models/inventory';
 import { AuditLog } from '@models/index';
 import { Supabase } from './supabase';
 
+export interface InventoryFilters {
+    startDate?: string;
+    endDate?: string;
+}
+
+interface AuditValues {
+    stock_quantity?: number;
+    name?: string;
+    quantity?: number;
+    product_name?: string;
+    variant_name?: string;
+    order_id?: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -11,11 +25,15 @@ export class InventoryService {
     private readonly supabase = inject(Supabase);
     private readonly tenantService = inject(TenantService);
 
-    async getMovements(page: number = 1, pageSize: number = 20): Promise<{ data: InventoryMovement[], count: number }> {
+    async getMovements(
+        page: number = 1,
+        pageSize: number = 20,
+        filters?: InventoryFilters
+    ): Promise<{ data: InventoryMovement[], count: number }> {
         const tenantId = this.tenantService.tenantId();
-        if (!tenantId) throw new Error('Tenant not selected');
+        if (!tenantId) return { data: [], count: 0 };
 
-        const { data, error, count } = await this.supabase.client
+        let query = this.supabase.client
             .from('audit_logs')
             .select('*', { count: 'exact' })
             .eq('tenant_id', tenantId)
@@ -23,9 +41,19 @@ export class InventoryService {
             .order('created_at', { ascending: false })
             .range((page - 1) * pageSize, page * pageSize - 1);
 
+        if (filters?.startDate) {
+            query = query.gte('created_at', filters.startDate);
+        }
+
+        if (filters?.endDate) {
+            query = query.lte('created_at', filters.endDate);
+        }
+
+        const { data, error, count } = await query;
+
         if (error) throw error;
 
-        const movements: InventoryMovement[] = (data || []).map((log: any) => this.mapAuditToMovement(log as AuditLog))
+        const movements: InventoryMovement[] = (data || []).map((log) => this.mapAuditToMovement(log as unknown as AuditLog))
             .filter((m: InventoryMovement | null): m is InventoryMovement => m !== null);
 
         return {
@@ -34,9 +62,17 @@ export class InventoryService {
         };
     }
 
+    async getInventoryHistory(
+        page: number = 1,
+        pageSize: number = 20,
+        filters?: InventoryFilters
+    ): Promise<{ data: InventoryMovement[], count: number }> {
+        return this.getMovements(page, pageSize, filters);
+    }
+
     private mapAuditToMovement(log: AuditLog): InventoryMovement | null {
-        const oldVal = log.old_values as any;
-        const newVal = log.new_values as any;
+        const oldVal = (log.old_values as unknown as AuditValues) || null;
+        const newVal = (log.new_values as unknown as AuditValues) || null;
 
         if (!newVal) return null;
 
@@ -72,7 +108,7 @@ export class InventoryService {
                 qtyChange = -(newVal.quantity || 0); // Sales deduct stock
                 newQty = 0; // We don't have the final stock in order_items easily
                 productName = newVal.product_name || 'Producto Vendido';
-                variantName = newVal.variant_name;
+                variantName = newVal.variant_name || '';
                 referenceId = newVal.order_id;
             } else {
                 return null;

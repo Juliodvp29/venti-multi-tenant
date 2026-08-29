@@ -2,6 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
 import { Customer, CustomerAddress } from '@core/models/customer';
 import { TenantService } from './tenant';
+import { Database } from '../types/database.types';
+
+export interface CustomerFilters {
+    search?: string;
+    accepts_marketing?: boolean;
+}
 
 @Injectable({
     providedIn: 'root',
@@ -12,26 +18,35 @@ export class CustomersService {
 
     async getCustomers(
         page: number = 1,
-        pageSize: number = 20,
-        filters?: Record<string, any>
+        pageSize: number = 10,
+        filters?: CustomerFilters
     ): Promise<{ data: Customer[]; count: number }> {
         const tenantId = this.tenantService.tenantId();
-        if (!tenantId) throw new Error('Tenant not selected');
+        if (!tenantId) return { data: [], count: 0 };
 
         let query = this.supabase.client
             .from('customers')
             .select('*', { count: 'exact' })
-            .eq('tenant_id', tenantId)
-            .range((page - 1) * pageSize, page * pageSize - 1);
+            .eq('tenant_id', tenantId);
 
-        if (filters?.['search']) {
-            query = query.or(`email.ilike.%${filters['search']}%,first_name.ilike.%${filters['search']}%,last_name.ilike.%${filters['search']}%`);
+        if (filters) {
+            if (filters.search) {
+                query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`);
+            }
+            if (filters.accepts_marketing !== undefined) {
+                query = query.eq('accepts_marketing', filters.accepts_marketing);
+            }
         }
+
+        const from = (page - 1) * pageSize;
+        const to = from + pageSize - 1;
+
+        query = query.range(from, to).order('created_at', { ascending: false });
 
         const { data, error, count } = await query;
 
         if (error) throw error;
-        return { data: data as Customer[], count: count ?? 0 };
+        return { data: (data as unknown as Customer[]) || [], count: count ?? 0 };
     }
 
     async getCustomer(id: string): Promise<Customer | null> {
@@ -45,7 +60,7 @@ export class CustomersService {
             .single();
 
         if (error) throw error;
-        return data as Customer;
+        return data as unknown as Customer;
     }
 
     async createCustomer(customer: Partial<Customer>): Promise<Customer> {
@@ -57,12 +72,12 @@ export class CustomersService {
             .insert({
                 ...customer,
                 tenant_id: tenantId,
-            } as any)
+            } as unknown as Database['public']['Tables']['customers']['Insert'])
             .select()
             .single();
 
         if (error) throw error;
-        return data as Customer;
+        return data as unknown as Customer;
     }
 
     async updateCustomer(id: string, customer: Partial<Customer>): Promise<Customer> {
@@ -77,7 +92,7 @@ export class CustomersService {
             .single();
 
         if (error) throw error;
-        return data as Customer;
+        return data as unknown as Customer;
     }
 
     async deleteCustomer(id: string): Promise<void> {
@@ -98,12 +113,12 @@ export class CustomersService {
                 ...address,
                 customer_id: customerId,
                 tenant_id: tenantId,
-            } as any)
+            } as unknown as Database['public']['Tables']['customer_addresses']['Insert'])
             .select()
             .single();
 
         if (error) throw error;
-        return data as CustomerAddress;
+        return data as unknown as CustomerAddress;
     }
 
     async getCustomerAddresses(customerId: string): Promise<CustomerAddress[]> {
@@ -115,7 +130,7 @@ export class CustomersService {
             .order('created_at', { ascending: false });
 
         if (error) throw error;
-        return data as CustomerAddress[];
+        return (data as unknown as CustomerAddress[]) || [];
     }
 
     async updateAddress(id: string, address: Partial<CustomerAddress>): Promise<CustomerAddress> {
@@ -124,13 +139,13 @@ export class CustomersService {
             .update({
                 ...address,
                 updated_at: new Date().toISOString(),
-            } as any)
+            })
             .eq('id', id)
             .select()
             .single();
 
         if (error) throw error;
-        return data as CustomerAddress;
+        return data as unknown as CustomerAddress;
     }
 
     async deleteAddress(id: string): Promise<void> {
@@ -143,16 +158,20 @@ export class CustomersService {
     }
 
     async setDefaultAddress(customerId: string, addressId: string, type: 'shipping' | 'billing' = 'shipping'): Promise<void> {
-        const column = type === 'shipping' ? 'is_default' : 'is_billing_default';
+        const clearObj: Database['public']['Tables']['customer_addresses']['Update'] =
+            type === 'shipping' ? { is_default: false } : { is_billing_default: false };
 
         await this.supabase.client
             .from('customer_addresses')
-            .update({ [column]: false } as any)
+            .update(clearObj)
             .eq('customer_id', customerId);
+
+        const setObj: Database['public']['Tables']['customer_addresses']['Update'] =
+            type === 'shipping' ? { is_default: true } : { is_billing_default: true };
 
         const { error } = await this.supabase.client
             .from('customer_addresses')
-            .update({ [column]: true } as any)
+            .update(setObj)
             .eq('id', addressId);
 
         if (error) throw error;

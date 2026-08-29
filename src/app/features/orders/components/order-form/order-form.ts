@@ -279,7 +279,7 @@ export class OrderForm implements OnInit {
           // Handle duplicate email (unique_violation)
           if (err.code === '23505' && err.message?.includes('customers_tenant_id_email_key')) {
             const existing = await this.customersService.getCustomers(1, 1, {
-              search: newCustomerData.email,
+              search: newCustomerData.email || undefined,
             });
             if (existing.data.length > 0) {
               customer = existing.data[0];

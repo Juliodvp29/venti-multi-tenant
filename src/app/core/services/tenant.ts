@@ -1,11 +1,12 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks, ThemeTokens, ThemePresetId, StorePageId, PageLayoutConfig, DEFAULT_PAGE_LAYOUTS, getDefaultPageLayout, ThemeDesignSnapshot, CustomThemePreset, ThemeDesignVersion, StoreDesignState } from '@core/models';
+import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks, ThemeTokens, ThemePresetId, StorePageId, PageLayoutConfig, DEFAULT_PAGE_LAYOUTS, getDefaultPageLayout, ThemeDesignSnapshot, CustomThemePreset, ThemeDesignVersion, StoreDesignState, BackgroundPatternOption, BrandGalleryItem } from '@core/models';
 import { THEME_PRESETS } from '@core/constants/theme-presets';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
 import { TenantRole } from '@core/enums';
 import { AuthService } from './auth';
 import { environment } from '@env/environment';
+import { Database } from '../types/database.types';
 
 interface TenantState {
   currentTenant: Nullable<Tenant>;
@@ -47,7 +48,6 @@ export class TenantService {
     const memberRole = this._state().memberInfo?.role;
     if (memberRole) return memberRole.toLowerCase() as string;
 
-    // Fallback: If current user is the owner in tenants table
     const tenant = this._state().currentTenant;
     const userId = this.authService.userId();
     if (tenant && userId && tenant.owner_id === userId) {
@@ -78,8 +78,8 @@ export class TenantService {
     return `/store`;
   });
   readonly storefrontLayout = computed<StorefrontLayout>(() => {
-    const settings = this._state().currentTenant?.settings as any;
-    const layout = settings?.storefront_layout as StorefrontLayout;
+    const settings = this._state().currentTenant?.settings as Record<string, unknown> | undefined;
+    const layout = settings?.['storefront_layout'] as StorefrontLayout | undefined;
 
     const defaultHomeSections = [
       {
@@ -150,16 +150,16 @@ export class TenantService {
   });
 
   readonly themeTokens = computed<ThemeTokens>(() => {
-    const settings = this._state().currentTenant?.settings as any;
-    const presetId = (settings?.theme_id as ThemePresetId) || 'minimalist';
+    const settings = this._state().currentTenant?.settings as Record<string, unknown> | undefined;
+    const presetId = (settings?.['theme_id'] as ThemePresetId) || 'minimalist';
     const baseTokens = THEME_PRESETS[presetId]?.tokens || THEME_PRESETS.minimalist.tokens;
-    const savedTokens = settings?.theme_config as ThemeTokens;
+    const savedTokens = settings?.['theme_config'] as ThemeTokens | undefined;
 
     if (savedTokens) {
       return {
         ...baseTokens,
         ...savedTokens,
-        custom_css: savedTokens.custom_css ?? (settings?.custom_css as string) ?? '',
+        custom_css: savedTokens.custom_css ?? (settings?.['custom_css'] as string) ?? '',
         font_button: savedTokens.font_button || savedTokens.font_body || baseTokens.font_button || baseTokens.font_body || '"Inter", sans-serif',
         font_weight_heading: savedTokens.font_weight_heading || baseTokens.font_weight_heading || '700',
         font_size_base: savedTokens.font_size_base || baseTokens.font_size_base || '16px',
@@ -173,7 +173,7 @@ export class TenantService {
 
     return {
       ...baseTokens,
-      custom_css: (settings?.custom_css as string) || '',
+      custom_css: (settings?.['custom_css'] as string) || '',
       font_heading: t.font_family || baseTokens.font_heading,
       font_body: t.font_family || baseTokens.font_body,
       font_button: t.font_family || baseTokens.font_button || baseTokens.font_body,
@@ -223,11 +223,11 @@ export class TenantService {
       social_share_image_url: t.social_share_image_url || (t.settings?.['social_share_image_url'] as string) || null,
       main_banner_url: t.main_banner_url || (t.settings?.['main_banner_url'] as string) || null,
       background_image_url: t.background_image_url || (t.settings?.['background_image_url'] as string) || null,
-      background_pattern: t.background_pattern || (t.settings?.['background_pattern'] as any) || 'none',
+      background_pattern: t.background_pattern || (t.settings?.['background_pattern'] as BackgroundPatternOption) || 'none',
       promo_video_url: t.promo_video_url || (t.settings?.['promo_video_url'] as string) || null,
-      brand_gallery: t.brand_gallery || (t.settings?.['brand_gallery'] as any) || [],
+      brand_gallery: t.brand_gallery || (t.settings?.['brand_gallery'] as BrandGalleryItem[]) || [],
       business_name: t.business_name,
-      description: t.description,
+      description: t.description ?? null,
       primary_color: t.primary_color,
       secondary_color: t.secondary_color,
       accent_color: t.accent_color,
@@ -396,8 +396,8 @@ export class TenantService {
       }
 
       // Collect all tenants from both sources
-      const membershipData = (membershipsRes.data as any[]) ?? [];
-      const ownedTenants = (ownedTenantsRes.data as any[]) ?? [];
+      const membershipData = (membershipsRes.data as (TenantMember & { tenant: Tenant })[]) ?? [];
+      const ownedTenants = (ownedTenantsRes.data as Tenant[]) ?? [];
 
       // Map to unique tenants
       const tenantMap = new Map<string, Tenant>();
@@ -500,7 +500,7 @@ export class TenantService {
 
       this._state.update(s => ({
         ...s,
-        currentTenant: data as any,
+        currentTenant: data as Tenant,
         loading: false,
         initialized: true
       }));
@@ -534,7 +534,7 @@ export class TenantService {
 
       this._state.update(s => ({
         ...s,
-        currentTenant: data as any,
+        currentTenant: data as Tenant,
         loading: false,
         initialized: true
       }));
@@ -548,20 +548,123 @@ export class TenantService {
     }
   }
 
+  /**
+   * Set current active tenant
+   */
   async setCurrentTenant(tenantId: string): Promise<void> {
     const tenant = this._state().tenants.find((t) => t.id === tenantId);
     if (!tenant) return;
-    this._state.update((s) => ({ ...s, currentTenant: tenant }));
-    localStorage.setItem('last_tenant_id', tenantId);
-    await this.loadMemberInfo(tenantId);
-    await this.loadTenantSettings(tenantId);
+
+    const userId = this.authService.userId();
+
+    let memberInfo: Nullable<TenantMember> = null;
+    if (userId) {
+      const { data } = await this.supabase.client
+        .from('tenant_members')
+        .select('*')
+        .eq('tenant_id', tenantId)
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (data) {
+        memberInfo = data as TenantMember;
+      } else if (tenant.owner_id === userId) {
+        memberInfo = {
+          id: 'owner',
+          tenant_id: tenant.id,
+          user_id: userId,
+          role: TenantRole.Owner,
+          is_active: true,
+          created_at: tenant.created_at,
+          permissions: [],
+          invited_at: null,
+          updated_at: null,
+        };
+      }
+    }
+
+    this._state.update((s) => ({
+      ...s,
+      currentTenant: tenant,
+      memberInfo,
+      settings: (tenant.settings as Record<string, unknown>) || {},
+    }));
   }
 
-  private async loadMemberInfo(tenantId: string): Promise<void> {
-    const userId = this.authService.userId();
-    if (!userId) return;
+  /**
+   * Load tenant by slug (for public store)
+   */
+  async loadTenantBySlug(slug: string): Promise<Tenant | null> {
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
-    const { data } = await this.supabase.client
+    try {
+      const { data, error } = await this.supabase.client
+        .from('tenants')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+
+      if (error) throw error;
+
+      this._state.update((s) => ({
+        ...s,
+        currentTenant: data as Tenant,
+        loading: false,
+        settings: (data?.settings as Record<string, unknown>) || {},
+      }));
+
+      return data as Tenant;
+    } catch (error) {
+      console.error('Error loading tenant by slug:', error);
+      this._state.update((s) => ({
+        ...s,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }));
+      return null;
+    }
+  }
+
+  /**
+   * Load tenant by custom domain
+   */
+  async loadTenantByDomain(domain: string): Promise<Tenant | null> {
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
+
+    try {
+      const { data, error } = await this.supabase.client
+        .from('tenants')
+        .select('*')
+        .eq('custom_domain', domain)
+        .single();
+
+      if (error) throw error;
+
+      this._state.update((s) => ({
+        ...s,
+        currentTenant: data as Tenant,
+        loading: false,
+        settings: (data?.settings as Record<string, unknown>) || {},
+      }));
+
+      return data as Tenant;
+    } catch (error) {
+      console.error('Error loading tenant by domain:', error);
+      this._state.update((s) => ({
+        ...s,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }));
+      return null;
+    }
+  }
+
+  /**
+   * Load member info for a tenant
+   */
+  async loadMemberInfo(tenantId: string, userId: string): Promise<void> {
+    const { data, error } = await this.supabase.client
       .from('tenant_members')
       .select('*')
       .eq('tenant_id', tenantId)
@@ -569,7 +672,7 @@ export class TenantService {
       .eq('is_active', true)
       .maybeSingle();
 
-    this._state.update((s) => ({ ...s, memberInfo: data as any }));
+    this._state.update((s) => ({ ...s, memberInfo: (data as TenantMember) || null }));
   }
 
   async loadTenantSettings(tenantId: string): Promise<void> {
@@ -589,7 +692,7 @@ export class TenantService {
     const { data, error } = await this.supabase.client
       .from('tenants')
       .update({
-        settings: updatedSettings as any,
+        settings: updatedSettings as unknown as Database['public']['Tables']['tenants']['Update']['settings'],
         updated_at: new Date().toISOString(),
       })
       .eq('id', tenantId)
@@ -600,7 +703,7 @@ export class TenantService {
 
     this._state.update((s) => ({
       ...s,
-      currentTenant: data as any,
+      currentTenant: data as unknown as Tenant,
       settings: updatedSettings
     }));
   }
@@ -616,7 +719,7 @@ export class TenantService {
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
-      } as any)
+      } as unknown as Database['public']['Tables']['tenants']['Update'])
       .eq('id', tenantId)
       .select()
       .single();
@@ -625,14 +728,14 @@ export class TenantService {
 
     this._state.update((s) => ({
       ...s,
-      currentTenant: data as any,
-      tenants: s.tenants.map((t) => (t.id === tenantId ? data as any : t)),
+      currentTenant: data as unknown as Tenant,
+      tenants: s.tenants.map((t) => (t.id === tenantId ? (data as unknown as Tenant) : t)),
       settings: updates.settings
-        ? (data as Tenant).settings as Record<string, unknown>
+        ? (data as unknown as Tenant).settings as Record<string, unknown>
         : s.settings,
     }));
 
-    return data as any;
+    return data as unknown as Tenant;
   }
 
   async verifyCustomDomain(domain: string): Promise<{ status: 'verified' | 'error'; reason?: string }> {
@@ -679,7 +782,7 @@ export class TenantService {
     this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
-      await this.updateTenant(tenantId, info as any);
+      await this.updateTenant(tenantId, info);
       this._state.update((s) => ({ ...s, loading: false }));
       return { success: true };
     } catch (error) {
@@ -697,7 +800,7 @@ export class TenantService {
   /**
    * Update branding colors, logos, and brand assets
    */
-  async updateBranding(branding: Partial<TenantBranding> & { [key: string]: any }): Promise<{ success: boolean; error?: string }> {
+  async updateBranding(branding: Partial<TenantBranding> & { [key: string]: unknown }): Promise<{ success: boolean; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) {
       return { success: false, error: 'No tenant found' };
@@ -730,7 +833,7 @@ export class TenantService {
         social_links,
       };
 
-      await this.updateTenant(tenantId, { ...tenantBranding, settings } as any);
+      await this.updateTenant(tenantId, { ...tenantBranding, settings });
       this._state.update((s) => ({ ...s, loading: false }));
       return { success: true };
     } catch (error) {
@@ -756,7 +859,7 @@ export class TenantService {
 
     try {
       const currentTenant = this._state().currentTenant;
-      const currentSettings = currentTenant?.settings as any || {};
+      const currentSettings = (currentTenant?.settings as Record<string, unknown>) || {};
 
       const updatedSettings = {
         ...currentSettings,
@@ -766,7 +869,7 @@ export class TenantService {
       const { data, error } = await this.supabase.client
         .from('tenants')
         .update({
-          settings: updatedSettings,
+          settings: updatedSettings as unknown as Database['public']['Tables']['tenants']['Update']['settings'],
           status: 'active' // Activate tenant when layout is saved
         })
         .eq('id', tenantId)
@@ -777,7 +880,7 @@ export class TenantService {
 
       this._state.update(s => ({
         ...s,
-        currentTenant: data as any,
+        currentTenant: data as unknown as Tenant,
         loading: false
       }));
 
@@ -833,7 +936,7 @@ export class TenantService {
         theme_id: tokens.theme_id
       };
 
-      const brandingUpdates = {
+      const brandingUpdates: Partial<Tenant> = {
         primary_color: tokens.colors.primary,
         secondary_color: tokens.colors.secondary,
         accent_color: tokens.colors.accent,
@@ -844,7 +947,7 @@ export class TenantService {
         settings: updatedSettings
       };
 
-      await this.updateTenant(tenantId, brandingUpdates as any);
+      await this.updateTenant(tenantId, brandingUpdates);
       this._state.update(s => ({ ...s, loading: false }));
       return { success: true };
     } catch (error: any) {
@@ -932,7 +1035,7 @@ export class TenantService {
         custom_css: currentDraft.theme_tokens?.custom_css || '',
       };
 
-      const brandingUpdates: Partial<Tenant> & { settings: any } = {
+      const brandingUpdates: Partial<Tenant> = {
         settings: updatedSettings,
         status: 'active',
       };
@@ -957,7 +1060,7 @@ export class TenantService {
         if (currentDraft.branding.promo_video_url !== undefined) updatedSettings['promo_video_url'] = currentDraft.branding.promo_video_url;
       }
 
-      await this.updateTenant(tenantId, brandingUpdates as any);
+      await this.updateTenant(tenantId, brandingUpdates);
       this._state.update(s => ({ ...s, loading: false }));
       return { success: true, version: newVersion };
     } catch (error: any) {
@@ -1105,16 +1208,9 @@ export class TenantService {
   }
 
   /**
-   * Update business address
+   * Update address info
    */
-  async updateAddress(address: {
-    address_line1?: string | null;
-    address_line2?: string | null;
-    city?: string | null;
-    state?: string | null;
-    postal_code?: string | null;
-    country?: string | null;
-  }): Promise<{ success: boolean; error?: string }> {
+  async updateAddress(address: Partial<Tenant>): Promise<{ success: boolean; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) {
       return { success: false, error: 'No tenant found' };
@@ -1123,7 +1219,7 @@ export class TenantService {
     this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
-      await this.updateTenant(tenantId, address as any);
+      await this.updateTenant(tenantId, address);
       this._state.update((s) => ({ ...s, loading: false }));
       return { success: true };
     } catch (error) {
@@ -1245,7 +1341,7 @@ export class TenantService {
           name: item.name,
           url: urlData.publicUrl,
           created_at: item.created_at,
-          size: (item.metadata as any)?.size,
+          size: (item.metadata as Record<string, any>)?.['size'],
           type: isVideo ? 'video' : 'image',
         };
       });
@@ -1258,34 +1354,38 @@ export class TenantService {
   /**
    * Delete a tenant media asset from storage
    */
-  async deleteTenantMedia(filename: string): Promise<boolean> {
+  async deleteTenantMedia(fileName: string): Promise<{ success: boolean; error?: string }> {
     const tenantId = this.tenantId();
-    if (!tenantId) return false;
+    if (!tenantId) return { success: false, error: 'No tenant found' };
 
     try {
       const bucketName = environment.storage.buckets.media || environment.storage.buckets.products || 'product-images';
-      const filePath = `${tenantId}/${filename}`;
+      const filePath = `${tenantId}/${fileName}`;
       const { error } = await this.supabase.storage.from(bucketName).remove([filePath]);
-      return !error;
+
+      if (error) throw error;
+      return { success: true };
     } catch (err) {
-      console.error('Error deleting tenant media:', err);
-      return false;
+      console.error('Error deleting media:', err);
+      return { success: false, error: err instanceof Error ? err.message : 'Failed to delete media' };
     }
   }
 
+  // ── Member Management Methods ──
+
   /**
-   * Get all members of the current tenant
+   * Get all members for the current tenant
    */
   async getMembers(): Promise<TenantMember[]> {
     const tenantId = this.tenantId();
     if (!tenantId) return [];
 
-    const { data, error } = await (this.supabase.client.from as any)('vw_tenant_members')
+    const { data, error } = await this.supabase.client.from('vw_tenant_members')
       .select('*')
       .eq('tenant_id', tenantId);
 
     if (error) throw error;
-    return data as TenantMember[];
+    return (data as unknown as TenantMember[]) || [];
   }
 
   /**
@@ -1300,7 +1400,7 @@ export class TenantService {
       throw new Error('Invalid email');
     }
 
-    const { data: existingInvite } = await (this.supabase.client.from as any)('tenant_invitations')
+    const { data: existingInvite } = await this.supabase.client.from('tenant_invitations')
       .select('id')
       .eq('tenant_id', tenantId)
       .eq('email', cleanEmail)
@@ -1310,7 +1410,7 @@ export class TenantService {
       throw new Error('A pending invitation already exists for this email.');
     }
 
-    const { data: insertedInvite, error: insertError } = await (this.supabase.client.from as any)('tenant_invitations')
+    const { data: insertedInvite, error: insertError } = await this.supabase.client.from('tenant_invitations')
       .insert({
         tenant_id: tenantId,
         email: cleanEmail,
@@ -1331,7 +1431,7 @@ export class TenantService {
 
     let userExists = false;
     try {
-      const { data, error } = await (this.supabase.client.rpc as any)('check_user_exists', { p_email: cleanEmail });
+      const { data, error } = await this.supabase.client.rpc('check_user_exists', { p_email: cleanEmail });
       if (!error && data !== null) {
         userExists = !!data;
       }
@@ -1378,13 +1478,13 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return [];
 
-    const { data, error } = await (this.supabase.client.from as any)('tenant_invitations')
+    const { data, error } = await this.supabase.client.from('tenant_invitations')
       .select('*')
       .eq('tenant_id', tenantId)
       .eq('status', 'pending');
 
     if (error) throw error;
-    return data as TenantInvitation[];
+    return (data as unknown as TenantInvitation[]) || [];
   }
   /**
    * Update a member's role

@@ -4,6 +4,7 @@ import { Order, OrderItem, OrderStatusHistory } from '@core/models/order';
 import { OrderStatus, PaymentStatus } from '@core/enums';
 import { TenantService } from './tenant';
 import { AuthService } from './auth';
+import { Database } from '../types/database.types';
 
 export interface OrderStats {
     totalThisMonth: number;
@@ -107,13 +108,13 @@ export class OrdersService {
 
         const { data: order, error: orderError } = await this.supabase.client
             .from('orders')
-            .insert(payload as any)
+            .insert(payload as unknown as Database['public']['Tables']['orders']['Insert'])
             .select()
             .single();
 
         if (orderError) throw orderError;
 
-        const orderItemsToInsert = items.map((item: any) => ({
+        const orderItemsToInsert = items.map((item) => ({
             ...item,
             order_id: order.id,
             tenant_id: tenantId,
@@ -122,12 +123,11 @@ export class OrdersService {
 
         const { error: itemsError } = await this.supabase.client
             .from('order_items')
-            .insert(orderItemsToInsert as any);
+            .insert(orderItemsToInsert as unknown as Database['public']['Tables']['order_items']['Insert'][]);
 
         if (itemsError) throw itemsError;
 
-
-        return order as Order;
+        return order as unknown as Order;
     }
 
     async getOrder(id: string): Promise<Order | null> {

@@ -1,6 +1,16 @@
 import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
 import { TenantService } from './tenant';
+import { Customer } from '@core/models/customer';
+
+export interface AbandonedCartItem {
+    name?: string;
+    price?: number;
+    product_id?: string;
+    product_name?: string;
+    quantity?: number;
+    [key: string]: unknown;
+}
 
 export interface AbandonedCart {
     id: string;
@@ -10,8 +20,19 @@ export interface AbandonedCart {
     last_activity: string;
     items_count: number;
     total_amount: number;
-    items: any[];
-    session_id: string;
+    items: AbandonedCartItem[];
+    session_id: string | null;
+}
+
+interface AnalyticsEventWithCustomer {
+    id: string;
+    tenant_id: string;
+    customer_id: string | null;
+    session_id: string | null;
+    event_type: string;
+    event_data: AbandonedCartItem | null;
+    created_at: string;
+    customer: Customer | null;
 }
 
 @Injectable({
@@ -46,10 +67,10 @@ export class AbandonedCartService {
             return [];
         }
 
-        const typedEvents = (events || []) as any[];
+        const typedEvents = (events as unknown as AnalyticsEventWithCustomer[]) || [];
 
         // 2. Get orders for these customers created AFTER their latest add_to_cart
-        const customerIds = [...new Set(typedEvents.map((e: any) => e.customer_id))];
+        const customerIds = [...new Set(typedEvents.map((e) => e.customer_id).filter((id): id is string => !!id))];
         const { data: orders, error: ordersError } = await this.supabase.client
             .from('orders')
             .select('customer_id, created_at')
@@ -61,16 +82,17 @@ export class AbandonedCartService {
             return [];
         }
 
-        const typedOrders = (orders || []) as any[];
+        const typedOrders = (orders as { customer_id: string | null; created_at: string }[]) || [];
 
         // 3. Filter and group
         const abandonedCarts: Map<string, AbandonedCart> = new Map();
 
         for (const event of typedEvents) {
             const customerId = event.customer_id;
+            if (!customerId) continue;
 
             // Check if customer placed an order after this event
-            const hasOrder = typedOrders.some((o: any) =>
+            const hasOrder = typedOrders.some((o) =>
                 o.customer_id === customerId &&
                 new Date(o.created_at) >= new Date(event.created_at)
             );
@@ -80,7 +102,7 @@ export class AbandonedCartService {
             // If we haven't added this customer yet or this event is newer
             if (!abandonedCarts.has(customerId)) {
                 const customer = event.customer;
-                const itemData = event.event_data || {};
+                const itemData: AbandonedCartItem = event.event_data || {};
 
                 abandonedCarts.set(customerId, {
                     id: event.id,
@@ -99,7 +121,7 @@ export class AbandonedCartService {
                 if (new Date(event.created_at) > new Date(cart.last_activity)) {
                     cart.last_activity = event.created_at;
                 }
-                const itemData = event.event_data || {};
+                const itemData: AbandonedCartItem = event.event_data || {};
                 cart.items.push(itemData);
                 cart.items_count++;
                 cart.total_amount += Number(itemData?.price || 0);
