@@ -39,7 +39,7 @@
                         <label
                             class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5 ml-1">Seleccionar
                             Cliente</label>
-                        <app-dropdown [options]="customerOptions()" [value]="$safeNavigationMigration(form.get('customer_id')?.value)"
+                        <app-dropdown [options]="customerOptions()" [value]="form.get('customer_id')?.value"
                             (valueChange)="onCustomerChange($event)" placeholder="Buscar cliente existente..." />
                         @if (form.get('customer_id')?.touched && form.get('customer_id')?.errors?.['required']) {
                         <p class="text-xs text-red-500 mt-1">Por favor selecciona un cliente</p>
@@ -136,7 +136,7 @@
                                 @if (getVariantOptions(i).length > 0) {
                                 <div class="mt-2 w-48">
                                     <app-dropdown [options]="getVariantOptions(i)"
-                                        [value]="$safeNavigationMigration(item.get('variant_id')?.value)"
+                                        [value]="item.get('variant_id')?.value"
                                         (valueChange)="onVariantChange(i, $event)"
                                         placeholder="Seleccionar variante..." />
                                 </div>
@@ -177,7 +177,7 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold mb-1">Subtotal
                                 </p>
                                 <p class="font-semibold text-gray-900 dark:text-white">{{
-                                    $safeNavigationMigration(item.get('total_amount')?.value) | currency:currency() }}</p>
+                                    item.get('total_amount')?.value | currency:currency() }}</p>
                             </div>
                         </div>
                     </div>
@@ -246,12 +246,12 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1">
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Estado de Orden</label>
-                        <app-dropdown [options]="statusOptions" [value]="$safeNavigationMigration(form.get('status')?.value)"
+                        <app-dropdown [options]="statusOptions" [value]="form.get('status')?.value"
                             (valueChange)="form.patchValue({ status: $event })" placeholder="Seleccionar estado" />
                     </div>
                     <div class="space-y-1">
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Estado de Pago</label>
-                        <app-dropdown [options]="paymentStatusOptions" [value]="$safeNavigationMigration(form.get('payment_status')?.value)"
+                        <app-dropdown [options]="paymentStatusOptions" [value]="form.get('payment_status')?.value"
                             (valueChange)="form.patchValue({ payment_status: $event })"
                             placeholder="Seleccionar estado de pago" />
                     </div>

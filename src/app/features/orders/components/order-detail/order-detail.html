@@ -160,7 +160,7 @@
                         <div
                             class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden">
                             @if (item.product_snapshot?.['image_url']) {
-                            <img [src]="$safeNavigationMigration(item.product_snapshot?.['image_url'])" [alt]="item.product_name"
+                            <img [src]="item.product_snapshot?.['image_url']" [alt]="item.product_name"
                                 class="w-full h-full object-cover" />
                             } @else {
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none"

@@ -43,7 +43,7 @@ import { SeoService } from '@core/services/seo';
             >
               <img
                 [src]="displayImage()"
-                [alt]="$safeNavigationMigration(product()?.name)"
+                [alt]="product()?.name"
                 loading="lazy"
                 class="w-full h-full object-cover object-top transition-all duration-700 hover:scale-105"
               />
@@ -112,7 +112,7 @@ import { SeoService } from '@core/services/seo';
                   >
                     <img
                       [src]="img.url"
-                      [alt]="$safeNavigationMigration(product()?.name) + ' view'"
+                      [alt]="(product()?.name ?? '') + ' view'"
                       loading="lazy"
                       class="w-full h-full object-cover object-top"
                     />

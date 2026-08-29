@@ -83,7 +83,7 @@
                         pagar
                         hoy</span>
                     <div class="text-right">
-                        <div class="text-4xl font-black dark:text-white tracking-tighter">{{ $safeNavigationMigration(plan()?.price) |
+                        <div class="text-4xl font-black dark:text-white tracking-tighter">{{ (plan()?.price ?? 0) |
                             currency:'USD' }}</div>
                         <div
                             class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold mt-1">

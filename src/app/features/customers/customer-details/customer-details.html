@@ -103,7 +103,7 @@
                         <p
                             class="text-slate-400 dark:text-slate-400 mb-1 font-semibold uppercase tracking-wider text-[11px]">
                             Miembro desde</p>
-                        <p class="text-slate-900 dark:text-slate-100 font-medium">{{ $safeNavigationMigration(customer()?.created_at) |
+                        <p class="text-slate-900 dark:text-slate-100 font-medium">{{ customer()?.created_at |
                             date:'longDate' }}</p>
                     </div>
                 </div>
@@ -206,7 +206,7 @@
                         <div>
                             <p class="text-sm font-semibold text-slate-900 dark:text-white">Perfil de Cliente Creado
                             </p>
-                            <p class="text-xs text-slate-400 dark:text-slate-500 italic">{{ $safeNavigationMigration(customer()?.created_at) |
+                            <p class="text-xs text-slate-400 dark:text-slate-500 italic">{{ customer()?.created_at |
                                 date:'medium':timezone():'es' }}</p>
                         </div>
                     </div>

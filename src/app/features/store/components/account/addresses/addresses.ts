@@ -1,21 +1,23 @@
-import { Component, computed, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomerAddress } from '@core/models/customer';
 import { CustomersService } from '@core/services/customers';
 import { AuthService } from '@core/services/auth';
 import { ToastService } from '@core/services/toast';
+import { LoggerService } from '@core/services/logger';
 import { AddressForm } from '../address-form/address-form';
 
 @Component({
     selector: 'app-account-addresses',
     imports: [CommonModule, AddressForm],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './addresses.html',
 })
 export class Addresses implements OnInit {
     private readonly customersService = inject(CustomersService);
     private readonly authService = inject(AuthService);
     private readonly toast = inject(ToastService);
+    private readonly logger = inject(LoggerService);
 
     readonly addresses = signal<CustomerAddress[]>([]);
     readonly loading = signal(true);
@@ -46,7 +48,7 @@ export class Addresses implements OnInit {
             this.addresses.set(addrList);
         } catch (e: any) {
             this.toast.error('No se pudieron cargar las direcciones');
-            console.error(e);
+            this.logger.error('Error al cargar las direcciones del cliente', e);
         } finally {
             this.loading.set(false);
         }
@@ -83,7 +85,7 @@ export class Addresses implements OnInit {
             await this.loadAddresses();
         } catch (e: any) {
             this.toast.error('Ocurrió un error guardando la dirección');
-            console.error(e);
+            this.logger.error('Error al guardar la dirección del cliente', e);
         } finally {
             this.isSubmitting.set(false);
         }
@@ -102,7 +104,7 @@ export class Addresses implements OnInit {
             await this.loadAddresses();
         } catch (e: any) {
             this.toast.error('Ocurrió un error al eliminar');
-            console.error(e);
+            this.logger.error('Error al eliminar dirección del cliente', e);
         }
     }
 
@@ -115,7 +117,7 @@ export class Addresses implements OnInit {
             await this.loadAddresses();
         } catch (e: any) {
             this.toast.error('Ocurrió un error al actualizar');
-            console.error(e);
+            this.logger.error('Error al establecer dirección predeterminada', e);
         }
     }
 }
