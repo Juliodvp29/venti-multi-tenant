@@ -1,13 +1,13 @@
 <div class="w-full text-center mb-10">
-    <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-3">
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-gray-200 tracking-tight mb-3">
         Iniciar Sesión
     </h1>
-    <p class="text-sm text-gray-400">
+    <p class="text-sm text-gray-700 dark:text-gray-400">
         Ingresa tus credenciales para gestionar tu tienda
     </p>
 </div>
 
-<!-- Error Alert -->
+<!-- Error Alert -->    
 @if (errorMessage()) {
 <div class="alert flex items-center gap-3 px-4 py-3 rounded-xl mb-6 bg-red-950/40 text-red-400 border border-red-900/50 text-xs font-semibold">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
@@ -24,7 +24,7 @@
 
     <!-- Email Field -->
     <div class="flex flex-col gap-2">
-        <label for="email" class="text-[11px] font-bold uppercase tracking-widest text-gray-400">
+        <label for="email" class="text-[11px] font-bold uppercase tracking-widest text-gray-700 dark:text-gray-400">
             Correo Electrónico
         </label>
         <div class="relative flex items-center border-b border-gray-700 focus-within:border-sky-500 transition-colors duration-200 pb-1">
@@ -47,7 +47,7 @@
     <!-- Password Field -->
     <div class="flex flex-col gap-2">
         <div class="flex items-center justify-between">
-            <label for="password" class="text-[11px] font-bold uppercase tracking-widest text-gray-400">
+            <label for="password" class="text-[11px] font-bold uppercase tracking-widest text-gray-700 dark:text-gray-400">
                 Contraseña
             </label>
             <a routerLink="/auth/forgot-password"
