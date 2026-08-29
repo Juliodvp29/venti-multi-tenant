@@ -340,6 +340,7 @@
           </div>
           <button
             type="button"
+            aria-label="Seguir inventario"
             (click)="form.patchValue({ track_inventory: !form.getRawValue().track_inventory })"
             class="toggle-btn"
             [class.active]="form.getRawValue().track_inventory"
@@ -380,6 +381,7 @@
           </div>
           <button
             type="button"
+            aria-label="Producto destacado"
             (click)="form.patchValue({ is_featured: !form.getRawValue().is_featured })"
             class="toggle-btn"
             [class.active]="form.getRawValue().is_featured"
@@ -405,6 +407,7 @@
           }}</span>
           <button
             type="button"
+            aria-label="Activar variantes"
             (click)="toggleVariants()"
             class="toggle-btn scale-90"
             [class.active]="hasVariants()"
@@ -474,6 +477,7 @@
                 <div class="sm:col-span-1 flex justify-center">
                   <button
                     type="button"
+                    aria-label="Eliminar opción"
                     (click)="removeOption($index)"
                     class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                   >

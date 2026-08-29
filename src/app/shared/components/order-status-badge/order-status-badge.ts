@@ -9,21 +9,21 @@ interface BadgeConfig {
 }
 
 const ORDER_STATUS_MAP: Record<OrderStatus, BadgeConfig> = {
-    [OrderStatus.Pending]: { label: 'Pending', classes: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 ring-yellow-200 dark:ring-yellow-800' },
-    [OrderStatus.Processing]: { label: 'Processing', classes: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 ring-blue-200 dark:ring-blue-800' },
-    [OrderStatus.Paid]: { label: 'Paid', classes: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400 ring-sky-200 dark:ring-sky-800' },
-    [OrderStatus.Shipped]: { label: 'Shipped', classes: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400 ring-cyan-200 dark:ring-cyan-800' },
-    [OrderStatus.Delivered]: { label: 'Delivered', classes: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 ring-green-200 dark:ring-green-800' },
-    [OrderStatus.Cancelled]: { label: 'Cancelled', classes: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 ring-red-200 dark:ring-red-800' },
-    [OrderStatus.Refunded]: { label: 'Refunded', classes: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400 ring-gray-200 dark:ring-gray-700' },
+    [OrderStatus.Pending]: { label: 'Pendiente', classes: 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-300 ring-amber-500/30' },
+    [OrderStatus.Processing]: { label: 'En Proceso', classes: 'bg-blue-50 text-blue-900 dark:bg-blue-950/40 dark:text-blue-300 ring-blue-500/30' },
+    [OrderStatus.Paid]: { label: 'Pagado', classes: 'bg-sky-50 text-sky-900 dark:bg-sky-950/40 dark:text-sky-300 ring-sky-500/30' },
+    [OrderStatus.Shipped]: { label: 'Enviado', classes: 'bg-indigo-50 text-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300 ring-indigo-500/30' },
+    [OrderStatus.Delivered]: { label: 'Entregado', classes: 'bg-emerald-50 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300 ring-emerald-500/30' },
+    [OrderStatus.Cancelled]: { label: 'Cancelado', classes: 'bg-rose-50 text-rose-900 dark:bg-rose-950/40 dark:text-rose-300 ring-rose-500/30' },
+    [OrderStatus.Refunded]: { label: 'Reembolsado', classes: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 ring-slate-400/30' },
 };
 
 const PAYMENT_STATUS_MAP: Record<PaymentStatus, BadgeConfig> = {
-    [PaymentStatus.Pending]: { label: 'Pending', classes: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 ring-yellow-200 dark:ring-yellow-800' },
-    [PaymentStatus.Completed]: { label: 'Paid', classes: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 ring-green-200 dark:ring-green-800' },
-    [PaymentStatus.Failed]: { label: 'Failed', classes: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 ring-red-200 dark:ring-red-800' },
-    [PaymentStatus.Refunded]: { label: 'Refunded', classes: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400 ring-gray-200 dark:ring-gray-700' },
-    [PaymentStatus.PartiallyRefunded]: { label: 'Partial', classes: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 ring-orange-200 dark:ring-orange-800' },
+    [PaymentStatus.Pending]: { label: 'Pendiente', classes: 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-300 ring-amber-500/30' },
+    [PaymentStatus.Completed]: { label: 'Pagado', classes: 'bg-emerald-50 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300 ring-emerald-500/30' },
+    [PaymentStatus.Failed]: { label: 'Fallido', classes: 'bg-rose-50 text-rose-900 dark:bg-rose-950/40 dark:text-rose-300 ring-rose-500/30' },
+    [PaymentStatus.Refunded]: { label: 'Reembolsado', classes: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 ring-slate-400/30' },
+    [PaymentStatus.PartiallyRefunded]: { label: 'Reembolso Parcial', classes: 'bg-orange-50 text-orange-900 dark:bg-orange-950/40 dark:text-orange-300 ring-orange-500/30' },
 };
 
 @Component({

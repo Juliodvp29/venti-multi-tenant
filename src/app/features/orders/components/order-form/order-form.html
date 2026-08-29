@@ -5,7 +5,7 @@
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">Crear Orden Manual</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400">Registra una venta realizada fuera de la tienda.</p>
         </div>
-        <button (click)="cancel()"
+        <button type="button" aria-label="Cerrar formulario" (click)="cancel()"
             class="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -147,7 +147,7 @@
                                 </span>
                                 }
                             </div>
-                            <button type="button" (click)="removeItem(i)"
+                            <button type="button" aria-label="Eliminar producto" (click)="removeItem(i)"
                                 class="text-gray-400 hover:text-red-500 transition-colors p-1">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
