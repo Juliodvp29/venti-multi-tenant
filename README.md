@@ -193,6 +193,11 @@ src/
 
 ## 🧩 Feature Modules
 
+### ❓ Help & Support Center *(Interactive Header Drawer)*
+- **Store Setup Health Diagnostic**: Evaluates store readiness in real time (General info, Branding & Logo, Active products catalog, Shipping zones, Visual theme customization, Tax rates) with direct navigation action shortcuts.
+- **Troubleshooting Knowledgebase**: Interactive accordion with search for common merchant setup hurdles (shipping calculation errors, draft vs published storefront changes, DNS & custom domain verification, out-of-stock troubleshooting, VAT/taxes).
+- **Support Ticket System**: Integrated modal ticket creator with categorization, severity levels (*Low, Medium, High, Urgent*), character limits, and image attachments uploaded to Supabase Storage.
+
 ### 🔔 Realtime Notification Center *(Header Drawer)*
 - **Live Supabase Realtime Stream**: Automatically listens for `INSERT` operations on the `notifications` table per tenant.
 - **Dynamic Badge Counter**: Displays count of unread notifications with animation cues.
@@ -332,12 +337,22 @@ npm install
 # Start development server
 npm start
 
-# Run unit tests
-npm run test
-
 # Build for production
 npm run build
 ```
+
+---
+
+## ⚙️ Configuration & Storage
+
+### Supabase Storage Buckets
+
+Configure the following public storage buckets in your Supabase project:
+
+| Bucket Name | Public | Purpose |
+| :--- | :--- | :--- |
+| `products` | ✅ Yes | Stores product gallery images, brand logos, and storefront banners |
+| `support-attachments` | ✅ Yes | Stores user screenshots and diagnostic files attached to support tickets |
 
 ---
 
