@@ -196,6 +196,7 @@ export * from './theme.model';
 
 export * from './commission';
 export * from './notification';
+export * from './support';
 
 export interface ApiResponse<T> {
   data: T | null;
