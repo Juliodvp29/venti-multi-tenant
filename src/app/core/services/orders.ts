@@ -1,9 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
 import { Order, OrderItem, OrderStatusHistory } from '@core/models/order';
+import { Payment } from '@core/models/payment';
 import { OrderStatus, PaymentStatus } from '@core/enums';
 import { TenantService } from './tenant';
 import { AuthService } from './auth';
+import { NotificationsService } from './notifications';
 import { Database } from '../types/database.types';
 
 export interface OrderStats {
@@ -31,6 +33,7 @@ export class OrdersService {
     private readonly supabase = inject(Supabase);
     private readonly tenantService = inject(TenantService);
     private readonly authService = inject(AuthService);
+    private readonly notificationsService = inject(NotificationsService);
 
     async getOrders(
         page: number = 1,
@@ -60,31 +63,30 @@ export class OrdersService {
             query = query.eq('payment_status', filters.payment_status);
         }
 
-        if (filters?.search) {
-            query = query.or(
-                `order_number.ilike.%${filters.search}%,customer_email.ilike.%${filters.search}%,customer_first_name.ilike.%${filters.search}%,customer_last_name.ilike.%${filters.search}%`
-            );
+        if (filters?.customer_id) {
+            query = query.eq('customer_id', filters.customer_id);
         }
 
         if (filters?.startDate) {
             query = query.gte('created_at', filters.startDate);
         }
 
-        if (filters?.customer_id) {
-            query = query.eq('customer_id', filters.customer_id);
-        }
-
         if (filters?.endDate) {
             query = query.lte('created_at', filters.endDate);
         }
 
-        if (filters?.sortField) {
-            query = query.order(filters.sortField, { ascending: filters.sortDirection === 'asc' });
-        } else {
-            query = query.order('created_at', { ascending: false });
+        if (filters?.search) {
+            const term = `%${filters.search}%`;
+            query = query.or(`order_number.ilike.${term},customer_email.ilike.${term}`);
         }
 
-        query = query.range((page - 1) * pageSize, page * pageSize - 1);
+        const sortField = filters?.sortField || 'created_at';
+        const sortAscending = filters?.sortDirection === 'asc';
+        query = query.order(sortField, { ascending: sortAscending });
+
+        const from = (page - 1) * pageSize;
+        const to = from + pageSize - 1;
+        query = query.range(from, to);
 
         const { data, error, count } = await query;
 
@@ -92,7 +94,11 @@ export class OrdersService {
         return { data: data as Order[], count: count ?? 0 };
     }
 
-    async createOrder(orderData: Partial<Order>, items: Partial<OrderItem>[]): Promise<Order> {
+    async createOrder(
+        orderData: Partial<Order>,
+        items: Partial<OrderItem>[],
+        paymentData?: Partial<Payment>
+    ): Promise<Order> {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');
 
@@ -127,8 +133,62 @@ export class OrdersService {
 
         if (itemsError) throw itemsError;
 
+        if (paymentData) {
+            try {
+                await this.supabase.client.from('payments').insert({
+                    tenant_id: tenantId,
+                    order_id: order.id,
+                    payment_method: paymentData.payment_method || (orderData as any).payment_method || 'credit_card',
+                    amount: paymentData.amount || orderData.total_amount || 0,
+                    currency: paymentData.currency || orderData.currency || 'USD',
+                    status: paymentData.status || (orderData.payment_status as any) || 'completed',
+                    gateway: paymentData.gateway || 'credit_card_checkout',
+                    payment_details: (paymentData.payment_details || {}) as any,
+                    processed_at: new Date().toISOString(),
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                } as any);
+            } catch (pError) {
+                console.warn('[OrdersService] Could not insert payment record:', pError);
+            }
+        }
+
+        // Insert initial status history entry
+        try {
+            const initialStatus = (orderData as any).status || OrderStatus.Pending;
+            await this.supabase.client.from('order_status_history' as any).insert({
+                order_id: order.id,
+                tenant_id: tenantId,
+                new_status: initialStatus,
+                previous_status: null,
+                changed_by: null,
+                note: 'Orden creada por el cliente desde la tienda',
+                created_at: new Date().toISOString(),
+            } as any);
+        } catch (histErr) {
+            console.warn('[OrdersService] Could not insert initial status history:', histErr);
+        }
+
+        // Create notification for the new order
+        try {
+            const orderNumber = (order as any).order_number || `#${order.id.slice(-6).toUpperCase()}`;
+            const totalAmount = orderData.total_amount ?? 0;
+            const currency = orderData.currency || 'COP';
+            await this.notificationsService.createNotification({
+                tenant_id: tenantId,
+                type: 'order_created',
+                title: `Nueva Orden ${orderNumber}`,
+                message: `Se recibió un nuevo pedido por ${new Intl.NumberFormat('es-CO', { style: 'currency', currency }).format(totalAmount)} de ${orderData.customer_email || 'cliente'}`,
+                link: `/orders/${order.id}`,
+                metadata: { order_id: order.id, order_number: orderNumber },
+            } as any);
+        } catch (notifErr) {
+            console.warn('[OrdersService] Could not create order notification:', notifErr);
+        }
+
         return order as unknown as Order;
     }
+
 
     async getOrder(id: string): Promise<Order | null> {
         let query = this.supabase.client
@@ -208,9 +268,20 @@ export class OrdersService {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');
 
+        const updateData: Record<string, any> = {
+            status,
+            updated_at: new Date().toISOString(),
+        };
+
+        if (status === OrderStatus.Paid) {
+            updateData['payment_status'] = PaymentStatus.Completed;
+        } else if (status === OrderStatus.Refunded) {
+            updateData['payment_status'] = PaymentStatus.Refunded;
+        }
+
         const { error } = await this.supabase.client
             .from('orders')
-            .update({ status, updated_at: new Date().toISOString() })
+            .update(updateData as any)
             .eq('id', id);
 
         if (error) throw error;
