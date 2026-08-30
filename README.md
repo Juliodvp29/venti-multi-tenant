@@ -52,6 +52,7 @@ The platform is engineered using modern Angular (v22) Standalone APIs, Angular S
 ### For Store Owners & Managers
 
 - 📊 **Real-time Dashboard** — Live sales metrics, revenue trends with ApexCharts, recent order activity, and low-stock alerts.
+- 🔔 **Realtime Notifications Center** — Interactive header notification drawer with live Supabase Realtime updates for incoming orders, low stock, customer reviews, commissions, and team activity.
 - 🛒 **Product Catalog Management** — Full CRUD for products, variants (size/color/options), hierarchical categories, image galleries, and SKU tracking.
 - 💰 **Commissions Engine (`/commissions`)** — Calculate, filter, track, and export commission rules and settlement statuses across payment gateways and subscription tiers.
 - 📦 **Order Management** — Full order lifecycle from pending to delivered, status audit history, internal staff notes, and shipping tracking.
@@ -85,7 +86,7 @@ The platform is engineered using modern Angular (v22) Standalone APIs, Angular S
 | **Frontend Framework** | Angular | 22.x | Standalone component architecture & Signals |
 | **Language** | TypeScript | 6.x | Strict static typing, decorators, and modern ESM |
 | **Styling** | Tailwind CSS | 4.x | Utility-first CSS, dynamic theming, and Dark Mode |
-| **Backend as a Service** | Supabase | 2.x | PostgreSQL DB, Auth (GoTrue), Storage, Edge Functions |
+| **Backend as a Service** | Supabase | 2.x | PostgreSQL DB, Auth (GoTrue), Storage, Edge Functions, Realtime |
 | **Database** | PostgreSQL | 15+ | Relational multi-tenant schema with strict RLS |
 | **AI / LLM** | Google Gemini | `gemini-3-flash` | Conversational assistant with function/tool calling |
 | **Charts** | ApexCharts + ng-apexcharts | 5.x / 2.x | Real-time interactive sales and performance charts |
@@ -126,7 +127,7 @@ The platform is engineered using modern Angular (v22) Standalone APIs, Angular S
 │                  │                       │                       │                     │
 │          ┌───────▼────────┐      ┌───────▼────────┐      ┌───────▼────────┐            │
 │          │  Supabase DB   │      │ Supabase Auth, │      │  Google Gemini │            │
-│          │ PostgreSQL RLS │      │ Storage & Fns  │      │ AI Tool-Calling│            │
+│          │ PostgreSQL RLS │      │ Realtime & Fns │      │ AI Tool-Calling│            │
 │          └────────────────┘      └────────────────┘      └────────────────┘            │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -146,14 +147,14 @@ src/
     │   ├── guards/            # Auth, guest, store, role, and redirect guards
     │   ├── interceptors/      # Token injection, error handling, and loader interceptors
     │   ├── layouts/           # Shell components (MainLayout with sidebar, header, etc.)
-    │   ├── models/            # Domain models and interfaces (16 domain definitions)
-    │   ├── services/          # 31 business logic & data access services
+    │   ├── models/            # Domain models and interfaces (17 domain definitions)
+    │   ├── services/          # 32 business logic & data access services
     │   └── types/             # Utility types and Supabase database type definitions
     │
     ├── features/              # Lazy-loaded feature modules
     │   ├── abandoned-carts/   # Incomplete session analysis & recovery
     │   ├── auth/              # Sign in, registration, forgot-password flows
-    │   ├── commissions/       # Commission tracking, rules, and payout reports [NEW]
+    │   ├── commissions/       # Commission tracking, rules, and payout reports
     │   ├── coupons/           # Promotional codes and discount engine
     │   ├── customers/         # Customer CRM & address management
     │   ├── dashboard/         # Real-time metrics, KPI cards, and ApexCharts
@@ -170,18 +171,19 @@ src/
     │   └── subscription/      # Subscription plans, quotas, and billing
     │
     └── shared/                # Universal UI components, directives, and pipes
-        ├── components/        # Reusable presentation widgets (11 UI modules)
-        │   ├── ai-assistant/         # Embedded AI chat assistant
-        │   ├── customer-auth-modal/  # Storefront customer login/register modal
-        │   ├── date-picker/          # Accessible date selector
-        │   ├── date-range-picker/    # Period selector for analytics
-        │   ├── dropdown/             # Stylized accessible select replacement
-        │   ├── dynamic-table/        # Data table with sorting, pagination, and actions
-        │   ├── media-manager-modal/  # Supabase Storage media library modal [NEW]
-        │   ├── not-found/            # 404 error page
-        │   ├── order-status-badge/   # Visual status badge indicator
-        │   ├── toast/                # Global toast notification queue
-        │   └── usage-progress/       # Visual quota consumption bar
+        ├── components/        # Reusable presentation widgets (12 UI modules)
+        │   ├── ai-assistant/            # Embedded AI chat assistant
+        │   ├── customer-auth-modal/     # Storefront customer login/register modal
+        │   ├── date-picker/             # Accessible date selector
+        │   ├── date-range-picker/       # Period selector for analytics
+        │   ├── dropdown/                # Stylized accessible select replacement
+        │   ├── dynamic-table/           # Data table with sorting, pagination, and actions
+        │   ├── media-manager-modal/     # Supabase Storage media library modal
+        │   ├── notifications-dropdown/  # Realtime notification center popup [NEW]
+        │   ├── not-found/               # 404 error page
+        │   ├── order-status-badge/      # Visual status badge indicator
+        │   ├── toast/                   # Global toast notification queue
+        │   └── usage-progress/          # Visual meter displaying subscription resource quotas
         ├── directives/        # Utility directives (e.g., `hasRole`)
         └── pipes/             # Data formatting pipes (e.g., `markdown`)
 ```
@@ -190,65 +192,51 @@ src/
 
 ## 🧩 Feature Modules
 
-### 💰 Commissions Management (`/commissions`) *New*
-A comprehensive commission tracking and rule management module:
+### 🔔 Realtime Notification Center *(Header Drawer)*
+- **Live Supabase Realtime Stream**: Automatically listens for `INSERT` operations on the `notifications` table per tenant.
+- **Dynamic Badge Counter**: Displays count of unread notifications with animation cues.
+- **Interactive Popup**: Tabs for *Todas* and *No leídas*, individual and bulk *Marcar como leída*, removal of items, and direct navigation links (e.g., click a new order notification to open `/orders/:id`).
+- **Granular Categories**: Differentiated icons and styles for Orders, Low Stock, Reviews, Commissions, Team joins, and Abandoned Carts.
+
+### 💰 Commissions Management (`/commissions`)
 - **Rule Engine**: Define gateway-specific and plan-specific commission rates (`commission_rules`).
 - **Commission Ledger**: Real-time listing of commissions generated from completed orders and transactions (`commissions`).
 - **Status & Settlements**: Manage settlement states (`pending`, `paid`) with instant monthly calculations.
-- **Advanced Filtering & Search**: Filter by status, payment gateway (Stripe, PayPal, Cash on Delivery, etc.), transaction IDs, and date intervals.
+- **Advanced Filtering & Search**: Filter by status, payment gateway, transaction IDs, and date intervals.
 - **Reporting & Export**: Instant export of commission records to Excel (`.xlsx`).
-- **Settings Integration**: Configure default and override commission rules within `/settings`.
 
 ### 🎨 Visual Storefront Customizer & Themes (`/settings` & `/preview`)
-- **Theme & Branding Editor**: Configure color palettes (primary, secondary, accent, surface), typography, button border-radii, and shadow styles.
+- **Theme & Branding Editor**: Configure color palettes, typography, button border-radii, and shadow styles.
 - **Design Presets**: Switch instantly between pre-curated design themes with one click.
-- **Live Preview (`/preview`)**: Real-time preview synchronized across frames via `PreviewSyncService`, allowing merchants to see visual storefront changes before publishing.
-- **Section Builder**: Reorder, activate, and customize storefront sections (Hero, Featured Products, Categories, Testimonials, FAQ).
+- **Live Preview (`/preview`)**: Real-time preview synchronized across frames via `PreviewSyncService`.
+- **Section Builder**: Reorder, activate, and customize storefront sections.
 
 ### 📦 Products & Catalog (`/products`)
 - **Rich Product CRUD**: SKU, barcode, cost price, sale price, compare-at price, inventory limits, and SEO metadata.
-- **Variants Management**: Multi-attribute variants (Size, Color, Material) with independent pricing and stock.
-- **Category Hierarchy**: Recursive parent/child category tree with SEO slugs and category banners.
-- **Image Gallery**: Integrated with the `MediaManagerModal` for fast uploads and reordering.
+- **Variants Management**: Multi-attribute variants with independent pricing and stock.
+- **Category Hierarchy**: Recursive parent/child category tree with SEO slugs.
+- **Media Integration**: Direct integration with the `MediaManagerModal`.
 
 ### 📋 Orders & Fulfillment (`/orders`)
 - **Order Lifecycle**: Full pipeline (`pending`, `processing`, `paid`, `shipped`, `delivered`, `cancelled`, `refunded`).
-- **Historical Snapshots**: Products and customer addresses are snapshotted in JSONB to maintain immutable order records.
-- **Status Log**: Audit trail documenting every status change with timestamps and responsible team member.
-
-### 📉 Abandoned Carts (`/abandoned-carts`)
-- Real-time tracking of abandoned shopper carts with cart value calculations, time elapsed, and customer contact details for recovery outreach.
-
-### 🤖 AI Store Assistant
-- Embedded floating assistant powered by **Google Gemini** capable of tool-calling into the database to check revenue, low inventory, customer segments, and order statuses.
+- **Historical Snapshots**: Products and customer addresses snapshotted in JSONB for immutable records.
+- **Status History Audit**: Chronological log of all transitions.
 
 ---
 
 ## ⚙️ Core System Layer
 
-### Route Guards & Access Control
-
-| Guard | Description |
-| :--- | :--- |
-| `authGuard` | Protects private merchant routes; verifies active session and loads store context |
-| `guestGuard` | Prevents logged-in users from accessing authentication screens |
-| `storeGuard` | Resolves tenant metadata for the public storefront via subdomain or query param |
-| `roleGuard` | Verifies the user holds required permissions for the route |
-| `adminGuard` | Restricts access to `Owner` and `Admin` roles |
-| `editorGuard` | Allows `Owner`, `Admin`, and `Editor` roles |
-| `viewerGuard` | Permits read-only views (`Owner`, `Admin`, `Editor`, `Viewer`) |
-| `deliveryRedirectGuard` | Redirects users with `Delivery` role straight to the Orders view |
-
-### Core Services (31 Services)
+### Core Services (32 Services)
 
 | Service | Responsibility |
 | :--- | :--- |
 | `TenantService` | Central store state, branding, member invitations, and layout settings |
 | `AuthService` | Supabase GoTrue authentication, JWT refresh, and session management |
-| `CommissionsService` | **[NEW]** Commission calculations, rules, status updates, and Excel exports |
-| `PreviewSyncService` | **[NEW]** Real-time reactive bridge between theme customizer and live preview |
-| `GeographyService` | **[NEW]** Standardized country, state, and geographic data for shipping/taxes |
-| `LoggerService` | **[NEW]** Centralized logging utility with environment-aware debug levels |
+| `NotificationsService` | **[NEW]** Real-time tenant notifications, unread count signals, read status & deletion |
+| `CommissionsService` | Commission calculations, rules, status updates, and Excel exports |
+| `PreviewSyncService` | Real-time reactive bridge between theme customizer and live preview |
+| `GeographyService` | Standardized country, state, and geographic data for shipping/taxes |
+| `LoggerService` | Centralized logging utility with environment-aware debug levels |
 | `ProductsService` | Products, variants, inventory counts, and category links |
 | `OrdersService` | Order queries, status transitions, and notes management |
 | `CustomersService` | Customer CRM, addresses, and purchase history |
@@ -280,7 +268,8 @@ A comprehensive commission tracking and rule management module:
 
 | Component | Description |
 | :--- | :--- |
-| `app-media-manager-modal` | **[NEW]** Media gallery modal for browsing, uploading, and selecting assets with Supabase Storage |
+| `app-notifications-dropdown` | **[NEW]** Live Realtime notification center popup with badge counter and action handlers |
+| `app-media-manager-modal` | Media gallery modal for browsing, uploading, and selecting assets with Supabase Storage |
 | `app-dynamic-table` | Reusable data table with sortable columns, responsive layout, search bar, pagination, and action slots |
 | `app-dropdown` | Accessible custom select menu with support for icons, search, and typed selection |
 | `app-date-picker` / `app-date-range-picker` | Custom-styled single-date and range calendar pickers |
@@ -300,9 +289,10 @@ The database schema is powered by PostgreSQL on Supabase, featuring **30+ tables
 ### Core Entity Groups
 
 - **Tenants & Members**: `tenants`, `tenant_members`, `tenant_settings`, `subscription_history`.
+- **Notifications** *(New)*: `notifications` (tracks in-app alerts with `tenant_id`, `type`, `title`, `message`, `link`, `is_read`, and Realtime publication).
 - **Catalog**: `products`, `categories`, `product_categories`, `product_variants`, `product_images`, `product_tags`, `product_tag_associations`.
 - **Orders & Customers**: `customers`, `customer_addresses`, `orders`, `order_items`, `order_status_history`, `payments`, `refunds`.
-- **Commissions** *(New)*: `commissions`, `commission_rules` (tracks rates by plan/gateway and transaction amounts).
+- **Commissions**: `commissions`, `commission_rules`.
 - **Discounts & Reviews**: `discount_codes`, `discount_usage`, `product_reviews`.
 - **Analytics & Logs**: `analytics_events`, `daily_sales_summary`, `product_performance`, `inventory_history`, `audit_logs`, `email_logs`.
 - **Settings & Media**: `media_library`, `shipping_zones`, `shipping_rates`, `tax_rates`, `email_templates`, `webhook_endpoints`, `webhook_deliveries`.
@@ -311,101 +301,46 @@ The database schema is powered by PostgreSQL on Supabase, featuring **30+ tables
 
 ## 🚀 Performance Optimizations & Refactors
 
-Recent platform updates incorporated significant architectural and performance improvements:
-
 1. **Angular Signals Reactivity**:
    - Replaced heavy RxJS event buses with lightweight `signal()`, `computed()`, and `effect()` primitives.
-   - Elimination of unnecessary change detection cycles across deeply nested components.
 2. **OnPush Change Detection**:
-   - Standardized `ChangeDetectionStrategy.OnPush` across all feature and shared components for instantaneous UI updates.
+   - Standardized `ChangeDetectionStrategy.OnPush` across all feature and shared components.
 3. **Optimized Route Resolution & Auth Initialization**:
-   - Guard pipelines utilize `auth.ensureInitialized()` to prevent race conditions during page reloads and redirect handoffs.
+   - Guard pipelines utilize `auth.ensureInitialized()` to prevent race conditions during page reloads.
 4. **Granular Lazy Loading**:
    - Every major route and child modal is split into independent asynchronous chunks via `loadComponent` and `loadChildren`.
 5. **Tailwind CSS 4 Engine**:
-   - Upgraded to the modern Tailwind CSS 4 engine for faster compilation times, smaller CSS bundle sizes, and native CSS variable theming.
+   - Upgraded to modern Tailwind CSS 4 engine for faster compilation times and smaller CSS bundle sizes.
 6. **Dark / Light Mode Contrast**:
-   - Refactored semantic color tokens across the entire admin dashboard and storefront for seamless switching between light and dark themes.
+   - Semantic color tokens across the entire admin dashboard and storefront for seamless theme switching.
 
 ---
 
 ## 💻 Getting Started
 
-### Prerequisites
-
-- **Node.js**: `v20.x` or later (or **Bun** `1.3.x+`)
-- **npm**: `v10.x` or `v11.x`
-- **Supabase Account**: With an active PostgreSQL project and Auth enabled
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Juliodvp29/venti-multi-tenant.git
-   cd venti-multi-tenant
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables:**
-   Copy the example environment files:
-   ```bash
-   cp src/environments/environment.example.ts src/environments/environment.ts
-   cp src/environments/environment.example.ts src/environments/environment.development.ts
-   ```
-
-   Fill in your credentials:
-   ```ts
-   export const environment = {
-     production: false,
-     supabase: {
-       url: 'https://your-project.supabase.co',
-       anonKey: 'your-anon-key',
-       storageBucket: 'products',
-     },
-     gemini: {
-       apiKey: 'your-gemini-api-key',
-     },
-     appUrl: 'http://localhost:4200',
-     domain: 'localhost:4200',
-   };
-   ```
-
-4. **Start the Development Server:**
-   ```bash
-   npm start
-   ```
-   Open `http://localhost:4200` in your browser.
-
----
-
-## 🛠️ Build & Test Commands
-
 ```bash
+# Clone the repository
+git clone https://github.com/Juliodvp29/venti-multi-tenant.git
+cd venti-multi-tenant
+
+# Install dependencies
+npm install
+
 # Start development server
 npm start
 
-# Run unit tests with Vitest
+# Run unit tests
 npm run test
 
 # Build for production
 npm run build
-
-# Run build in watch mode
-npm run watch
-
-# Format code with Prettier
-npx prettier --write "src/**/*.ts" "src/**/*.html"
 ```
 
 ---
 
 ## 🗺️ Roadmap
 
-Discover upcoming features, scheduled phases, and future integrations in our dedicated roadmap document:
+Discover upcoming features and roadmap phases:
 
 👉 **[View ROADMAP.md](ROADMAP.md)**
 
