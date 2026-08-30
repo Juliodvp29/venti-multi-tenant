@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { AnalyticsService } from '@core/services/analytics';
 import { OrdersService } from '@core/services/orders';
 import { TenantService } from '@core/services/tenant';
@@ -15,14 +16,29 @@ import {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  imports: [CommonModule, StatCard, SalesChart, CategoryChart, TopProducts, RecentTransactions],
+  imports: [CommonModule, RouterLink, StatCard, SalesChart, CategoryChart, TopProducts, RecentTransactions],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
   private readonly analytics = inject(AnalyticsService);
   private readonly ordersService = inject(OrdersService);
-  private readonly tenantService = inject(TenantService);
+  protected readonly tenantService = inject(TenantService);
+
+  readonly currentPlan = computed(() => this.tenantService.currentTenant()?.plan || 'free');
+  readonly isFreePlan = computed(() => this.currentPlan() === 'free');
+  readonly planDisplayName = computed(() => {
+    switch (this.currentPlan()) {
+      case 'enterprise':
+        return 'Empresarial';
+      case 'professional':
+        return 'Profesional';
+      case 'basic':
+        return 'Básico';
+      default:
+        return 'Gratuito';
+    }
+  });
 
   // Stats Signals
   readonly revenueTotal = signal<number>(0);
