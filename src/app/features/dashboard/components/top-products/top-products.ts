@@ -25,7 +25,7 @@ export interface DashboardProduct {
             Productos Principales
           </h3>
           <span
-            class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 bg-slate-100/80 dark:bg-slate-850/50 border border-slate-200/30 dark:border-slate-800/20 px-2.5 py-0.5 rounded-full"
+            class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-700 bg-slate-100/80 dark:bg-slate-850/50 border border-slate-200/30 dark:border-slate-800/20 px-2.5 py-0.5 rounded-full"
             >Este Mes</span
           >
         </div>
