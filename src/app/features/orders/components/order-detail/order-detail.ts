@@ -10,7 +10,7 @@ import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Order, OrderStatusHistory } from '@core/models/order';
-import { OrderStatus } from '@core/enums';
+import { OrderStatus, PaymentStatus } from '@core/enums';
 import { OrdersService } from '@core/services/orders';
 import { ToastService } from '@core/services/toast';
 import { OrderStatusBadge } from '@shared/components/order-status-badge/order-status-badge';
@@ -36,13 +36,16 @@ export class OrderDetail implements OnInit {
     readonly timezone = this.tenantService.timezone;
 
     readonly OrderStatus = OrderStatus;
+    readonly PaymentStatus = PaymentStatus;
 
     readonly isLoading = signal(true);
     readonly isSavingNote = signal(false);
     readonly isUpdatingStatus = signal(false);
+    readonly isUpdatingPaymentStatus = signal(false);
     readonly order = signal<Order | null>(null);
     readonly internalNote = signal('');
     readonly selectedStatus = signal<OrderStatus | ''>('');
+    readonly selectedPaymentStatus = signal<PaymentStatus | ''>('');
     readonly isProcessingRefund = signal(false);
     readonly showRefundModal = signal(false);
     readonly refundAmount = signal(0);
@@ -78,6 +81,14 @@ export class OrderDetail implements OnInit {
         { label: 'Entregado', value: OrderStatus.Delivered },
         { label: 'Cancelado', value: OrderStatus.Cancelled },
         { label: 'Reembolsado', value: OrderStatus.Refunded },
+    ];
+
+    readonly paymentStatusDropdownOptions: DropdownOption[] = [
+        { label: 'Pendiente', value: PaymentStatus.Pending },
+        { label: 'Pagado', value: PaymentStatus.Completed },
+        { label: 'Fallido', value: PaymentStatus.Failed },
+        { label: 'Reembolsado', value: PaymentStatus.Refunded },
+        { label: 'Reembolso Parcial', value: PaymentStatus.PartiallyRefunded },
     ];
 
     readonly shippingDropdownOptions: DropdownOption[] = [
@@ -204,6 +215,7 @@ export class OrderDetail implements OnInit {
             this.order.set(order);
             this.internalNote.set(order.internal_note || '');
             this.selectedStatus.set(order.status);
+            this.selectedPaymentStatus.set(order.payment_status);
             this.shippingMethod.set(order.shipping_method || '');
             this.trackingNumber.set(order.tracking_number || '');
             this.trackingUrl.set(order.tracking_url || '');
@@ -279,8 +291,7 @@ export class OrderDetail implements OnInit {
         this.isUpdatingStatus.set(true);
         try {
             await this.ordersService.updateOrderStatus(order.id, newStatus);
-            this.order.update(o => o ? { ...o, status: newStatus } : o);
-            // Reload to get fresh history
+            // Reload to get fresh order & payment status & history
             await this.loadOrder(order.id);
             this.toast.success(`Estado actualizado a "${this.statusOptions.find(s => s.value === newStatus)?.label}".`);
         } catch (error: any) {
@@ -288,6 +299,29 @@ export class OrderDetail implements OnInit {
         } finally {
             this.isUpdatingStatus.set(false);
         }
+    }
+
+    async updatePaymentStatus(newStatus?: PaymentStatus) {
+        const order = this.order();
+        const status = newStatus || (this.selectedPaymentStatus() as PaymentStatus);
+        if (!order || !status || status === order.payment_status) return;
+
+        this.isUpdatingPaymentStatus.set(true);
+        try {
+            await this.ordersService.updatePaymentStatus(order.id, status);
+            this.order.update(o => o ? { ...o, payment_status: status } : o);
+            this.selectedPaymentStatus.set(status);
+            this.toast.success('Estado de pago actualizado.');
+        } catch (error: any) {
+            this.toast.error(error?.message ?? 'Error al actualizar el estado de pago.');
+        } finally {
+            this.isUpdatingPaymentStatus.set(false);
+        }
+    }
+
+    async markPaymentAsCompleted() {
+        this.selectedPaymentStatus.set(PaymentStatus.Completed);
+        await this.updatePaymentStatus(PaymentStatus.Completed);
     }
 
     markAsShipped() {

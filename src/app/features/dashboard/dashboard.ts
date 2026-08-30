@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { AnalyticsService } from '@core/services/analytics';
 import { OrdersService } from '@core/services/orders';
 import { TenantService } from '@core/services/tenant';
@@ -15,14 +16,29 @@ import {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  imports: [CommonModule, StatCard, SalesChart, CategoryChart, TopProducts, RecentTransactions],
+  imports: [CommonModule, RouterLink, StatCard, SalesChart, CategoryChart, TopProducts, RecentTransactions],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
   private readonly analytics = inject(AnalyticsService);
   private readonly ordersService = inject(OrdersService);
-  private readonly tenantService = inject(TenantService);
+  protected readonly tenantService = inject(TenantService);
+
+  readonly currentPlan = computed(() => this.tenantService.currentTenant()?.plan || 'free');
+  readonly isFreePlan = computed(() => this.currentPlan() === 'free');
+  readonly planDisplayName = computed(() => {
+    switch (this.currentPlan()) {
+      case 'enterprise':
+        return 'Empresarial';
+      case 'professional':
+        return 'Profesional';
+      case 'basic':
+        return 'Básico';
+      default:
+        return 'Gratuito';
+    }
+  });
 
   // Stats Signals
   readonly revenueTotal = signal<number>(0);
@@ -39,6 +55,8 @@ export class Dashboard {
 
   // Charts Data
   readonly salesSeries = signal<any[]>([]);
+  readonly monthlyRevenue = signal<number[]>(new Array(12).fill(0));
+  readonly monthlyOrders = signal<number[]>(new Array(12).fill(0));
 
   readonly categorySeries = signal<number[]>([]);
   readonly categoryLabels = signal<string[]>([]);
@@ -105,11 +123,13 @@ export class Dashboard {
   }
 
   private async loadSalesChart() {
-    const monthlyData = await this.analytics.getMonthlySales();
+    const { revenue, orders } = await this.analytics.getMonthlyPerformance();
+    this.monthlyRevenue.set(revenue);
+    this.monthlyOrders.set(orders);
     this.salesSeries.set([
       {
         name: 'Ingresos',
-        data: monthlyData,
+        data: revenue,
       },
     ]);
   }

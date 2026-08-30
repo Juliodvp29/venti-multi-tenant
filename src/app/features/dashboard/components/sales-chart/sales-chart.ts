@@ -13,6 +13,7 @@ import { TenantService } from '@core/services/tenant';
 
 @Component({
   selector: 'app-sales-chart',
+  standalone: true,
   imports: [CommonModule, NgApexchartsModule],
   template: `
     <div
@@ -24,19 +25,41 @@ import { TenantService } from '@core/services/tenant';
             Rendimiento de Ventas
           </h3>
           <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-            Tendencias de ingresos mensuales
+            {{ subtitle() }}
           </p>
         </div>
         <div
           class="flex bg-slate-100/80 dark:bg-slate-800/50 p-1 rounded-lg border border-slate-200/50 dark:border-slate-850/50"
         >
           <button
-            class="px-3 py-1 text-xs font-bold rounded-md bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all"
+            type="button"
+            (click)="setTab('revenue')"
+            class="px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer"
+            [class.bg-white]="activeTab() === 'revenue'"
+            [class.dark:bg-slate-700]="activeTab() === 'revenue'"
+            [class.text-sky-600]="activeTab() === 'revenue'"
+            [class.dark:text-sky-400]="activeTab() === 'revenue'"
+            [class.shadow-xs]="activeTab() === 'revenue'"
+            [class.text-slate-500]="activeTab() !== 'revenue'"
+            [class.dark:text-slate-400]="activeTab() !== 'revenue'"
+            [class.hover:text-slate-800]="activeTab() !== 'revenue'"
+            [class.dark:hover:text-slate-200]="activeTab() !== 'revenue'"
           >
             Ingresos
           </button>
           <button
-            class="px-3 py-1 text-xs font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:scale-[1.02] active:scale-[0.98] transition-all ml-1"
+            type="button"
+            (click)="setTab('orders')"
+            class="px-3 py-1 text-xs font-bold rounded-md transition-all ml-1 cursor-pointer"
+            [class.bg-white]="activeTab() === 'orders'"
+            [class.dark:bg-slate-700]="activeTab() === 'orders'"
+            [class.text-emerald-600]="activeTab() === 'orders'"
+            [class.dark:text-emerald-400]="activeTab() === 'orders'"
+            [class.shadow-xs]="activeTab() === 'orders'"
+            [class.text-slate-500]="activeTab() !== 'orders'"
+            [class.dark:text-slate-400]="activeTab() !== 'orders'"
+            [class.hover:text-slate-800]="activeTab() !== 'orders'"
+            [class.dark:hover:text-slate-200]="activeTab() !== 'orders'"
           >
             Órdenes
           </button>
@@ -46,7 +69,7 @@ import { TenantService } from '@core/services/tenant';
       <div class="h-[300px] w-full">
         <apx-chart
           #chart
-          [series]="series()"
+          [series]="currentSeries()"
           [chart]="options().chart!"
           [xaxis]="options().xaxis!"
           [stroke]="options().stroke!"
@@ -65,7 +88,11 @@ import { TenantService } from '@core/services/tenant';
 })
 export class SalesChart {
   private readonly tenantService = inject(TenantService);
-  series = input.required<any[]>();
+
+  revenueData = input<number[]>();
+  ordersData = input<number[]>();
+  series = input<any[]>();
+
   categories = input<string[]>([
     'Ene',
     'Feb',
@@ -81,6 +108,8 @@ export class SalesChart {
     'Dic',
   ]);
 
+  readonly activeTab = signal<'revenue' | 'orders'>('revenue');
+
   chart = viewChild<ChartComponent>('chart');
 
   private readonly isDark = signal(window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -91,8 +120,42 @@ export class SalesChart {
       .addEventListener('change', (e) => this.isDark.set(e.matches));
   }
 
+  setTab(tab: 'revenue' | 'orders'): void {
+    this.activeTab.set(tab);
+  }
+
+  readonly subtitle = computed(() =>
+    this.activeTab() === 'revenue'
+      ? 'Tendencias de ingresos mensuales'
+      : 'Cantidad de órdenes mensuales'
+  );
+
+  readonly currentSeries = computed(() => {
+    const isRevenue = this.activeTab() === 'revenue';
+    if (isRevenue) {
+      const data = this.revenueData() ?? this.series()?.[0]?.data ?? new Array(12).fill(0);
+      return [
+        {
+          name: 'Ingresos',
+          data,
+        },
+      ];
+    } else {
+      const data = this.ordersData() ?? new Array(12).fill(0);
+      return [
+        {
+          name: 'Órdenes',
+          data,
+        },
+      ];
+    }
+  });
+
   readonly options = computed(() => {
     const dark = this.isDark();
+    const isRevenue = this.activeTab() === 'revenue';
+    const chartColor = isRevenue ? '#349EDB' : '#10B981';
+
     return {
       chart: {
         height: 300,
@@ -102,7 +165,7 @@ export class SalesChart {
         fontFamily: 'inherit',
         foreColor: dark ? '#94a3b8' : '#64748b',
       },
-      colors: ['#349EDB'],
+      colors: [chartColor],
       dataLabels: { enabled: false },
       stroke: {
         curve: 'smooth' as const,
@@ -133,14 +196,17 @@ export class SalesChart {
         },
       },
       yaxis: {
+        min: 0,
+        forceNiceScale: true,
         labels: {
           style: { colors: dark ? '#94a3b8' : '#64748b', fontSize: '12px' },
-          formatter: (val: number) => this.formatCurrency(val),
+          formatter: (val: number) =>
+            isRevenue ? this.formatCurrency(val) : `${Math.round(val)}`,
         },
       },
       markers: {
         size: 0,
-        colors: ['#349EDB'],
+        colors: [chartColor],
         strokeColors: dark ? '#1e293b' : '#fff',
         strokeWidth: 2,
         hover: { size: 6 },
@@ -149,7 +215,10 @@ export class SalesChart {
         theme: dark ? 'dark' : 'light',
         x: { show: false },
         y: {
-          formatter: (val: number) => this.formatCurrency(val),
+          formatter: (val: number) =>
+            isRevenue
+              ? this.formatCurrency(val)
+              : `${Math.round(val)} ${Math.round(val) === 1 ? 'orden' : 'órdenes'}`,
         },
       },
     };

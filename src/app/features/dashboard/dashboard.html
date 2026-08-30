@@ -107,7 +107,11 @@
   <!-- Row 2: Charts -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
     <div class="lg:col-span-8">
-      <app-sales-chart [series]="salesSeries()" />
+      <app-sales-chart
+        [revenueData]="monthlyRevenue()"
+        [ordersData]="monthlyOrders()"
+        [series]="salesSeries()"
+      />
     </div>
     <div class="lg:col-span-4">
       <app-category-chart [series]="categorySeries()" [labels]="categoryLabels()" />
@@ -117,51 +121,124 @@
   <!-- Row 3: Banner & Top Products -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
     <div class="lg:col-span-8">
-      <!-- Upgrade Banner -->
-      <div
-        class="relative h-full overflow-hidden rounded-3xl bg-gradient-to-br from-sky-500 to-sky-600 p-8 md:p-10 text-white shadow-lg hover:shadow-xl hover:shadow-sky-500/10 transition-all duration-300 group"
-      >
-        <!-- Abstract Glow Decos -->
-        <div class="promo-glow w-64 h-64 -top-20 -right-20 pointer-events-none opacity-40"></div>
-        <div class="promo-glow w-48 h-48 -bottom-10 -left-10 pointer-events-none opacity-20"></div>
-
-        <div class="relative z-10 max-w-xl flex flex-col justify-between h-full">
-          <div>
-            <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
-              Escala tu negocio con Venti Shop Plus
-            </h2>
-            <p class="mt-3.5 text-sky-100/90 text-xs md:text-sm leading-relaxed font-medium">
-              Desbloquea analíticas avanzadas, personalización de checkout y soporte dedicado 24/7.
-              Aumenta tus ingresos hasta un 25% con nuestras herramientas de optimización.
-            </p>
-          </div>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <button
-              class="px-6 py-3 bg-white text-sky-600 font-bold rounded-xl hover:shadow-lg hover:shadow-white/10 active:scale-[0.97] transition-all hover:bg-slate-50 duration-200 cursor-pointer"
-            >
-              Mejorar ahora
-            </button>
-            <button
-              class="px-6 py-3 bg-white/10 text-white border border-white/20 font-bold rounded-xl backdrop-blur-xs hover:bg-white/15 active:scale-[0.97] transition-all duration-200 cursor-pointer"
-            >
-              Saber más
-            </button>
-          </div>
-        </div>
-
-        <!-- Decoration SVG -->
+      @if (isFreePlan()) {
+        <!-- Upgrade Banner for Free Plan -->
         <div
-          class="absolute right-[-5%] bottom-[-15%] opacity-15 pointer-events-none transform rotate-12 group-hover:rotate-[16deg] group-hover:scale-105 transition-transform duration-500"
+          class="relative h-full overflow-hidden rounded-3xl bg-gradient-to-br from-sky-500 to-sky-600 p-8 md:p-10 text-white shadow-lg hover:shadow-xl hover:shadow-sky-500/10 transition-all duration-300 group"
         >
-          <svg width="300" height="300" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <path
-              fill="#FFFFFF"
-              d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90.1,-16.3,88.5,-0.9C86.9,14.5,81.1,29.1,72.4,41.9C63.7,54.7,52.2,65.8,38.5,72.4C24.8,79.1,8.9,81.3,-6.4,79.2C-21.7,77.2,-36.3,70.9,-48.7,61.8C-61.1,52.7,-71.4,40.8,-76.3,27.1C-81.2,13.3,-80.7,-2.3,-77.2,-17C-73.7,-31.6,-67.2,-45.3,-56.3,-53.8C-45.4,-62.3,-30.1,-65.6,-16,-72.8C-1.9,-80,14.5,-91.1,30.6,-83.6C46.7,-76.1,44.7,-76.4,44.7,-76.4Z"
-              transform="translate(100 100)"
-            />
-          </svg>
+          <!-- Abstract Glow Decos -->
+          <div class="promo-glow w-64 h-64 -top-20 -right-20 pointer-events-none opacity-40"></div>
+          <div class="promo-glow w-48 h-48 -bottom-10 -left-10 pointer-events-none opacity-20"></div>
+
+          <div class="relative z-10 max-w-xl flex flex-col justify-between h-full">
+            <div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-xs text-[11px] font-bold tracking-wider uppercase text-white mb-3">
+                Plan Gratuito Activo
+              </span>
+              <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+                Escala tu negocio con un plan profesional
+              </h2>
+              <p class="mt-3 text-sky-100/90 text-xs md:text-sm leading-relaxed font-medium">
+                Desbloquea analíticas avanzadas, personalización de checkout, dominio propio y soporte dedicado 24/7.
+                Aumenta tus ingresos hasta un 25% con nuestras herramientas de optimización.
+              </p>
+            </div>
+            <div class="mt-8 flex flex-wrap items-center gap-4">
+              <a
+                routerLink="/subscription"
+                class="px-6 py-3 bg-white text-sky-600 font-bold rounded-xl hover:shadow-lg hover:shadow-white/10 active:scale-[0.97] transition-all hover:bg-slate-50 duration-200 cursor-pointer inline-flex items-center justify-center text-sm"
+              >
+                Mejorar ahora
+              </a>
+              <a
+                routerLink="/subscription"
+                class="px-6 py-3 bg-white/10 text-white border border-white/20 font-bold rounded-xl backdrop-blur-xs hover:bg-white/15 active:scale-[0.97] transition-all duration-200 cursor-pointer inline-flex items-center justify-center text-sm"
+              >
+                Saber más
+              </a>
+            </div>
+          </div>
+
+          <!-- Decoration SVG -->
+          <div
+            class="absolute right-[-5%] bottom-[-15%] opacity-15 pointer-events-none transform rotate-12 group-hover:rotate-[16deg] group-hover:scale-105 transition-transform duration-500"
+          >
+            <svg width="300" height="300" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path
+                fill="#FFFFFF"
+                d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90.1,-16.3,88.5,-0.9C86.9,14.5,81.1,29.1,72.4,41.9C63.7,54.7,52.2,65.8,38.5,72.4C24.8,79.1,8.9,81.3,-6.4,79.2C-21.7,77.2,-36.3,70.9,-48.7,61.8C-61.1,52.7,-71.4,40.8,-76.3,27.1C-81.2,13.3,-80.7,-2.3,-77.2,-17C-73.7,-31.6,-67.2,-45.3,-56.3,-53.8C-45.4,-62.3,-30.1,-65.6,-16,-72.8C-1.9,-80,14.5,-91.1,30.6,-83.6C46.7,-76.1,44.7,-76.4,44.7,-76.4Z"
+                transform="translate(100 100)"
+              />
+            </svg>
+          </div>
         </div>
-      </div>
+      } @else {
+        <!-- Pro/Active Plan Growth Hub Banner -->
+        <div
+          class="relative h-full overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 p-8 md:p-10 text-white shadow-lg hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 group"
+        >
+          <!-- Abstract Glow Decos -->
+          <div class="promo-glow w-64 h-64 -top-20 -right-20 pointer-events-none opacity-30 bg-purple-400"></div>
+          <div class="promo-glow w-48 h-48 -bottom-10 -left-10 pointer-events-none opacity-20 bg-indigo-400"></div>
+
+          <div class="relative z-10 max-w-xl flex flex-col justify-between h-full">
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-xs text-[11px] font-bold tracking-wider uppercase text-emerald-300 border border-emerald-400/20">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Plan {{ planDisplayName() }} Activo
+                </span>
+              </div>
+              <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+                Tu tienda está potenciada al máximo nivel
+              </h2>
+              <p class="mt-3 text-indigo-100/90 text-xs md:text-sm leading-relaxed font-medium">
+                Cuentas con todas las funciones avanzadas activas, tasas de comisión reducidas y soporte prioritario. Explora tus analíticas en tiempo real o recupera carritos para maximizar tus conversiones.
+              </p>
+            </div>
+            <div class="mt-8 flex flex-wrap items-center gap-4">
+              <a
+                routerLink="/reports"
+                class="px-6 py-3 bg-white text-indigo-700 font-bold rounded-xl hover:shadow-lg hover:shadow-white/10 active:scale-[0.97] transition-all hover:bg-slate-50 duration-200 cursor-pointer inline-flex items-center justify-center gap-2 text-sm"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span>Ver Reportes</span>
+              </a>
+              <a
+                routerLink="/abandoned-carts"
+                class="px-6 py-3 bg-white/10 text-white border border-white/20 font-bold rounded-xl backdrop-blur-xs hover:bg-white/15 active:scale-[0.97] transition-all duration-200 cursor-pointer inline-flex items-center justify-center gap-2 text-sm"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span>Recuperar Carritos</span>
+              </a>
+              <a
+                routerLink="/subscription"
+                class="text-xs font-semibold text-indigo-200 hover:text-white transition-colors ml-1 inline-flex items-center gap-1"
+              >
+                <span>Mi Suscripción</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Decoration SVG -->
+          <div
+            class="absolute right-[-5%] bottom-[-15%] opacity-15 pointer-events-none transform rotate-12 group-hover:rotate-[16deg] group-hover:scale-105 transition-transform duration-500"
+          >
+            <svg width="300" height="300" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path
+                fill="#FFFFFF"
+                d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90.1,-16.3,88.5,-0.9C86.9,14.5,81.1,29.1,72.4,41.9C63.7,54.7,52.2,65.8,38.5,72.4C24.8,79.1,8.9,81.3,-6.4,79.2C-21.7,77.2,-36.3,70.9,-48.7,61.8C-61.1,52.7,-71.4,40.8,-76.3,27.1C-81.2,13.3,-80.7,-2.3,-77.2,-17C-73.7,-31.6,-67.2,-45.3,-56.3,-53.8C-45.4,-62.3,-30.1,-65.6,-16,-72.8C-1.9,-80,14.5,-91.1,30.6,-83.6C46.7,-76.1,44.7,-76.4,44.7,-76.4Z"
+                transform="translate(100 100)"
+              />
+            </svg>
+          </div>
+        </div>
+      }
     </div>
     <div class="lg:col-span-4">
       <app-top-products [products]="topProducts()" />
