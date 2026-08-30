@@ -52,6 +52,7 @@ The platform is engineered using modern Angular (v22) Standalone APIs, Angular S
 ### For Store Owners & Managers
 
 - 📊 **Real-time Dashboard** — Live sales metrics, revenue trends with ApexCharts, recent order activity, and low-stock alerts.
+- ❓ **Help & Support Center Drawer** — Supabase-inspired interactive help drawer with live store setup health checks, troubleshooting guides, and a support ticket creator with file attachments.
 - 🔔 **Realtime Notifications Center** — Interactive header notification drawer with live Supabase Realtime updates for incoming orders, low stock, customer reviews, commissions, and team activity.
 - 🛒 **Product Catalog Management** — Full CRUD for products, variants (size/color/options), hierarchical categories, image galleries, and SKU tracking.
 - 💰 **Commissions Engine (`/commissions`)** — Calculate, filter, track, and export commission rules and settlement statuses across payment gateways and subscription tiers.
@@ -226,13 +227,14 @@ src/
 
 ## ⚙️ Core System Layer
 
-### Core Services (32 Services)
+### Core Services (33 Services)
 
 | Service | Responsibility |
 | :--- | :--- |
 | `TenantService` | Central store state, branding, member invitations, and layout settings |
 | `AuthService` | Supabase GoTrue authentication, JWT refresh, and session management |
-| `NotificationsService` | **[NEW]** Real-time tenant notifications, unread count signals, read status & deletion |
+| `SupportService` | **[NEW]** Store setup health diagnostics, troubleshooting knowledgebase & ticket creation |
+| `NotificationsService` | Real-time tenant notifications, unread count signals, read status & deletion |
 | `CommissionsService` | Commission calculations, rules, status updates, and Excel exports |
 | `PreviewSyncService` | Real-time reactive bridge between theme customizer and live preview |
 | `GeographyService` | Standardized country, state, and geographic data for shipping/taxes |
@@ -268,7 +270,8 @@ src/
 
 | Component | Description |
 | :--- | :--- |
-| `app-notifications-dropdown` | **[NEW]** Live Realtime notification center popup with badge counter and action handlers |
+| `app-help-drawer` | **[NEW]** Help & Support interactive drawer with store health check and ticket submission |
+| `app-notifications-dropdown` | Live Realtime notification center popup with badge counter and action handlers |
 | `app-media-manager-modal` | Media gallery modal for browsing, uploading, and selecting assets with Supabase Storage |
 | `app-dynamic-table` | Reusable data table with sortable columns, responsive layout, search bar, pagination, and action slots |
 | `app-dropdown` | Accessible custom select menu with support for icons, search, and typed selection |
@@ -289,7 +292,7 @@ The database schema is powered by PostgreSQL on Supabase, featuring **30+ tables
 ### Core Entity Groups
 
 - **Tenants & Members**: `tenants`, `tenant_members`, `tenant_settings`, `subscription_history`.
-- **Notifications** *(New)*: `notifications` (tracks in-app alerts with `tenant_id`, `type`, `title`, `message`, `link`, `is_read`, and Realtime publication).
+- **Notifications & Support**: `notifications`, `support_tickets` (tracks user assistance requests, categories, severities, and attachments).
 - **Catalog**: `products`, `categories`, `product_categories`, `product_variants`, `product_images`, `product_tags`, `product_tag_associations`.
 - **Orders & Customers**: `customers`, `customer_addresses`, `orders`, `order_items`, `order_status_history`, `payments`, `refunds`.
 - **Commissions**: `commissions`, `commission_rules`.

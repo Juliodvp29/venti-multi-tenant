@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, viewChild } from '@angular/core';
 import { TenantService } from '@core/services/tenant';
 import { NotificationsDropdown } from '@shared/components/notifications-dropdown/notifications-dropdown';
+import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NotificationsDropdown],
+  imports: [NotificationsDropdown, HelpDrawer],
   template: `
     <header
       class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8"
@@ -38,7 +40,7 @@ import { NotificationsDropdown } from '@shared/components/notifications-dropdown
         <div class="flex-1 flex">
           <!-- Search bar could go here -->
         </div>
-        <div class="ml-4 flex items-center gap-4 md:ml-6">
+        <div class="ml-4 flex items-center gap-3 md:ml-6">
           <!-- View Store Link -->
           <a
             [href]="tenantService.storeUrl()"
@@ -56,15 +58,35 @@ import { NotificationsDropdown } from '@shared/components/notifications-dropdown
             <span class="hidden sm:inline">Ver Tienda</span>
           </a>
 
+          <!-- Help & Support Button (Supabase Style) -->
+          <button
+            type="button"
+            (click)="openHelp()"
+            aria-label="Centro de Ayuda y Soporte"
+            title="Ayuda y Soporte"
+            class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+
           <!-- Notifications Dropdown -->
           <app-notifications-dropdown />
         </div>
       </div>
     </header>
+
+    <!-- Help & Support Drawer -->
+    <app-help-drawer />
   `,
 })
 export class HeaderComponent {
   readonly toggleSidebar = output<void>();
   protected readonly tenantService = inject(TenantService);
-}
+  private readonly helpDrawer = viewChild(HelpDrawer);
 
+  openHelp(): void {
+    this.helpDrawer()?.open();
+  }
+}
