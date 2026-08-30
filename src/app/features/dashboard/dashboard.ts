@@ -55,6 +55,8 @@ export class Dashboard {
 
   // Charts Data
   readonly salesSeries = signal<any[]>([]);
+  readonly monthlyRevenue = signal<number[]>(new Array(12).fill(0));
+  readonly monthlyOrders = signal<number[]>(new Array(12).fill(0));
 
   readonly categorySeries = signal<number[]>([]);
   readonly categoryLabels = signal<string[]>([]);
@@ -121,11 +123,13 @@ export class Dashboard {
   }
 
   private async loadSalesChart() {
-    const monthlyData = await this.analytics.getMonthlySales();
+    const { revenue, orders } = await this.analytics.getMonthlyPerformance();
+    this.monthlyRevenue.set(revenue);
+    this.monthlyOrders.set(orders);
     this.salesSeries.set([
       {
         name: 'Ingresos',
-        data: monthlyData,
+        data: revenue,
       },
     ]);
   }

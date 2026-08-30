@@ -107,7 +107,11 @@
   <!-- Row 2: Charts -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
     <div class="lg:col-span-8">
-      <app-sales-chart [series]="salesSeries()" />
+      <app-sales-chart
+        [revenueData]="monthlyRevenue()"
+        [ordersData]="monthlyOrders()"
+        [series]="salesSeries()"
+      />
     </div>
     <div class="lg:col-span-4">
       <app-category-chart [series]="categorySeries()" [labels]="categoryLabels()" />

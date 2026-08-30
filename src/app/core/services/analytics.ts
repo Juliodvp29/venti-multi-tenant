@@ -137,8 +137,18 @@ export class AnalyticsService {
     }
 
     async getMonthlySales() {
+        const perf = await this.getMonthlyPerformance();
+        return perf.revenue;
+    }
+
+    async getMonthlyOrders() {
+        const perf = await this.getMonthlyPerformance();
+        return perf.orders;
+    }
+
+    async getMonthlyPerformance(): Promise<{ revenue: number[]; orders: number[] }> {
         const tenantId = this.tenantService.tenantId();
-        if (!tenantId) return new Array(12).fill(0);
+        if (!tenantId) return { revenue: new Array(12).fill(0), orders: new Array(12).fill(0) };
 
         const now = new Date();
         const startOfYear = new Date(now.getFullYear(), 0, 1).toISOString();
@@ -151,18 +161,20 @@ export class AnalyticsService {
             .neq('status', 'cancelled')
             .neq('status', 'refunded');
 
-        const monthlyData = new Array(12).fill(0);
+        const revenue = new Array(12).fill(0);
+        const orders = new Array(12).fill(0);
 
         if (data) {
-            data.forEach(order => {
+            data.forEach((order: any) => {
                 if (!order.created_at) return;
                 const date = new Date(order.created_at as string);
                 const month = date.getMonth(); // 0-11
-                monthlyData[month] += Number(order.total_amount || 0);
+                revenue[month] += Number(order.total_amount || 0);
+                orders[month] += 1;
             });
         }
 
-        return monthlyData;
+        return { revenue, orders };
     }
 
     async getCategoryDistribution() {
