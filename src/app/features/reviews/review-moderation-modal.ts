@@ -14,7 +14,7 @@ import { TenantService } from '@core/services/tenant';
       class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300"
     >
       <div
-        class="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-300 flex flex-col"
+        class="relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-[2rem] shadow-2xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-300 flex flex-col"
       >
         <!-- Header -->
         <div class="p-8 border-b border-slate-100 flex justify-between items-start">
@@ -50,7 +50,9 @@ import { TenantService } from '@core/services/tenant';
         <!-- Body -->
         <div class="p-8 space-y-6 overflow-y-auto max-h-[calc(80vh-200px)]">
           <!-- Product Preview -->
-          <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+          <div
+            class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-gray-800 rounded-2xl border border-slate-100"
+          >
             <img
               [src]="primaryImage()"
               [alt]="review().product?.name"
@@ -60,7 +62,9 @@ import { TenantService } from '@core/services/tenant';
               <span class="text-[10px] font-black text-sky-600 uppercase tracking-widest"
                 >Producto</span
               >
-              <h4 class="font-bold text-slate-900">{{ review().product?.name }}</h4>
+              <h4 class="font-bold text-slate-900 dark:text-amber-50">
+                {{ review().product?.name }}
+              </h4>
               <p class="text-xs text-slate-400">ID: {{ review().product_id }}</p>
             </div>
           </div>
@@ -73,12 +77,12 @@ import { TenantService } from '@core/services/tenant';
                   Cliente
                 </p>
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-900">{{
+                  <span class="font-bold text-slate-900 dark:text-amber-50">{{
                     review().customer?.first_name + ' ' + (review().customer?.last_name || '')
                   }}</span>
                   @if (review().is_verified_purchase) {
                     <span
-                      class="px-2 py-0.5 bg-sky-50 text-sky-600 text-[10px] font-black uppercase rounded-full tracking-wider border border-sky-100"
+                      class="px-2 py-0.5 bg-sky-50 text-sky-600 dark:text-amber-50 text-[10px] font-black uppercase rounded-full tracking-wider border border-sky-100"
                     >
                       Compra Verificada
                     </span>
@@ -113,7 +117,9 @@ import { TenantService } from '@core/services/tenant';
               @if (review().title) {
                 <h5 class="font-bold text-slate-900 text-lg">{{ review().title }}</h5>
               }
-              <p class="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">
+              <p
+                class="text-slate-600 dark:text-slate-200 text-sm leading-relaxed whitespace-pre-wrap"
+              >
                 {{ review().review || 'Sin comentario.' }}
               </p>
             </div>
@@ -121,7 +127,9 @@ import { TenantService } from '@core/services/tenant';
         </div>
 
         <!-- Footer Actions -->
-        <div class="p-8 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+        <div
+          class="p-8 bg-slate-50 dark:bg-gray-900 border-t border-slate-100 flex justify-between items-center"
+        >
           <button
             class="text-slate-400 font-bold hover:text-slate-600 transition-colors uppercase tracking-widest text-xs"
           >
@@ -137,7 +145,7 @@ import { TenantService } from '@core/services/tenant';
             </button>
             <button
               (click)="onAction('approved')"
-              class="px-8 py-3 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 transition-colors text-sm shadow-lg shadow-sky-200"
+              class="px-8 py-3 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 transition-colors text-sm shadow-sm shadow-sky-200"
             >
               Aprobar Reseña
             </button>

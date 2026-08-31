@@ -75,7 +75,7 @@ export class CategoryChart {
         fontFamily: 'inherit',
         foreColor: dark ? '#94a3b8' : '#64748b',
       },
-      colors: ['#00A6F4', '#32b3f0', '#5dc1f0'],
+      colors: ['#41BDFF', '#69C0FF', '#8DCDFF', '#8DCDFF'],
       dataLabels: { enabled: false },
       stroke: { show: false },
       plotOptions: {
