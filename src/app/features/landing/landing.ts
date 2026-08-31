@@ -1,9 +1,25 @@
-import { ChangeDetectionStrategy, Component, inject, ElementRef, AfterViewInit, OnDestroy, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BILLING_PLANS } from '@core/models/billing.model';
 import { SeoService } from '@core/services/seo';
+
+interface Slide {
+  id: number;
+  light: string;
+  dark: string;
+  alt: string;
+}
 
 @Component({
   selector: 'app-landing',
@@ -12,27 +28,40 @@ import { SeoService } from '@core/services/seo';
   styleUrl: './landing.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Landing implements AfterViewInit, OnDestroy {
+export class Landing implements AfterViewInit, OnDestroy, OnInit {
   private readonly el = inject(ElementRef);
   private readonly seo = inject(SeoService);
   private observer: IntersectionObserver | null = null;
   readonly plans = BILLING_PLANS;
   readonly mobileMenuOpen = signal(false);
+  activeSlide = signal<number>(0);
+  private timerId: any;
+
+  slides: Slide[] = [
+    { id: 1, light: 'dashboard-1.webp', dark: 'dashboard-black-1.webp', alt: 'Dashboard 1' },
+    { id: 2, light: 'dashboard-2.webp', dark: 'dashboard-black-2.webp', alt: 'Dashboard 2' },
+    { id: 3, light: 'dashboard-3.webp', dark: 'dashboard-black-3.webp', alt: 'Dashboard 3' },
+    { id: 4, light: 'dashboard-4.webp', dark: 'dashboard-black-4.webp', alt: 'Dashboard 4' },
+  ];
 
   readonly footerLinks = [
     {
       title: 'Producto',
-      links: ['Características', 'Precios', 'Documentación', 'Historial de cambios']
+      links: ['Características', 'Precios', 'Documentación', 'Historial de cambios'],
     },
     {
       title: 'Compañía',
-      links: ['Sobre nosotros', 'Blog', 'Carreras', 'Contacto']
+      links: ['Sobre nosotros', 'Blog', 'Carreras', 'Contacto'],
     },
     {
       title: 'Legal',
-      links: ['Privacidad', 'Términos', 'Política de cookies', 'SLA']
-    }
+      links: ['Privacidad', 'Términos', 'Política de cookies', 'SLA'],
+    },
   ];
+
+  ngOnInit(): void {
+    this.startAutoPlay();
+  }
 
   ngAfterViewInit() {
     this.initScrollReveal();
@@ -44,19 +73,29 @@ export class Landing implements AfterViewInit, OnDestroy {
 
     this.seo.updateTags({
       title: 'Venti Shop - La Plataforma de Ecommerce Multi-Tenant Moderna',
-      description: 'Lanza tu SaaS en minutos. Gestiona productos, miembros y suscripciones con una interfaz hermosa y unificada.',
-      keywords: ['multi-tenant', 'ecommerce', 'saas', 'angular', 'supabase', 'constructor de tiendas'],
-      type: 'website'
+      description:
+        'Lanza tu SaaS en minutos. Gestiona productos, miembros y suscripciones con una interfaz hermosa y unificada.',
+      keywords: [
+        'multi-tenant',
+        'ecommerce',
+        'saas',
+        'angular',
+        'supabase',
+        'constructor de tiendas',
+      ],
+      type: 'website',
     });
 
     this.seo.setOrganizationSchema({
       name: 'Venti Shop',
       url: window.location.origin,
-      logo: window.location.origin + '/assets/logo.png'
+      logo: window.location.origin + '/assets/logo.png',
     });
   }
 
   ngOnDestroy() {
+    this.stopAutoPlay();
+
     if (this.observer) {
       this.observer.disconnect();
     }
@@ -66,11 +105,11 @@ export class Landing implements AfterViewInit, OnDestroy {
     const options = {
       root: null,
       threshold: 0.1,
-      rootMargin: '0px'
+      rootMargin: '0px',
     };
 
     this.observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('reveal-visible');
           this.observer?.unobserve(entry.target);
@@ -101,8 +140,26 @@ export class Landing implements AfterViewInit, OnDestroy {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
+  }
+
+  startAutoPlay(): void {
+    this.timerId = setInterval(() => {
+      this.activeSlide.update((current) => (current + 1) % this.slides.length);
+    }, 4000);
+  }
+
+  stopAutoPlay(): void {
+    if (this.timerId) {
+      clearInterval(this.timerId);
+    }
+  }
+
+  setActiveSlide(index: number): void {
+    this.activeSlide.set(index);
+    this.stopAutoPlay();
+    this.startAutoPlay();
   }
 }

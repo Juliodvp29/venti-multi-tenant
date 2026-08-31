@@ -1,706 +1,1036 @@
 <div
-    class="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-sky-500/30">
-    <nav
-        class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <!-- Logo -->
-                <a routerLink="/" class="flex items-center">
-                    <svg viewBox="0 0 520 150" class="h-9 w-auto" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                        <defs>
-                            <linearGradient id="landingNavVentiGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#0284c7" />
-                                <stop offset="100%" stop-color="#38bdf8" />
-                            </linearGradient>
-                        </defs>
-                        <g transform="translate(15, 10)">
-                            <path
-                                d="M 12 45 L 45 100 L 90 15"
-                                stroke="url(#landingNavVentiGrad)"
-                                stroke-width="30"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                fill="none"
-                            />
-                        </g>
-                        <text x="150" y="100">
-                            <tspan
-                                class="fill-gray-900 dark:fill-white italic"
-                                font-weight="800"
-                                font-size="58px"
-                            >
-                                Venti Shop
-                            </tspan>
-                        </text>
-                    </svg>
-                </a>
+  class="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-sky-500/30"
+>
+  <nav
+    class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <!-- Logo -->
+        <a routerLink="/" class="flex items-center">
+          <svg
+            viewBox="0 0 520 150"
+            class="h-9 w-auto"
+            style="font-family: 'Plus Jakarta Sans', sans-serif"
+          >
+            <defs>
+              <linearGradient id="landingNavVentiGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0284c7" />
+                <stop offset="100%" stop-color="#38bdf8" />
+              </linearGradient>
+            </defs>
+            <g transform="translate(15, 10)">
+              <path
+                d="M 12 45 L 45 100 L 90 15"
+                stroke="url(#landingNavVentiGrad)"
+                stroke-width="30"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none"
+              />
+            </g>
+            <text x="150" y="100">
+              <tspan
+                class="fill-gray-900 dark:fill-white italic"
+                font-weight="800"
+                font-size="58px"
+              >
+                Venti Shop
+              </tspan>
+            </text>
+          </svg>
+        </a>
 
-                <!-- Links desktop -->
-                <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600 dark:text-gray-400">
-                    <a (click)="scrollToSection('features')"
-                        class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer">Características</a>
-                    <a (click)="scrollToSection('pricing')"
-                        class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer">Precios</a>
-                    <a (click)="scrollToSection('contact')"
-                        class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer">Contacto</a>
-                </div>
-
-                <!-- CTAs desktop + botón hamburger -->
-                <div class="flex items-center gap-4">
-                    <a routerLink="/auth/login"
-                        class="hidden md:block text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-sky-600 transition-colors">Iniciar
-                        sesión</a>
-                    <a (click)="scrollToSection('pricing')"
-                        class="hidden md:block px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-full shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
-                        Empezar ahora
-                    </a>
-
-                    <!-- Botón hamburger (solo mobile) -->
-                    <button (click)="mobileMenuOpen.set(!mobileMenuOpen())" type="button"
-                        class="md:hidden flex items-center justify-center w-10 h-10 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                        aria-label="Abrir menú">
-                        @if (mobileMenuOpen()) {
-                        <!-- Icono X -->
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        } @else {
-                        <!-- Icono hamburger -->
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                        }
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Panel menú mobile -->
-        @if (mobileMenuOpen()) {
-        <!-- Overlay -->
-        <div (click)="mobileMenuOpen.set(false)"
-            class="fixed inset-0 top-16 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-40 md:hidden">
-        </div>
-
-        <!-- Panel -->
+        <!-- Links desktop -->
         <div
-            class="absolute top-full left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-xl md:hidden">
-            <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-1">
-                <a (click)="scrollToSection('features')"
-                    class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer">
-                    <svg class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
-                    Características
-                </a>
-                <a (click)="scrollToSection('pricing')"
-                    class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer">
-                    <svg class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 012-2z" />
-                    </svg>
-                    Precios
-                </a>
-                <a (click)="scrollToSection('contact')"
-                    class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer">
-                    <svg class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    Contacto
-                </a>
-
-                <!-- Divisor -->
-                <div class="h-px bg-gray-100 dark:bg-gray-800 my-2"></div>
-
-                <!-- CTAs -->
-                <a routerLink="/auth/login" (click)="mobileMenuOpen.set(false)"
-                    class="px-4 py-3 rounded-2xl text-sm font-bold text-center text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
-                    Iniciar sesión
-                </a>
-                <a (click)="scrollToSection('pricing')"
-                    class="px-4 py-3 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-2xl text-center shadow-lg shadow-sky-500/20 transition-all cursor-pointer">
-                    Empezar ahora
-                </a>
-            </div>
+          class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600 dark:text-gray-400"
+        >
+          <a
+            (click)="scrollToSection('features')"
+            class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
+            >Características</a
+          >
+          <a
+            (click)="scrollToSection('pricing')"
+            class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
+            >Precios</a
+          >
+          <a
+            (click)="scrollToSection('contact')"
+            class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
+            >Contacto</a
+          >
         </div>
+
+        <!-- CTAs desktop + botón hamburger -->
+        <div class="flex items-center gap-4">
+          <a
+            routerLink="/auth/login"
+            class="hidden md:block text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-sky-600 transition-colors"
+            >Iniciar sesión</a
+          >
+          <a
+            (click)="scrollToSection('pricing')"
+            class="hidden md:block px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-full shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+          >
+            Empezar ahora
+          </a>
+
+          <!-- Botón hamburger (solo mobile) -->
+          <button
+            (click)="mobileMenuOpen.set(!mobileMenuOpen())"
+            type="button"
+            class="md:hidden flex items-center justify-center w-10 h-10 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label="Abrir menú"
+          >
+            @if (mobileMenuOpen()) {
+              <!-- Icono X -->
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            } @else {
+              <!-- Icono hamburger -->
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel menú mobile -->
+    @if (mobileMenuOpen()) {
+      <!-- Overlay -->
+      <div
+        (click)="mobileMenuOpen.set(false)"
+        class="fixed inset-0 top-16 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-40 md:hidden"
+      ></div>
+
+      <!-- Panel -->
+      <div
+        class="absolute top-full left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-xl md:hidden"
+      >
+        <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-1">
+          <a
+            (click)="scrollToSection('features')"
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer"
+          >
+            <svg
+              class="w-4 h-4 opacity-60"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+            Características
+          </a>
+          <a
+            (click)="scrollToSection('pricing')"
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer"
+          >
+            <svg
+              class="w-4 h-4 opacity-60"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 012-2z"
+              />
+            </svg>
+            Precios
+          </a>
+          <a
+            (click)="scrollToSection('contact')"
+            class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer"
+          >
+            <svg
+              class="w-4 h-4 opacity-60"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+            Contacto
+          </a>
+
+          <!-- Divisor -->
+          <div class="h-px bg-gray-100 dark:bg-gray-800 my-2"></div>
+
+          <!-- CTAs -->
+          <a
+            routerLink="/auth/login"
+            (click)="mobileMenuOpen.set(false)"
+            class="px-4 py-3 rounded-2xl text-sm font-bold text-center text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+          >
+            Iniciar sesión
+          </a>
+          <a
+            (click)="scrollToSection('pricing')"
+            class="px-4 py-3 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-2xl text-center shadow-lg shadow-sky-500/20 transition-all cursor-pointer"
+          >
+            Empezar ahora
+          </a>
+        </div>
+      </div>
+    }
+  </nav>
+
+  <section class="relative pt-20 pb-32 overflow-hidden">
+    <div
+      class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-b from-sky-500/10 via-transparent to-transparent rounded-full blur-3xl -z-10"
+    ></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div
+        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-widest mb-8 animate-fade-in opacity-0"
+        style="animation-delay: 0.1s; animation-fill-mode: forwards"
+      >
+        <span class="relative flex h-2 w-2">
+          <span
+            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"
+          ></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+        </span>
+        Nuevo: Soporte Multi-inquilino
+      </div>
+
+      <h1
+        class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 leading-tight animate-slide-up opacity-0"
+        style="animation-delay: 0.2s; animation-fill-mode: forwards"
+      >
+        Vende más. Gestiona menos. <br class="hidden md:block" />
+        Escala sin límites.
+      </h1>
+
+      <p
+        class="max-w-2xl mx-auto text-lg md:text-xl text-gray-500 dark:text-gray-400 mb-10 leading-relaxed animate-slide-up opacity-0"
+        style="animation-delay: 0.3s; animation-fill-mode: forwards"
+      >
+        La plataforma multi-inquilino definitiva para tiendas. Gestiona productos, miembros y
+        suscripciones con una interfaz hermosa y unificada.
+      </p>
+
+      <div
+        class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 animate-slide-up opacity-0"
+        style="animation-delay: 0.4s; animation-fill-mode: forwards"
+      >
+        <a
+          (click)="scrollToSection('pricing')"
+          class="w-full sm:w-auto px-8 py-4 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-2xl shadow-xl shadow-sky-500/20 transition-all hover:-translate-y-1 active:scale-95 cursor-pointer text-center"
+        >
+          Empieza tu prueba gratuita
+        </a>
+        <a
+          (click)="scrollToSection('features')"
+          class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-bold rounded-2xl shadow-lg transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:-translate-y-1 active:scale-95 cursor-pointer text-center"
+        >
+          Ver características
+        </a>
+      </div>
+
+      <div
+        class="relative max-w-5xl mx-auto animate-float opacity-0"
+        style="animation-delay: 0.6s; animation-fill-mode: forwards"
+      >
+        <div
+          class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-sky-600 rounded-[2.5rem] blur opacity-20 dark:opacity-40"
+        ></div>
+
+        <div
+          class="relative bg-slate-50 dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden group transition-all duration-500 hover:shadow-sky-500/20 hover:border-sky-500/30"
+        >
+          @for (slide of slides; track slide.id; let i = $index) {
+            <div
+              [class]="i === 0 ? 'relative w-full' : 'absolute inset-0 w-full h-full'"
+              class="transition-opacity duration-1000"
+              [class.opacity-100]="activeSlide() === i"
+              [class.opacity-0]="activeSlide() !== i"
+              [class.pointer-events-none]="activeSlide() !== i"
+            >
+              <img
+                [src]="slide.light"
+                [alt]="slide.alt"
+                class="w-full h-auto block transition-all duration-700 group-hover:scale-[1.02] dark:hidden"
+              />
+
+              <img
+                [src]="slide.dark"
+                [alt]="slide.alt"
+                class="w-full h-auto hidden dark:block transition-all duration-700 group-hover:scale-[1.02]"
+              />
+            </div>
+          }
+
+          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            @for (slide of slides; track slide.id; let i = $index) {
+              <button
+                (click)="setActiveSlide(i)"
+                class="h-2 rounded-full transition-all duration-300"
+                [class.w-6]="activeSlide() === i"
+                [class.bg-sky-500]="activeSlide() === i"
+                [class.w-2]="activeSlide() !== i"
+                [class.bg-gray-400]="activeSlide() !== i"
+                [class.opacity-50]="activeSlide() !== i"
+              ></button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="py-32 space-y-40 overflow-hidden bg-white dark:bg-gray-950 border-y border-gray-100 dark:border-gray-800/50"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div
+        class="reveal-item flex flex-col md:flex-row items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out"
+      >
+        <div class="flex-1 space-y-6">
+          <div
+            class="inline-flex p-3 bg-sky-50 dark:bg-sky-500/10 rounded-2xl text-sky-600 dark:text-sky-400"
+          >
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+          </div>
+          <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">
+            Análisis que hablan <br /><span class="text-sky-600">por sí mismos.</span>
+          </h2>
+          <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            No más dudas. Nuestros análisis en tiempo real te muestran exactamente lo que está
+            sucediendo en tu negocio. Desde el rendimiento de las categorías hasta el valor promedio
+            por ticket, todo en un solo lugar.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+              <div
+                class="w-2.5 h-2.5 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(79,70,229,0.5)]"
+              ></div>
+              Reportes de ventas detallados por categoría
+            </li>
+            <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+              <div
+                class="w-2.5 h-2.5 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(79,70,229,0.5)]"
+              ></div>
+              Seguimiento en vivo de los productos más vendidos
+            </li>
+          </ul>
+        </div>
+        <div class="flex-1 relative group">
+          <div
+            class="absolute -inset-10 bg-gradient-to-tr from-sky-500/20 to-sky-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          ></div>
+          <div
+            class="relative bg-white dark:bg-gray-800 rounded-[3rem] border border-gray-100 dark:border-gray-700 p-12 shadow-2xl overflow-hidden"
+          >
+            <div class="aspect-square flex items-center justify-center">
+              <svg class="w-full h-full text-sky-500" viewBox="0 0 100 100" fill="none">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-dasharray="8 8"
+                  class="opacity-20"
+                />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="35"
+                  stroke="currentColor"
+                  stroke-width="10"
+                  stroke-dasharray="160 220"
+                  stroke-linecap="round"
+                  class="animate-spin-slow origin-center"
+                />
+                <text
+                  x="50"
+                  y="58"
+                  text-anchor="middle"
+                  font-weight="900"
+                  font-size="24"
+                  fill="currentColor"
+                >
+                  BI
+                </text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="reveal-item flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out"
+      >
+        <div class="flex-1 space-y-6">
+          <div
+            class="inline-flex p-3 bg-sky-50 dark:bg-sky-500/10 rounded-2xl text-sky-600 dark:text-sky-400"
+          >
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
+            </svg>
+          </div>
+          <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">
+            Inventario Inteligente
+          </h2>
+          <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            Gestiona tu stock sin esfuerzo. Soporte completo para variantes, alertas de bajo stock y
+            sincronización automática en todas tus sucursales.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div
+              class="p-6 bg-sky-50/50 dark:bg-sky-500/5 rounded-[2rem] border border-sky-100 dark:border-sky-500/10"
+            >
+              <span class="block text-3xl font-black text-sky-600 dark:text-sky-400 italic"
+                >99.9%</span
+              >
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest"
+                >Precisión</span
+              >
+            </div>
+            <div
+              class="p-6 bg-sky-100 dark:bg-sky-500/20 rounded-[2rem] border border-sky-200 dark:border-sky-500/30"
+            >
+              <span class="block text-3xl font-black text-sky-700 dark:text-white">Tiempo</span>
+              <span
+                class="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest"
+                >Real</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 relative group">
+          <div
+            class="absolute -inset-10 bg-gradient-to-tr from-sky-500/20 to-teal-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          ></div>
+          <div
+            class="relative bg-white dark:bg-gray-800 rounded-[3rem] border border-gray-100 dark:border-gray-700 p-12 shadow-2xl"
+          >
+            <div class="space-y-6">
+              <div class="h-4 bg-sky-500/20 rounded-full w-3/4"></div>
+              <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded-full w-full"></div>
+              <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded-full w-5/6"></div>
+              <div class="flex justify-end pt-4">
+                <div
+                  class="w-14 h-14 bg-sky-500 rounded-2xl shadow-lg shadow-sky-500/30 flex items-center justify-center text-white"
+                >
+                  <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="reveal-item flex flex-col md:flex-row items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out"
+      >
+        <div class="flex-1 space-y-6">
+          <div
+            class="inline-flex p-3 bg-orange-50 dark:bg-orange-500/10 rounded-2xl text-orange-600 dark:text-orange-400"
+          >
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.172-1.172a4 4 0 115.656 5.656l-1.172 1.172"
+              />
+            </svg>
+          </div>
+          <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">
+            Tu tienda, <br /><span class="text-orange-600">tu marca.</span>
+          </h2>
+          <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            Personaliza la apariencia de tu tienda en segundos. Cambia colores, logos y fuentes para
+            reflejar la identidad única de tu negocio. Crea una experiencia que a tus clientes les
+            encantará.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <span
+              class="px-4 py-2 bg-slate-100 dark:bg-gray-800 rounded-xl text-xs font-bold dark:text-white border border-transparent hover:border-orange-500/30 transition-all"
+              >Identidad Visual</span
+            >
+            <span
+              class="px-4 py-2 bg-slate-100 dark:bg-gray-800 rounded-xl text-xs font-bold dark:text-white border border-transparent hover:border-orange-500/30 transition-all"
+              >Colores HSL</span
+            >
+            <span
+              class="px-4 py-2 bg-slate-100 dark:bg-gray-800 rounded-xl text-xs font-bold dark:text-white border border-transparent hover:border-orange-500/30 transition-all"
+              >Tipografía</span
+            >
+          </div>
+        </div>
+        <div class="flex-1 relative group">
+          <div
+            class="absolute -inset-10 bg-gradient-to-tr from-orange-500/20 to-amber-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          ></div>
+          <div
+            class="relative bg-slate-900 rounded-[3rem] p-2 shadow-2xl overflow-hidden aspect-video group-hover:scale-[1.02] transition-transform duration-500"
+          >
+            <div
+              class="absolute inset-x-0 top-0 h-8 bg-white/5 border-b border-white/5 flex items-center px-4 gap-2"
+            >
+              <div class="w-2 h-2 rounded-full bg-red-400/50"></div>
+              <div class="w-2 h-2 rounded-full bg-yellow-400/50"></div>
+              <div class="w-2 h-2 rounded-full bg-green-400/50"></div>
+            </div>
+            <div class="h-full pt-8 flex items-center justify-center">
+              <div class="grid grid-cols-3 gap-6 w-3/4">
+                <div
+                  class="aspect-square bg-orange-600 rounded-2xl rotate-12 group-hover:rotate-0 transition-transform duration-700"
+                ></div>
+                <div
+                  class="aspect-square bg-sky-600 rounded-2xl -rotate-6 translate-y-4 group-hover:rotate-0 group-hover:translate-y-0 transition-all duration-700"
+                ></div>
+                <div
+                  class="aspect-square bg-sky-600 rounded-2xl rotate-6 group-hover:rotate-0 transition-transform duration-700"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="py-32 bg-white dark:bg-gray-900 scroll-mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-20">
+        <h2
+          class="text-xs font-bold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400 mb-4"
+        >
+          Todo lo que necesitas
+        </h2>
+        <p class="text-3xl md:text-5xl font-bold dark:text-white">
+          Diseñado para negocios modernos
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <!-- Feature 1 -->
+        <div
+          class="group p-8 rounded-3xl hover:bg-slate-50 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-105"
+        >
+          <div
+            class="w-14 h-14 bg-sky-50 dark:bg-sky-500/10 rounded-2xl flex items-center justify-center text-sky-600 dark:text-sky-400 mb-6 transition-transform group-hover:rotate-6"
+          >
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-4 dark:text-white">Arquitectura Multi-inquilino</h3>
+          <p class="text-gray-500 dark:text-gray-400 leading-relaxed">
+            Tiendas e inquilinos separados con sus propios datos, marca y miembros. Escalable por
+            diseño.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div
+          class="group p-8 rounded-3xl hover:bg-slate-50 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-105"
+        >
+          <div
+            class="w-14 h-14 bg-sky-50 dark:bg-sky-500/10 rounded-2xl flex items-center justify-center text-sky-600 dark:text-sky-400 mb-6 transition-transform group-hover:rotate-6"
+          >
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-4 dark:text-white">Análisis Avanzado</h3>
+          <p class="text-gray-500 dark:text-gray-400 leading-relaxed">
+            Rastrea ventas, inventario y uso de recursos en todos tus inquilinos desde un único
+            panel.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div
+          class="group p-8 rounded-3xl hover:bg-slate-50 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-105"
+        >
+          <div
+            class="w-14 h-14 bg-amber-50 dark:bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400 mb-6 transition-transform group-hover:rotate-6"
+          >
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-4 dark:text-white">Gestión de Equipos</h3>
+          <p class="text-gray-500 dark:text-gray-400 leading-relaxed">
+            Invita a miembros con roles granulares (Admin, Editor, Delivery) para ayudar a gestionar
+            tus operaciones.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonios Section -->
+  <section class="py-32 bg-slate-50 dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="text-center mb-20">
+        <h2
+          class="text-xs font-bold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400 mb-4"
+        >
+          Testimonios
+        </h2>
+        <p class="text-3xl md:text-5xl font-bold dark:text-white">Lo que dicen nuestros clientes</p>
+      </div>
+
+      <!-- Stats bar -->
+      <div
+        class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm"
+      >
+        <div class="text-center">
+          <span class="block text-4xl font-black text-sky-600 dark:text-sky-400">+1,200</span>
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 block"
+            >Tiendas activas</span
+          >
+        </div>
+        <div class="text-center">
+          <span class="block text-4xl font-black text-sky-600 dark:text-sky-400">98%</span>
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 block"
+            >Satisfacción</span
+          >
+        </div>
+        <div class="text-center">
+          <span class="block text-4xl font-black text-sky-600 dark:text-sky-400">+5M</span>
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 block"
+            >Pedidos procesados</span
+          >
+        </div>
+        <div class="text-center">
+          <span class="block text-4xl font-black text-sky-600 dark:text-sky-400">24/7</span>
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 block"
+            >Soporte</span
+          >
+        </div>
+      </div>
+
+      <!-- Testimonial cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Testimonial 1 -->
+        <div
+          class="p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col gap-6"
+        >
+          <!-- Stars -->
+          <div class="flex gap-1">
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 leading-relaxed flex-1">
+            "Venti transformó por completo la manera en que gestionamos nuestras tiendas. Antes
+            perdíamos horas coordinando inventario entre sucursales. Ahora todo se sincroniza solo."
+          </p>
+          <div class="flex items-center gap-4">
+            <div
+              class="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 font-black text-sm shrink-0"
+            >
+              ML
+            </div>
+            <div>
+              <span class="block font-bold text-gray-900 dark:text-white text-sm">María López</span>
+              <span class="text-xs text-gray-400">CEO · Moda &amp; Style</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 (destacado) -->
+        <div
+          class="p-8 bg-sky-600 rounded-3xl shadow-xl shadow-sky-500/20 hover:shadow-sky-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col gap-6"
+        >
+          <!-- Stars -->
+          <div class="flex gap-1">
+            <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+          </div>
+          <p class="text-sky-100 leading-relaxed flex-1">
+            "La mejor decisión que tomamos fue migrar a Venti. El soporte multi-inquilino nos
+            permitió escalar de 2 a 15 tiendas en menos de 6 meses sin contratar más personal."
+          </p>
+          <div class="flex items-center gap-4">
+            <div
+              class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white font-black text-sm shrink-0"
+            >
+              CR
+            </div>
+            <div>
+              <span class="block font-bold text-white text-sm">Carlos Ramírez</span>
+              <span class="text-xs text-sky-200">Director · GrupoComercial MX</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div
+          class="p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col gap-6"
+        >
+          <!-- Stars -->
+          <div class="flex gap-1">
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+              />
+            </svg>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 leading-relaxed flex-1">
+            "El panel de análisis es increíble. Ahora tomo decisiones basadas en datos reales. Venti
+            pagó su costo en el primer mes solo con los insights de ventas."
+          </p>
+          <div class="flex items-center gap-4">
+            <div
+              class="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 font-black text-sm shrink-0"
+            >
+              SG
+            </div>
+            <div>
+              <span class="block font-bold text-gray-900 dark:text-white text-sm"
+                >Sofía Gutiérrez</span
+              >
+              <span class="text-xs text-gray-400">Fundadora · EcoTienda</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="py-32 scroll-mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-20 animate-fade-in">
+        <h2
+          class="text-xs font-bold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400 mb-4"
+        >
+          Precios
+        </h2>
+        <p class="text-3xl md:text-5xl font-bold dark:text-white">
+          Precios simples y transparentes
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        @for (plan of plans; track plan.id; let i = $index) {
+          <div
+            class="relative p-8 bg-white dark:bg-gray-900 rounded-3xl border transition-all duration-300 hover:shadow-2xl group flex flex-col hover:-translate-y-2 animate-slide-up opacity-0"
+            [ngStyle]="{ 'animation-delay': 0.1 * i + 's', 'animation-fill-mode': 'forwards' }"
+            [ngClass]="
+              plan.isRecommended
+                ? 'border-sky-500 lg:scale-105 shadow-xl z-10'
+                : 'border-gray-100 dark:border-gray-800'
+            "
+          >
+            @if (plan.isRecommended) {
+              <div
+                class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-sky-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-full"
+              >
+                Más Popular
+              </div>
+            }
+
+            <div class="mb-8">
+              <h3 class="text-lg font-bold mb-2 dark:text-white">{{ plan.name }}</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 min-h-[40px]">
+                {{ plan.description }}
+              </p>
+            </div>
+
+            <div class="mb-8 font-black">
+              <div class="flex items-baseline gap-1">
+                <span class="text-4xl dark:text-white">{{
+                  plan.price | currency: 'USD' : 'symbol' : '1.0-2'
+                }}</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400 font-medium"
+                  >/{{ plan.interval }}</span
+                >
+              </div>
+            </div>
+
+            <ul class="space-y-4 mb-10 flex-1">
+              @for (feature of plan.features; track feature) {
+                <li class="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
+                  <svg
+                    class="w-5 h-5 text-sky-500 shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2.5"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  {{ feature }}
+                </li>
+              }
+            </ul>
+
+            <a
+              [routerLink]="['/auth/purchase']"
+              [queryParams]="{ plan: plan.id }"
+              class="w-full py-4 rounded-2xl font-bold text-center transition-all active:scale-95"
+              [ngClass]="
+                plan.isRecommended
+                  ? 'bg-sky-600 text-white shadow-lg shadow-sky-500/25 hover:bg-sky-700'
+                  : 'bg-slate-50 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-slate-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700'
+              "
+            >
+              Empezar ahora
+            </a>
+          </div>
         }
-    </nav>
+      </div>
+    </div>
+  </section>
 
-
-    <section class="relative pt-20 pb-32 overflow-hidden">
+  <!-- Final CTA Section -->
+  <section class="py-32">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div
+        class="relative overflow-hidden rounded-[3rem] bg-sky-600 p-12 md:p-20 text-center shadow-2xl shadow-sky-500/25"
+      >
+        <!-- Decoración de fondo -->
         <div
-            class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-b from-sky-500/10 via-transparent to-transparent rounded-full blur-3xl -z-10">
+          class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none"
+        ></div>
+        <div
+          class="absolute -bottom-24 -left-24 w-96 h-96 bg-sky-500/30 rounded-full blur-3xl pointer-events-none"
+        ></div>
+
+        <div class="relative z-10">
+          <p class="text-sky-200 text-xs font-bold uppercase tracking-[0.2em] mb-4">Empieza hoy</p>
+          <h2 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
+            Tu negocio merece <br class="hidden md:block" />
+            la mejor plataforma.
+          </h2>
+          <p class="text-sky-200 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+            Únete a más de 1,200 tiendas que ya están creciendo con Venti. Sin tarjeta de crédito
+            requerida.
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              (click)="scrollToSection('pricing')"
+              class="w-full sm:w-auto px-10 py-4 bg-white text-sky-600 font-bold rounded-2xl shadow-xl hover:bg-sky-50 transition-all hover:-translate-y-0.5 active:scale-95 cursor-pointer text-center"
+            >
+              Prueba gratuita de 14 días
+            </a>
+            <a
+              routerLink="/auth/login"
+              class="w-full sm:w-auto px-10 py-4 border border-white/30 text-white font-bold rounded-2xl hover:bg-white/10 transition-all hover:-translate-y-0.5 active:scale-95 cursor-pointer text-center"
+            >
+              Iniciar sesión
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer
+    id="contact"
+    class="py-20 border-at border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 scroll-mt-20"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div class="md:col-span-1">
+          <div class="flex items-center mb-6">
+            <svg
+              viewBox="0 0 520 150"
+              class="h-9 w-auto"
+              style="font-family: 'Plus Jakarta Sans', sans-serif"
+            >
+              <defs>
+                <linearGradient id="landingFootVentiGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#0284c7" />
+                  <stop offset="100%" stop-color="#38bdf8" />
+                </linearGradient>
+              </defs>
+              <g transform="translate(15, 10)">
+                <path
+                  d="M 12 45 L 45 100 L 90 15"
+                  stroke="url(#landingFootVentiGrad)"
+                  stroke-width="30"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+              </g>
+              <text x="150" y="100">
+                <tspan
+                  class="fill-gray-900 dark:fill-white italic"
+                  font-weight="800"
+                  font-size="58px"
+                >
+                  Venti Shop
+                </tspan>
+              </text>
+            </svg>
+          </div>
+          <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+            La plataforma moderna de comercio electrónico multi-tenant para crear y escalar tu
+            tienda online.
+          </p>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-widest mb-8 animate-fade-in opacity-0"
-                style="animation-delay: 0.1s; animation-fill-mode: forwards;">
-                <span class="relative flex h-2 w-2">
-                    <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
-                </span>
-                Nuevo: Soporte Multi-inquilino
-            </div>
+        @for (group of footerLinks; track group.title) {
+          <div>
+            <h4
+              class="text-xs font-bold uppercase tracking-widest text-gray-900 dark:text-white mb-6"
+            >
+              {{ group.title }}
+            </h4>
+            <ul class="space-y-4">
+              @for (link of group.links; track link) {
+                <li>
+                  <a
+                    href="#"
+                    class="text-sm text-gray-500 dark:text-gray-400 hover:text-sky-600 transition-colors"
+                    >{{ link }}</a
+                  >
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
 
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 leading-tight animate-slide-up opacity-0"
-                style="animation-delay: 0.2s; animation-fill-mode: forwards;">
-                Vende más. Gestiona menos. <br class="hidden md:block"> Escala sin límites.
-            </h1>
-
-            <p class="max-w-2xl mx-auto text-lg md:text-xl text-gray-500 dark:text-gray-400 mb-10 leading-relaxed animate-slide-up opacity-0"
-                style="animation-delay: 0.3s; animation-fill-mode: forwards;">
-                La plataforma multi-inquilino definitiva para tiendas. Gestiona productos, miembros y suscripciones con
-                una
-                interfaz hermosa y unificada.
-            </p>
-
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 animate-slide-up opacity-0"
-                style="animation-delay: 0.4s; animation-fill-mode: forwards;">
-                <a (click)="scrollToSection('pricing')"
-                    class="w-full sm:w-auto px-8 py-4 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-2xl shadow-xl shadow-sky-500/20 transition-all hover:-translate-y-1 active:scale-95 cursor-pointer text-center">
-                    Empieza tu prueba gratuita
-                </a>
-                <a (click)="scrollToSection('features')"
-                    class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-bold rounded-2xl shadow-lg transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:-translate-y-1 active:scale-95 cursor-pointer text-center">
-                    Ver características
-                </a>
-            </div>
-
-            <div class="relative max-w-5xl mx-auto animate-float opacity-0"
-                style="animation-delay: 0.6s; animation-fill-mode: forwards;">
-                <div
-                    class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-sky-600 rounded-[2.5rem] blur opacity-20 dark:opacity-40">
-                </div>
-                <div
-                    class="relative bg-slate-50 dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden group transition-all duration-500 hover:shadow-sky-500/20 hover:border-sky-500/30">
-                    <img src="dashboard.webp" alt="Venti Dashboard Light"
-                        class="w-full h-full object-contain transition-all duration-700 group-hover:scale-[1.02] dark:hidden" />
-                    <img src="dashboard-black.webp" alt="Venti Dashboard Dark"
-                        class="w-full h-full object-contain transition-all duration-700 group-hover:scale-[1.02] hidden dark:block" />
-                </div>
-            </div>
+      <div
+        class="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-6"
+      >
+        <p class="text-xs text-gray-400 dark:text-gray-500">
+          © 2026 Venti Commerce Inc. Todos los derechos reservados.
+        </p>
+        <div class="flex gap-8">
+          <a href="#" class="text-xs text-gray-400 hover:text-sky-600">Política de Privacidad</a>
+          <a href="#" class="text-xs text-gray-400 hover:text-sky-600">Términos de Servicio</a>
         </div>
-    </section>
-
-    <section
-        class="py-32 space-y-40 overflow-hidden bg-white dark:bg-gray-950 border-y border-gray-100 dark:border-gray-800/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <div
-                class="reveal-item flex flex-col md:flex-row items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out">
-                <div class="flex-1 space-y-6">
-                    <div
-                        class="inline-flex p-3 bg-sky-50 dark:bg-sky-500/10 rounded-2xl text-sky-600 dark:text-sky-400">
-                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                    </div>
-                    <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">Análisis que hablan
-                        <br><span class="text-sky-600">por sí mismos.</span>
-                    </h2>
-                    <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                        No más dudas. Nuestros análisis en tiempo real te muestran exactamente lo que está sucediendo en
-                        tu negocio. Desde el
-                        rendimiento de las categorías hasta el valor promedio por ticket, todo en un solo lugar.
-                    </p>
-                    <ul class="space-y-4">
-                        <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                            <div class="w-2.5 h-2.5 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(79,70,229,0.5)]">
-                            </div>
-                            Reportes de ventas detallados por categoría
-                        </li>
-                        <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                            <div class="w-2.5 h-2.5 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(79,70,229,0.5)]">
-                            </div>
-                            Seguimiento en vivo de los productos más vendidos
-                        </li>
-                    </ul>
-                </div>
-                <div class="flex-1 relative group">
-                    <div
-                        class="absolute -inset-10 bg-gradient-to-tr from-sky-500/20 to-sky-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                    </div>
-                    <div
-                        class="relative bg-white dark:bg-gray-800 rounded-[3rem] border border-gray-100 dark:border-gray-700 p-12 shadow-2xl overflow-hidden">
-                        <div class="aspect-square flex items-center justify-center">
-                            <svg class="w-full h-full text-sky-500" viewBox="0 0 100 100" fill="none">
-                                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2"
-                                    stroke-dasharray="8 8" class="opacity-20" />
-                                <circle cx="50" cy="50" r="35" stroke="currentColor" stroke-width="10"
-                                    stroke-dasharray="160 220" stroke-linecap="round"
-                                    class="animate-spin-slow origin-center" />
-                                <text x="50" y="58" text-anchor="middle" font-weight="900" font-size="24"
-                                    fill="currentColor">BI</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                class="reveal-item flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out">
-                <div class="flex-1 space-y-6">
-                    <div
-                        class="inline-flex p-3 bg-sky-50 dark:bg-sky-500/10 rounded-2xl text-sky-600 dark:text-sky-400">
-                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                    </div>
-                    <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">Inventario Inteligente
-                    </h2>
-                    <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                        Gestiona tu stock sin esfuerzo. Soporte completo para variantes, alertas de bajo stock y
-                        sincronización automática en todas tus sucursales.
-                    </p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div
-                            class="p-6 bg-sky-50/50 dark:bg-sky-500/5 rounded-[2rem] border border-sky-100 dark:border-sky-500/10">
-                            <span
-                                class="block text-3xl font-black text-sky-600 dark:text-sky-400 italic">99.9%</span>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Precisión</span>
-                        </div>
-                        <div
-                            class="p-6 bg-sky-100 dark:bg-sky-500/20 rounded-[2rem] border border-sky-200 dark:border-sky-500/30">
-                            <span class="block text-3xl font-black text-sky-700 dark:text-white">Tiempo</span>
-                            <span
-                                class="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest">Real</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-1 relative group">
-                    <div
-                        class="absolute -inset-10 bg-gradient-to-tr from-sky-500/20 to-teal-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                    </div>
-                    <div
-                        class="relative bg-white dark:bg-gray-800 rounded-[3rem] border border-gray-100 dark:border-gray-700 p-12 shadow-2xl">
-                        <div class="space-y-6">
-                            <div class="h-4 bg-sky-500/20 rounded-full w-3/4"></div>
-                            <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded-full w-full"></div>
-                            <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded-full w-5/6"></div>
-                            <div class="flex justify-end pt-4">
-                                <div
-                                    class="w-14 h-14 bg-sky-500 rounded-2xl shadow-lg shadow-sky-500/30 flex items-center justify-center text-white">
-                                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                class="reveal-item flex flex-col md:flex-row items-center gap-12 lg:gap-24 opacity-0 translate-y-20 transition-all duration-1000 ease-out">
-                <div class="flex-1 space-y-6">
-                    <div
-                        class="inline-flex p-3 bg-orange-50 dark:bg-orange-500/10 rounded-2xl text-orange-600 dark:text-orange-400">
-                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.172-1.172a4 4 0 115.656 5.656l-1.172 1.172" />
-                        </svg>
-                    </div>
-                    <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">Tu tienda, <br><span
-                            class="text-orange-600">tu marca.</span></h2>
-                    <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                        Personaliza la apariencia de tu tienda en segundos. Cambia colores, logos y fuentes para
-                        reflejar la identidad única de tu negocio. Crea una experiencia que a tus clientes les
-                        encantará.
-                    </p>
-                    <div class="flex flex-wrap gap-3">
-                        <span
-                            class="px-4 py-2 bg-slate-100 dark:bg-gray-800 rounded-xl text-xs font-bold dark:text-white border border-transparent hover:border-orange-500/30 transition-all">Identidad
-                            Visual</span>
-                        <span
-                            class="px-4 py-2 bg-slate-100 dark:bg-gray-800 rounded-xl text-xs font-bold dark:text-white border border-transparent hover:border-orange-500/30 transition-all">Colores
-                            HSL</span>
-                        <span
-                            class="px-4 py-2 bg-slate-100 dark:bg-gray-800 rounded-xl text-xs font-bold dark:text-white border border-transparent hover:border-orange-500/30 transition-all">Tipografía</span>
-                    </div>
-                </div>
-                <div class="flex-1 relative group">
-                    <div
-                        class="absolute -inset-10 bg-gradient-to-tr from-orange-500/20 to-amber-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                    </div>
-                    <div
-                        class="relative bg-slate-900 rounded-[3rem] p-2 shadow-2xl overflow-hidden aspect-video group-hover:scale-[1.02] transition-transform duration-500">
-                        <div
-                            class="absolute inset-x-0 top-0 h-8 bg-white/5 border-b border-white/5 flex items-center px-4 gap-2">
-                            <div class="w-2 h-2 rounded-full bg-red-400/50"></div>
-                            <div class="w-2 h-2 rounded-full bg-yellow-400/50"></div>
-                            <div class="w-2 h-2 rounded-full bg-green-400/50"></div>
-                        </div>
-                        <div class="h-full pt-8 flex items-center justify-center">
-                            <div class="grid grid-cols-3 gap-6 w-3/4">
-                                <div
-                                    class="aspect-square bg-orange-600 rounded-2xl rotate-12 group-hover:rotate-0 transition-transform duration-700">
-                                </div>
-                                <div
-                                    class="aspect-square bg-sky-600 rounded-2xl -rotate-6 translate-y-4 group-hover:rotate-0 group-hover:translate-y-0 transition-all duration-700">
-                                </div>
-                                <div
-                                    class="aspect-square bg-sky-600 rounded-2xl rotate-6 group-hover:rotate-0 transition-transform duration-700">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="features" class="py-32 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-20">
-                <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400 mb-4">
-                    Todo lo que necesitas</h2>
-                <p class="text-3xl md:text-5xl font-bold dark:text-white">Diseñado para negocios modernos</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <!-- Feature 1 -->
-                <div
-                    class="group p-8 rounded-3xl hover:bg-slate-50 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-105">
-                    <div
-                        class="w-14 h-14 bg-sky-50 dark:bg-sky-500/10 rounded-2xl flex items-center justify-center text-sky-600 dark:text-sky-400 mb-6 transition-transform group-hover:rotate-6">
-                        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 dark:text-white">Arquitectura Multi-inquilino</h3>
-                    <p class="text-gray-500 dark:text-gray-400 leading-relaxed">
-                        Tiendas e inquilinos separados con sus propios datos, marca y miembros. Escalable por diseño.
-                    </p>
-                </div>
-
-                <!-- Feature 2 -->
-                <div
-                    class="group p-8 rounded-3xl hover:bg-slate-50 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-105">
-                    <div
-                        class="w-14 h-14 bg-sky-50 dark:bg-sky-500/10 rounded-2xl flex items-center justify-center text-sky-600 dark:text-sky-400 mb-6 transition-transform group-hover:rotate-6">
-                        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 dark:text-white">Análisis Avanzado</h3>
-                    <p class="text-gray-500 dark:text-gray-400 leading-relaxed">
-                        Rastrea ventas, inventario y uso de recursos en todos tus inquilinos desde un único panel.
-                    </p>
-                </div>
-
-                <!-- Feature 3 -->
-                <div
-                    class="group p-8 rounded-3xl hover:bg-slate-50 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-105">
-                    <div
-                        class="w-14 h-14 bg-amber-50 dark:bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400 mb-6 transition-transform group-hover:rotate-6">
-                        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 dark:text-white">Gestión de Equipos</h3>
-                    <p class="text-gray-500 dark:text-gray-400 leading-relaxed">
-                        Invita a miembros con roles granulares (Admin, Editor, Delivery) para ayudar a gestionar tus
-                        operaciones.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonios Section -->
-    <section class="py-32 bg-slate-50 dark:bg-gray-950">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <!-- Header -->
-            <div class="text-center mb-20">
-                <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400 mb-4">
-                    Testimonios</h2>
-                <p class="text-3xl md:text-5xl font-bold dark:text-white">Lo que dicen nuestros clientes</p>
-            </div>
-
-            <!-- Stats bar -->
-            <div
-                class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
-                <div class="text-center">
-                    <span class="block text-4xl font-black text-sky-600 dark:text-sky-400">+1,200</span>
-                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 block">Tiendas
-                        activas</span>
-                </div>
-                <div class="text-center">
-                    <span class="block text-4xl font-black text-sky-600 dark:text-sky-400">98%</span>
-                    <span
-                        class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 block">Satisfacción</span>
-                </div>
-                <div class="text-center">
-                    <span class="block text-4xl font-black text-sky-600 dark:text-sky-400">+5M</span>
-                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 block">Pedidos
-                        procesados</span>
-                </div>
-                <div class="text-center">
-                    <span class="block text-4xl font-black text-sky-600 dark:text-sky-400">24/7</span>
-                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 block">Soporte</span>
-                </div>
-            </div>
-
-            <!-- Testimonial cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-                <!-- Testimonial 1 -->
-                <div
-                    class="p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col gap-6">
-                    <!-- Stars -->
-                    <div class="flex gap-1">
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    </div>
-                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed flex-1">
-                        "Venti transformó por completo la manera en que gestionamos nuestras tiendas. Antes perdíamos
-                        horas coordinando inventario entre sucursales. Ahora todo se sincroniza solo."
-                    </p>
-                    <div class="flex items-center gap-4">
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 font-black text-sm shrink-0">
-                            ML
-                        </div>
-                        <div>
-                            <span class="block font-bold text-gray-900 dark:text-white text-sm">María López</span>
-                            <span class="text-xs text-gray-400">CEO · Moda &amp; Style</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 2 (destacado) -->
-                <div
-                    class="p-8 bg-sky-600 rounded-3xl shadow-xl shadow-sky-500/20 hover:shadow-sky-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col gap-6">
-                    <!-- Stars -->
-                    <div class="flex gap-1">
-                        <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    </div>
-                    <p class="text-sky-100 leading-relaxed flex-1">
-                        "La mejor decisión que tomamos fue migrar a Venti. El soporte multi-inquilino nos permitió
-                        escalar de 2 a 15 tiendas en menos de 6 meses sin contratar más personal."
-                    </p>
-                    <div class="flex items-center gap-4">
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white font-black text-sm shrink-0">
-                            CR
-                        </div>
-                        <div>
-                            <span class="block font-bold text-white text-sm">Carlos Ramírez</span>
-                            <span class="text-xs text-sky-200">Director · GrupoComercial MX</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 3 -->
-                <div
-                    class="p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col gap-6">
-                    <!-- Stars -->
-                    <div class="flex gap-1">
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    </div>
-                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed flex-1">
-                        "El panel de análisis es increíble. Ahora tomo decisiones basadas en datos reales. Venti pagó
-                        su costo en el primer mes solo con los insights de ventas."
-                    </p>
-                    <div class="flex items-center gap-4">
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 font-black text-sm shrink-0">
-                            SG
-                        </div>
-                        <div>
-                            <span class="block font-bold text-gray-900 dark:text-white text-sm">Sofía Gutiérrez</span>
-                            <span class="text-xs text-gray-400">Fundadora · EcoTienda</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="pricing" class="py-32 scroll-mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-20 animate-fade-in">
-                <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400 mb-4">
-                    Precios</h2>
-                <p class="text-3xl md:text-5xl font-bold dark:text-white">Precios simples y transparentes</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                @for (plan of plans; track plan.id; let i = $index) {
-                <div class="relative p-8 bg-white dark:bg-gray-900 rounded-3xl border transition-all duration-300 hover:shadow-2xl group flex flex-col hover:-translate-y-2 animate-slide-up opacity-0"
-                    [ngStyle]="{'animation-delay': (0.1 * i) + 's', 'animation-fill-mode': 'forwards'}"
-                    [ngClass]="plan.isRecommended ? 'border-sky-500 lg:scale-105 shadow-xl z-10' : 'border-gray-100 dark:border-gray-800'">
-
-                    @if (plan.isRecommended) {
-                    <div
-                        class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-sky-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-full">
-                        Más Popular
-                    </div>
-                    }
-
-                    <div class="mb-8">
-                        <h3 class="text-lg font-bold mb-2 dark:text-white">{{ plan.name }}</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 min-h-[40px]">{{ plan.description }}</p>
-                    </div>
-
-                    <div class="mb-8 font-black">
-                        <div class="flex items-baseline gap-1">
-                            <span class="text-4xl dark:text-white">{{ plan.price | currency:'USD':'symbol':'1.0-2'
-                                }}</span>
-                            <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">/{{ plan.interval
-                                }}</span>
-                        </div>
-                    </div>
-
-                    <ul class="space-y-4 mb-10 flex-1">
-                        @for (feature of plan.features; track feature) {
-                        <li class="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
-                            <svg class="w-5 h-5 text-sky-500 shrink-0" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                    d="M5 13l4 4L19 7" />
-                            </svg>
-                            {{ feature }}
-                        </li>
-                        }
-                    </ul>
-
-                    <a [routerLink]="['/auth/purchase']" [queryParams]="{ plan: plan.id }"
-                        class="w-full py-4 rounded-2xl font-bold text-center transition-all active:scale-95"
-                        [ngClass]="plan.isRecommended ? 'bg-sky-600 text-white shadow-lg shadow-sky-500/25 hover:bg-sky-700' : 'bg-slate-50 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-slate-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700'">
-                        Empezar ahora
-                    </a>
-                </div>
-                }
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA Section -->
-    <section class="py-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div
-                class="relative overflow-hidden rounded-[3rem] bg-sky-600 p-12 md:p-20 text-center shadow-2xl shadow-sky-500/25">
-                <!-- Decoración de fondo -->
-                <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none">
-                </div>
-                <div
-                    class="absolute -bottom-24 -left-24 w-96 h-96 bg-sky-500/30 rounded-full blur-3xl pointer-events-none">
-                </div>
-
-                <div class="relative z-10">
-                    <p class="text-sky-200 text-xs font-bold uppercase tracking-[0.2em] mb-4">Empieza hoy</p>
-                    <h2 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
-                        Tu negocio merece <br class="hidden md:block"> la mejor plataforma.
-                    </h2>
-                    <p class="text-sky-200 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-                        Únete a más de 1,200 tiendas que ya están creciendo con Venti. Sin tarjeta de crédito
-                        requerida.
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a (click)="scrollToSection('pricing')"
-                            class="w-full sm:w-auto px-10 py-4 bg-white text-sky-600 font-bold rounded-2xl shadow-xl hover:bg-sky-50 transition-all hover:-translate-y-0.5 active:scale-95 cursor-pointer text-center">
-                            Prueba gratuita de 14 días
-                        </a>
-                        <a routerLink="/auth/login"
-                            class="w-full sm:w-auto px-10 py-4 border border-white/30 text-white font-bold rounded-2xl hover:bg-white/10 transition-all hover:-translate-y-0.5 active:scale-95 cursor-pointer text-center">
-                            Iniciar sesión
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer id="contact"
-        class="py-20 border-at border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                <div class="md:col-span-1">
-                    <div class="flex items-center mb-6">
-                        <svg viewBox="0 0 520 150" class="h-9 w-auto" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                            <defs>
-                                <linearGradient id="landingFootVentiGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#0284c7" />
-                                    <stop offset="100%" stop-color="#38bdf8" />
-                                </linearGradient>
-                            </defs>
-                            <g transform="translate(15, 10)">
-                                <path
-                                    d="M 12 45 L 45 100 L 90 15"
-                                    stroke="url(#landingFootVentiGrad)"
-                                    stroke-width="30"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    fill="none"
-                                />
-                            </g>
-                            <text x="150" y="100">
-                                <tspan
-                                    class="fill-gray-900 dark:fill-white italic"
-                                    font-weight="800"
-                                    font-size="58px"
-                                >
-                                    Venti Shop
-                                </tspan>
-                            </text>
-                        </svg>
-                    </div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                        La plataforma moderna de comercio electrónico multi-tenant para crear y escalar tu tienda online.
-                    </p>
-                </div>
-
-                @for (group of footerLinks; track group.title) {
-                <div>
-                    <h4 class="text-xs font-bold uppercase tracking-widest text-gray-900 dark:text-white mb-6">{{
-                        group.title }}</h4>
-                    <ul class="space-y-4">
-                        @for (link of group.links; track link) {
-                        <li>
-                            <a href="#"
-                                class="text-sm text-gray-500 dark:text-gray-400 hover:text-sky-600 transition-colors">{{
-                                link }}</a>
-                        </li>
-                        }
-                    </ul>
-                </div>
-                }
-            </div>
-
-            <div
-                class="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-xs text-gray-400 dark:text-gray-500">© 2026 Venti Commerce Inc. Todos los derechos
-                    reservados.</p>
-                <div class="flex gap-8">
-                    <a href="#" class="text-xs text-gray-400 hover:text-sky-600">Política de Privacidad</a>
-                    <a href="#" class="text-xs text-gray-400 hover:text-sky-600">Términos de Servicio</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+      </div>
+    </div>
+  </footer>
 </div>
