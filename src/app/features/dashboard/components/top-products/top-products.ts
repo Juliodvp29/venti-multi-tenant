@@ -92,7 +92,7 @@ export interface DashboardProduct {
 
       <button
         [routerLink]="['/reports']"
-        class="w-full mt-6 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-450 bg-slate-100/50 dark:bg-slate-800/50 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 rounded-xl transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+        class="w-full mt-6 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100/50 dark:bg-slate-800/50 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 rounded-xl transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
       >
         Ver reporte de inventario
       </button>

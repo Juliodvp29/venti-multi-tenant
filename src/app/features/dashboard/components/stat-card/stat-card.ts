@@ -47,7 +47,7 @@ import { CommonModule } from '@angular/common';
                 />
               }
             </svg>
-            <span>{{ t.value >= 0 ? '+' : '' }}{{ t.value }}%</span>
+            <span>{{ t.value >= 0 ? '+' : '' }}{{ roundValue(t.value) }}%</span>
           </div>
         }
       </div>
@@ -71,4 +71,8 @@ export class StatCard {
   value = input.required<string | number | null>();
   trend = input<{ value: number } | null>(null);
   iconBgClass = input<string>('bg-sky-50 text-sky-600 dark:bg-gray-800 dark:text-sky-400');
+
+  public roundValue(value: number | string | null): number | null {
+    return value !== null ? Math.round(Number(value)) : null;
+  }
 }

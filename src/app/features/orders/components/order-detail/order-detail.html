@@ -185,6 +185,8 @@
                         <span class="flex-shrink-0 text-sm text-gray-600 dark:text-gray-400 w-24 text-right">
                             {{ currencyPipe.transform(item.unit_price, o.currency) }}
                         </span>
+
+                        <br>
                         <!-- Total -->
                         <span class="flex-shrink-0 text-sm font-semibold text-gray-900 dark:text-white w-24 text-right">
                             {{ currencyPipe.transform(item.total_amount, o.currency) }}
