@@ -98,6 +98,11 @@ export class OrdersService {
     orderData: Partial<Order>,
     items: Partial<OrderItem>[],
     paymentData?: Partial<Payment>,
+    discountData?: {
+      codeId: string;
+      customerId: string;
+      discountAmount: number;
+    },
   ): Promise<Order> {
     const tenantId = this.tenantService.tenantId();
     if (!tenantId) throw new Error('Tenant not selected');
@@ -206,6 +211,44 @@ export class OrdersService {
           } as any);
         } catch (pError) {
           console.warn('[OrdersService] Could not insert payment record:', pError);
+        }
+      }
+
+      if (discountData) {
+        try {
+          const usageInsert = {
+            id: crypto.randomUUID(),
+            tenant_id: tenantId,
+            customer_id: discountData.customerId,
+            discount_code_id: discountData.codeId,
+            order_id: order.id,
+            discount_amount: discountData.discountAmount,
+            created_at: new Date().toISOString(),
+          };
+
+          const { error: usageError } = await this.supabase.client
+            .from('discount_usage')
+            .insert(usageInsert as any);
+
+          if (usageError) throw usageError;
+
+          const { data: discountCode, error: codeFetchError } = await this.supabase.client
+            .from('discount_codes')
+            .select('id, usage_count')
+            .eq('id', discountData.codeId)
+            .single();
+
+          if (!codeFetchError && discountCode) {
+            await this.supabase.client
+              .from('discount_codes')
+              .update({
+                usage_count: (discountCode.usage_count ?? 0) + 1,
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', discountCode.id);
+          }
+        } catch (discountError) {
+          console.warn('[OrdersService] Could not register discount usage:', discountError);
         }
       }
 

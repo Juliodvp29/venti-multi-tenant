@@ -1,4 +1,11 @@
-import { Component, signal, inject, computed, effect, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  signal,
+  inject,
+  computed,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReviewsService } from '@core/services/reviews';
 import { ProductReview } from '@core/models/review';
@@ -61,7 +68,12 @@ export class Reviews {
     {
       key: 'customer',
       label: 'Cliente',
-      formatter: (val, item) => `${item.customer?.first_name} ${item.customer?.last_name || ''}`,
+      formatter: (val, item) => {
+        const firstName = item.customer?.first_name?.trim();
+        const lastName = item.customer?.last_name?.trim();
+        const fullName = [firstName, lastName].filter(Boolean).join(' ');
+        return fullName || item.customer?.email || 'Cliente eliminado';
+      },
     },
     {
       key: 'rating',

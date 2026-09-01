@@ -2,107 +2,173 @@ import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
 import { DiscountCode } from '@core/models/discount.model';
 import { TenantService } from './tenant';
+import { AuthService } from './auth';
 import { Database } from '../types/database.types';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class DiscountsService {
-    private readonly supabase = inject(Supabase);
-    private readonly tenantService = inject(TenantService);
+  private readonly supabase = inject(Supabase);
+  private readonly tenantService = inject(TenantService);
+  private readonly authService = inject(AuthService);
 
-    async getDiscountCodes(
-        page: number = 1,
-        pageSize: number = 20
-    ): Promise<{ data: DiscountCode[]; count: number }> {
-        const tenantId = this.tenantService.tenantId();
-        if (!tenantId) throw new Error('Tenant not selected');
+  private async resolveCustomerId(customerId?: string): Promise<string | null> {
+    const tenantId = this.tenantService.tenantId();
+    if (!tenantId) return null;
 
-        const { data, error, count } = await this.supabase.client
-            .from('discount_codes')
-            .select('*', { count: 'exact' })
-            .eq('tenant_id', tenantId)
-            .order('created_at', { ascending: false })
-            .range((page - 1) * pageSize, page * pageSize - 1);
+    if (customerId) {
+      const { data: matchingCustomer, error: lookupError } = await this.supabase.client
+        .from('customers')
+        .select('id')
+        .eq('tenant_id', tenantId)
+        .eq('id', customerId)
+        .maybeSingle();
 
-        if (error) throw error;
-        return { data: data as DiscountCode[], count: count ?? 0 };
+      if (lookupError) throw lookupError;
+      if (matchingCustomer?.id) return matchingCustomer.id;
     }
 
-    async getDiscountById(id: string): Promise<DiscountCode> {
-        const { data, error } = await this.supabase.client
-            .from('discount_codes')
-            .select('*')
-            .eq('id', id)
-            .single();
+    const authUserId = this.authService.user()?.id;
+    if (!authUserId) return null;
 
-        if (error) throw error;
-        return data as DiscountCode;
+    const { data: customer, error: customerError } = await this.supabase.client
+      .from('customers')
+      .select('id')
+      .eq('tenant_id', tenantId)
+      .eq('user_id', authUserId)
+      .maybeSingle();
+
+    if (customerError) throw customerError;
+    return customer?.id ?? null;
+  }
+
+  async getDiscountCodes(
+    page: number = 1,
+    pageSize: number = 20,
+  ): Promise<{ data: DiscountCode[]; count: number }> {
+    const tenantId = this.tenantService.tenantId();
+    if (!tenantId) throw new Error('Tenant not selected');
+
+    const {
+      data: discountCodes,
+      error,
+      count,
+    } = await this.supabase.client
+      .from('discount_codes')
+      .select('*', { count: 'exact' })
+      .eq('tenant_id', tenantId)
+      .order('created_at', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (error) throw error;
+
+    const { data: usageRows, error: usageError } = await this.supabase.client
+      .from('discount_usage')
+      .select('discount_code_id')
+      .eq('tenant_id', tenantId);
+
+    if (usageError) throw usageError;
+
+    const usageMap = new Map<string, number>();
+    for (const row of usageRows || []) {
+      const codeId = row.discount_code_id;
+      usageMap.set(codeId, (usageMap.get(codeId) ?? 0) + 1);
     }
 
-    async validateCode(code: string): Promise<DiscountCode | null> {
-        const tenantId = this.tenantService.tenantId();
-        if (!tenantId) return null;
-        const { data, error } = await this.supabase.client
-            .from('discount_codes')
-            .select('*')
-            .eq('tenant_id', tenantId)
-            .eq('code', code.toUpperCase())
-            .eq('is_active', true)
-            .single();
+    const mappedDiscounts = (discountCodes || []).map((coupon) => ({
+      ...coupon,
+      usage_count: usageMap.get(coupon.id) ?? coupon.usage_count ?? 0,
+    })) as DiscountCode[];
 
-        if (error) return null;
+    return { data: mappedDiscounts, count: count ?? 0 };
+  }
 
-        const discount = data as DiscountCode;
+  async getDiscountById(id: string): Promise<DiscountCode> {
+    const { data, error } = await this.supabase.client
+      .from('discount_codes')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-        const now = new Date();
-        if (discount.starts_at && new Date(discount.starts_at) > now) return null;
-        if (discount.ends_at && new Date(discount.ends_at) < now) return null;
-        if (discount.usage_limit && discount.usage_count >= discount.usage_limit) return null;
+    if (error) throw error;
+    return data as DiscountCode;
+  }
 
-        return discount;
-    }
+  async validateCode(code: string, customerId?: string): Promise<DiscountCode | null> {
+    const tenantId = this.tenantService.tenantId();
+    const resolvedCustomerId = await this.resolveCustomerId(customerId);
 
-    async createDiscountCode(discount: Partial<DiscountCode>): Promise<DiscountCode> {
-        const tenantId = this.tenantService.tenantId();
-        if (!tenantId) throw new Error('Tenant not selected');
-        const { data, error } = await this.supabase.client
-            .from('discount_codes')
-            .insert({
-                ...discount,
-                tenant_id: tenantId,
-                code: discount.code?.toUpperCase() ?? '',
-                usage_count: 0
-            } as unknown as Database['public']['Tables']['discount_codes']['Insert'])
-            .select()
-            .single();
+    if (!tenantId || !resolvedCustomerId) return null;
 
-        if (error) throw error;
-        return data as unknown as DiscountCode;
-    }
+    const { data, error } = await this.supabase.client
+      .from('discount_codes')
+      .select('*')
+      .eq('tenant_id', tenantId)
+      .eq('code', code.toUpperCase())
+      .eq('is_active', true)
+      .single();
 
-    async updateDiscountCode(id: string, discount: Partial<DiscountCode>): Promise<DiscountCode> {
-        const { data, error } = await this.supabase.client
-            .from('discount_codes')
-            .update({
-                ...discount,
-                code: discount.code?.toUpperCase(),
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', id)
-            .select()
-            .single();
+    if (error) return null;
 
-        if (error) throw error;
-        return data as DiscountCode;
-    }
+    const discount = data as DiscountCode;
+    const now = new Date();
+    if (discount.starts_at && new Date(discount.starts_at) > now) return null;
+    if (discount.ends_at && new Date(discount.ends_at) < now) return null;
 
-    async deleteDiscountCode(id: string): Promise<void> {
-        const { error } = await this.supabase.client
-            .from('discount_codes')
-            .delete()
-            .eq('id', id);
+    const { data: usageRows, error: usageError } = await this.supabase.client
+      .from('discount_usage')
+      .select('id, customer_id')
+      .eq('tenant_id', tenantId)
+      .eq('discount_code_id', discount.id)
+      .eq('customer_id', resolvedCustomerId);
 
-        if (error) throw error;
-    }
+
+    if (usageError) throw usageError;
+    if ((usageRows ?? []).length > 0) return null;
+
+    if (discount.usage_limit && (discount.usage_count ?? 0) >= discount.usage_limit) return null;
+
+    return discount;
+  }
+
+  async createDiscountCode(discount: Partial<DiscountCode>): Promise<DiscountCode> {
+    const tenantId = this.tenantService.tenantId();
+    if (!tenantId) throw new Error('Tenant not selected');
+    const { data, error } = await this.supabase.client
+      .from('discount_codes')
+      .insert({
+        ...discount,
+        tenant_id: tenantId,
+        code: discount.code?.toUpperCase() ?? '',
+        usage_count: 0,
+      } as unknown as Database['public']['Tables']['discount_codes']['Insert'])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as unknown as DiscountCode;
+  }
+
+  async updateDiscountCode(id: string, discount: Partial<DiscountCode>): Promise<DiscountCode> {
+    const { data, error } = await this.supabase.client
+      .from('discount_codes')
+      .update({
+        ...discount,
+        code: discount.code?.toUpperCase(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as DiscountCode;
+  }
+
+  async deleteDiscountCode(id: string): Promise<void> {
+    const { error } = await this.supabase.client.from('discount_codes').delete().eq('id', id);
+
+    if (error) throw error;
+  }
 }

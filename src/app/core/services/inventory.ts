@@ -79,8 +79,20 @@ export class InventoryService {
   ): Promise<InventoryMovement | null> {
     const oldVal = (log.old_values as unknown as AuditValues) || null;
     const newVal = (log.new_values as unknown as AuditValues) || null;
+    const auditMeta = log as AuditLog & { source?: string; reason?: string };
 
     if (!newVal) return null;
+
+    // These product updates are emitted by the checkout sale flow when the stock is reduced,
+    // and they duplicate the real sales movement already captured in order_items.
+    if (
+      (log.resource_type === 'products' || log.resource_type === 'product_variants') &&
+      (auditMeta.source === 'checkout_sale' ||
+        auditMeta.reason === 'Venta' ||
+        auditMeta.reason === 'sale')
+    ) {
+      return null;
+    }
 
     let type: InventoryMovementType = 'other';
     let qtyChange = 0;

@@ -8,6 +8,7 @@ import { ShippingService } from './shipping';
 import { TenantService } from './tenant';
 import { ToastService } from './toast';
 import { CurrencyPipe } from '@angular/common';
+import { CustomerAuthService } from './customer-auth';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class CartService {
   private readonly tenantService = inject(TenantService);
   private readonly toast = inject(ToastService);
   private readonly currencyPipe = inject(CurrencyPipe);
+  private readonly customerAuth = inject(CustomerAuthService);
   private readonly currency = computed(() => this.tenantService.currency());
 
   private readonly _items = signal<CartItem[]>(this.loadCart());
@@ -98,10 +100,16 @@ export class CartService {
 
   async applyCoupon(code: string): Promise<boolean> {
     try {
-      const coupon = await this.discountsService.validateCode(code);
+      const customer = await this.customerAuth.ensureCustomer();
+      if (!customer?.id) {
+        this.toast.error('Debes iniciar sesión para usar cupones');
+        return false;
+      }
+
+      const coupon = await this.discountsService.validateCode(code, customer.id);
 
       if (!coupon) {
-        this.toast.error('Cupón inválido o expirado');
+        this.toast.error('Este cupón ya fue usado por este cliente o es inválido');
         return false;
       }
 
@@ -188,12 +196,32 @@ export class CartService {
     this.saveCart();
   }
 
+  private getCartStorageKey(): string {
+    const tenantId = this.tenantService.tenantId();
+    return tenantId ? `venti_cart_${tenantId}` : 'venti_cart_guest';
+  }
+
   private saveCart(): void {
-    localStorage.setItem('venti_cart', JSON.stringify(this._items()));
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(this.getCartStorageKey(), JSON.stringify(this._items()));
   }
 
   private loadCart(): CartItem[] {
-    const saved = localStorage.getItem('venti_cart');
-    return saved ? JSON.parse(saved) : [];
+    if (typeof window === 'undefined') return [];
+
+    const key = this.getCartStorageKey();
+    const saved = localStorage.getItem(key) ?? localStorage.getItem('venti_cart');
+
+    if (!saved) return [];
+
+    try {
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.warn('Cart storage was corrupted. Resetting cart.', error);
+      localStorage.removeItem(key);
+      localStorage.removeItem('venti_cart');
+      return [];
+    }
   }
 }

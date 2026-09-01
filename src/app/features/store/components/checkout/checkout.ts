@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  OnInit,
+  effect,
+  computed,
+} from '@angular/core';
 import { CartItem } from '@core/models/cart';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -29,7 +37,6 @@ export interface SavedCard {
   imports: [CommonModule, RouterLink, FormsModule, AddressForm, CurrencyPipe],
   template: `
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      
       <!-- Breadcrumb Navigation -->
       <nav class="flex items-center gap-2 mb-6 text-xs sm:text-sm text-slate-500 font-medium">
         <a
@@ -38,7 +45,12 @@ export interface SavedCard {
           class="hover:text-slate-900 transition-colors flex items-center gap-1"
         >
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           <span>Tienda</span>
         </a>
@@ -49,15 +61,17 @@ export interface SavedCard {
       </nav>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
         <!-- LEFT COLUMN: Shipping & Payment -->
         <div class="lg:col-span-7 space-y-6">
-
           <!-- 1. Shipping Address Section -->
-          <section class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs relative">
+          <section
+            class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs relative"
+          >
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2.5">
-                <span class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 font-bold text-xs flex items-center justify-center border border-sky-100">
+                <span
+                  class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 font-bold text-xs flex items-center justify-center border border-sky-100"
+                >
                   1
                 </span>
                 <h2 class="text-base sm:text-lg font-bold text-slate-900">Información de Envío</h2>
@@ -72,8 +86,19 @@ export interface SavedCard {
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  ></path>
                 </svg>
               </div>
             } @else {
@@ -102,7 +127,9 @@ export interface SavedCard {
                             {{ addr.first_name }} {{ addr.last_name }}
                           </p>
                           @if (addr.is_default) {
-                            <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                            <span
+                              class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md"
+                            >
                               Predeterminada
                             </span>
                           }
@@ -111,11 +138,22 @@ export interface SavedCard {
                           {{ addr.address_line1 }} {{ addr.address_line2 || '' }}
                         </p>
                         <p class="text-slate-600">
-                          {{ addr.city }}, {{ addr.state || '' }} {{ addr.postal_code }} - {{ addr.country }}
+                          {{ addr.city }}, {{ addr.state || '' }} {{ addr.postal_code }} -
+                          {{ addr.country }}
                         </p>
                         <p class="text-slate-500 mt-1.5 flex items-center gap-1">
-                          <svg class="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          <svg
+                            class="h-3.5 w-3.5 text-slate-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                            />
                           </svg>
                           <span>{{ addr.phone }}</span>
                         </p>
@@ -130,7 +168,12 @@ export interface SavedCard {
                   class="mt-3 text-xs font-bold text-sky-600 hover:text-sky-700 transition-colors flex items-center gap-1"
                 >
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    />
                   </svg>
                   <span>Agregar o usar otra dirección</span>
                 </button>
@@ -146,7 +189,9 @@ export interface SavedCard {
           <!-- 2. Payment Method Section -->
           <section class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs">
             <div class="flex items-center gap-2.5 mb-4">
-              <span class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 font-bold text-xs flex items-center justify-center border border-sky-100">
+              <span
+                class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 font-bold text-xs flex items-center justify-center border border-sky-100"
+              >
                 2
               </span>
               <div>
@@ -188,13 +233,34 @@ export interface SavedCard {
                     <!-- Icons badge -->
                     <div class="flex items-center gap-1.5 shrink-0">
                       @if (method.id === PaymentMethod.CreditCard) {
-                        <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight">Visa</span>
-                        <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight">Mastercard</span>
-                        <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight">Amex</span>
+                        <span
+                          class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
+                          >Visa</span
+                        >
+                        <span
+                          class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
+                          >Mastercard</span
+                        >
+                        <span
+                          class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
+                          >Amex</span
+                        >
                       } @else {
-                        <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
-                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="method.icon" />
+                        <div
+                          class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"
+                        >
+                          <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              [attr.d]="method.icon"
+                            />
                           </svg>
                         </div>
                       }
@@ -202,13 +268,19 @@ export interface SavedCard {
                   </label>
 
                   <!-- Inline Credit Card Form when selected -->
-                  @if (selectedPaymentMethod() === PaymentMethod.CreditCard && method.id === PaymentMethod.CreditCard) {
-                    <div class="px-4 pb-4 pt-2 border-t border-sky-100 bg-white/80 space-y-3.5 animate-in fade-in duration-200">
-                      
+                  @if (
+                    selectedPaymentMethod() === PaymentMethod.CreditCard &&
+                    method.id === PaymentMethod.CreditCard
+                  ) {
+                    <div
+                      class="px-4 pb-4 pt-2 border-t border-sky-100 bg-white/80 space-y-3.5 animate-in fade-in duration-200"
+                    >
                       <!-- Saved cards selector if available -->
                       @if (savedCards().length > 0) {
                         <div class="space-y-2">
-                          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Tarjetas guardadas</p>
+                          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                            Tarjetas guardadas
+                          </p>
                           @for (card of savedCards(); track card.id) {
                             <label
                               class="flex items-center justify-between p-2.5 rounded-lg border cursor-pointer text-xs transition-all"
@@ -227,10 +299,14 @@ export interface SavedCard {
                                   (change)="selectedSavedCardId.set(card.id)"
                                   class="h-3.5 w-3.5 text-sky-600 focus:ring-sky-500 border-slate-300"
                                 />
-                                <span class="uppercase tracking-wide font-black text-sky-700">{{ card.brand }}</span>
+                                <span class="uppercase tracking-wide font-black text-sky-700">{{
+                                  card.brand
+                                }}</span>
                                 <span>•••• {{ card.last4 }}</span>
                               </div>
-                              <span class="text-slate-400 text-[11px]">Exp: {{ card.expiryMonth }}/{{ card.expiryYear }}</span>
+                              <span class="text-slate-400 text-[11px]"
+                                >Exp: {{ card.expiryMonth }}/{{ card.expiryYear }}</span
+                              >
                             </label>
                           }
 
@@ -262,7 +338,9 @@ export interface SavedCard {
                                 class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono transition-all"
                               />
                               <div class="absolute right-3 top-2.5 flex items-center gap-1">
-                                <span class="text-[10px] uppercase font-black text-sky-700 bg-sky-100/80 px-1.5 py-0.5 rounded">
+                                <span
+                                  class="text-[10px] uppercase font-black text-sky-700 bg-sky-100/80 px-1.5 py-0.5 rounded"
+                                >
                                   {{ detectedCardBrand() }}
                                 </span>
                               </div>
@@ -306,7 +384,9 @@ export interface SavedCard {
                                 type="password"
                                 maxlength="4"
                                 [value]="cardForm.cvc"
-                                (input)="cardForm.cvc = $any($event.target).value.replace(/\\D/g, '')"
+                                (input)="
+                                  cardForm.cvc = $any($event.target).value.replace(/\\D/g, '')
+                                "
                                 placeholder="123"
                                 class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono transition-all"
                               />
@@ -330,33 +410,85 @@ export interface SavedCard {
                   }
 
                   <!-- Inline Details for other payment methods -->
-                  @if (selectedPaymentMethod() === PaymentMethod.CashOnDelivery && method.id === PaymentMethod.CashOnDelivery) {
-                    <div class="px-4 pb-3.5 pt-1 text-xs text-emerald-800 bg-emerald-50/60 border-t border-emerald-100 flex items-center gap-2">
-                      <svg class="w-4 h-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  @if (
+                    selectedPaymentMethod() === PaymentMethod.CashOnDelivery &&
+                    method.id === PaymentMethod.CashOnDelivery
+                  ) {
+                    <div
+                      class="px-4 pb-3.5 pt-1 text-xs text-emerald-800 bg-emerald-50/60 border-t border-emerald-100 flex items-center gap-2"
+                    >
+                      <svg
+                        class="w-4 h-4 shrink-0 text-emerald-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
-                      <span>Pagas en efectivo o con datáfono directamente al repartidor cuando llegue tu paquete.</span>
+                      <span
+                        >Pagas en efectivo o con datáfono directamente al repartidor cuando llegue
+                        tu paquete.</span
+                      >
                     </div>
                   }
 
-                  @if (selectedPaymentMethod() === PaymentMethod.BankTransfer && method.id === PaymentMethod.BankTransfer) {
-                    <div class="px-4 pb-3.5 pt-1 text-xs text-indigo-800 bg-indigo-50/60 border-t border-indigo-100 flex items-center gap-2">
-                      <svg class="w-4 h-4 shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  @if (
+                    selectedPaymentMethod() === PaymentMethod.BankTransfer &&
+                    method.id === PaymentMethod.BankTransfer
+                  ) {
+                    <div
+                      class="px-4 pb-3.5 pt-1 text-xs text-indigo-800 bg-indigo-50/60 border-t border-indigo-100 flex items-center gap-2"
+                    >
+                      <svg
+                        class="w-4 h-4 shrink-0 text-indigo-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
-                      <span>Te mostraremos los números de cuenta bancaria e instrucciones al confirmar tu pedido.</span>
+                      <span
+                        >Te mostraremos los números de cuenta bancaria e instrucciones al confirmar
+                        tu pedido.</span
+                      >
                     </div>
                   }
 
-                  @if (selectedPaymentMethod() === PaymentMethod.PSE && method.id === PaymentMethod.PSE) {
-                    <div class="px-4 pb-3.5 pt-1 text-xs text-sky-800 bg-sky-50/60 border-t border-sky-100 flex items-center gap-2">
-                      <svg class="w-4 h-4 shrink-0 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  @if (
+                    selectedPaymentMethod() === PaymentMethod.PSE && method.id === PaymentMethod.PSE
+                  ) {
+                    <div
+                      class="px-4 pb-3.5 pt-1 text-xs text-sky-800 bg-sky-50/60 border-t border-sky-100 flex items-center gap-2"
+                    >
+                      <svg
+                        class="w-4 h-4 shrink-0 text-sky-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                        />
                       </svg>
-                      <span>Serás redirigido a la pasarela segura de tu banco para debitar directamente de tus fondos.</span>
+                      <span
+                        >Serás redirigido a la pasarela segura de tu banco para debitar directamente
+                        de tus fondos.</span
+                      >
                     </div>
                   }
-
                 </div>
               }
             </div>
@@ -365,42 +497,59 @@ export interface SavedCard {
           <!-- 3. Billing Address Section -->
           <section class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs">
             <div class="flex items-center gap-2.5 mb-4">
-              <span class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 font-bold text-xs flex items-center justify-center border border-sky-100">
+              <span
+                class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 font-bold text-xs flex items-center justify-center border border-sky-100"
+              >
                 3
               </span>
               <div>
                 <h2 class="text-base sm:text-lg font-bold text-slate-900">Facturación</h2>
-                <p class="text-[11px] text-slate-500">¿Necesitas factura con datos diferentes a tu dirección de envío?</p>
+                <p class="text-[11px] text-slate-500">
+                  ¿Necesitas factura con datos diferentes a tu dirección de envío?
+                </p>
               </div>
             </div>
 
             <!-- Toggle: different billing -->
-            <label class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/50 cursor-pointer transition-all mb-4">
+            <label
+              class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/50 cursor-pointer transition-all mb-4"
+            >
               <input
                 type="checkbox"
                 [(ngModel)]="useDifferentBilling"
                 class="rounded border-slate-300 text-sky-600 focus:ring-sky-500 h-4 w-4"
               />
               <div>
-                <p class="text-sm font-bold text-slate-800">Usar una dirección de facturación diferente</p>
-                <p class="text-[11px] text-slate-500 mt-0.5">Para facturas electrónicas a empresas, NIT u otros datos fiscales</p>
+                <p class="text-sm font-bold text-slate-800">
+                  Usar una dirección de facturación diferente
+                </p>
+                <p class="text-[11px] text-slate-500 mt-0.5">
+                  Para facturas electrónicas a empresas, NIT u otros datos fiscales
+                </p>
               </div>
             </label>
 
             @if (useDifferentBilling) {
               <div class="space-y-3.5 pt-1 animate-in fade-in duration-200">
-
                 <!-- Name row -->
                 <div class="grid grid-cols-2 gap-3">
                   <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre</label>
-                    <input type="text" [(ngModel)]="billingForm.first_name" placeholder="Nombre"
-                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all" />
+                    <input
+                      type="text"
+                      [(ngModel)]="billingForm.first_name"
+                      placeholder="Nombre"
+                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    />
                   </div>
                   <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Apellido</label>
-                    <input type="text" [(ngModel)]="billingForm.last_name" placeholder="Apellido"
-                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all" />
+                    <input
+                      type="text"
+                      [(ngModel)]="billingForm.last_name"
+                      placeholder="Apellido"
+                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    />
                   </div>
                 </div>
 
@@ -410,66 +559,108 @@ export interface SavedCard {
                     Empresa / NIT
                     <span class="font-normal text-slate-400">(opcional)</span>
                   </label>
-                  <input type="text" [(ngModel)]="billingForm.company" placeholder="Ej. Mi Empresa S.A.S. · NIT 900123456-7"
-                    class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all" />
+                  <input
+                    type="text"
+                    [(ngModel)]="billingForm.company"
+                    placeholder="Ej. Mi Empresa S.A.S. · NIT 900123456-7"
+                    class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  />
                 </div>
 
                 <!-- Address -->
                 <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Dirección de Facturación</label>
-                  <input type="text" [(ngModel)]="billingForm.address_line1" placeholder="Calle, Carrera, Av..."
-                    class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all" />
+                  <label class="block text-xs font-semibold text-slate-700 mb-1"
+                    >Dirección de Facturación</label
+                  >
+                  <input
+                    type="text"
+                    [(ngModel)]="billingForm.address_line1"
+                    placeholder="Calle, Carrera, Av..."
+                    class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  />
                 </div>
 
                 <!-- City / State -->
                 <div class="grid grid-cols-2 gap-3">
                   <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Ciudad</label>
-                    <input type="text" [(ngModel)]="billingForm.city" placeholder="Ciudad"
-                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all" />
+                    <input
+                      type="text"
+                      [(ngModel)]="billingForm.city"
+                      placeholder="Ciudad"
+                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    />
                   </div>
                   <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Departamento</label>
-                    <input type="text" [(ngModel)]="billingForm.state" placeholder="Departamento"
-                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all" />
+                    <label class="block text-xs font-semibold text-slate-700 mb-1"
+                      >Departamento</label
+                    >
+                    <input
+                      type="text"
+                      [(ngModel)]="billingForm.state"
+                      placeholder="Departamento"
+                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    />
                   </div>
                 </div>
 
                 <!-- Postal / Country -->
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Código Postal
+                    <label class="block text-xs font-semibold text-slate-700 mb-1"
+                      >Código Postal
                       <span class="font-normal text-slate-400">(opcional)</span>
                     </label>
-                    <input type="text" [(ngModel)]="billingForm.postal_code" placeholder="110111"
-                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all" />
+                    <input
+                      type="text"
+                      [(ngModel)]="billingForm.postal_code"
+                      placeholder="110111"
+                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    />
                   </div>
                   <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">País</label>
-                    <input type="text" [(ngModel)]="billingForm.country" placeholder="Colombia"
-                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all" />
+                    <input
+                      type="text"
+                      [(ngModel)]="billingForm.country"
+                      placeholder="Colombia"
+                      class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    />
                   </div>
                 </div>
-
               </div>
             } @else {
               <!-- Same as shipping summary -->
-              <div class="flex items-center gap-2.5 py-2 px-3.5 rounded-xl bg-emerald-50/60 border border-emerald-100 text-xs text-emerald-800 font-medium">
-                <svg class="w-4 h-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              <div
+                class="flex items-center gap-2.5 py-2 px-3.5 rounded-xl bg-emerald-50/60 border border-emerald-100 text-xs text-emerald-800 font-medium"
+              >
+                <svg
+                  class="w-4 h-4 shrink-0 text-emerald-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 <span>Facturación igual a la dirección de envío seleccionada</span>
               </div>
             }
           </section>
-
         </div>
 
         <!-- RIGHT COLUMN: Order Summary -->
         <div class="lg:col-span-5">
-          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs sticky top-6">
-            
-            <h2 class="text-base sm:text-lg font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100">
+          <div
+            class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs sticky top-6"
+          >
+            <h2
+              class="text-base sm:text-lg font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100"
+            >
               Resumen del Pedido
             </h2>
 
@@ -477,7 +668,9 @@ export interface SavedCard {
             <div class="space-y-3 mb-4 max-h-72 overflow-y-auto pr-1">
               @for (item of cartService.items(); track item.id) {
                 <div class="flex items-center gap-3 py-1">
-                  <div class="w-12 h-12 rounded-xl border border-slate-100 overflow-hidden shrink-0 bg-slate-50 flex items-center justify-center">
+                  <div
+                    class="w-12 h-12 rounded-xl border border-slate-100 overflow-hidden shrink-0 bg-slate-50 flex items-center justify-center"
+                  >
                     @if (getItemImage(item)) {
                       <img
                         [src]="getItemImage(item)"
@@ -485,13 +678,25 @@ export interface SavedCard {
                         class="w-full h-full object-cover"
                       />
                     } @else {
-                      <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      <svg
+                        class="w-5 h-5 text-slate-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
                       </svg>
                     }
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="font-bold text-xs sm:text-sm text-slate-900 truncate">{{ item.name }}</p>
+                    <p class="font-bold text-xs sm:text-sm text-slate-900 truncate">
+                      {{ item.name }}
+                    </p>
                     <p class="text-[11px] text-slate-500 mt-0.5">
                       {{ item.quantity }} × {{ item.price | currency: currency() }}
                     </p>
@@ -507,11 +712,15 @@ export interface SavedCard {
             <div class="space-y-2.5 pt-4 border-t border-slate-100 text-xs">
               <div class="flex justify-between text-slate-600">
                 <span>Subtotal</span>
-                <span class="font-bold text-slate-900">{{ cartService.subtotal() | currency: currency() }}</span>
+                <span class="font-bold text-slate-900">{{
+                  cartService.subtotal() | currency: currency()
+                }}</span>
               </div>
 
               @if (cartService.appliedCoupon()) {
-                <div class="flex justify-between text-sky-600 font-bold bg-sky-50/80 px-2.5 py-1.5 rounded-lg">
+                <div
+                  class="flex justify-between text-sky-600 font-bold bg-sky-50/80 px-2.5 py-1.5 rounded-lg"
+                >
                   <span>Descuento ({{ cartService.appliedCoupon()?.code }})</span>
                   <span>-{{ cartService.discountAmount() | currency: currency() }}</span>
                 </div>
@@ -519,17 +728,23 @@ export interface SavedCard {
 
               <div class="flex justify-between text-slate-600">
                 <span>Impuestos (IVA)</span>
-                <span class="font-bold text-slate-900">{{ cartService.tax() | currency: currency() }}</span>
+                <span class="font-bold text-slate-900">{{
+                  cartService.tax() | currency: currency()
+                }}</span>
               </div>
 
               <div class="flex justify-between text-slate-600 items-center">
                 <span>Envío</span>
-                <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md text-[11px]">
+                <span
+                  class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md text-[11px]"
+                >
                   Gratis
                 </span>
               </div>
 
-              <div class="flex justify-between text-base font-black pt-3 border-t border-slate-100 mt-2 text-slate-900">
+              <div
+                class="flex justify-between text-base font-black pt-3 border-t border-slate-100 mt-2 text-slate-900"
+              >
                 <span>Total a Pagar</span>
                 <span class="text-sky-600">{{ cartService.total() | currency: currency() }}</span>
               </div>
@@ -543,9 +758,25 @@ export interface SavedCard {
               class="w-full mt-6 py-3.5 px-4 bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white rounded-xl font-bold text-xs sm:text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
             >
               @if (isSubmitting()) {
-                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                <svg
+                  class="animate-spin h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  ></path>
                 </svg>
                 <span>Procesando pago...</span>
               } @else if (showNewAddressForm()) {
@@ -553,22 +784,35 @@ export interface SavedCard {
               } @else {
                 <span>Confirmar y Pagar Pedido</span>
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
                 </svg>
               }
             </button>
 
             <!-- Trust Badge -->
             <div class="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
-              <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              <svg
+                class="w-3.5 h-3.5 text-emerald-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
               </svg>
               <span>Pago 100% Seguro con cifrado SSL de 256 bits</span>
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   `,
@@ -898,28 +1142,24 @@ export class Checkout implements OnInit {
 
         // Billing Details (Same as shipping or custom)
         billing_first_name: this.useDifferentBilling
-          ? (this.billingForm.first_name || address.first_name)
+          ? this.billingForm.first_name || address.first_name
           : address.first_name,
         billing_last_name: this.useDifferentBilling
-          ? (this.billingForm.last_name || address.last_name)
+          ? this.billingForm.last_name || address.last_name
           : address.last_name,
         billing_company: this.useDifferentBilling
-          ? (this.billingForm.company || undefined)
-          : (address.company || undefined),
+          ? this.billingForm.company || undefined
+          : address.company || undefined,
         billing_address_line1: this.useDifferentBilling
           ? this.billingForm.address_line1
           : address.address_line1,
-        billing_city: this.useDifferentBilling
-          ? this.billingForm.city
-          : address.city,
-        billing_state: this.useDifferentBilling
-          ? this.billingForm.state
-          : address.state,
+        billing_city: this.useDifferentBilling ? this.billingForm.city : address.city,
+        billing_state: this.useDifferentBilling ? this.billingForm.state : address.state,
         billing_postal_code: this.useDifferentBilling
           ? this.billingForm.postal_code
           : address.postal_code,
         billing_country: this.useDifferentBilling
-          ? (this.billingForm.country || address.country)
+          ? this.billingForm.country || address.country
           : address.country,
       };
 
@@ -933,6 +1173,15 @@ export class Checkout implements OnInit {
         tax_amount: 0,
         total_amount: item.price * item.quantity,
       }));
+
+      const appliedCoupon = this.cartService.appliedCoupon();
+      const discountData = appliedCoupon
+        ? {
+            codeId: appliedCoupon.id,
+            customerId: customer.id,
+            discountAmount: this.cartService.discountAmount(),
+          }
+        : undefined;
 
       // Prepare Payment Data for card or instant payment
       let paymentPayload: any = undefined;
@@ -967,7 +1216,7 @@ export class Checkout implements OnInit {
         };
       }
 
-      await this.ordersService.createOrder(orderData, orderItems, paymentPayload);
+      await this.ordersService.createOrder(orderData, orderItems, paymentPayload, discountData);
 
       this.cartService.clearCart();
       this.toast.success('¡Pedido recibido y confirmado exitosamente!');

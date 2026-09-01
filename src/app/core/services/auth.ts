@@ -48,14 +48,12 @@ export class AuthService {
     );
   });
   readonly isSuperAdmin = computed(
-    () => this._state().user?.user_metadata?.['role'] === 'superadmin'
+    () => this._state().user?.user_metadata?.['role'] === 'superadmin',
   );
 
   constructor() {
     this.initAuth();
-
   }
-
 
   private async initAuth(): Promise<void> {
     // Get current session on startup
@@ -76,9 +74,7 @@ export class AuthService {
         loading: false,
       }));
     });
-
   }
-
 
   async signInWithEmail(email: string, password: string) {
     this._state.update((s) => ({ ...s, loading: true }));
@@ -140,40 +136,73 @@ export class AuthService {
     const user = this.user();
     if (!user || !user.email) return null;
 
-    const { data: existing, error: fetchError } = await this.supabase.client
+    const metadata = user.user_metadata || {};
+    const firstName = metadata['first_name'] || metadata['full_name']?.split(' ')[0] || '';
+    const lastName =
+      metadata['last_name'] || metadata['full_name']?.split(' ').slice(1).join(' ') || '';
+
+    const { data: existingByUser, error: fetchByUserError } = await this.supabase.client
       .from('customers')
       .select('*')
       .eq('tenant_id', tenantId)
-      .eq('email', user.email)
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(1)
       .maybeSingle();
 
-    if (fetchError) throw fetchError;
+    if (fetchByUserError && fetchByUserError.code !== 'PGRST116') {
+      throw fetchByUserError;
+    }
 
-    const metadata = user.user_metadata || {};
-    const firstName = metadata['first_name'] || metadata['full_name']?.split(' ')[0] || '';
-    const lastName = metadata['last_name'] || metadata['full_name']?.split(' ').slice(1).join(' ') || '';
-
-    if (existing) {
-      // If found but not linked to this user, link it now
-      if (!existing.user_id || existing.user_id !== user.id) {
+    if (existingByUser) {
+      if (!existingByUser.email || existingByUser.email !== user.email) {
         const { data: updated, error: updateError } = await this.supabase.client
           .from('customers')
           .update({
-            user_id: user.id,
-            first_name: firstName || undefined,
-            last_name: lastName || undefined,
+            email: user.email,
+            first_name: firstName || existingByUser.first_name || undefined,
+            last_name: lastName || existingByUser.last_name || undefined,
           })
-          .eq('id', existing.id)
+          .eq('id', existingByUser.id)
           .select('*')
           .single();
 
         if (updateError) throw updateError;
         return updated;
       }
-      return existing;
+
+      return existingByUser;
     }
 
-    // Create new customer linked to this user
+    const { data: existingByEmail, error: fetchByEmailError } = await this.supabase.client
+      .from('customers')
+      .select('*')
+      .eq('tenant_id', tenantId)
+      .eq('email', user.email)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (fetchByEmailError && fetchByEmailError.code !== 'PGRST116') {
+      throw fetchByEmailError;
+    }
+
+    if (existingByEmail) {
+      const { data: updated, error: updateError } = await this.supabase.client
+        .from('customers')
+        .update({
+          user_id: user.id,
+          first_name: firstName || existingByEmail.first_name || undefined,
+          last_name: lastName || existingByEmail.last_name || undefined,
+        })
+        .eq('id', existingByEmail.id)
+        .select('*')
+        .single();
+
+      if (updateError) throw updateError;
+      return updated;
+    }
+
     const { data: created, error: createError } = await this.supabase.client
       .from('customers')
       .insert({
@@ -191,20 +220,20 @@ export class AuthService {
   }
 
   /**
- * A promise that resolves only when initAuth() has finished verifying the session.
- */
+   * A promise that resolves only when initAuth() has finished verifying the session.
+   */
   async ensureInitialized(): Promise<void> {
-  if (this.isInitialized()) return;
+    if (this.isInitialized()) return;
 
-  return new Promise((resolve) => {
-    const checkState = () => {
-      if (this.isInitialized()) {
-        resolve();
-      } else {
-        setTimeout(checkState, 50);
-      }
-    };
-    checkState();
-  });
-}
+    return new Promise((resolve) => {
+      const checkState = () => {
+        if (this.isInitialized()) {
+          resolve();
+        } else {
+          setTimeout(checkState, 50);
+        }
+      };
+      checkState();
+    });
+  }
 }
