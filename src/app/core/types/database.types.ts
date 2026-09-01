@@ -128,8 +128,11 @@ export type Database = {
           ip_address: unknown
           new_values: Json | null
           old_values: Json | null
+          order_id: string | null
+          reason: string | null
           resource_id: string | null
           resource_type: string
+          source: string | null
           tenant_id: string | null
           user_agent: string | null
           user_email: string | null
@@ -144,8 +147,11 @@ export type Database = {
           ip_address?: unknown
           new_values?: Json | null
           old_values?: Json | null
+          order_id?: string | null
+          reason?: string | null
           resource_id?: string | null
           resource_type: string
+          source?: string | null
           tenant_id?: string | null
           user_agent?: string | null
           user_email?: string | null
@@ -160,8 +166,11 @@ export type Database = {
           ip_address?: unknown
           new_values?: Json | null
           old_values?: Json | null
+          order_id?: string | null
+          reason?: string | null
           resource_id?: string | null
           resource_type?: string
+          source?: string | null
           tenant_id?: string | null
           user_agent?: string | null
           user_email?: string | null
@@ -879,6 +888,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "media_library_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          link: string | null
+          message: string
+          metadata: Json | null
+          tenant_id: string
+          title: string
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          link?: string | null
+          message: string
+          metadata?: Json | null
+          tenant_id: string
+          title: string
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          link?: string | null
+          message?: string
+          metadata?: Json | null
+          tenant_id?: string
+          title?: string
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -2189,6 +2245,56 @@ export type Database = {
           },
         ]
       }
+      support_tickets: {
+        Row: {
+          attachments: string[] | null
+          category: string
+          created_at: string | null
+          id: string
+          message: string
+          severity: string
+          status: string
+          subject: string
+          tenant_id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          attachments?: string[] | null
+          category: string
+          created_at?: string | null
+          id?: string
+          message: string
+          severity?: string
+          status?: string
+          subject: string
+          tenant_id: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          attachments?: string[] | null
+          category?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          severity?: string
+          status?: string
+          subject?: string
+          tenant_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tax_rates: {
         Row: {
           country: string | null
@@ -3066,6 +3172,11 @@ export type Database = {
       }
       aggregate_daily_sales: { Args: { p_date?: string }; Returns: undefined }
       check_user_exists: { Args: { p_email: string }; Returns: boolean }
+      checkout_create_order_with_items: {
+        Args: { p_items: Json; p_order: Json; p_reason?: string }
+        Returns: string
+      }
+      checkout_insert_order: { Args: { p_order: Json }; Returns: string }
       create_default_email_templates: {
         Args: { p_tenant_id: string }
         Returns: undefined

@@ -5,128 +5,155 @@ import { AuditLog } from '@models/index';
 import { Supabase } from './supabase';
 
 export interface InventoryFilters {
-    startDate?: string;
-    endDate?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface AuditValues {
-    stock_quantity?: number;
-    name?: string;
-    quantity?: number;
-    product_name?: string;
-    variant_name?: string;
-    order_id?: string;
+  stock_quantity?: number;
+  name?: string;
+  quantity?: number;
+  product_name?: string;
+  variant_name?: string;
+  order_id?: string;
 }
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class InventoryService {
-    private readonly supabase = inject(Supabase);
-    private readonly tenantService = inject(TenantService);
+  private readonly supabase = inject(Supabase);
+  private readonly tenantService = inject(TenantService);
 
-    async getMovements(
-        page: number = 1,
-        pageSize: number = 20,
-        filters?: InventoryFilters
-    ): Promise<{ data: InventoryMovement[], count: number }> {
-        const tenantId = this.tenantService.tenantId();
-        if (!tenantId) return { data: [], count: 0 };
+  async getMovements(
+    page: number = 1,
+    pageSize: number = 20,
+    filters?: InventoryFilters,
+  ): Promise<{ data: InventoryMovement[]; count: number }> {
+    const tenantId = this.tenantService.tenantId();
+    if (!tenantId) return { data: [], count: 0 };
 
-        let query = this.supabase.client
-            .from('audit_logs')
-            .select('*', { count: 'exact' })
-            .eq('tenant_id', tenantId)
-            .in('resource_type', ['products', 'order_items'])
-            .order('created_at', { ascending: false })
-            .range((page - 1) * pageSize, page * pageSize - 1);
+    let query = this.supabase.client
+      .from('audit_logs')
+      .select('*', { count: 'exact' })
+      .eq('tenant_id', tenantId)
+      .in('resource_type', ['products', 'product_variants'])
+      .order('created_at', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
 
-        if (filters?.startDate) {
-            query = query.gte('created_at', filters.startDate);
-        }
-
-        if (filters?.endDate) {
-            query = query.lte('created_at', filters.endDate);
-        }
-
-        const { data, error, count } = await query;
-
-        if (error) throw error;
-
-        const movements: InventoryMovement[] = (data || []).map((log) => this.mapAuditToMovement(log as unknown as AuditLog))
-            .filter((m: InventoryMovement | null): m is InventoryMovement => m !== null);
-
-        return {
-            data: movements,
-            count: count ?? 0
-        };
+    if (filters?.startDate) {
+      query = query.gte('created_at', filters.startDate);
     }
 
-    async getInventoryHistory(
-        page: number = 1,
-        pageSize: number = 20,
-        filters?: InventoryFilters
-    ): Promise<{ data: InventoryMovement[], count: number }> {
-        return this.getMovements(page, pageSize, filters);
+    if (filters?.endDate) {
+      query = query.lte('created_at', filters.endDate);
     }
 
-    private mapAuditToMovement(log: AuditLog): InventoryMovement | null {
-        const oldVal = (log.old_values as unknown as AuditValues) || null;
-        const newVal = (log.new_values as unknown as AuditValues) || null;
+    const { data, error, count } = await query;
 
-        if (!newVal) return null;
+    if (error) throw error;
 
-        let type: InventoryMovementType = 'other';
-        let qtyChange = 0;
-        let newQty = 0;
-        let productName = '';
-        let variantName = '';
-        let referenceId = log.resource_id;
+    const movements: InventoryMovement[] = (
+      await Promise.all(
+        (data || []).map((log) => this.mapAuditToMovement(log as unknown as AuditLog, tenantId)),
+      )
+    ).filter((m: InventoryMovement | null): m is InventoryMovement => m !== null);
 
-        if (log.resource_type === 'products') {
-            // Manual adjustment or creation
-            if (log.action === 'create') {
-                type = 'manual';
-                qtyChange = newVal.stock_quantity || 0;
-                newQty = qtyChange;
-            } else if (log.action === 'update') {
-                const oldStock = oldVal?.stock_quantity;
-                const newStock = newVal?.stock_quantity;
+    return {
+      data: movements,
+      count: count ?? 0,
+    };
+  }
 
-                // If oldStock is missing (due to DB trigger design) or no change occurred
-                if (newStock === undefined || oldStock === newStock) return null;
+  async getInventoryHistory(
+    page: number = 1,
+    pageSize: number = 20,
+    filters?: InventoryFilters,
+  ): Promise<{ data: InventoryMovement[]; count: number }> {
+    return this.getMovements(page, pageSize, filters);
+  }
 
-                type = 'adjustment';
-                // If we don't have oldStock, we cannot definitively show the delta.
-                qtyChange = oldStock !== undefined ? newStock - oldStock : 0;
-                newQty = newStock;
+  private async mapAuditToMovement(
+    log: AuditLog,
+    tenantId: string,
+  ): Promise<InventoryMovement | null> {
+    const oldVal = (log.old_values as unknown as AuditValues) || null;
+    const newVal = (log.new_values as unknown as AuditValues) || null;
+
+    if (!newVal) return null;
+
+    let type: InventoryMovementType = 'other';
+    let qtyChange = 0;
+    let newQty = 0;
+    let productName = '';
+    let variantName = '';
+    let referenceId = log.resource_id;
+    let productId: string | undefined;
+
+    if (log.resource_type === 'products') {
+      // Manual adjustment or creation
+      if (log.action === 'create') {
+        type = 'manual';
+        qtyChange = newVal.stock_quantity || 0;
+        newQty = qtyChange;
+      } else if (log.action === 'update') {
+        const oldStock = oldVal?.stock_quantity;
+        const newStock = newVal?.stock_quantity;
+
+        // If oldStock is missing (due to DB trigger design) or no change occurred
+        if (newStock === undefined || oldStock === newStock) return null;
+
+        // Determine if this is a sale (negative change) or adjustment
+        qtyChange = oldStock !== undefined ? newStock - oldStock : 0;
+        newQty = newStock;
+        type = qtyChange < 0 ? 'sale' : 'adjustment';
+      }
+      productName = newVal.name || oldVal?.name || 'Producto Desconocido';
+      productId = log.resource_id;
+    } else if (log.resource_type === 'order_items') {
+      if (log.action === 'create') {
+        type = 'sale';
+        qtyChange = -(newVal.quantity || 0); // Sales deduct stock
+        productName = newVal.product_name || 'Producto Vendido';
+        variantName = newVal.variant_name || '';
+        referenceId = newVal.order_id;
+        productId = log.resource_id; // This should be the product_id from the order_item
+
+        // Fetch current stock from products table
+        if (productId) {
+          try {
+            const { data: product, error } = await this.supabase.client
+              .from('products')
+              .select('stock_quantity')
+              .eq('id', productId)
+              .eq('tenant_id', tenantId)
+              .maybeSingle();
+
+            if (!error && product) {
+              newQty = product.stock_quantity || 0;
             }
-            productName = newVal.name || oldVal?.name || 'Producto Desconocido';
-        } else if (log.resource_type === 'order_items') {
-            if (log.action === 'create') {
-                type = 'sale';
-                qtyChange = -(newVal.quantity || 0); // Sales deduct stock
-                newQty = 0; // We don't have the final stock in order_items easily
-                productName = newVal.product_name || 'Producto Vendido';
-                variantName = newVal.variant_name || '';
-                referenceId = newVal.order_id;
-            } else {
-                return null;
-            }
+          } catch (err) {
+            console.warn('[InventoryService] Could not fetch product stock:', err);
+            newQty = 0;
+          }
         }
-
-        return {
-            id: log.id,
-            created_at: log.created_at,
-            tenant_id: log.tenant_id!,
-            product_id: log.resource_id!,
-            product_name: productName,
-            type: type,
-            quantity_change: qtyChange,
-            new_quantity: newQty,
-            user_email: log.user_email,
-            reference_id: referenceId,
-            description: log.description
-        };
+      } else {
+        return null;
+      }
     }
+
+    return {
+      id: log.id,
+      created_at: log.created_at,
+      tenant_id: log.tenant_id!,
+      product_id: productId || log.resource_id!,
+      product_name: productName,
+      type: type,
+      quantity_change: qtyChange,
+      new_quantity: newQty,
+      user_email: log.user_email,
+      reference_id: referenceId,
+      description: log.description,
+    };
+  }
 }
