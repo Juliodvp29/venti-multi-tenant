@@ -91,22 +91,29 @@ export class InventoryService {
     let productId: string | undefined;
 
     if (log.resource_type === 'products') {
-      // Manual adjustment or creation
+      // Product creation or initial stock import should not look like a manual positive adjustment.
       if (log.action === 'create') {
         type = 'manual';
-        qtyChange = newVal.stock_quantity || 0;
-        newQty = qtyChange;
+        qtyChange = 0;
+        newQty = newVal.stock_quantity || 0;
       } else if (log.action === 'update') {
         const oldStock = oldVal?.stock_quantity;
         const newStock = newVal?.stock_quantity;
 
-        // If oldStock is missing (due to DB trigger design) or no change occurred
-        if (newStock === undefined || oldStock === newStock) return null;
+        if (newStock === undefined) return null;
 
-        // Determine if this is a sale (negative change) or adjustment
-        qtyChange = oldStock !== undefined ? newStock - oldStock : 0;
-        newQty = newStock;
-        type = qtyChange < 0 ? 'sale' : 'adjustment';
+        // Initial stock seed / import appears as a product update from empty/zero to a value.
+        if (oldStock === undefined || oldStock === null || oldStock === 0) {
+          type = 'manual';
+          qtyChange = 0;
+          newQty = newStock;
+        } else if (oldStock !== newStock) {
+          qtyChange = newStock - oldStock;
+          newQty = newStock;
+          type = qtyChange < 0 ? 'sale' : 'adjustment';
+        } else {
+          return null;
+        }
       }
       productName = newVal.name || oldVal?.name || 'Producto Desconocido';
       productId = log.resource_id;
