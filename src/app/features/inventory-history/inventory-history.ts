@@ -6,86 +6,99 @@ import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { ColumnDef } from '@core/types/table';
 
 @Component({
-    selector: 'app-inventory-history',
-    imports: [CommonModule, DynamicTable],
-    templateUrl: './inventory-history.html',
-    styleUrl: './inventory-history.css',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-inventory-history',
+  imports: [CommonModule, DynamicTable],
+  templateUrl: './inventory-history.html',
+  styleUrl: './inventory-history.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InventoryHistory implements OnInit {
-    private readonly inventoryService = inject(InventoryService);
+  private readonly inventoryService = inject(InventoryService);
 
-    readonly movements = signal<InventoryMovement[]>([]);
-    readonly totalItems = signal(0);
-    readonly currentPage = signal(1);
+  readonly movements = signal<InventoryMovement[]>([]);
+  readonly totalItems = signal(0);
+  readonly currentPage = signal(1);
 
-    readonly columns: ColumnDef<InventoryMovement>[] = [
-        {
-            key: 'created_at',
-            label: 'Fecha',
-            type: 'date',
-        },
-        {
-            key: 'product_name',
-            label: 'Producto',
-            formatter: (val, item) => {
-                return item.variant_name ? `${val} (${item.variant_name})` : val;
-            }
-        },
-        {
-            key: 'type',
-            label: 'Tipo',
-            formatter: (val) => {
-                const types: Record<string, { label: string, class: string }> = {
-                    sale: { label: 'Venta', class: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
-                    adjustment: { label: 'Ajuste', class: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
-                    manual: { label: 'Inicial', class: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400' },
-                    return: { label: 'Devolución', class: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' }
-                };
-                const config = types[val] || { label: val, class: 'bg-gray-100 text-gray-700' };
-                return `<span class="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${config.class}">${config.label}</span>`;
-            }
-        },
-        {
-            key: 'quantity_change',
-            label: 'Cantidad',
-            formatter: (val) => {
-                if (val === 0) return '<span class="text-gray-400 dark:text-gray-500">N/D</span>';
-                const color = val > 0 ? 'text-sky-600' : 'text-red-600';
-                return `<span class="font-mono font-bold ${color}">${val > 0 ? '+' : ''}${val}</span>`;
-            }
-        },
-        {
-            key: 'new_quantity',
-            label: 'Stock Final',
-            formatter: (val, item) => {
-                if (item.type === 'sale') return '<span class="text-gray-400 dark:text-gray-500">N/D</span>';
-                return `<span class="font-mono font-bold">${val}</span>`;
-            }
-        },
-        {
-            key: 'user_email',
-            label: 'Usuario',
-            formatter: (val) => val || 'Sistema'
-        }
-    ];
+  readonly columns: ColumnDef<InventoryMovement>[] = [
+    {
+      key: 'created_at',
+      label: 'Fecha',
+      type: 'date',
+    },
+    {
+      key: 'product_name',
+      label: 'Producto',
+      formatter: (val, item) => {
+        return item.variant_name ? `${val} (${item.variant_name})` : val;
+      },
+    },
+    {
+      key: 'type',
+      label: 'Tipo',
+      formatter: (val) => {
+        const types: Record<string, { label: string; class: string }> = {
+          sale: {
+            label: 'Venta',
+            class: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+          },
+          adjustment: {
+            label: 'Ajuste',
+            class: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+          },
+          manual: {
+            label: 'Inicial',
+            class: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400',
+          },
+          return: {
+            label: 'Devolución',
+            class: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+          },
+        };
+        const config = types[val] || { label: val, class: 'bg-gray-100 text-gray-700' };
+        return `<span class="px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${config.class}">${config.label}</span>`;
+      },
+    },
+    {
+      key: 'quantity_change',
+      label: 'Cantidad',
+      formatter: (val) => {
+        if (val === 0) return '<span class="text-gray-400 dark:text-gray-500">N/D</span>';
+        const color = val > 0 ? 'text-sky-600' : 'text-red-600';
+        return `<span class="font-mono font-bold ${color}">${val > 0 ? '+' : ''}${val}</span>`;
+      },
+    },
+    {
+      key: 'new_quantity',
+      label: 'Stock Final',
+      formatter: (val, item) => {
+        if (val === 0 || val === null || val === undefined)
+          return '<span class="text-gray-400 dark:text-gray-500">N/D</span>';
+        return `<span class="font-mono font-bold">${val}</span>`;
+      },
+    },
+    {
+      key: 'user_email',
+      label: 'Usuario',
+      formatter: (val) => val || 'Sistema',
+    },
+  ];
 
-    ngOnInit() {
-        this.loadMovements();
+  ngOnInit() {
+    this.loadMovements();
+  }
+
+  async loadMovements() {
+    try {
+      const { data, count } = await this.inventoryService.getMovements(this.currentPage());
+      this.movements.set(data);
+      this.totalItems.set(count);
+    } catch (error) {
+      console.error('Error loading inventory movements:', error);
     }
+  }
 
-    async loadMovements() {
-        try {
-            const { data, count } = await this.inventoryService.getMovements(this.currentPage());
-            this.movements.set(data);
-            this.totalItems.set(count);
-        } catch (error) {
-            console.error('Error loading inventory movements:', error);
-        }
-    }
-
-    onPageChange(page: number) {
-        this.currentPage.set(page);
-        this.loadMovements();
-    }
+  onPageChange(page: number) {
+    this.currentPage.set(page);
+    this.loadMovements();
+  }
 }

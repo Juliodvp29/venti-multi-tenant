@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { SubscriptionHistoryEntry } from '@core/models/billing.model';
 
@@ -9,7 +9,9 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
     <div
       class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden"
     >
-      <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+      <div
+        class="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between"
+      >
         <div>
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">Historial de Facturación</h3>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -64,37 +66,34 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
                 </td>
                 <td class="px-6 py-4 text-xs text-gray-500 dark:text-gray-400 font-mono">
                   @if (entry.billing_period_start && entry.billing_period_end) {
-                    {{ entry.billing_period_start | date: 'dd/MM/yy' }} - {{ entry.billing_period_end | date: 'dd/MM/yy' }}
+                    {{ entry.billing_period_start | date: 'dd/MM/yy' }} -
+                    {{ entry.billing_period_end | date: 'dd/MM/yy' }}
                   } @else {
                     —
                   }
                 </td>
                 <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
-                  {{ (entry.amount || 0) | currency: (entry.currency || 'USD') : 'symbol' : '1.0-0' : 'es' }}
+                  {{
+                    entry.amount || 0
+                      | currency: entry.currency || 'USD' : 'symbol' : '1.0-0' : 'es'
+                  }}
                 </td>
                 <td class="px-6 py-4 text-right">
                   <span
                     class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                    [class.bg-green-50]="entry.status === 'active'"
-                    [class.text-green-700]="entry.status === 'active'"
-                    [class.dark:bg-green-950/30]="entry.status === 'active'"
-                    [class.dark:text-green-400]="entry.status === 'active'"
-                    [class.bg-amber-50]="entry.status === 'trial' || entry.status === 'cancelled'"
-                    [class.text-amber-700]="entry.status === 'trial' || entry.status === 'cancelled'"
-                    [class.dark:bg-amber-950/30]="entry.status === 'trial' || entry.status === 'cancelled'"
-                    [class.dark:text-amber-400]="entry.status === 'trial' || entry.status === 'cancelled'"
-                    [class.bg-red-50]="entry.status === 'expired' || entry.status === 'suspended'"
-                    [class.text-red-700]="entry.status === 'expired' || entry.status === 'suspended'"
-                    [class.dark:bg-red-950/30]="entry.status === 'expired' || entry.status === 'suspended'"
-                    [class.dark:text-red-400]="entry.status === 'expired' || entry.status === 'suspended'"
+                    [class.bg-green-50]="isLatestEntry(entry.id)"
+                    [class.text-green-700]="isLatestEntry(entry.id)"
+                    [class.dark:bg-green-950/30]="isLatestEntry(entry.id)"
+                    [class.dark:text-green-400]="isLatestEntry(entry.id)"
+                    [class.bg-gray-50]="!isLatestEntry(entry.id)"
+                    [class.text-gray-700]="!isLatestEntry(entry.id)"
+                    [class.dark:bg-gray-800/30]="!isLatestEntry(entry.id)"
+                    [class.dark:text-gray-400]="!isLatestEntry(entry.id)"
                   >
-                    @switch (entry.status) {
-                      @case ('active') { Activo }
-                      @case ('cancelled') { Cancelado }
-                      @case ('trial') { Prueba }
-                      @case ('expired') { Expirado }
-                      @case ('suspended') { Suspendido }
-                      @default { {{ entry.status }} }
+                    @if (isLatestEntry(entry.id)) {
+                      Activo
+                    } @else {
+                      Historial
                     }
                   </span>
                 </td>
@@ -130,5 +129,21 @@ import { SubscriptionHistoryEntry } from '@core/models/billing.model';
 })
 export class BillingHistory {
   history = input<SubscriptionHistoryEntry[]>([]);
-}
 
+  // Calcula el ID del último pago (más reciente)
+  readonly latestEntryId = computed(() => {
+    const entries = this.history();
+    if (entries.length === 0) return null;
+
+    const sorted = [...entries].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
+
+    return sorted[0]?.id || null;
+  });
+
+  // Determina si una entrada es la más reciente
+  isLatestEntry(entryId: string | null): boolean {
+    return entryId === this.latestEntryId();
+  }
+}

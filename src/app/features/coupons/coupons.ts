@@ -59,7 +59,29 @@ export class Coupons implements OnInit {
   totalRedemptions = computed(() =>
     this.coupons().reduce((acc, c) => acc + (c.usage_count || 0), 0),
   );
-  totalDiscounted = computed(() => 12450);
+  totalDiscounted = computed(() =>
+    this.coupons().reduce((acc, c) => acc + (c.total_discount_given || 0), 0),
+  );
+  activeDelta = computed(() => {
+    const now = Date.now();
+    const currentWeekStart = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    const currentActive = this.activeCount();
+    const previousWeekActive = this.coupons().filter(
+      (coupon) =>
+        coupon.is_active && coupon.created_at && new Date(coupon.created_at) < currentWeekStart,
+    ).length;
+
+    return currentActive - previousWeekActive;
+  });
+  conversionRate = computed(() => {
+    const totalCoupons = this.coupons().length || 1;
+    return (this.totalRedemptions() / totalCoupons) * 100;
+  });
+  activeDeltaText = computed(() => {
+    const delta = this.activeDelta();
+    return `${delta > 0 ? '+' : ''}${delta}`;
+  });
+  conversionRateText = computed(() => `${this.conversionRate().toFixed(0)}%`);
 
   columns: ColumnDef<DiscountCode>[] = [
     {
