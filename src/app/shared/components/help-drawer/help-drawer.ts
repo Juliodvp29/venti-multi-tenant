@@ -15,6 +15,7 @@ import { SupportService } from '@core/services/support.service';
 import { TenantService } from '@core/services/tenant';
 import { AuthService } from '@core/services/auth';
 import { ToastService } from '@core/services/toast';
+import { OnboardingService } from '@core/services/onboarding.service';
 import { TicketCategory, TicketSeverity, TroubleshootingGuide } from '@core/models/support';
 
 export type HelpViewMode = 'home' | 'checklist' | 'troubleshooting' | 'contact';
@@ -34,6 +35,7 @@ export class HelpDrawer {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly toast = inject(ToastService);
+  protected readonly onboarding = inject(OnboardingService);
   private readonly elementRef = inject(ElementRef);
 
   readonly isOpen = signal(false);
@@ -121,6 +123,12 @@ export class HelpDrawer {
   navigateTo(route: string, queryParams?: Record<string, string>): void {
     this.close();
     this.router.navigate([route], { queryParams });
+  }
+
+  restoreOnboarding(): void {
+    this.onboarding.restore();
+    this.close();
+    void this.router.navigate(['/dashboard']);
   }
 
   async onFileSelected(event: Event): Promise<void> {

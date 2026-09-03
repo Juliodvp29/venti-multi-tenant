@@ -42,7 +42,7 @@ export class SupportService {
 
     try {
       // Consultas paralelas para verificar configuración real
-      const [productsRes, shippingRes, taxRes] = await Promise.all([
+      const [productsRes, shippingRes] = await Promise.all([
         (this.supabase.client.from as any)('products')
           .select('id', { count: 'exact', head: true })
           .eq('tenant_id', tenantId)
@@ -51,36 +51,34 @@ export class SupportService {
           .select('id', { count: 'exact', head: true })
           .eq('tenant_id', tenantId)
           .eq('is_active', true),
-        (this.supabase.client.from as any)('tax_rates')
-          .select('id', { count: 'exact', head: true })
-          .eq('tenant_id', tenantId)
-          .eq('is_active', true),
       ]);
 
-      const hasGeneralInfo = Boolean(tenant.business_name && tenant.contact_email);
-      const hasBranding = Boolean(tenant.logo_url);
+      const settings = (tenant.settings || {}) as Record<string, any>;
+      const hasGeneralInfo = Boolean(
+        tenant.business_name && tenant.contact_email && settings['currency'],
+      );
+      const hasBranding = Boolean(tenant.logo_url && tenant.favicon_url);
       const hasActiveProducts = (productsRes.count ?? 0) > 0;
       const hasShippingZones = (shippingRes.count ?? 0) > 0;
-      const hasTaxRates = (taxRes.count ?? 0) > 0;
-      const settings = (tenant.settings || {}) as Record<string, any>;
+      const paymentMethods = settings['payment_methods'] as Record<string, { enabled?: boolean }> | undefined;
+      const hasPaymentMethod = Object.values(paymentMethods ?? {}).some((method) => method?.enabled === true);
       const hasCustomizedTheme = Boolean(
-        settings['theme'] || settings['branding']?.colors?.primary,
+        settings['theme_id'] || settings['theme_config'] || settings['theme'],
       );
 
       const steps: StoreHealthStep[] = [
         {
-          id: 'step-general',
-          title: 'Información y Contacto del Negocio',
-          description: 'Nombre comercial, correo oficial y moneda de tu tienda.',
-          completed: hasGeneralInfo,
-          actionLabel: hasGeneralInfo ? 'Editar Información' : 'Completar Datos',
-          actionRoute: '/settings',
-          queryParams: { tab: 'general' },
+          id: 'step-catalog',
+          title: 'Agrega tu primer producto',
+          description: 'Publica al menos un producto activo con precio, fotos e inventario.',
+          completed: hasActiveProducts,
+          actionLabel: hasActiveProducts ? 'Ver Catálogo' : 'Crear Producto',
+          actionRoute: '/products',
           category: 'essential',
         },
         {
           id: 'step-branding',
-          title: 'Logo y Personalización de Marca',
+          title: 'Personaliza el logo y branding de tu tienda',
           description: 'Sube tu logo y favicon para transmitir confianza a tus clientes.',
           completed: hasBranding,
           actionLabel: hasBranding ? 'Cambiar Logo' : 'Subir Logo',
@@ -89,17 +87,8 @@ export class SupportService {
           category: 'design',
         },
         {
-          id: 'step-catalog',
-          title: 'Catálogo de Productos',
-          description: 'Publica al menos 1 producto activo con precio, fotos e inventario.',
-          completed: hasActiveProducts,
-          actionLabel: hasActiveProducts ? 'Ver Catálogo' : 'Crear Producto',
-          actionRoute: '/products',
-          category: 'essential',
-        },
-        {
           id: 'step-shipping',
-          title: 'Zonas y Tarifas de Envío',
+          title: 'Configura tus zonas y tarifas de envío',
           description: 'Configura a qué países o ciudades realizas entregas y sus costos.',
           completed: hasShippingZones,
           actionLabel: hasShippingZones ? 'Revisar Zonas' : 'Configurar Envíos',
@@ -108,24 +97,34 @@ export class SupportService {
           category: 'operations',
         },
         {
+          id: 'step-payments',
+          title: 'Activa tus métodos de pago',
+          description: 'Activa tarjetas, PSE, contra entrega o transferencia.',
+          completed: hasPaymentMethod,
+          actionLabel: hasPaymentMethod ? 'Revisar Pagos' : 'Activar Pagos',
+          actionRoute: '/settings',
+          queryParams: { tab: 'payments' },
+          category: 'finance',
+        },
+        {
           id: 'step-theme',
-          title: 'Estilo Visual y Secciones',
-          description: 'Personaliza los colores, tipografías y el banner principal de tu tienda.',
+          title: 'Personaliza el estilo y tema visual',
+          description: 'Ajusta los colores y el diseño de tu storefront.',
           completed: hasCustomizedTheme,
-          actionLabel: hasCustomizedTheme ? 'Editar Diseño' : 'Personalizar Tema',
+          actionLabel: hasCustomizedTheme ? 'Editar Tema' : 'Personalizar Tema',
           actionRoute: '/settings',
           queryParams: { tab: 'theme' },
           category: 'design',
         },
         {
-          id: 'step-taxes',
-          title: 'Configuración de Impuestos',
-          description: 'Define las tasas de IVA o impuestos locales si aplica a tus ventas.',
-          completed: hasTaxRates,
-          actionLabel: hasTaxRates ? 'Ver Impuestos' : 'Agregar Tasas',
+          id: 'step-general',
+          title: 'Revisa los datos de contacto y negocio',
+          description: 'Confirma el nombre legal, la moneda oficial y el correo.',
+          completed: hasGeneralInfo,
+          actionLabel: hasGeneralInfo ? 'Editar Datos' : 'Completar Datos',
           actionRoute: '/settings',
-          queryParams: { tab: 'shipping-taxes' },
-          category: 'operations',
+          queryParams: { tab: 'general' },
+          category: 'general',
         },
       ];
 
