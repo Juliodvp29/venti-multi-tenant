@@ -18,10 +18,12 @@ export class Purchase implements OnInit {
   readonly plan = signal<BillingPlan | undefined>(undefined);
   readonly isProcessing = signal(false);
   readonly isSuccess = signal(false);
+  readonly isTrial = signal(false);
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const planId = params['plan'];
+      this.isTrial.set(params['trial'] === 'true');
       if (!planId) {
         this.router.navigate(['/']);
         return;
@@ -57,7 +59,7 @@ export class Purchase implements OnInit {
       this.isSuccess.set(true);
       setTimeout(() => {
         this.router.navigate(['/auth/register'], {
-          queryParams: { plan: this.plan()?.id }
+          queryParams: { plan: this.plan()?.id, trial: this.isTrial() }
         });
       }, 1500);
     }, 2000);

@@ -372,6 +372,8 @@ export class Singup implements OnInit {
   isInviteFlow = signal(false);
   /** True when this registration is creating a new store/tenant */
   isNewStoreFlow = signal(false);
+  /** True when the selected plan starts with a free trial */
+  isTrial = signal(false);
 
   // ── Form ─────────────────────────────────────────────────
   readonly signupForm = this.fb.nonNullable.group({
@@ -449,6 +451,7 @@ export class Singup implements OnInit {
     this.route.queryParams.subscribe((params) => {
       const token = params['invite_token'];
       const planId = params['plan'];
+      const trial = params['trial'] === 'true';
       const email = params['email'];
 
       if (token) {
@@ -462,6 +465,7 @@ export class Singup implements OnInit {
         this.signupForm.controls.businessName.updateValueAndValidity();
       } else if (planId) {
         this.selectedPlan.set(planId);
+        this.isTrial.set(trial);
         this.isNewStoreFlow.set(true);
 
         // businessName is required for new stores (standard Validators already set in fb.group)
@@ -508,7 +512,7 @@ export class Singup implements OnInit {
     const token = this.inviteToken();
     const plan = this.selectedPlan();
 
-    const { error } = await this.authService.signUp(
+    const { data, error } = await this.authService.signUp(
       email,
       password,
       {
@@ -517,6 +521,7 @@ export class Singup implements OnInit {
         name: fullName.trim(),
         business_name: this.isInviteFlow() ? null : businessName.trim(),
         plan: plan,
+        subscription_mode: this.isTrial() ? 'trial' : 'paid',
       },
       `${window.location.origin}/dashboard`,
     );
@@ -526,6 +531,10 @@ export class Singup implements OnInit {
       this.errorMessage.set(error.message);
       this.toast.error('Error en el registro', error.message);
       return;
+    }
+
+    if (data.user && this.isNewStoreFlow()) {
+      await this.configureNewTenantSubscription(data.user.id);
     }
 
     // If this is an invite flow, accept the invitation automatically after sign-up
@@ -571,6 +580,22 @@ export class Singup implements OnInit {
       setTimeout(() => {
         this.router.navigate(['/auth/login']);
       }, 3000);
+    }
+  }
+
+  private async configureNewTenantSubscription(userId: string): Promise<void> {
+    const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+    const subscription = this.isTrial()
+      ? { plan_status: 'trial' as const, trial_ends_at: trialEndsAt, subscription_ends_at: null }
+      : { plan_status: 'active' as const, trial_ends_at: null, subscription_ends_at: null };
+
+    const { error } = await this.supabase.client
+      .from('tenants')
+      .update(subscription)
+      .eq('owner_id', userId);
+
+    if (error) {
+      console.warn('No se pudo sincronizar el estado inicial de la suscripción:', error);
     }
   }
 }
