@@ -1220,7 +1220,7 @@ export class Checkout implements OnInit {
 
       this.cartService.clearCart();
       this.toast.success('¡Pedido recibido y confirmado exitosamente!');
-      this.router.navigate(['/store/success']);
+      await this.router.navigate(['/store/success'], { queryParamsHandling: 'preserve' });
     } catch (error: any) {
       console.error('Error placing order:', error);
       this.toast.error(error?.message || 'Ocurrió un error al procesar tu pedido');
