@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
       <h1 class="text-3xl font-bold text-slate-900 mb-2">¡Pedido Recibido!</h1>
       <p class="text-slate-500 mb-8">Gracias por tu compra. Te enviaremos un correo con los detalles de tu pedido a la brevedad.</p>
       
-      <button routerLink="/store" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-colors">
+      <button routerLink="/store" queryParamsHandling="preserve" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-colors">
         Volver a la Tienda
       </button>
     </div>

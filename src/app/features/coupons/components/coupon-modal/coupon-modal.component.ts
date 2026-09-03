@@ -76,7 +76,7 @@ import { TenantService } from '@core/services/tenant';
                   type="text"
                   formControlName="code"
                   placeholder="e.g. SUMMER2024"
-                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all uppercase"
+                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all uppercase"
                 />
                 <button
                   type="button"
@@ -98,7 +98,7 @@ import { TenantService } from '@core/services/tenant';
                   (click)="form.patchValue({ type: 'percentage' })"
                   [class.bg-white]="form.get('type')?.value === 'percentage'"
                   [class.shadow-sm]="form.get('type')?.value === 'percentage'"
-                  class="flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all"
+                  class="flex items-center justify-center gap-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-lg transition-all"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -115,7 +115,7 @@ import { TenantService } from '@core/services/tenant';
                   (click)="form.patchValue({ type: 'fixed_amount' })"
                   [class.bg-white]="form.get('type')?.value === 'fixed_amount'"
                   [class.shadow-sm]="form.get('type')?.value === 'fixed_amount'"
-                  class="flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all"
+                  class="flex items-center justify-center gap-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-lg transition-all"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -138,7 +138,7 @@ import { TenantService } from '@core/services/tenant';
                 <input
                   type="number"
                   formControlName="value"
-                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
+                  class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
                 />
                 <span
                   class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold"
@@ -216,10 +216,10 @@ import { TenantService } from '@core/services/tenant';
                 <input
                   type="number"
                   formControlName="minimum_purchase_amount"
-                  class="w-full pl-12 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
+                  class="w-full pl-12 pr-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
                 />
               </div>
-              <p class="mt-1 text-xs text-gray-500">
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Dejar en blanco si no hay requisito de compra mínima.
               </p>
             </div>
@@ -231,9 +231,9 @@ import { TenantService } from '@core/services/tenant';
               <input
                 type="number"
                 formControlName="usage_limit"
-                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
+                class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all"
               />
-              <p class="mt-1 text-xs text-gray-500">
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Veces totales que este cupón puede ser usado por todos los clientes.
               </p>
             </div>

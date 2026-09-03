@@ -33,6 +33,8 @@ import { TenantService } from '@core/services/tenant';
           : undefined
       "
       [style.border-width]="borderStyle() === 'bordered' ? 'var(--store-border-width, 1px)' : '0px'"
+      [class.ring-2]="added()"
+      [class.ring-emerald-500/50]="added()"
     >
       <!-- Image Area -->
       <div
@@ -108,12 +110,30 @@ import { TenantService } from '@core/services/tenant';
           }
         </div>
 
+        @if (added()) {
+          <div
+            class="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 rounded-full bg-emerald-500 px-2.5 py-1 text-[10px] font-black text-white shadow-lg"
+            aria-label="Producto en el carrito"
+          >
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="3"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span>En carrito · {{ cartQuantity() }}</span>
+          </div>
+        }
+
         <!-- Icon Only Cart Button (Top / Bottom Right Floating) -->
         @if (cartButtonStyle() === 'icon_only') {
           <div class="absolute bottom-3 right-3 z-10">
             <button
               (click)="addToCart($event)"
-              title="Añadir al Carrito"
+              [title]="added() ? 'Producto en el carrito' : 'Añadir al Carrito'"
+              [attr.aria-label]="added() ? 'Producto en el carrito' : 'Añadir al Carrito'"
               class="w-10 h-10 rounded-full shadow-lg transition-transform active:scale-90 flex items-center justify-center cursor-pointer text-white"
               [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'"
               [style.color]="added() ? '#ffffff' : 'var(--store-color-primary-contrast, #ffffff)'"
@@ -384,16 +404,19 @@ export class ProductCard {
   private readonly tenantService = inject(TenantService);
   readonly currency = this.tenantService.currency;
 
-  readonly added = computed(() =>
+  readonly cartQuantity = computed(() =>
     this.cartService
       .items()
-      .some(
+      .filter(
         (item) =>
           item.product?.id === this.product().id ||
           item.id === this.product().id ||
           item.product?.slug === this.product().slug,
-      ),
+      )
+      .reduce((total, item) => total + item.quantity, 0),
   );
+
+  readonly added = computed(() => this.cartQuantity() > 0);
 
   readonly activeTokens = computed<Partial<ThemeTokens>>(() => {
     const storeTokens = this.tenantService.themeTokens();
