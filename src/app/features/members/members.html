@@ -44,6 +44,63 @@
         <app-members-list [members]="members()" (edit)="onMemberRoleUpdate($event)" (remove)="onMemberRemove($event)" />
     </div>
 
+    <!-- Recent team activity -->
+    <section class="rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900/50">
+        <div class="flex items-center justify-between border-b border-gray-100 px-6 py-5 dark:border-gray-800">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m5-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </span>
+                    <h2 class="text-base font-bold text-gray-900 dark:text-white">Actividad reciente del equipo</h2>
+                </div>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Seguimiento de cambios y accesos de tu organización.</p>
+            </div>
+            <button type="button" aria-label="Actualizar actividad" title="Actualizar actividad"
+                class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-sky-600 dark:hover:bg-gray-800 dark:hover:text-sky-400"
+                [disabled]="isAuditLoading()" (click)="loadRecentActivity()">
+                <svg class="h-5 w-5" [class.animate-spin]="isAuditLoading()" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5m11 6v5h-5M5.5 9A7.5 7.5 0 0 1 19 7.5L20 9m-1.5 6A7.5 7.5 0 0 1 5 16.5L4 15" />
+                </svg>
+            </button>
+        </div>
+
+        @if (isAuditLoading() && auditLogs().length === 0) {
+        <div class="flex items-center justify-center gap-3 px-6 py-12 text-sm text-gray-400">
+            <span class="h-5 w-5 animate-spin rounded-full border-2 border-sky-500 border-t-transparent"></span>
+            Cargando actividad...
+        </div>
+        } @else if (auditLogs().length === 0) {
+        <div class="px-6 py-12 text-center text-sm text-gray-400 dark:text-gray-500">
+            Aún no hay actividad registrada para este equipo.
+        </div>
+        } @else {
+        <div class="divide-y divide-gray-50 dark:divide-gray-800">
+            @for (log of auditLogs(); track log.id) {
+            <div class="flex items-start gap-4 px-6 py-4">
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold uppercase text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                    {{ getAuditActor(log).charAt(0) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm text-gray-700 dark:text-gray-200">
+                        <span class="font-semibold">{{ getAuditActor(log) }}</span>
+                        {{ getAuditMessage(log) }}
+                    </p>
+                    @if (getAuditDetail(log)) {
+                    <p class="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">{{ getAuditDetail(log) }}</p>
+                    }
+                </div>
+                <time class="whitespace-nowrap text-xs text-gray-400 dark:text-gray-500" [attr.datetime]="log.created_at">
+                    {{ getAuditTime(log.created_at) }}
+                </time>
+            </div>
+            }
+        </div>
+        }
+    </section>
+
     <!-- Modals -->
     @if (showInviteModal()) {
     <app-invite-member-modal (close)="showInviteModal.set(false)" (memberInvite)="onInviteSubmit($event)" />

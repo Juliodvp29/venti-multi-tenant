@@ -69,7 +69,7 @@ La plataforma opera bajo un modelo dual:
 - 🛒 **Recuperación de Carritos Abandonados (`/abandoned-carts`)**: Monitorización de sesiones de compra incompletas, cálculo de tasas de abandono, desglose de ítems y métricas de recuperación.
 - 💰 **Motor de Comisiones y Liquidaciones (`/commissions`)**: Reglas de comisión por pasarela y plan de suscripción, libro mayor (_ledger_) de comisiones generadas en tiempo real y conciliación de estados (_Pendiente, Pagado_).
 - ⭐ **Moderación de Reseñas de Producto (`/reviews`)**: Aprobación, rechazo y eliminación de comentarios y calificaciones, con distintivo de compra verificada.
-- 👥 **Gestión de Equipo & Control de Acceso Granular (`/members`)**: Invitaciones por correo electrónico con tokens de seguridad y roles estrictos: `Owner`, `Admin`, `Editor`, `Viewer` y `Delivery`.
+- 👥 **Gestión de Equipo, Auditoría & Control de Acceso Granular (`/members`)**: Invitaciones por correo electrónico con tokens de seguridad, roles estrictos y una vista de actividad reciente del equipo para seguimiento enterprise.
 - 📊 **Reportes Financieros y Exportación Multiformato (`/reports`)**: Análisis de ventas por periodos personalizables con exportación instantánea a `.xlsx` y PDF profesional con branding de la tienda, métricas, tablas estilizadas y paginación.
 - 💳 **Suscripciones y Cuotas del Tenant (`/subscription`)**: Monitoreo visual del plan contratado, límites de almacenamiento y productos mediante barras de progreso interactivas.
 - 🎨 **Suite de Personalización de Tienda (`/settings`)**:
@@ -228,7 +228,7 @@ venti-multi-tenant/
 │   │   │   ├── interceptors/      # authInterceptor, loaderInterceptor, errorInterceptor
 │   │   │   ├── layouts/           # Shells de navegación (MainLayout con Sidebar y Header)
 │   │   │   ├── models/            # 18 modelos TypeScript fuertemente tipados
-│   │   │   ├── services/          # 33 servicios de negocio y acceso a datos
+│   │   │   ├── services/          # 34 servicios de negocio y acceso a datos
 │   │   │   └── types/             # Utilidades de tipos (Nullable, etc.)
 │   │   │
 │   │   ├── features/              # Módulos de funcionalidad (Lazy Loaded)
@@ -328,9 +328,13 @@ venti-multi-tenant/
 - **Bandeja de Moderación**: Revisión de comentarios y estrellas otorgadas por compradores en el storefront.
 - **Acciones de Moderación**: Aprobación para publicación inmediata, rechazo o eliminación, destacando insignias de _Comprador Verificado_.
 
-### 11. Miembros de Equipo y Roles (`/members`)
+### 11. Miembros, Roles y Auditoría (`/members`)
 
 - **Sistema de Invitaciones**: Envío de invitaciones por correo electrónico con tokens de un solo uso enlazados a la pantalla de aceptación (`/accept-invite`).
+- **Actividad Reciente del Equipo**: Timeline visible con los últimos cambios y accesos registrados en `audit_logs`, filtrados por el tenant activo y ordenados cronológicamente.
+- **Detalle de Actividad**: Cada evento identifica al usuario, la acción y el objeto afectado, utilizando `new_values` y `old_values` para mostrar nombres, números de orden, SKU y campos modificados.
+- **Localización de Eventos**: Acciones, estados, roles, fuentes operativas y nombres de campos técnicos se presentan en español, con fallback para eventos incompletos o valores nulos.
+- **Actualización Manual**: La actividad puede refrescarse desde la propia vista y dispone de estados de carga y vacío.
 - **Control de Roles (RBAC)**:
   - `Owner`: Propietario con control total y facturación.
   - `Admin`: Gestión integral de operaciones, catálogo y configuraciones.
@@ -439,7 +443,7 @@ venti-multi-tenant/
 
 ### Directorio de Servicios de Negocio (`src/app/core/services`)
 
-El núcleo de Venti Shop está compuesto por **33 servicios especializados** desacoplados:
+El núcleo de Venti Shop está compuesto por **34 servicios especializados** desacoplados:
 
 | Servicio                | Responsabilidad Principal                                                       |
 | :---------------------- | :------------------------------------------------------------------------------ |
@@ -456,6 +460,7 @@ El núcleo de Venti Shop está compuesto por **33 servicios especializados** des
 | `DiscountsService`      | Creación, validación y cómputo de cupones de descuento                          |
 | `CommissionsService`    | Cálculo y liquidación de comisiones por pasarela y exportación a Excel          |
 | `ReportPdfService`      | Generación de reportes PDF con branding, métricas, tablas estilizadas y paginación |
+| `AuditLogsService`      | Consulta de actividad reciente del equipo filtrada por tenant desde `audit_logs` |
 | `ReviewsService`        | Moderación de opiniones y cálculo de promedios de calificación                  |
 | `AnalyticsService`      | Agregación de KPIs, series temporales y formateo para ApexCharts                |
 | `ShippingService`       | Zonas de envío, cálculo de fletes y tarifas por peso o precio                   |
