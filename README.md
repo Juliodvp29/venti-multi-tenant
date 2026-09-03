@@ -69,8 +69,8 @@ La plataforma opera bajo un modelo dual:
 - 🛒 **Recuperación de Carritos Abandonados (`/abandoned-carts`)**: Monitorización de sesiones de compra incompletas, cálculo de tasas de abandono, desglose de ítems y métricas de recuperación.
 - 💰 **Motor de Comisiones y Liquidaciones (`/commissions`)**: Reglas de comisión por pasarela y plan de suscripción, libro mayor (_ledger_) de comisiones generadas en tiempo real y conciliación de estados (_Pendiente, Pagado_).
 - ⭐ **Moderación de Reseñas de Producto (`/reviews`)**: Aprobación, rechazo y eliminación de comentarios y calificaciones, con distintivo de compra verificada.
-- 👥 **Gestión de Equipo & Control de Acceso Granular (`/members`)**: Invitaciones por correo electrónico con tokens de seguridad y roles estrictos: `Owner`, `Admin`, `Editor`, `Viewer` y `Delivery`.
-- 📊 **Reportes Financieros y Exportación a Excel (`/reports`)**: Análisis de ventas por periodos personalizables con exportación instantánea de libros de trabajo en formato `.xlsx` nativo.
+- 👥 **Gestión de Equipo, Auditoría & Control de Acceso Granular (`/members`)**: Invitaciones por correo electrónico con tokens de seguridad, roles estrictos y una vista de actividad reciente del equipo para seguimiento enterprise.
+- 📊 **Reportes Financieros y Exportación Multiformato (`/reports`)**: Análisis de ventas por periodos personalizables con exportación instantánea a `.xlsx` y PDF profesional con branding de la tienda, métricas, tablas estilizadas y paginación.
 - 💳 **Suscripciones y Cuotas del Tenant (`/subscription`)**: Monitoreo visual del plan contratado, límites de almacenamiento y productos mediante barras de progreso interactivas.
 - 🎨 **Suite de Personalización de Tienda (`/settings`)**:
   - **General & Ubicación**: Nombre legal, moneda de operación predeterminada y zona horaria.
@@ -116,7 +116,7 @@ La plataforma opera bajo un modelo dual:
 | **Inteligencia Artificial**  | `@google/generative-ai` (Gemini)   | 0.24.x      | Agente de IA con capacidades de invocación de herramientas (Function Calling)     |
 | **Visualización de Datos**   | ApexCharts + `ng-apexcharts`       | 5.x / 2.x   | Gráficas interactivas de ventas, ingresos y distribución de categorías            |
 | **Formateo Markdown & XSS**  | `marked` + `dompurify`             | 17.x / 3.x  | Renderizado y sanitización estricta de respuestas del asistente de IA y notas     |
-| **Exportación de Datos**     | `xlsx` (SheetJS)                   | 0.18.x      | Generación y descarga de informes de ventas y comisiones en formato Excel         |
+| **Exportación de Datos**     | `xlsx` (SheetJS), `jspdf`, `jspdf-autotable` | 0.18.x / 4.x / 5.x | Generación y descarga de informes en Excel, CSV y PDF con tablas, branding y paginación |
 | **Testing Unitario**         | Vitest + JSDOM                     | 4.x / 27.x  | Suite de pruebas unitarias ultrarrápidas para servicios y componentes             |
 | **Calidad de Código**        | ESLint + Angular-ESLint            | 10.x / 22.x | Linter con configuración plana (_Flat Config_) y reglas para Signals y TypeScript |
 | **Formateo de Código**       | Prettier                           | 3.x         | Formato uniforme en TypeScript, HTML de Angular y archivos de configuración       |
@@ -228,7 +228,7 @@ venti-multi-tenant/
 │   │   │   ├── interceptors/      # authInterceptor, loaderInterceptor, errorInterceptor
 │   │   │   ├── layouts/           # Shells de navegación (MainLayout con Sidebar y Header)
 │   │   │   ├── models/            # 18 modelos TypeScript fuertemente tipados
-│   │   │   ├── services/          # 32 servicios de negocio y acceso a datos
+│   │   │   ├── services/          # 34 servicios de negocio y acceso a datos
 │   │   │   └── types/             # Utilidades de tipos (Nullable, etc.)
 │   │   │
 │   │   ├── features/              # Módulos de funcionalidad (Lazy Loaded)
@@ -243,7 +243,7 @@ venti-multi-tenant/
 │   │   │   ├── members/           # Invitaciones de equipo y control de acceso RBAC
 │   │   │   ├── orders/            # Procesamiento de órdenes, trazabilidad y notas
 │   │   │   ├── products-catalog/  # Catálogo, variantes, jerarquía de categorías y subida de fotos
-│   │   │   ├── reports/           # Informes analíticos y exportación a formato Excel (.xlsx)
+│   │   │   ├── reports/           # Informes analíticos y exportación a Excel/PDF
 │   │   │   ├── reviews/           # Moderación de valoraciones y reseñas de clientes
 │   │   │   ├── settings/          # Configuración de tienda, branding, temas, envíos y simulador
 │   │   │   ├── store/             # Storefront público B2C (Home modular, Catálogo, Checkout)
@@ -314,7 +314,9 @@ venti-multi-tenant/
 ### 8. Informes y Exportación Financiera (`/reports`)
 
 - **Filtros Temporales Precisos**: Selector de rangos de fecha mediante el componente interactivo `app-date-range-picker`.
-- **Exportación a Excel**: Generación directa de hojas de cálculo `.xlsx` estructuradas con resumen de órdenes, productos más vendidos y totales contables.
+- **Exportación Multiformato**: Generación directa de archivos `.xlsx`, `.csv` y PDF con los datos filtrados y ordenados de las tablas.
+- **Reportes PDF Profesionales**: Documentos con nombre y logo del tenant, colores de marca, encabezado, métricas opcionales, tablas con filas alternadas, formato localizado, repetición de encabezados y numeración de páginas.
+- **Compatibilidad Financiera**: Los estados de órdenes y pagos se exportan con sus etiquetas localizadas en español, facilitando el envío a contadores y equipos administrativos.
 
 ### 9. Motor de Comisiones (`/commissions`)
 
@@ -326,9 +328,13 @@ venti-multi-tenant/
 - **Bandeja de Moderación**: Revisión de comentarios y estrellas otorgadas por compradores en el storefront.
 - **Acciones de Moderación**: Aprobación para publicación inmediata, rechazo o eliminación, destacando insignias de _Comprador Verificado_.
 
-### 11. Miembros de Equipo y Roles (`/members`)
+### 11. Miembros, Roles y Auditoría (`/members`)
 
 - **Sistema de Invitaciones**: Envío de invitaciones por correo electrónico con tokens de un solo uso enlazados a la pantalla de aceptación (`/accept-invite`).
+- **Actividad Reciente del Equipo**: Timeline visible con los últimos cambios y accesos registrados en `audit_logs`, filtrados por el tenant activo y ordenados cronológicamente.
+- **Detalle de Actividad**: Cada evento identifica al usuario, la acción y el objeto afectado, utilizando `new_values` y `old_values` para mostrar nombres, números de orden, SKU y campos modificados.
+- **Localización de Eventos**: Acciones, estados, roles, fuentes operativas y nombres de campos técnicos se presentan en español, con fallback para eventos incompletos o valores nulos.
+- **Actualización Manual**: La actividad puede refrescarse desde la propia vista y dispone de estados de carga y vacío.
 - **Control de Roles (RBAC)**:
   - `Owner`: Propietario con control total y facturación.
   - `Admin`: Gestión integral de operaciones, catálogo y configuraciones.
@@ -437,7 +443,7 @@ venti-multi-tenant/
 
 ### Directorio de Servicios de Negocio (`src/app/core/services`)
 
-El núcleo de Venti Shop está compuesto por **32 servicios especializados** desacoplados:
+El núcleo de Venti Shop está compuesto por **34 servicios especializados** desacoplados:
 
 | Servicio                | Responsabilidad Principal                                                       |
 | :---------------------- | :------------------------------------------------------------------------------ |
@@ -453,6 +459,8 @@ El núcleo de Venti Shop está compuesto por **32 servicios especializados** des
 | `AbandonedCartService`  | Seguimiento y métricas de carritos sin finalizar                                |
 | `DiscountsService`      | Creación, validación y cómputo de cupones de descuento                          |
 | `CommissionsService`    | Cálculo y liquidación de comisiones por pasarela y exportación a Excel          |
+| `ReportPdfService`      | Generación de reportes PDF con branding, métricas, tablas estilizadas y paginación |
+| `AuditLogsService`      | Consulta de actividad reciente del equipo filtrada por tenant desde `audit_logs` |
 | `ReviewsService`        | Moderación de opiniones y cálculo de promedios de calificación                  |
 | `AnalyticsService`      | Agregación de KPIs, series temporales y formateo para ApexCharts                |
 | `ShippingService`       | Zonas de envío, cálculo de fletes y tarifas por peso o precio                   |
@@ -496,7 +504,7 @@ El núcleo de Venti Shop está compuesto por **32 servicios especializados** des
 | `HelpDrawer`            | `app-help-drawer`            | Drawer lateral con diagnóstico de configuración de tienda y envío de tickets         |
 | `NotificationsDropdown` | `app-notifications-dropdown` | Desplegable de notificaciones Realtime con conteo de no leídas y navegación          |
 | `AiAssistant`           | `app-ai-assistant`           | Widget flotante de chat con Google Gemini y renderizado Markdown sanitizado          |
-| `DynamicTable`          | `app-dynamic-table`          | Tabla avanzada con ordenamiento por columnas, buscador, paginación y slots de acción |
+| `DynamicTable`          | `app-dynamic-table`          | Tabla avanzada con ordenamiento, buscador, paginación, acciones y exportación CSV, Excel y PDF |
 | `MediaManagerModal`     | `app-media-manager-modal`    | Galería modal para explorar, subir y seleccionar imágenes desde Supabase Storage     |
 | `CustomerAuthModal`     | `app-customer-auth-modal`    | Modal emergente para login y registro de clientes finales en el Storefront           |
 | `DateRangePicker`       | `app-date-range-picker`      | Selector de rangos de fechas con atajos rápidos para reportes analíticos             |

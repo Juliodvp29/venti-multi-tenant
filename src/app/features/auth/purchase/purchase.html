@@ -77,17 +77,23 @@
                 </div>
             </div>
 
-            <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
+                @if (isTrial()) {
+                <div class="mb-8 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/30 dark:bg-emerald-900/20">
+                    <p class="text-sm font-bold text-emerald-800 dark:text-emerald-300">Prueba gratuita de 14 días</p>
+                    <p class="mt-1 text-xs leading-relaxed text-emerald-700 dark:text-emerald-400">No se realizará ningún cobro hoy. Puedes cancelar en cualquier momento. Te enviaremos un recordatorio antes de que termine tu prueba.</p>
+                </div>
+                }
+                <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex justify-between items-end">
                     <span class="text-gray-500 dark:text-gray-400 font-bold uppercase text-xs tracking-widest">Total a
                         pagar
                         hoy</span>
                     <div class="text-right">
-                        <div class="text-4xl font-black dark:text-white tracking-tighter">{{ (plan()?.price ?? 0) |
-                            currency:'USD' }}</div>
+                        <div class="text-4xl font-black dark:text-white tracking-tighter">{{ (isTrial() ? 0 : (plan()?.price ?? 0)) |
+                            currency:(plan()?.currency ?? 'COP') }}</div>
                         <div
                             class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold mt-1">
-                            + Impuestos locales</div>
+                            {{ isTrial() ? 'Sin cobro durante 14 días' : '+ Impuestos locales' }}</div>
                     </div>
                 </div>
             </div>
@@ -185,7 +191,7 @@
                 <div class="pt-6">
                     <button type="submit"
                         class="w-full py-5 bg-sky-600 hover:bg-sky-700 text-white font-black rounded-2xl shadow-2xl shadow-sky-500/30 transition-all hover:-translate-y-1 active:scale-[0.98] tracking-tight uppercase">
-                        Iniciar Suscripción
+                        {{ isTrial() ? 'Iniciar prueba gratuita' : 'Iniciar Suscripción' }}
                     </button>
                     <div
                         class="mt-6 flex items-center justify-center gap-2 text-[9px] text-gray-400 dark:text-gray-600 font-bold uppercase tracking-widest">
@@ -203,7 +209,6 @@
 
     <p
         class="mt-8 text-[11px] text-gray-400 dark:text-gray-600 max-w-sm text-center font-medium relative z-10 leading-relaxed">
-        Al continuar, aceptas nuestros Términos de Servicio y la Política de Privacidad. Tu suscripción comenzará
-        después de la verificación.
+        Al continuar, aceptas nuestros Términos de Servicio y la Política de Privacidad. {{ isTrial() ? 'La prueba dura 14 días y puedes cancelarla en cualquier momento.' : 'Tu suscripción comenzará después de la verificación.' }}
     </p>
 </div>

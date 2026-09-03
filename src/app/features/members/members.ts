@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { TenantService } from '@core/services/tenant';
 import { SubscriptionService } from '@core/services/subscription';
 import { ToastService } from '@core/services/toast';
-import { TenantMember, TenantInvitation } from '@core/models';
-import { TenantRole } from '@core/enums';
+import { AuditLog, TenantMember, TenantInvitation } from '@core/models';
+import { AuditAction, TenantRole } from '@core/enums';
+import { AuditLogsService } from '@core/services/audit-logs';
 import { MembersStatsComponent } from './components/members-stats';
 import { MembersListComponent } from './components/members-list';
 import { InviteMemberModalComponent } from './components/invite-member-modal';
@@ -25,6 +26,7 @@ export class Members {
   private readonly tenantService = inject(TenantService);
   private readonly subscriptionService = inject(SubscriptionService);
   private readonly toast = inject(ToastService);
+  private readonly auditLogsService = inject(AuditLogsService);
 
   private initialized = false;
 
@@ -41,6 +43,8 @@ export class Members {
   members = signal<TenantMember[]>([]);
   showInviteModal = signal(false);
   isLoading = signal(false);
+  auditLogs = signal<AuditLog[]>([]);
+  isAuditLoading = signal(false);
 
   totalMembers = computed(() => this.members().filter(m => !m['is_invite']).length);
   adminCount = computed(() => this.members().filter(m => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner)).length);
@@ -60,7 +64,8 @@ export class Members {
     try {
       const [membersResult, invitesResult] = await Promise.allSettled([
         this.tenantService.getMembers(),
-        this.tenantService.getInvitations()
+        this.tenantService.getInvitations(),
+        this.loadRecentActivity(),
       ]);
 
       const membersData: TenantMember[] =
@@ -91,6 +96,196 @@ export class Members {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  async loadRecentActivity(): Promise<void> {
+    this.isAuditLoading.set(true);
+    try {
+      this.auditLogs.set(await this.auditLogsService.getRecent());
+    } catch (error) {
+      console.error('Error loading recent team activity:', error);
+      this.auditLogs.set([]);
+    } finally {
+      this.isAuditLoading.set(false);
+    }
+  }
+
+  getAuditActionLabel(action: AuditAction | string): string {
+    const labels: Partial<Record<AuditAction, string>> = {
+      [AuditAction.Create]: 'creó',
+      [AuditAction.Update]: 'actualizó',
+      [AuditAction.Delete]: 'eliminó',
+      [AuditAction.Login]: 'inició sesión',
+      [AuditAction.Logout]: 'cerró sesión',
+      [AuditAction.Payment]: 'registró un pago',
+      [AuditAction.Refund]: 'procesó un reembolso',
+      [AuditAction.StatusChange]: 'cambió el estado de',
+    };
+    return labels[action as AuditAction] ?? action.replace(/_/g, ' ');
+  }
+
+  getAuditResourceLabel(resourceType: string): string {
+    const labels: Record<string, string> = {
+      products: 'producto',
+      product_variants: 'variante',
+      orders: 'orden',
+      customers: 'cliente',
+      members: 'miembro',
+      coupons: 'cupón',
+      commissions: 'comisión',
+      payments: 'pago',
+    };
+    return labels[resourceType] ?? resourceType.replace(/_/g, ' ');
+  }
+
+  getAuditMessage(log: AuditLog): string {
+    const resource = this.getAuditResourceLabel(log.resource_type);
+    const identifier = this.getAuditIdentifier(log);
+    const action = this.getAuditActionLabel(log.action);
+    return `${action} ${resource}${identifier ? ` ${identifier}` : ''}`;
+  }
+
+  getAuditDetail(log: AuditLog): string {
+    if (log.action === AuditAction.Update && log.old_values && log.new_values) {
+      const changes = this.getAuditChanges(log.old_values, log.new_values);
+      if (changes) return changes;
+    }
+
+    if (log.description && !/^\s*(INSERT|UPDATE|DELETE)\b/i.test(log.description)) {
+      return log.description;
+    }
+
+    return this.getAuditOperationLabel(log);
+  }
+
+  private getAuditIdentifier(log: AuditLog): string {
+    const values = (log.new_values ?? log.old_values) as Record<string, unknown> | undefined;
+    if (!values) return log.resource_id ? `#${log.resource_id.slice(0, 8)}` : '';
+
+    const identifier = [
+      ['order_number', values['order_number']],
+      ['name', values['name']],
+      ['product_name', values['product_name']],
+      ['email', values['email']],
+      ['sku', values['sku']],
+      ['code', values['code']],
+    ].find(([, value]) => value !== null && value !== undefined && String(value).trim() !== '');
+
+    if (!identifier) return log.resource_id ? `#${log.resource_id.slice(0, 8)}` : '';
+    const value = String(identifier[1]);
+    return log.resource_type === 'orders' || identifier[0] === 'sku' || identifier[0] === 'code'
+      ? `#${value.replace(/^#/, '')}`
+      : `“${value}”`;
+  }
+
+  private getAuditChanges(
+    oldValues: Record<string, unknown>,
+    newValues: Record<string, unknown>,
+  ): string {
+    const labels: Record<string, string> = {
+      name: 'nombre',
+      status: 'estado',
+      payment_status: 'estado de pago',
+      price: 'precio',
+      compare_at_price: 'precio anterior',
+      cost_price: 'costo',
+      stock_quantity: 'inventario',
+      quantity: 'cantidad',
+      subtotal: 'subtotal',
+      total_amount: 'total',
+      total: 'total',
+      tax_amount: 'impuestos',
+      shipping_amount: 'envío',
+      discount_amount: 'descuento',
+      currency: 'moneda',
+      email: 'correo',
+      customer_email: 'correo del cliente',
+      order_number: 'número de orden',
+      order_id: 'orden relacionada',
+      product_id: 'producto relacionado',
+      variant_id: 'variante relacionada',
+      role: 'rol',
+      is_active: 'estado activo',
+      is_verified: 'verificación',
+    };
+    const ignored = new Set(['updated_at', 'created_at']);
+    const changed = Object.keys(newValues)
+      .filter((key) => !ignored.has(key) && JSON.stringify(oldValues[key]) !== JSON.stringify(newValues[key]))
+      .slice(0, 3)
+      .map(
+        (key) =>
+          `${labels[key] ?? this.humanizeAuditKey(key)}: ${this.formatAuditValue(newValues[key], key)}`,
+      );
+
+    return changed.length ? `Cambios: ${changed.join(' · ')}` : '';
+  }
+
+  private formatAuditValue(value: unknown, key?: string): string {
+    if (typeof value === 'boolean') return value ? 'Sí' : 'No';
+    if (value === null || value === undefined || value === '') return 'vacío';
+    if (key === 'status') {
+      return {
+        pending: 'Pendiente',
+        processing: 'En proceso',
+        paid: 'Pagado',
+        shipped: 'Enviado',
+        delivered: 'Entregado',
+        cancelled: 'Cancelado',
+        refunded: 'Reembolsado',
+      }[String(value)] ?? String(value);
+    }
+    if (key === 'payment_status') {
+      return {
+        pending: 'Pendiente',
+        completed: 'Pagado',
+        failed: 'Fallido',
+        refunded: 'Reembolsado',
+        partially_refunded: 'Reembolso parcial',
+      }[String(value)] ?? String(value);
+    }
+    if (key === 'role') {
+      return {
+        owner: 'Propietario',
+        admin: 'Administrador',
+        editor: 'Editor',
+        viewer: 'Visualizador',
+        delivery: 'Despacho',
+      }[String(value)] ?? String(value);
+    }
+    return String(value);
+  }
+
+  private getAuditOperationLabel(log: AuditLog): string {
+    const source = log as AuditLog & { source?: string };
+    const sourceLabels: Record<string, string> = {
+      checkout_sale: 'venta desde el checkout',
+      admin_panel: 'panel administrativo',
+      customer_portal: 'portal del cliente',
+    };
+    return source.source
+      ? sourceLabels[source.source] ?? this.humanizeAuditKey(source.source)
+      : `Registro de ${this.getAuditResourceLabel(log.resource_type)}`;
+  }
+
+  private humanizeAuditKey(key: string): string {
+    return key
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (character) => character.toUpperCase());
+  }
+
+  getAuditActor(log: AuditLog): string {
+    return log.user_email || 'Sistema';
+  }
+
+  getAuditTime(createdAt: string): string {
+    const elapsed = Date.now() - new Date(createdAt).getTime();
+    const minutes = Math.floor(elapsed / 60000);
+    if (minutes < 1) return 'Ahora';
+    if (minutes < 60) return `Hace ${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `Hace ${hours} h`;
+    const days = Math.floor(hours / 24);
+    return `Hace ${days} d`;
   }
 
   async onInviteSubmit(event: { email: string; role: TenantRole }) {

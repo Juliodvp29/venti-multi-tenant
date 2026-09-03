@@ -4,6 +4,7 @@ import { Members } from './members';
 import { TenantService } from '@core/services/tenant';
 import { SubscriptionService } from '@core/services/subscription';
 import { ToastService } from '@core/services/toast';
+import { AuditLogsService } from '@core/services/audit-logs';
 import { TenantRole } from '@core/enums';
 import { TenantMember, TenantInvitation } from '@core/models';
 import { vi, describe, beforeEach, it, expect } from 'vitest';
@@ -79,12 +80,17 @@ describe('Members', () => {
     confirm: vi.fn().mockResolvedValue(true),
   };
 
+  const auditLogsServiceMock = {
+    getRecent: vi.fn().mockResolvedValue([]),
+  };
+
   beforeEach(async () => {
     vi.clearAllMocks();
     tenantServiceMock.getMembers.mockResolvedValue(mockMembers);
     tenantServiceMock.getInvitations.mockResolvedValue(mockInvitations);
     subscriptionServiceMock.canAddResource.mockResolvedValue(true);
     toastServiceMock.confirm.mockResolvedValue(true);
+    auditLogsServiceMock.getRecent.mockResolvedValue([]);
 
     await TestBed.configureTestingModule({
       imports: [Members],
@@ -92,6 +98,7 @@ describe('Members', () => {
         { provide: TenantService, useValue: tenantServiceMock },
         { provide: SubscriptionService, useValue: subscriptionServiceMock },
         { provide: ToastService, useValue: toastServiceMock },
+        { provide: AuditLogsService, useValue: auditLogsServiceMock },
       ],
     }).compileComponents();
 
