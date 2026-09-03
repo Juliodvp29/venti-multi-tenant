@@ -129,7 +129,7 @@ import { Supabase } from '@core/services/supabase';
             </div>
           }
 
-          <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <form class="space-y-6" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
             @if (!isInviteFlow()) {
               <div class="space-y-2">
                 <label
@@ -188,15 +188,15 @@ import { Supabase } from '@core/services/supabase';
                 >
                 <div class="relative">
                   <input
-                    [type]="showPassword() ? 'text' : 'password'"
                     formControlName="password"
                     placeholder="••••••••"
                     class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-sky-500 outline-none transition-all dark:text-white pr-12"
+                    [type]="showPassword() ? 'text' : 'password'"
                   />
                   <button
                     type="button"
-                    (click)="togglePasswordVisibility()"
                     class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-500 transition-colors focus:outline-none focus:text-sky-500"
+                    (click)="togglePasswordVisibility()"
                   >
                     @if (!showPassword()) {
                       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -214,7 +214,7 @@ import { Supabase } from '@core/services/supabase';
                         />
                       </svg>
                     }
-                    @if (showPassword()) {
+                    @else {
                       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path
                           stroke-linecap="round"
@@ -237,15 +237,15 @@ import { Supabase } from '@core/services/supabase';
                 >
                 <div class="relative">
                   <input
-                    [type]="showConfirmPassword() ? 'text' : 'password'"
                     formControlName="confirmPassword"
                     placeholder="••••••••"
                     class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-sky-500 outline-none transition-all dark:text-white pr-12"
+                    [type]="showConfirmPassword() ? 'text' : 'password'"
                   />
                   <button
                     type="button"
-                    (click)="toggleConfirmPasswordVisibility()"
                     class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-sky-500 transition-colors focus:outline-none focus:text-sky-500"
+                    (click)="toggleConfirmPasswordVisibility()"
                   >
                     @if (!showConfirmPassword()) {
                       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -263,7 +263,7 @@ import { Supabase } from '@core/services/supabase';
                         />
                       </svg>
                     }
-                    @if (showConfirmPassword()) {
+                    @else {
                       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path
                           stroke-linecap="round"
@@ -286,8 +286,8 @@ import { Supabase } from '@core/services/supabase';
             <div class="pt-6">
               <button
                 type="submit"
-                [disabled]="isLoading()"
                 class="w-full py-5 bg-sky-600 hover:bg-sky-700 text-white font-black rounded-2xl shadow-2xl shadow-sky-500/30 transition-all hover:-translate-y-1 active:scale-[0.98] tracking-tight uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="isLoading()"
               >
                 {{ isLoading() ? 'Creando cuenta...' : 'Crear Mi Tienda' }}
               </button>
@@ -298,8 +298,8 @@ import { Supabase } from '@core/services/supabase';
             <p class="text-[11px] text-gray-400 dark:text-gray-500 font-medium tracking-tight">
               ¿Ya tienes una cuenta?
               <a
-                [routerLink]="['/auth/login']"
                 class="text-sky-600 dark:text-sky-400 font-black hover:underline ml-1"
+                [routerLink]="['/auth/login']"
                 >Inicia sesión aquí</a
               >
             </p>

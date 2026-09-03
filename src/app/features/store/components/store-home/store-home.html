@@ -1,12 +1,12 @@
 <div class="store-home-container w-full">
     @for (section of activeSections(); track section.id) {
 
-        <div [class]="getSectionDeviceClass(section)" class="store-section w-full" [ngStyle]="getSectionStyle(section)">
+        <div class="store-section w-full" [class]="getSectionDeviceClass(section)" [ngStyle]="getSectionStyle(section)">
 
             <!-- 1. HERO -->
             @if (section.type === 'hero') {
-                <section [ngStyle]="getSectionStyle(section)"
-                    class="relative overflow-hidden flex items-center justify-center transition-all duration-300 w-full"
+                <section class="relative overflow-hidden flex items-center justify-center transition-all duration-300 w-full"
+                    [ngStyle]="getSectionStyle(section)"
                     [class]="getSectionPaddingClass(section)"
                     [class.min-h-\[400px\]]="asAny(section.content).height === 'compact'"
                     [class.md:min-h-\[480px\]]="asAny(section.content).height === 'compact'"
@@ -24,8 +24,8 @@
                         </video>
                     } @else if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || branding()?.main_banner_url) {
                         <!-- Imagen de Fondo -->
-                        <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || branding()?.main_banner_url"
-                            class="absolute inset-0 w-full h-full object-cover">
+                        <img class="absolute inset-0 w-full h-full object-cover"
+                            [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || branding()?.main_banner_url">
                     }
 
                     <!-- Overlay Configurable -->
@@ -88,15 +88,15 @@
                                         [class.justify-start]="asAny(section.content).alignment === 'left'"
                                         [class.justify-end]="asAny(section.content).alignment === 'right'">
                                         @if (asAny(section.content).buttonText) {
-                                            <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
-                                                class="inline-flex items-center px-8 py-4 text-base font-bold text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-2xl hover:-translate-y-0.5 cursor-pointer"
+                                            <a queryParamsHandling="preserve" class="inline-flex items-center px-8 py-4 text-base font-bold text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-2xl hover:-translate-y-0.5 cursor-pointer"
+                                                [routerLink]="asAny(section.content).buttonLink || '/store/productos'"
                                                 [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
                                                 {{ asAny(section.content).buttonText }}
                                             </a>
                                         }
                                         @if (asAny(section.content).secondaryButtonText) {
-                                            <a [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'" queryParamsHandling="preserve"
-                                                class="inline-flex items-center px-8 py-4 text-base font-bold text-white bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                                            <a queryParamsHandling="preserve" class="inline-flex items-center px-8 py-4 text-base font-bold text-white bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                                                [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'"
                                                 [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
                                                 {{ asAny(section.content).secondaryButtonText }}
                                             </a>
@@ -130,16 +130,16 @@
 
                                         <div class="flex flex-wrap items-center gap-4">
                                             @if (asAny(section.content).buttonText) {
-                                                <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
-                                                    class="inline-flex items-center px-8 py-3.5 text-base font-bold text-white transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                                                <a queryParamsHandling="preserve" class="inline-flex items-center px-8 py-3.5 text-base font-bold text-white transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                                                    [routerLink]="asAny(section.content).buttonLink || '/store/productos'"
                                                     [style.background-color]="branding()?.primary_color || 'var(--store-color-primary, #0a0a0a)'"
                                                     [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
                                                     {{ asAny(section.content).buttonText }}
                                                 </a>
                                             }
                                             @if (asAny(section.content).secondaryButtonText) {
-                                                <a [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'" queryParamsHandling="preserve"
-                                                    class="inline-flex items-center px-8 py-3.5 text-base font-bold transition-all border border-slate-200 hover:bg-slate-50 shadow-md cursor-pointer"
+                                                <a queryParamsHandling="preserve" class="inline-flex items-center px-8 py-3.5 text-base font-bold transition-all border border-slate-200 hover:bg-slate-50 shadow-md cursor-pointer"
+                                                    [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'"
                                                     [style.color]="'var(--store-color-text, #0f172a)'"
                                                     [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
                                                     {{ asAny(section.content).secondaryButtonText }}
@@ -148,10 +148,10 @@
                                         </div>
                                     </div>
 
-                                    <div [class.md:order-1]="asAny(section.content).splitImagePosition === 'left'"
-                                        class="relative h-80 md:h-[480px] rounded-3xl overflow-hidden shadow-2xl border border-white/20">
-                                        <img [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || branding()?.main_banner_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'"
-                                            class="w-full h-full object-cover">
+                                    <div class="relative h-80 md:h-[480px] rounded-3xl overflow-hidden shadow-2xl border border-white/20"
+                                        [class.md:order-1]="asAny(section.content).splitImagePosition === 'left'">
+                                        <img class="w-full h-full object-cover"
+                                            [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || branding()?.main_banner_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'">
                                     </div>
                                 </div>
                             }
@@ -182,15 +182,15 @@
                                     <div class="flex flex-wrap items-center gap-4"
                                         [class.justify-center]="asAny(section.content).alignment === 'center' || !asAny(section.content).alignment">
                                         @if (asAny(section.content).buttonText) {
-                                            <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
-                                                class="inline-flex items-center px-8 py-3.5 text-base font-bold text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                                            <a queryParamsHandling="preserve" class="inline-flex items-center px-8 py-3.5 text-base font-bold text-gray-900 bg-white hover:bg-gray-50 transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
+                                                [routerLink]="asAny(section.content).buttonLink || '/store/productos'"
                                                 [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
                                                 {{ asAny(section.content).buttonText }}
                                             </a>
                                         }
                                         @if (asAny(section.content).secondaryButtonText) {
-                                            <a [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'" queryParamsHandling="preserve"
-                                                class="inline-flex items-center px-8 py-3.5 text-base font-bold text-white bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition-all shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                                            <a queryParamsHandling="preserve" class="inline-flex items-center px-8 py-3.5 text-base font-bold text-white bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition-all shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                                                [routerLink]="asAny(section.content).secondaryButtonLink || '/store/productos'"
                                                 [style.border-radius]="'var(--store-radius-btn, 0.75rem)'">
                                                 {{ asAny(section.content).secondaryButtonText }}
                                             </a>
@@ -206,13 +206,13 @@
 
             <!-- 2. PROMO BANNER -->
             @if (section.type === 'promo_banner') {
-                <section [ngStyle]="getSectionStyle(section)"
-                    class="py-12 px-4 relative overflow-hidden w-full"
+                <section class="py-12 px-4 relative overflow-hidden w-full"
+                    [ngStyle]="getSectionStyle(section)"
                     [class]="getSectionPaddingClass(section)"
                     [style.backgroundColor]="asAny(section.content).backgroundColor || section.styles?.backgroundColor || 'var(--store-color-accent, #4f46e5)'"
                     [style.color]="asAny(section.content).textColor || section.styles?.textColor || '#ffffff'">
                     
-                    <div [class]="getSectionContainerClass(section)" class="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left" [class]="getSectionContainerClass(section)">
                         <div>
                             @if (asAny(section.content).badge) {
                                 <span class="inline-block px-3 py-1 text-xs font-black uppercase tracking-widest bg-black/20 rounded-full mb-2">
@@ -226,8 +226,8 @@
                         </div>
 
                         @if (asAny(section.content).buttonText) {
-                            <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
-                                class="px-8 py-3 bg-white text-slate-900 font-black text-sm rounded-xl shadow-lg hover:scale-105 transition-all shrink-0 cursor-pointer">
+                            <a queryParamsHandling="preserve" class="px-8 py-3 bg-white text-slate-900 font-black text-sm rounded-xl shadow-lg hover:scale-105 transition-all shrink-0 cursor-pointer"
+                                [routerLink]="asAny(section.content).buttonLink || '/store/productos'">
                                 {{ asAny(section.content).buttonText }}
                             </a>
                         }
@@ -237,7 +237,7 @@
 
             <!-- 3. PRODUCT GRID -->
             @if (section.type === 'product_grid') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-16 w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-16 w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         @if (hasFeaturedProducts()) {
                             <div class="mb-10 flex items-end justify-between">
@@ -270,7 +270,7 @@
 
             <!-- 4. FEATURED CATEGORIES -->
             @if (section.type === 'featured_categories') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-16 text-center w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-16 text-center w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         <h2 class="text-3xl font-extrabold"
                             [style.color]="'var(--store-color-text, #0f172a)'"
@@ -284,8 +284,8 @@
                         }
                         <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
                             @for (cat of (asAny(section.content).categories || []); track cat.id) {
-                                <a [routerLink]="cat.link || '/store/productos'" queryParamsHandling="preserve"
-                                    class="p-8 border transition-all cursor-pointer group shadow-xs hover:shadow-lg"
+                                <a queryParamsHandling="preserve" class="p-8 border transition-all cursor-pointer group shadow-xs hover:shadow-lg"
+                                    [routerLink]="cat.link || '/store/productos'"
                                     [style.backgroundColor]="'var(--store-color-surface, #ffffff)'"
                                     [style.borderColor]="'var(--store-color-border, rgba(0,0,0,0.08))'"
                                     [style.borderRadius]="'var(--store-radius-card, 1rem)'">
@@ -304,8 +304,8 @@
 
             <!-- 5. OFFERS / FLASH SALE -->
             @if (section.type === 'offers') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-14 bg-gradient-to-r from-amber-500/10 to-red-500/10 border-y border-amber-200/40 w-full" [class]="getSectionPaddingClass(section)">
-                    <div [class]="getSectionContainerClass(section)" class="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+                <section class="py-14 bg-gradient-to-r from-amber-500/10 to-red-500/10 border-y border-amber-200/40 w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left" [class]="getSectionContainerClass(section)">
                         <div>
                             @if (asAny(section.content).badge) {
                                 <span class="px-3 py-1 bg-red-600 text-white font-black text-xs uppercase tracking-widest rounded-full mb-2 inline-block">
@@ -320,8 +320,8 @@
                                 {{ asAny(section.content).discountBadge || '50% OFF' }}
                             </span>
                             @if (asAny(section.content).buttonText) {
-                                <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
-                                    class="px-8 py-3.5 text-white font-bold rounded-2xl transition-all shadow-md cursor-pointer hover:opacity-90"
+                                <a queryParamsHandling="preserve" class="px-8 py-3.5 text-white font-bold rounded-2xl transition-all shadow-md cursor-pointer hover:opacity-90"
+                                    [routerLink]="asAny(section.content).buttonLink || '/store/productos'"
                                     [style.backgroundColor]="branding()?.primary_color || 'var(--store-color-primary, #0a0a0a)'">
                                     {{ asAny(section.content).buttonText }}
                                 </a>
@@ -333,7 +333,7 @@
 
             <!-- 6. TESTIMONIALS -->
             @if (section.type === 'testimonials') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-20 text-center w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-20 text-center w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         <h2 class="text-3xl font-extrabold"
                             [style.color]="'var(--store-color-text, #0f172a)'"
@@ -360,7 +360,7 @@
                                     </div>
                                     <div class="flex items-center gap-3 pt-4 border-t"
                                          [style.borderColor]="'var(--store-color-border, rgba(0,0,0,0.06))'">
-                                        <img [src]="item.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'" class="w-10 h-10 rounded-full object-cover">
+                                        <img class="w-10 h-10 rounded-full object-cover" [src]="item.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'">
                                         <div>
                                             <p class="text-sm font-bold" [style.color]="'var(--store-color-text, #0f172a)'">{{ item.name }}</p>
                                             <p class="text-xs opacity-60" [style.color]="'var(--store-color-muted, #64748b)'">{{ item.role }}</p>
@@ -375,7 +375,7 @@
 
             <!-- 7. REVIEWS -->
             @if (section.type === 'reviews') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-16 bg-black/2 w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-16 bg-black/2 w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-10 text-center md:text-left">
                             <div>
@@ -411,7 +411,7 @@
 
             <!-- 8. ABOUT US -->
             @if (section.type === 'about_us') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-20 w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-20 w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                             <div [class.md:order-2]="asAny(section.content).imagePosition === 'right'">
@@ -431,19 +431,19 @@
                                 </div>
                                 @if (asAny(section.content).buttonText) {
                                     <div class="mt-8">
-                                        <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
-                                            class="px-6 py-3 text-white font-bold rounded-xl transition-all shadow-md inline-block cursor-pointer hover:opacity-90"
+                                        <a queryParamsHandling="preserve" class="px-6 py-3 text-white font-bold rounded-xl transition-all shadow-md inline-block cursor-pointer hover:opacity-90"
+                                            [routerLink]="asAny(section.content).buttonLink || '/store/productos'"
                                             [style.backgroundColor]="branding()?.primary_color || 'var(--store-color-primary, #0a0a0a)'">
                                             {{ asAny(section.content).buttonText }}
                                         </a>
                                     </div>
                                 }
                             </div>
-                            <div [class.md:order-1]="asAny(section.content).imagePosition === 'right'"
-                                class="relative h-96 overflow-hidden shadow-2xl"
+                            <div class="relative h-96 overflow-hidden shadow-2xl"
+                                [class.md:order-1]="asAny(section.content).imagePosition === 'right'"
                                 [style.border-radius]="'var(--store-radius-card, 1.5rem)'">
-                                <img [src]="asAny(section.content).imageUrl || 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=800'"
-                                    class="absolute inset-0 w-full h-full object-cover">
+                                <img class="absolute inset-0 w-full h-full object-cover"
+                                    [src]="asAny(section.content).imageUrl || 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=800'">
                             </div>
                         </div>
                     </div>
@@ -452,7 +452,7 @@
 
             <!-- 9. IMAGE GALLERY -->
             @if (section.type === 'image_gallery') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-16 text-center w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-16 text-center w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         <h2 class="text-3xl font-extrabold mb-2" [style.color]="'var(--store-color-text, #0f172a)'">{{ asAny(section.content).title }}</h2>
                         @if (asAny(section.content).subtitle) {
@@ -461,7 +461,7 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             @for (item of (asAny(section.content).items?.length ? asAny(section.content).items : (branding()?.brand_gallery || [])); track item.id || item.url) {
                                 <div class="aspect-square rounded-2xl overflow-hidden relative group shadow-md">
-                                    <img [src]="item.imageUrl || item.url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" [src]="item.imageUrl || item.url">
                                     @if (item.caption) {
                                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4 text-center text-white font-bold text-sm">
                                             {{ item.caption }}
@@ -476,8 +476,8 @@
 
             <!-- 10. NEWSLETTER -->
             @if (section.type === 'newsletter') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-20 bg-sky-50/50 border-y border-sky-100 text-center w-full" [class]="getSectionPaddingClass(section)">
-                    <div [class]="getSectionContainerClass(section)" class="max-w-2xl mx-auto">
+                <section class="py-20 bg-sky-50/50 border-y border-sky-100 text-center w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                    <div class="max-w-2xl mx-auto" [class]="getSectionContainerClass(section)">
                         @if (asAny(section.content).badge) {
                             <span class="px-3 py-1 bg-sky-100 text-sky-700 text-xs font-black uppercase tracking-widest rounded-full mb-3 inline-block">
                                 {{ asAny(section.content).badge }}
@@ -486,8 +486,8 @@
                         <h2 class="text-3xl font-extrabold mb-3" [style.color]="'var(--store-color-text, #0f172a)'">{{ asAny(section.content).title }}</h2>
                         <p class="text-sm mb-8 leading-relaxed opacity-80" [style.color]="'var(--store-color-muted, #64748b)'">{{ asAny(section.content).description }}</p>
                         <div class="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
-                            <input type="email" [placeholder]="asAny(section.content).placeholderText || 'Ingresa tu correo...'"
-                                class="w-full px-5 py-3.5 text-sm rounded-xl border border-slate-200 bg-white text-slate-900 outline-none focus:ring-2 focus:ring-sky-500 shadow-xs">
+                            <input type="email" class="w-full px-5 py-3.5 text-sm rounded-xl border border-slate-200 bg-white text-slate-900 outline-none focus:ring-2 focus:ring-sky-500 shadow-xs"
+                                [placeholder]="asAny(section.content).placeholderText || 'Ingresa tu correo...'">
                             <button class="w-full sm:w-auto px-8 py-3.5 text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition-all shrink-0 cursor-pointer"
                                     [style.backgroundColor]="branding()?.primary_color || 'var(--store-color-primary, #0a0a0a)'">
                                 {{ asAny(section.content).buttonText || 'Suscribirme' }}
@@ -502,8 +502,8 @@
 
             <!-- 11. FAQ -->
             @if (section.type === 'faq') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-20 w-full" [class]="getSectionPaddingClass(section)">
-                    <div [class]="getSectionContainerClass(section)" class="max-w-3xl mx-auto">
+                <section class="py-20 w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                    <div class="max-w-3xl mx-auto" [class]="getSectionContainerClass(section)">
                         <h2 class="text-3xl font-extrabold text-center mb-3" [style.color]="'var(--store-color-text, #0f172a)'">{{ asAny(section.content).title }}</h2>
                         @if (asAny(section.content).subtitle) {
                             <p class="text-sm text-center mb-10 opacity-75" [style.color]="'var(--store-color-muted, #64748b)'">{{ asAny(section.content).subtitle }}</p>
@@ -533,7 +533,7 @@
 
             <!-- 12. BENEFITS -->
             @if (section.type === 'benefits') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-12 border-y w-full"
+                <section class="py-12 border-y w-full" [ngStyle]="getSectionStyle(section)"
                          [style.backgroundColor]="'var(--store-color-surface, #ffffff)'"
                          [style.borderColor]="'var(--store-color-border, rgba(0,0,0,0.08))'"
                          [class]="getSectionPaddingClass(section)">
@@ -555,7 +555,7 @@
 
             <!-- 13. BRAND LOGOS -->
             @if (section.type === 'brand_logos') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-12 text-center w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-12 text-center w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         @if (asAny(section.content).title) {
                             <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-6">{{ asAny(section.content).title }}</p>
@@ -571,8 +571,8 @@
 
             <!-- 14. COUNTDOWN -->
             @if (section.type === 'countdown') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-16 bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white text-center rounded-3xl mx-4 my-8" [class]="getSectionPaddingClass(section)">
-                    <div [class]="getSectionContainerClass(section)" class="max-w-2xl mx-auto">
+                <section class="py-16 bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white text-center rounded-3xl mx-4 my-8" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                    <div class="max-w-2xl mx-auto" [class]="getSectionContainerClass(section)">
                         <h2 class="text-3xl md:text-4xl font-black mb-2">{{ asAny(section.content).title }}</h2>
                         <p class="text-sm text-sky-200 mb-8">{{ asAny(section.content).description }}</p>
                         <div class="flex items-center justify-center gap-4 font-mono font-black mb-8">
@@ -582,8 +582,8 @@
                             <div class="bg-white/10 px-5 py-4 rounded-2xl backdrop-blur-md"><span class="text-3xl md:text-4xl block">18</span><span class="text-[10px] uppercase opacity-70">SEG</span></div>
                         </div>
                         @if (asAny(section.content).buttonText) {
-                            <a [routerLink]="asAny(section.content).buttonLink || '/store/productos'" queryParamsHandling="preserve"
-                                class="px-8 py-3.5 bg-sky-500 text-white font-bold rounded-2xl hover:bg-sky-400 transition-all shadow-lg inline-block cursor-pointer">
+                            <a queryParamsHandling="preserve" class="px-8 py-3.5 bg-sky-500 text-white font-bold rounded-2xl hover:bg-sky-400 transition-all shadow-lg inline-block cursor-pointer"
+                                [routerLink]="asAny(section.content).buttonLink || '/store/productos'">
                                 {{ asAny(section.content).buttonText }}
                             </a>
                         }
@@ -593,17 +593,17 @@
 
             <!-- 15. SOCIAL FEED -->
             @if (section.type === 'social_feed') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-16 text-center w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-16 text-center w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         <h2 class="text-3xl font-extrabold" [style.color]="'var(--store-color-text, #0f172a)'">{{ asAny(section.content).title }}</h2>
-                        <a [href]="asAny(section.content).profileUrl || 'https://instagram.com'" target="_blank" rel="noopener"
-                            class="text-sky-600 font-bold text-sm block mt-1 mb-8 hover:underline">
+                        <a target="_blank" rel="noopener" class="text-sky-600 font-bold text-sm block mt-1 mb-8 hover:underline"
+                            [href]="asAny(section.content).profileUrl || 'https://instagram.com'">
                             {{ asAny(section.content).handle }}
                         </a>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             @for (post of (asAny(section.content).items || []); track post.id) {
                                 <div class="aspect-square rounded-2xl overflow-hidden relative group shadow-xs">
-                                    <img [src]="post.imageUrl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" [src]="post.imageUrl">
                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm font-bold">
                                         ❤️ {{ post.likes || 120 }}
                                     </div>
@@ -616,7 +616,7 @@
 
             <!-- 16. MAP & LOCATION -->
             @if (section.type === 'map_location') {
-                <section [ngStyle]="getSectionStyle(section)" class="py-16 bg-black/2 w-full" [class]="getSectionPaddingClass(section)">
+                <section class="py-16 bg-black/2 w-full" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                     <div [class]="getSectionContainerClass(section)">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                             <div class="space-y-4">
@@ -631,8 +631,8 @@
                                     }
                                 </div>
                                 <div class="pt-2">
-                                    <a [href]="asAny(section.content).googleMapsUrl || 'https://maps.google.com'" target="_blank" rel="noopener"
-                                        class="px-6 py-3 text-white font-bold rounded-xl transition-all shadow-md inline-block text-xs cursor-pointer hover:opacity-90"
+                                    <a target="_blank" rel="noopener" class="px-6 py-3 text-white font-bold rounded-xl transition-all shadow-md inline-block text-xs cursor-pointer hover:opacity-90"
+                                        [href]="asAny(section.content).googleMapsUrl || 'https://maps.google.com'"
                                         [style.backgroundColor]="branding()?.primary_color || 'var(--store-color-primary, #0a0a0a)'">
                                         Abrir en Google Maps
                                     </a>

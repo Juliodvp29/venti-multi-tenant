@@ -1,11 +1,11 @@
 <div class="space-y-6 pb-24">
     <!-- Status Templates -->
     <ng-template #statusTemplate let-status>
-        <app-order-status-badge [status]="status" variant="order" />
+        <app-order-status-badge variant="order" [status]="status" />
     </ng-template>
 
     <ng-template #paymentTemplate let-payment>
-        <app-order-status-badge [status]="payment" variant="payment" />
+        <app-order-status-badge variant="payment" [status]="payment" />
     </ng-template>
 
     <!-- Header -->
@@ -14,8 +14,8 @@
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Órdenes</h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gestiona y revisa las órdenes de tu tienda.</p>
         </div>
-        <button (click)="openCreate()"
-            class="flex items-center gap-2 px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-sky-200 dark:shadow-sky-900/20 transition-all active:scale-95">
+        <button class="flex items-center gap-2 px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-sky-200 dark:shadow-sky-900/20 transition-all active:scale-95"
+            (click)="openCreate()">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
@@ -114,8 +114,8 @@
         <div class="flex flex-col items-center gap-3">
             <svg class="animate-spin h-8 w-8 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
             <p class="text-sm text-gray-500 dark:text-gray-400">Cargando órdenes...</p>
         </div>
@@ -126,19 +126,19 @@
     @if (orders().length > 0 || !isLoading()) {
     <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
         [class.pointer-events-none]="isLoading()">
-        <app-dynamic-table [data]="orders()" [columns]="columns()" title="Órdenes"
-            description="Haz clic en una orden para ver los detalles completos."
-            searchPlaceholder="Buscar por #orden o email..." [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE"
+        <app-dynamic-table title="Órdenes" description="Haz clic en una orden para ver los detalles completos." searchPlaceholder="Buscar por #orden o email..."
+            [data]="orders()"
+            [columns]="columns()" [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE"
             (pageChange)="loadOrders($event)" (rowClick)="onRowClick($event)" (searchChange)="onSearchChange($event)"
             (sortChange)="onSortChange($event)">
 
             <!-- Filters Slot -->
             <div filters class="flex items-center gap-2">
                 <!-- Status filter -->
-                <app-dropdown [options]="statusDropdownOptions" [value]="statusFilter()"
-                    (valueChange)="statusFilter.set($event); loadOrders(1)" width="w-44" placeholder="Estado" />
+                <app-dropdown width="w-44" placeholder="Estado"
+                    [options]="statusDropdownOptions" [value]="statusFilter()" (valueChange)="statusFilter.set($event); loadOrders(1)" />
                 <!-- Date range picker -->
-                <app-date-range-picker [(value)]="dateRange" placeholder="Rango de fechas"
+                <app-date-range-picker placeholder="Rango de fechas" [(value)]="dateRange"
                     (rangeChange)="onDateRangeChange($event)" />
             </div>
 

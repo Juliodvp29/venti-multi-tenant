@@ -60,8 +60,8 @@
         <div class="flex flex-col items-center gap-3">
             <svg class="animate-spin h-8 w-8 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
             <p class="text-sm text-gray-500 dark:text-gray-400">Cargando categorías...</p>
         </div>
@@ -72,14 +72,14 @@
     @if (categories().length > 0 || !isLoading()) {
     <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
         [class.pointer-events-none]="isLoading()">
-        <app-dynamic-table [data]="flatCategories()" [columns]="columns" [actions]="actions" title="Categorías"
-            description="Organiza tus productos en jerarquías significativas."
-            searchPlaceholder="Buscar por nombre o slug..." [allowImport]="true" (importData)="onImportData($event)">
+        <app-dynamic-table title="Categorías" description="Organiza tus productos en jerarquías significativas." searchPlaceholder="Buscar por nombre o slug..." [data]="flatCategories()"
+            [columns]="columns"
+            [actions]="actions" [allowImport]="true" (importData)="onImportData($event)">
 
             <!-- Actions Slot -->
             <div actions>
-                <button type="button" (click)="openCreate()"
-                    class="inline-flex items-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-sky-200 dark:hover:shadow-sky-900">
+                <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-sky-200 dark:hover:shadow-sky-900"
+                    (click)="openCreate()">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -99,7 +99,6 @@
 <div class="drawer-overlay" (click)="closeDrawer()"></div>
 <div class="drawer bg-white dark:bg-gray-900 flex flex-col">
     <app-category-form class="flex-1 h-full" [category]="editingCategory()" [categories]="flatCategories()"
-        (saved)="onCategorySaved($event)" (cancelled)="closeDrawer()">
-    </app-category-form>
+        (saved)="onCategorySaved($event)" (cancelled)="closeDrawer()" />
 </div>
 }

@@ -7,7 +7,7 @@ import {
   OnInit,
   signal,
   ViewChild,
-  TemplateRef,
+  TemplateRef, AfterViewInit,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
@@ -33,7 +33,7 @@ const PAGE_SIZE = 20;
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [CurrencyPipe],
 })
-export class CommissionsList implements OnInit {
+export class CommissionsList implements OnInit, AfterViewInit {
   private readonly commissionsService = inject(CommissionsService);
   private readonly tenantService = inject(TenantService);
   private readonly toastService = inject(ToastService);

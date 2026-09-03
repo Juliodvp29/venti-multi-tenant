@@ -46,18 +46,18 @@
           class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600 dark:text-gray-400"
         >
           <a
-            (click)="scrollToSection('features')"
             class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
+            (click)="scrollToSection('features')"
             >Características</a
           >
           <a
-            (click)="scrollToSection('pricing')"
             class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
+            (click)="scrollToSection('pricing')"
             >Precios</a
           >
           <a
-            (click)="scrollToSection('contact')"
             class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
+            (click)="scrollToSection('contact')"
             >Contacto</a
           >
         </div>
@@ -70,18 +70,18 @@
             >Iniciar sesión</a
           >
           <a
-            (click)="scrollToSection('pricing')"
             class="hidden md:block px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-full shadow-lg shadow-sky-500/25 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            (click)="scrollToSection('pricing')"
           >
             Empezar ahora
           </a>
 
           <!-- Botón hamburger (solo mobile) -->
           <button
-            (click)="mobileMenuOpen.set(!mobileMenuOpen())"
             type="button"
             class="md:hidden flex items-center justify-center w-10 h-10 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="Abrir menú"
+            (click)="mobileMenuOpen.set(!mobileMenuOpen())"
           >
             @if (mobileMenuOpen()) {
               <!-- Icono X -->
@@ -115,8 +115,8 @@
     @if (mobileMenuOpen()) {
       <!-- Overlay -->
       <div
-        (click)="mobileMenuOpen.set(false)"
         class="fixed inset-0 top-16 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-40 md:hidden"
+        (click)="mobileMenuOpen.set(false)"
       ></div>
 
       <!-- Panel -->
@@ -125,8 +125,8 @@
       >
         <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-1">
           <a
-            (click)="scrollToSection('features')"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer"
+            (click)="scrollToSection('features')"
           >
             <svg
               class="w-4 h-4 opacity-60"
@@ -144,8 +144,8 @@
             Características
           </a>
           <a
-            (click)="scrollToSection('pricing')"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer"
+            (click)="scrollToSection('pricing')"
           >
             <svg
               class="w-4 h-4 opacity-60"
@@ -163,8 +163,8 @@
             Precios
           </a>
           <a
-            (click)="scrollToSection('contact')"
             class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-sky-50 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-all cursor-pointer"
+            (click)="scrollToSection('contact')"
           >
             <svg
               class="w-4 h-4 opacity-60"
@@ -188,14 +188,14 @@
           <!-- CTAs -->
           <a
             routerLink="/auth/login"
-            (click)="mobileMenuOpen.set(false)"
             class="px-4 py-3 rounded-2xl text-sm font-bold text-center text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+            (click)="mobileMenuOpen.set(false)"
           >
             Iniciar sesión
           </a>
           <a
-            (click)="scrollToSection('pricing')"
             class="px-4 py-3 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-2xl text-center shadow-lg shadow-sky-500/20 transition-all cursor-pointer"
+            (click)="scrollToSection('pricing')"
           >
             Empezar ahora
           </a>
@@ -244,14 +244,14 @@
         style="animation-delay: 0.4s; animation-fill-mode: forwards"
       >
         <a
-          (click)="scrollToSection('pricing')"
           class="w-full sm:w-auto px-8 py-4 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-2xl shadow-xl shadow-sky-500/20 transition-all hover:-translate-y-1 active:scale-95 cursor-pointer text-center"
+          (click)="scrollToSection('pricing')"
         >
           Empieza tu prueba gratuita
         </a>
         <a
-          (click)="scrollToSection('features')"
           class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-bold rounded-2xl shadow-lg transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:-translate-y-1 active:scale-95 cursor-pointer text-center"
+          (click)="scrollToSection('features')"
         >
           Ver características
         </a>
@@ -268,38 +268,38 @@
         <div
           class="relative bg-slate-50 dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden group transition-all duration-500 hover:shadow-sky-500/20 hover:border-sky-500/30"
         >
-          @for (slide of slides; track slide.id; let i = $index) {
+          @for (slide of slides; track slide.id) {
             <div
-              [class]="i === 0 ? 'relative w-full' : 'absolute inset-0 w-full h-full'"
               class="transition-opacity duration-1000"
-              [class.opacity-100]="activeSlide() === i"
-              [class.opacity-0]="activeSlide() !== i"
-              [class.pointer-events-none]="activeSlide() !== i"
+              [class]="$first ? 'relative w-full' : 'absolute inset-0 w-full h-full'"
+              [class.opacity-100]="activeSlide() === $index"
+              [class.opacity-0]="activeSlide() !== $index"
+              [class.pointer-events-none]="activeSlide() !== $index"
             >
               <img
+                class="w-full h-auto block transition-all duration-700 group-hover:scale-[1.02] dark:hidden"
                 [src]="slide.light"
                 [alt]="slide.alt"
-                class="w-full h-auto block transition-all duration-700 group-hover:scale-[1.02] dark:hidden"
               />
 
               <img
+                class="w-full h-auto hidden dark:block transition-all duration-700 group-hover:scale-[1.02]"
                 [src]="slide.dark"
                 [alt]="slide.alt"
-                class="w-full h-auto hidden dark:block transition-all duration-700 group-hover:scale-[1.02]"
               />
             </div>
           }
 
           <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-            @for (slide of slides; track slide.id; let i = $index) {
+            @for (slide of slides; track slide.id) {
               <button
-                (click)="setActiveSlide(i)"
                 class="h-2 rounded-full transition-all duration-300"
-                [class.w-6]="activeSlide() === i"
-                [class.bg-sky-500]="activeSlide() === i"
-                [class.w-2]="activeSlide() !== i"
-                [class.bg-gray-400]="activeSlide() !== i"
-                [class.opacity-50]="activeSlide() !== i"
+                [class.w-6]="activeSlide() === $index"
+                [class.bg-sky-500]="activeSlide() === $index"
+                [class.w-2]="activeSlide() !== $index"
+                [class.bg-gray-400]="activeSlide() !== $index"
+                [class.opacity-50]="activeSlide() !== $index"
+                (click)="setActiveSlide($index)"
               ></button>
             }
           </div>
@@ -837,7 +837,7 @@
         @for (plan of plans; track plan.id; let i = $index) {
           <div
             class="relative p-8 bg-white dark:bg-gray-900 rounded-3xl border transition-all duration-300 hover:shadow-2xl group flex flex-col hover:-translate-y-2 animate-slide-up opacity-0"
-            [ngStyle]="{ 'animation-delay': 0.1 * i + 's', 'animation-fill-mode': 'forwards' }"
+            [ngStyle]="{ 'animation-delay': `${0.1 * i}s`, 'animation-fill-mode': 'forwards' }"
             [ngClass]="
               plan.isRecommended
                 ? 'border-sky-500 lg:scale-105 shadow-xl z-10'
@@ -892,9 +892,9 @@
             </ul>
 
             <a
+              class="w-full py-4 rounded-2xl font-bold text-center transition-all active:scale-95"
               [routerLink]="['/auth/purchase']"
               [queryParams]="{ plan: plan.id }"
-              class="w-full py-4 rounded-2xl font-bold text-center transition-all active:scale-95"
               [ngClass]="
                 plan.isRecommended
                   ? 'bg-sky-600 text-white shadow-lg shadow-sky-500/25 hover:bg-sky-700'
@@ -935,8 +935,8 @@
           </p>
           <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              (click)="scrollToSection('pricing')"
               class="w-full sm:w-auto px-10 py-4 bg-white text-sky-600 font-bold rounded-2xl shadow-xl hover:bg-sky-50 transition-all hover:-translate-y-0.5 active:scale-95 cursor-pointer text-center"
+              (click)="scrollToSection('pricing')"
             >
               Prueba gratuita de 14 días
             </a>

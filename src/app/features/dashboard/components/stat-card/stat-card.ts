@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
           class="flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-105"
           [ngClass]="iconBgClass()"
         >
-          <ng-content select="[icon]"></ng-content>
+          <ng-content select="[icon]" />
         </div>
 
         @if (trend(); as t) {

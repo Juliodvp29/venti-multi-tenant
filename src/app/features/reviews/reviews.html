@@ -134,10 +134,10 @@
     >
       <div class="flex items-center gap-4">
         <app-dropdown
+          width="w-56"
           [options]="statusOptions"
           [value]="statusFilter() ?? 'all'"
           (valueChange)="onStatusChange($event)"
-          width="w-56"
         />
       </div>
     </div>
@@ -150,7 +150,7 @@
       [pageSize]="pageSize()"
       (pageChange)="onPageChange($event)"
       (actionClick)="onAction($event)"
-    ></app-dynamic-table>
+    />
   </div>
 </div>
 
@@ -159,5 +159,5 @@
     [review]="selectedReview()!"
     (close)="selectedReview.set(null)"
     (updated)="onReviewUpdated()"
-  ></app-review-moderation-modal>
+  />
 }

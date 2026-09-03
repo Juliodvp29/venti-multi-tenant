@@ -30,7 +30,7 @@ import { TenantService } from '@core/services/tenant';
           [plotOptions]="options().plotOptions!"
           [stroke]="options().stroke!"
           [tooltip]="options().tooltip!"
-        ></apx-chart>
+        />
       </div>
 
       <div class="mt-4 space-y-2.5">

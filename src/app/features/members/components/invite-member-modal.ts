@@ -24,8 +24,8 @@ import { TenantRole } from '@core/enums';
             </p>
           </div>
           <button
-            (click)="close.emit()"
             class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            (click)="close.emit()"
           >
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
@@ -39,7 +39,7 @@ import { TenantRole } from '@core/enums';
         </div>
 
         <!-- Body -->
-        <form [formGroup]="inviteForm" (ngSubmit)="onSubmit()" class="px-6 py-6 space-y-6">
+        <form class="px-6 py-6 space-y-6" [formGroup]="inviteForm" (ngSubmit)="onSubmit()">
           <!-- Email Address -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
@@ -145,15 +145,15 @@ import { TenantRole } from '@core/enums';
           >
             <button
               type="button"
-              (click)="close.emit()"
               class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-all"
+              (click)="close.emit()"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              [disabled]="inviteForm.invalid || loading()"
               class="px-6 py-2.5 bg-sky-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-sky-200 dark:shadow-none hover:bg-sky-700 disabled:opacity-50 flex items-center gap-2 transition-all"
+              [disabled]="inviteForm.invalid || loading()"
             >
               {{ loading() ? 'Enviando...' : 'Enviar Invitación' }}
               @if (!loading()) {

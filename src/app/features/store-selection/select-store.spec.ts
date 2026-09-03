@@ -25,9 +25,28 @@ describe('SelectStoreComponent', () => {
     navigate: vi.fn(),
   };
 
+  const mockStorage: Record<string, string> = {};
+  const localStorageMock = {
+    getItem: vi.fn((key: string) => mockStorage[key] ?? null),
+    setItem: vi.fn((key: string, value: string) => {
+      mockStorage[key] = value;
+    }),
+    clear: vi.fn(() => {
+      for (const key in mockStorage) delete mockStorage[key];
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete mockStorage[key];
+    }),
+  };
+
+  Object.defineProperty(globalThis, 'localStorage', {
+    value: localStorageMock,
+    writable: true,
+  });
+
   beforeEach(async () => {
     vi.clearAllMocks();
-    localStorage.clear();
+    localStorageMock.clear();
     stores.set([
       { id: 'store-1', business_name: 'Tienda Uno', slug: 'tienda-uno' },
       { id: 'store-2', business_name: 'Tienda Dos', slug: 'tienda-dos' },

@@ -13,9 +13,9 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <app-stat-card
       label="Ventas Totales"
+      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
       [value]="formatCurrency(revenueTotal())"
       [trend]="{ value: revenueTrend() }"
-      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
     >
       <svg
         icon
@@ -36,9 +36,9 @@
 
     <app-stat-card
       label="Órdenes Totales"
+      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
       [value]="ordersTotal() | number"
       [trend]="{ value: ordersTrend() }"
-      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
     >
       <svg
         icon
@@ -59,9 +59,9 @@
 
     <app-stat-card
       label="Valor Promedio"
+      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
       [value]="formatCurrency(avgOrderValue())"
       [trend]="{ value: avgOrderTrend() }"
-      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
     >
       <svg
         icon
@@ -82,9 +82,9 @@
 
     <app-stat-card
       label="Nuevos Clientes"
+      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
       [value]="customersTotal() | number"
       [trend]="{ value: customersTrend() }"
-      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
     >
       <svg
         icon

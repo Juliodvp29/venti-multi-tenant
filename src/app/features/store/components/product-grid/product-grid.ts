@@ -66,8 +66,8 @@ import { Category } from '@core/models/category';
             <input
               type="text"
               placeholder="Buscar productos..."
-              (input)="onSearch($event)"
               class="pl-9 pr-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm w-full sm:w-56 focus:ring-2 focus:ring-sky-500 outline-none transition-all shadow-xs"
+              (input)="onSearch($event)"
             />
             <svg
               class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"
@@ -86,16 +86,16 @@ import { Category } from '@core/models/category';
 
           <div class="relative">
             <button
-              (click)="isSortMenuOpen.set(!isSortMenuOpen())"
               class="pl-3.5 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-sky-500 outline-none transition-all shadow-xs cursor-pointer flex items-center justify-between min-w-[150px] hover:border-slate-300"
+              (click)="isSortMenuOpen.set(!isSortMenuOpen())"
             >
               <span class="font-medium text-slate-700 truncate">{{ sortLabel() }}</span>
               <svg
                 class="w-3.5 h-3.5 absolute right-3 text-slate-400 transition-transform duration-300"
-                [class.rotate-180]="isSortMenuOpen()"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                [class.rotate-180]="isSortMenuOpen()"
               >
                 <path
                   stroke-linecap="round"
@@ -112,11 +112,11 @@ import { Category } from '@core/models/category';
               >
                 @for (opt of sortOptions; track opt.value) {
                   <button
-                    (click)="changeSort(opt.value)"
                     class="w-full text-left px-3.5 py-2 text-xs sm:text-sm hover:bg-slate-50 transition-colors flex items-center justify-between"
                     [class.text-sky-600]="sortBy() === opt.value"
                     [class.font-bold]="sortBy() === opt.value"
                     [class.bg-sky-50]="sortBy() === opt.value"
+                    (click)="changeSort(opt.value)"
                   >
                     <span>{{ opt.label }}</span>
                     @if (sortBy() === opt.value) {
@@ -142,28 +142,28 @@ import { Category } from '@core/models/category';
       @if (categories().length > 0) {
         <div class="flex flex-wrap gap-2 px-1 pb-4 border-b border-slate-100 dark:border-gray-800">
           <button
-            (click)="selectCategory(null)"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
             [class.bg-slate-900]="!selectedCategory()"
             [class.text-white]="!selectedCategory()"
             [class.bg-white]="selectedCategory()"
             [class.text-slate-600]="selectedCategory()"
             [class.border]="selectedCategory()"
             [class.border-slate-200]="selectedCategory()"
-            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            (click)="selectCategory(null)"
           >
             Todo
           </button>
 
           @for (cat of categories(); track cat.id) {
             <button
-              (click)="selectCategory(cat)"
+              class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
               [class.bg-slate-900]="isCategoryActive(cat)"
               [class.text-white]="isCategoryActive(cat)"
               [class.bg-white]="!isCategoryActive(cat)"
               [class.text-slate-600]="!isCategoryActive(cat)"
               [class.border]="!isCategoryActive(cat)"
               [class.border-slate-200]="!isCategoryActive(cat)"
-              class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              (click)="selectCategory(cat)"
             >
               {{ cat.name }}
             </button>
@@ -181,13 +181,13 @@ import { Category } from '@core/models/category';
           >
             @for (sub of selectedCategory()!.children; track sub.id) {
               <button
-                (click)="selectCategory(sub)"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:text-sky-600 cursor-pointer"
                 [class.bg-white]="selectedCategoryId() === sub.id"
                 [class.text-sky-600]="selectedCategoryId() === sub.id"
                 [class.font-bold]="selectedCategoryId() === sub.id"
                 [class.shadow-xs]="selectedCategoryId() === sub.id"
                 [class.text-slate-600]="selectedCategoryId() !== sub.id"
-                class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:text-sky-600 cursor-pointer"
+                (click)="selectCategory(sub)"
               >
                 {{ sub.name }}
               </button>
@@ -199,7 +199,7 @@ import { Category } from '@core/models/category';
       <!-- Grid -->
       <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
         @for (product of products(); track product.id) {
-          <app-product-card [product]="product"></app-product-card>
+          <app-product-card [product]="product" />
         }
       </div>
 

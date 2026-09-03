@@ -7,8 +7,8 @@
 
 
     <div class="relative">
-        <button type="button" (click)="toggle()" [disabled]="disabled()"
-            class="flex items-center justify-between w-full rounded-xl border-0 py-2.5 pl-4 pr-10 font-semibold text-gray-600 dark:text-gray-400 ring-1 ring-inset ring-gray-300 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-sky-600 sm:text-sm transition-all shadow-sm hover:ring-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        <button type="button" class="flex items-center justify-between w-full rounded-xl border-0 py-2.5 pl-4 pr-10 font-semibold text-gray-600 dark:text-gray-400 ring-1 ring-inset ring-gray-300 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-sky-600 sm:text-sm transition-all shadow-sm hover:ring-gray-400 disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="disabled()"
+            (click)="toggle()"
             >
 
 
@@ -18,8 +18,8 @@
 
             <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transition-transform duration-200"
-                    [class.rotate-180]="isOpen()" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor">
+                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    [class.rotate-180]="isOpen()">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
             </span>
@@ -34,8 +34,7 @@
             class="absolute z-20 mt-2 w-full min-w-[200px] right-0 rounded-2xl bg-white dark:bg-gray-800 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top">
             <div class="py-1 max-h-60 overflow-y-auto custom-scrollbar">
                 @for (option of options(); track option.value) {
-                <button type="button" (click)="select(option)"
-                    class="flex items-center justify-between w-full px-4 py-2.5 text-sm transition-colors"
+                <button type="button" class="flex items-center justify-between w-full px-4 py-2.5 text-sm transition-colors"
                     [class.text-sky-600]="value() === option.value"
                     [class.dark:text-sky-400]="value() === option.value"
                     [class.bg-sky-50]="value() === option.value"
@@ -43,7 +42,8 @@
                     [class.text-gray-700]="value() !== option.value"
                     [class.dark:text-gray-300]="value() !== option.value"
                     [class.hover:bg-gray-50]="value() !== option.value"
-                    [class.dark:hover:bg-gray-700/50]="value() !== option.value">
+                    [class.dark:hover:bg-gray-700/50]="value() !== option.value"
+                    (click)="select(option)">
 
                     <span class="truncate font-medium">{{ option.label }}</span>
 

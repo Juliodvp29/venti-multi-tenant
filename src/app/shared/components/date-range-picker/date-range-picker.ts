@@ -58,7 +58,7 @@ export class DateRangePicker {
         const month = this.viewMonth();
         const firstDay = new Date(year, month, 1);
         // Monday-based: 0=Mon … 6=Sun
-        let startOffset = (firstDay.getDay() + 6) % 7;
+        const startOffset = (firstDay.getDay() + 6) % 7;
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const days: (string | null)[] = [];
         for (let i = 0; i < startOffset; i++) days.push(null);

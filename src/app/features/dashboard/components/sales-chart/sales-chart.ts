@@ -33,7 +33,6 @@ import { TenantService } from '@core/services/tenant';
         >
           <button
             type="button"
-            (click)="setTab('revenue')"
             class="px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer"
             [class.bg-white]="activeTab() === 'revenue'"
             [class.dark:bg-slate-700]="activeTab() === 'revenue'"
@@ -44,12 +43,12 @@ import { TenantService } from '@core/services/tenant';
             [class.dark:text-slate-400]="activeTab() !== 'revenue'"
             [class.hover:text-slate-800]="activeTab() !== 'revenue'"
             [class.dark:hover:text-slate-200]="activeTab() !== 'revenue'"
+            (click)="setTab('revenue')"
           >
             Ingresos
           </button>
           <button
             type="button"
-            (click)="setTab('orders')"
             class="px-3 py-1 text-xs font-bold rounded-md transition-all ml-1 cursor-pointer"
             [class.bg-white]="activeTab() === 'orders'"
             [class.dark:bg-slate-700]="activeTab() === 'orders'"
@@ -60,6 +59,7 @@ import { TenantService } from '@core/services/tenant';
             [class.dark:text-slate-400]="activeTab() !== 'orders'"
             [class.hover:text-slate-800]="activeTab() !== 'orders'"
             [class.dark:hover:text-slate-200]="activeTab() !== 'orders'"
+            (click)="setTab('orders')"
           >
             Órdenes
           </button>
@@ -80,7 +80,7 @@ import { TenantService } from '@core/services/tenant';
           [fill]="options().fill!"
           [markers]="options().markers!"
           [yaxis]="options().yaxis!"
-        ></apx-chart>
+        />
       </div>
     </div>
   `,

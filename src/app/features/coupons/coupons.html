@@ -8,8 +8,8 @@
       </p>
     </div>
     <button
-      (click)="openCouponModal()"
       class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm"
+      (click)="openCouponModal()"
     >
       <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -102,13 +102,13 @@
       </div>
     }
     <app-dynamic-table
+      title="Lista de Cupones"
       [data]="coupons()"
       [columns]="columns"
       [actions]="actions"
       [pageSize]="10"
       (actionClick)="onAction($event)"
-      title="Lista de Cupones"
-    ></app-dynamic-table>
+    />
   </div>
 </div>
 
@@ -117,7 +117,7 @@
     [coupon]="selectedCoupon()"
     (close)="onModalClose()"
     (saved)="loadCoupons()"
-  ></app-coupon-modal>
+  />
 }
 
 <app-gift-coupon-modal

@@ -43,9 +43,9 @@ import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
         <div class="ml-4 flex items-center gap-3 md:ml-6">
           <!-- View Store Link -->
           <a
-            [href]="tenantService.storeUrl()"
             target="_blank"
             class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors border border-sky-100 dark:border-sky-900/50"
+            [href]="tenantService.storeUrl()"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
@@ -61,10 +61,10 @@ import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
           <!-- Help & Support Button (Supabase Style) -->
           <button
             type="button"
-            (click)="openHelp()"
             aria-label="Centro de Ayuda y Soporte"
             title="Ayuda y Soporte"
             class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
+            (click)="openHelp()"
           >
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

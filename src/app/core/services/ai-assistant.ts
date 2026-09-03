@@ -260,7 +260,7 @@ export class AiAssistantService {
                 }
             });
 
-            let result = await chat.sendMessage(text);
+            const result = await chat.sendMessage(text);
             let response = result.response;
 
             // Handle tool calls recursively

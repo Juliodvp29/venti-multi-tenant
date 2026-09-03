@@ -111,8 +111,8 @@
             <div class="flex flex-col items-center gap-3">
                 <svg class="animate-spin h-8 w-8 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Cargando comisiones...</p>
             </div>
@@ -124,11 +124,11 @@
         <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
             [class.pointer-events-none]="isLoading()">
             <app-dynamic-table
+                searchPlaceholder="Buscar por Transacción ID o Pago ID..."
+                title="Comisiones"
+                description="Gestiona y revisa las comisiones de tu tienda."
                 [data]="commissions()"
                 [columns]="columns()"
-                [title]="'Comisiones'"
-                [description]="'Gestiona y revisa las comisiones de tu tienda.'"
-                searchPlaceholder="Buscar por Transacción ID o Pago ID..."
                 [totalItemsOverride]="totalCount()"
                 [pageSize]="PAGE_SIZE"
                 (pageChange)="loadData($event)"
@@ -138,24 +138,24 @@
                 <div filters class="flex items-center gap-2">
                     <!-- Status filter -->
                     <app-dropdown
+                        width="w-44"
+                        placeholder="Estado"
                         [options]="statusDropdownOptions"
                         [value]="statusFilter()"
-                        (valueChange)="onStatusFilterChange($event)"
-                        width="w-44"
-                        placeholder="Estado" />
+                        (valueChange)="onStatusFilterChange($event)" />
 
                     <!-- Gateway filter -->
                     <app-dropdown
-                        [options]="gatewayDropdownOptions()"
-                        [value]="''"
-                        (valueChange)="onGatewayFilterChange($event)"
                         width="w-44"
-                        placeholder="Gateway" />
+                        placeholder="Gateway"
+                        value=""
+                        [options]="gatewayDropdownOptions()"
+                        (valueChange)="onGatewayFilterChange($event)" />
 
                     <!-- Date range picker -->
                     <app-date-range-picker
-                        [(value)]="dateRange"
                         placeholder="Rango de fechas"
+                        [(value)]="dateRange"
                         (rangeChange)="onDateRangeChange($event)" />
                 </div>
 

@@ -1,9 +1,9 @@
 <div class="relative inline-block">
 
     <!-- Trigger button -->
-    <button type="button" (click)="toggleOpen()"
-        class="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-2.5 px-4 text-sm transition-all focus:ring-2 focus:ring-sky-500 whitespace-nowrap active:scale-[0.98] group text-gray-600 dark:text-gray-400"
-        [class.ring-2]="open()" [class.ring-sky-500]="open()" [class.border-sky-500]="open()">
+    <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-2.5 px-4 text-sm transition-all focus:ring-2 focus:ring-sky-500 whitespace-nowrap active:scale-[0.98] group text-gray-600 dark:text-gray-400"
+        [class.ring-2]="open()"
+        [class.ring-sky-500]="open()" [class.border-sky-500]="open()" (click)="toggleOpen()">
 
         <svg xmlns="http://www.w3.org/2000/svg"
             class="h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-400 group-hover:text-sky-500 transition-colors" fill="none"
@@ -17,8 +17,8 @@
         </span>
 
         @if (value().start) {
-        <button type="button" (click)="$event.stopPropagation(); clearRange()"
-            class="ml-1 p-0.5 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+        <button type="button" class="ml-1 p-0.5 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+            (click)="$event.stopPropagation(); clearRange()">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -34,8 +34,8 @@
 
         <!-- Month nav -->
         <div class="flex items-center justify-between mb-4">
-            <button type="button" (click)="prevMonth()"
-                class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-all active:scale-95">
+            <button type="button" class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-all active:scale-95"
+                (click)="prevMonth()">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                     stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -48,8 +48,8 @@
                     {{ MONTHS[viewMonth()] }}
                 </span>
             </div>
-            <button type="button" (click)="nextMonth()"
-                class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-all active:scale-95">
+            <button type="button" class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-all active:scale-95"
+                (click)="nextMonth()">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                     stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -72,20 +72,20 @@
             @if (day === null) {
             <div class="h-8"></div>
             } @else {
-            <button type="button" (click)="selectDay(day)" (mouseenter)="hoverDay.set(day)"
-                (mouseleave)="hoverDay.set(null)"
-                class="relative h-8 w-full flex items-center justify-center text-sm transition-all duration-150 rounded-lg focus:outline-none"
-                [class.bg-sky-600]="isStart(day) || isEnd(day)" [class.text-white]="isStart(day) || isEnd(day)"
-                [class.font-bold]="isStart(day) || isEnd(day)" [class.shadow-lg]="isStart(day) || isEnd(day)"
-                [class.shadow-sky-200]="isStart(day) || isEnd(day)"
+            <button type="button" class="relative h-8 w-full flex items-center justify-center text-sm transition-all duration-150 rounded-lg focus:outline-none" [class.bg-sky-600]="isStart(day) || isEnd(day)"
+                [class.text-white]="isStart(day) || isEnd(day)"
+                [class.font-bold]="isStart(day) || isEnd(day)"
+                [class.shadow-lg]="isStart(day) || isEnd(day)" [class.shadow-sky-200]="isStart(day) || isEnd(day)"
                 [class.dark:shadow-none]="isStart(day) || isEnd(day)" [class.bg-sky-50]="isInRange(day)"
                 [class.dark:bg-sky-900\/30]="isInRange(day)"
-                [class.text-sky-700]="isInRange(day) && !isStart(day) && !isEnd(day)"
-                [class.dark:text-sky-300]="isInRange(day) && !isStart(day) && !isEnd(day)"
+                [class.text-sky-700]="isInRange(day) && !isStart(day) && !isEnd(day)" [class.dark:text-sky-300]="isInRange(day) && !isStart(day) && !isEnd(day)"
                 [class.hover:bg-gray-100]="!isStart(day) && !isEnd(day) && !isInRange(day)"
                 [class.dark:hover:bg-gray-800]="!isStart(day) && !isEnd(day) && !isInRange(day)"
                 [class.text-gray-700]="!isStart(day) && !isEnd(day)"
-                [class.dark:text-gray-300]="!isStart(day) && !isEnd(day)">
+                [class.dark:text-gray-300]="!isStart(day) && !isEnd(day)"
+                (click)="selectDay(day)"
+                (mouseenter)="hoverDay.set(day)"
+                (mouseleave)="hoverDay.set(null)">
                 {{ day.split('-')[2] | number:'1.0-0' }}
             </button>
             }

@@ -14,18 +14,18 @@
         </div>
         <div class="flex items-center gap-2 self-start sm:self-auto">
             <button 
-                (click)="openPresetsManager.emit()"
                 type="button"
-                class="px-3.5 py-2 text-xs font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-900/30 hover:bg-sky-100 dark:hover:bg-sky-900/50 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer border border-sky-200/50 dark:border-sky-800/50">
+                class="px-3.5 py-2 text-xs font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-900/30 hover:bg-sky-100 dark:hover:bg-sky-900/50 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer border border-sky-200/50 dark:border-sky-800/50"
+                (click)="openPresetsManager.emit()">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
                 </svg>
                 Presets & Versiones
             </button>
             <button 
-                (click)="resetToPreset()"
                 type="button"
-                class="px-3.5 py-2 text-xs font-bold text-slate-600 dark:text-gray-300 bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer">
+                class="px-3.5 py-2 text-xs font-bold text-slate-600 dark:text-gray-300 bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                (click)="resetToPreset()">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
@@ -37,7 +37,7 @@
     <!-- Sub-navigation tabs for Theme Customizer -->
     <div class="flex flex-wrap gap-2 border-b border-slate-200 dark:border-gray-800 pb-3">
         <button 
-            (click)="activeCustomizerTab.set('preset')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'preset'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'preset'"
             [class.text-white]="activeCustomizerTab() === 'preset'"
@@ -45,7 +45,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'preset'"
             [class.text-slate-700]="activeCustomizerTab() !== 'preset'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'preset'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('preset')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
             </svg>
@@ -53,7 +53,7 @@
         </button>
         
         <button 
-            (click)="activeCustomizerTab.set('colors')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'colors'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'colors'"
             [class.text-white]="activeCustomizerTab() === 'colors'"
@@ -61,7 +61,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'colors'"
             [class.text-slate-700]="activeCustomizerTab() !== 'colors'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'colors'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('colors')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 5 5 0 013-4.5V11a7 7 0 1114 0v1.5a5 5 0 013 4.5 4 4 0 01-4 4H7z" />
             </svg>
@@ -69,7 +69,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('typography')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'typography'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'typography'"
             [class.text-white]="activeCustomizerTab() === 'typography'"
@@ -77,7 +77,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'typography'"
             [class.text-slate-700]="activeCustomizerTab() !== 'typography'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'typography'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('typography')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
             </svg>
@@ -85,7 +85,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('borders')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'borders'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'borders'"
             [class.text-white]="activeCustomizerTab() === 'borders'"
@@ -93,7 +93,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'borders'"
             [class.text-slate-700]="activeCustomizerTab() !== 'borders'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'borders'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('borders')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <rect x="3" y="3" width="18" height="18" rx="4" stroke-width="2" />
             </svg>
@@ -101,7 +101,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('shadows')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'shadows'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'shadows'"
             [class.text-white]="activeCustomizerTab() === 'shadows'"
@@ -109,7 +109,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'shadows'"
             [class.text-slate-700]="activeCustomizerTab() !== 'shadows'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'shadows'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('shadows')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
@@ -117,7 +117,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('spacing')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'spacing'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'spacing'"
             [class.text-white]="activeCustomizerTab() === 'spacing'"
@@ -125,7 +125,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'spacing'"
             [class.text-slate-700]="activeCustomizerTab() !== 'spacing'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'spacing'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('spacing')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
             </svg>
@@ -133,7 +133,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('buttons')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'buttons'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'buttons'"
             [class.text-white]="activeCustomizerTab() === 'buttons'"
@@ -141,7 +141,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'buttons'"
             [class.text-slate-700]="activeCustomizerTab() !== 'buttons'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'buttons'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('buttons')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
             </svg>
@@ -149,7 +149,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('cards')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'cards'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'cards'"
             [class.text-white]="activeCustomizerTab() === 'cards'"
@@ -157,7 +157,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'cards'"
             [class.text-slate-700]="activeCustomizerTab() !== 'cards'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'cards'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('cards')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 10-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
@@ -165,7 +165,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('header')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'header'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'header'"
             [class.text-white]="activeCustomizerTab() === 'header'"
@@ -173,7 +173,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'header'"
             [class.text-slate-700]="activeCustomizerTab() !== 'header'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'header'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('header')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
@@ -181,7 +181,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('footer')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'footer'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'footer'"
             [class.text-white]="activeCustomizerTab() === 'footer'"
@@ -189,7 +189,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'footer'"
             [class.text-slate-700]="activeCustomizerTab() !== 'footer'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'footer'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('footer')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 20h16M4 16h16M4 12h8" />
             </svg>
@@ -197,7 +197,7 @@
         </button>
 
         <button 
-            (click)="activeCustomizerTab.set('custom_css')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90"
             [class.bg-slate-900]="activeCustomizerTab() === 'custom_css'"
             [class.dark:bg-sky-600]="activeCustomizerTab() === 'custom_css'"
             [class.text-white]="activeCustomizerTab() === 'custom_css'"
@@ -205,7 +205,7 @@
             [class.dark:bg-gray-800]="activeCustomizerTab() !== 'custom_css'"
             [class.text-slate-700]="activeCustomizerTab() !== 'custom_css'"
             [class.dark:text-gray-300]="activeCustomizerTab() !== 'custom_css'"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 hover:opacity-90">
+            (click)="activeCustomizerTab.set('custom_css')">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
             </svg>
@@ -226,7 +226,6 @@
              [class.xl:grid-cols-4]="isPopoutOpen()">
             @for (preset of presets; track preset.id) {
                 <div 
-                    (click)="selectPreset(preset.id)"
                     class="group relative rounded-2xl border p-5 transition-all cursor-pointer hover:shadow-xl flex flex-col justify-between"
                     [class.ring-2]="tokens().theme_id === preset.id"
                     [class.ring-sky-600]="tokens().theme_id === preset.id"
@@ -237,7 +236,8 @@
                     [class.border-slate-200]="tokens().theme_id !== preset.id"
                     [class.dark:border-gray-800]="tokens().theme_id !== preset.id"
                     [class.bg-white]="tokens().theme_id !== preset.id"
-                    [class.dark:bg-gray-900]="tokens().theme_id !== preset.id">
+                    [class.dark:bg-gray-900]="tokens().theme_id !== preset.id"
+                    (click)="selectPreset(preset.id)">
 
                     <div>
                         <!-- Header Preview Swatch -->
@@ -310,8 +310,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color Primario</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.primary" (ngModelChange)="updateColor('primary', $event)">
                     </div>
                 </div>
 
@@ -319,8 +319,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color Secundario</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.secondary" (ngModelChange)="updateColor('secondary', $event)">
                     </div>
                 </div>
 
@@ -328,8 +328,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Acento / Ofertas</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.accent" (ngModelChange)="updateColor('accent', $event)">
                     </div>
                 </div>
 
@@ -337,8 +337,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Fondo General de Página</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.background" (ngModelChange)="updateColor('background', $event)">
                     </div>
                 </div>
 
@@ -346,8 +346,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Fondo de Tarjetas de Producto</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.surface" (ngModelChange)="updateColor('surface', $event)">
                     </div>
                 </div>
 
@@ -355,8 +355,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color del Header</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.header" (ngModelChange)="updateColor('header', $event)">
                     </div>
                 </div>
 
@@ -364,8 +364,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color del Footer</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.footer" (ngModelChange)="updateColor('footer', $event)">
                     </div>
                 </div>
 
@@ -373,8 +373,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Texto Principal</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.text_primary" (ngModelChange)="updateColor('text_primary', $event)">
                     </div>
                 </div>
 
@@ -382,8 +382,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Texto Secundario</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.text_muted" (ngModelChange)="updateColor('text_muted', $event)">
                     </div>
                 </div>
 
@@ -391,8 +391,8 @@
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-700 dark:text-gray-300">Color de Bordes y Líneas</label>
                     <div class="flex items-center space-x-3">
-                        <input type="color" [ngModel]="tokens().colors.border" (ngModelChange)="updateColor('border', $event)" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent">
-                        <input type="text" [ngModel]="tokens().colors.border" (ngModelChange)="updateColor('border', $event)" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase">
+                        <input type="color" class="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 dark:border-gray-700 bg-transparent" [ngModel]="tokens().colors.border" (ngModelChange)="updateColor('border', $event)">
+                        <input type="text" class="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white uppercase" [ngModel]="tokens().colors.border" (ngModelChange)="updateColor('border', $event)">
                     </div>
                 </div>
             </div>
@@ -427,7 +427,6 @@
                      [class.xl:grid-cols-5]="isPopoutOpen()">
                     @for (pairing of typographyPairings; track pairing.id) {
                         <div 
-                            (click)="applyTypographyPairing(pairing)"
                             class="p-4 rounded-xl border transition-all cursor-pointer hover:border-sky-500 flex flex-col justify-between"
                             [class.border-sky-600]="isTypographyPairingActive(pairing)"
                             [class.dark:border-sky-500]="isTypographyPairingActive(pairing)"
@@ -436,7 +435,8 @@
                             [class.border-slate-200]="!isTypographyPairingActive(pairing)"
                             [class.dark:border-gray-800]="!isTypographyPairingActive(pairing)"
                             [class.bg-white]="!isTypographyPairingActive(pairing)"
-                            [class.dark:bg-gray-900]="!isTypographyPairingActive(pairing)">
+                            [class.dark:bg-gray-900]="!isTypographyPairingActive(pairing)"
+                            (click)="applyTypographyPairing(pairing)">
                             
                             <div>
                                 <div class="flex items-center justify-between mb-1">
@@ -475,22 +475,19 @@
                         label="Fuente de Títulos y Banner"
                         [options]="fontOptions" 
                         [value]="tokens().font_heading" 
-                        (valueChange)="updateToken('font_heading', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('font_heading', $event)" />
 
                     <app-dropdown 
                         label="Fuente de Cuerpo y Párrafos"
                         [options]="fontOptions" 
                         [value]="tokens().font_body" 
-                        (valueChange)="updateToken('font_body', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('font_body', $event)" />
 
                     <app-dropdown 
                         label="Fuente de Botones y Acciones"
                         [options]="fontOptions" 
                         [value]="tokens().font_button || tokens().font_body" 
-                        (valueChange)="updateToken('font_button', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('font_button', $event)" />
                 </div>
             </div>
 
@@ -504,29 +501,25 @@
                         label="Grosor de Títulos"
                         [options]="fontWeightOptions" 
                         [value]="tokens().font_weight_heading || '700'" 
-                        (valueChange)="updateToken('font_weight_heading', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('font_weight_heading', $event)" />
 
                     <app-dropdown 
                         label="Tamaño Base de Texto"
                         [options]="baseFontSizeOptions" 
                         [value]="tokens().font_size_base || '16px'" 
-                        (valueChange)="updateToken('font_size_base', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('font_size_base', $event)" />
 
                     <app-dropdown 
                         label="Interlineado (Line Height)"
                         [options]="lineHeightOptions" 
                         [value]="tokens().line_height || '1.5'" 
-                        (valueChange)="updateToken('line_height', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('line_height', $event)" />
 
                     <app-dropdown 
                         label="Espaciado de Letras (Tracking)"
                         [options]="letterSpacingOptions" 
                         [value]="tokens().letter_spacing || '0em'" 
-                        (valueChange)="updateToken('letter_spacing', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('letter_spacing', $event)" />
                 </div>
             </div>
 
@@ -583,29 +576,25 @@
                     label="Radio de Botones"
                     [options]="borderRadiusDropdownOptions" 
                     [value]="tokens().border_radius_button" 
-                    (valueChange)="updateToken('border_radius_button', $event)">
-                </app-dropdown>
+                    (valueChange)="updateToken('border_radius_button', $event)" />
 
                 <app-dropdown 
                     label="Radio de Tarjetas de Producto"
                     [options]="borderRadiusDropdownOptions" 
                     [value]="tokens().border_radius_card" 
-                    (valueChange)="updateToken('border_radius_card', $event)">
-                </app-dropdown>
+                    (valueChange)="updateToken('border_radius_card', $event)" />
 
                 <app-dropdown 
                     label="Grosor de Bordes"
                     [options]="borderWidthDropdownOptions" 
                     [value]="tokens().border_width" 
-                    (valueChange)="updateToken('border_width', $event)">
-                </app-dropdown>
+                    (valueChange)="updateToken('border_width', $event)" />
 
                 <app-dropdown 
                     label="Radio de Badges / Etiquetas"
                     [options]="borderRadiusDropdownOptions" 
                     [value]="tokens().border_radius_badge" 
-                    (valueChange)="updateToken('border_radius_badge', $event)">
-                </app-dropdown>
+                    (valueChange)="updateToken('border_radius_badge', $event)" />
             </div>
         </div>
     }
@@ -620,7 +609,6 @@
                  [class.xl:grid-cols-5]="isPopoutOpen()">
                 @for (shadow of shadowStyles; track shadow.value) {
                     <div 
-                        (click)="updateToken('shadow_style', shadow.value)"
                         class="p-4 rounded-xl border transition-all cursor-pointer hover:border-sky-500"
                         [class.border-sky-600]="tokens().shadow_style === shadow.value"
                         [class.dark:border-sky-500]="tokens().shadow_style === shadow.value"
@@ -629,7 +617,8 @@
                         [class.border-slate-200]="tokens().shadow_style !== shadow.value"
                         [class.dark:border-gray-800]="tokens().shadow_style !== shadow.value"
                         [class.bg-white]="tokens().shadow_style !== shadow.value"
-                        [class.dark:bg-gray-900]="tokens().shadow_style !== shadow.value">
+                        [class.dark:bg-gray-900]="tokens().shadow_style !== shadow.value"
+                        (click)="updateToken('shadow_style', shadow.value)">
                         
                         <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ shadow.label }}</p>
                         <p class="text-xs text-slate-500 dark:text-gray-400">{{ shadow.description }}</p>
@@ -649,7 +638,6 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @for (density of spacingDensities; track density.value) {
                         <div 
-                            (click)="updateToken('spacing_density', density.value)"
                             class="p-4 rounded-xl border transition-all cursor-pointer hover:border-sky-500"
                             [class.border-sky-600]="tokens().spacing_density === density.value"
                             [class.dark:border-sky-500]="tokens().spacing_density === density.value"
@@ -658,7 +646,8 @@
                             [class.border-slate-200]="tokens().spacing_density !== density.value"
                             [class.dark:border-gray-800]="tokens().spacing_density !== density.value"
                             [class.bg-white]="tokens().spacing_density !== density.value"
-                            [class.dark:bg-gray-900]="tokens().spacing_density !== density.value">
+                            [class.dark:bg-gray-900]="tokens().spacing_density !== density.value"
+                            (click)="updateToken('spacing_density', density.value)">
                             
                             <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ density.label }}</p>
                             <p class="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">{{ density.description }}</p>
@@ -676,7 +665,6 @@
                      [class.md:grid-cols-4]="isPopoutOpen()">
                     @for (width of maxContentWidths; track width.value) {
                         <div 
-                            (click)="updateToken('max_content_width', width.value)"
                             class="p-4 rounded-xl border transition-all cursor-pointer hover:border-sky-500"
                             [class.border-sky-600]="tokens().max_content_width === width.value"
                             [class.dark:border-sky-500]="tokens().max_content_width === width.value"
@@ -685,7 +673,8 @@
                             [class.border-slate-200]="tokens().max_content_width !== width.value"
                             [class.dark:border-gray-800]="tokens().max_content_width !== width.value"
                             [class.bg-white]="tokens().max_content_width !== width.value"
-                            [class.dark:bg-gray-900]="tokens().max_content_width !== width.value">
+                            [class.dark:bg-gray-900]="tokens().max_content_width !== width.value"
+                            (click)="updateToken('max_content_width', width.value)">
                             
                             <p class="font-bold text-slate-900 dark:text-white text-sm mb-1">{{ width.label }}</p>
                             <p class="text-[11px] text-slate-500 dark:text-gray-400 leading-relaxed">{{ width.description }}</p>
@@ -706,22 +695,19 @@
                     label="Forma del Botón"
                     [options]="buttonShapeDropdownOptions" 
                     [value]="tokens().button_shape" 
-                    (valueChange)="updateToken('button_shape', $event)">
-                </app-dropdown>
+                    (valueChange)="updateToken('button_shape', $event)" />
 
                 <app-dropdown 
                     label="Estilo Visual"
                     [options]="buttonStyleDropdownOptions" 
                     [value]="tokens().button_style" 
-                    (valueChange)="updateToken('button_style', $event)">
-                </app-dropdown>
+                    (valueChange)="updateToken('button_style', $event)" />
 
                 <app-dropdown 
                     label="Transformación de Texto"
                     [options]="buttonTransformDropdownOptions" 
                     [value]="tokens().button_transform" 
-                    (valueChange)="updateToken('button_transform', $event)">
-                </app-dropdown>
+                    (valueChange)="updateToken('button_transform', $event)" />
             </div>
         </div>
     }
@@ -748,29 +734,25 @@
                         label="Orientación de Tarjeta"
                         [options]="cardOrientationDropdownOptions" 
                         [value]="tokens().card_orientation ?? 'vertical'" 
-                        (valueChange)="updateToken('card_orientation', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('card_orientation', $event)" />
 
                     <app-dropdown 
                         label="Proporción de Imagen"
                         [options]="cardImageAspectDropdownOptions" 
                         [value]="tokens().card_image_aspect" 
-                        (valueChange)="updateToken('card_image_aspect', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('card_image_aspect', $event)" />
 
                     <app-dropdown 
                         label="Estilo Visual"
                         [options]="cardStyleDropdownOptions" 
                         [value]="tokens().card_style" 
-                        (valueChange)="updateToken('card_style', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('card_style', $event)" />
 
                     <app-dropdown 
                         label="Contorno / Borde"
                         [options]="cardBorderStyleDropdownOptions" 
                         [value]="tokens().card_border_style ?? 'bordered'" 
-                        (valueChange)="updateToken('card_border_style', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('card_border_style', $event)" />
                 </div>
             </div>
 
@@ -794,9 +776,9 @@
                             <span class="text-xs text-slate-500 dark:text-gray-400">Muestra el precio actual de venta del producto</span>
                         </div>
                         <input type="checkbox"
+                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer"
                                [checked]="tokens().card_show_price ?? true"
-                               (change)="updateToken('card_show_price', $any($event.target).checked)"
-                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                               (change)="updateToken('card_show_price', $any($event.target).checked)">
                     </label>
 
                     <!-- Show Compare Price -->
@@ -806,9 +788,9 @@
                             <span class="text-xs text-slate-500 dark:text-gray-400">Muestra el precio tachado cuando hay una oferta activa</span>
                         </div>
                         <input type="checkbox"
+                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer"
                                [checked]="tokens().card_show_original_price ?? true"
-                               (change)="updateToken('card_show_original_price', $any($event.target).checked)"
-                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                               (change)="updateToken('card_show_original_price', $any($event.target).checked)">
                     </label>
 
                     <!-- Show Discount Badge -->
@@ -818,9 +800,9 @@
                             <span class="text-xs text-slate-500 dark:text-gray-400">Calcula y muestra la insignia con el ahorro porcentual</span>
                         </div>
                         <input type="checkbox"
+                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer"
                                [checked]="tokens().card_show_discount_badge ?? true"
-                               (change)="updateToken('card_show_discount_badge', $any($event.target).checked)"
-                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                               (change)="updateToken('card_show_discount_badge', $any($event.target).checked)">
                     </label>
 
                     <!-- Show Stock -->
@@ -830,9 +812,9 @@
                             <span class="text-xs text-slate-500 dark:text-gray-400">Indica unidades disponibles o aviso de stock agotado</span>
                         </div>
                         <input type="checkbox"
+                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer"
                                [checked]="tokens().card_show_stock ?? false"
-                               (change)="updateToken('card_show_stock', $any($event.target).checked)"
-                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                               (change)="updateToken('card_show_stock', $any($event.target).checked)">
                     </label>
                 </div>
             </div>
@@ -857,9 +839,9 @@
                             <span class="text-xs text-slate-500 dark:text-gray-400">Muestra la insignia en productos de reciente creación</span>
                         </div>
                         <input type="checkbox"
+                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer"
                                [checked]="tokens().card_show_new_badge ?? true"
-                               (change)="updateToken('card_show_new_badge', $any($event.target).checked)"
-                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                               (change)="updateToken('card_show_new_badge', $any($event.target).checked)">
                     </label>
 
                     <!-- Sale Badge -->
@@ -869,9 +851,9 @@
                             <span class="text-xs text-slate-500 dark:text-gray-400">Muestra la insignia destacada cuando el producto está rebajado</span>
                         </div>
                         <input type="checkbox"
+                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer"
                                [checked]="tokens().card_show_sale_badge ?? true"
-                               (change)="updateToken('card_show_sale_badge', $any($event.target).checked)"
-                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                               (change)="updateToken('card_show_sale_badge', $any($event.target).checked)">
                     </label>
                 </div>
             </div>
@@ -893,8 +875,7 @@
                         label="Botón Directo de Carrito"
                         [options]="cardCartButtonDropdownOptions" 
                         [value]="tokens().card_cart_button_style ?? 'hover'" 
-                        (valueChange)="updateToken('card_cart_button_style', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('card_cart_button_style', $event)" />
 
                     <label class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-gray-800 hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-colors cursor-pointer">
                         <div>
@@ -902,9 +883,9 @@
                             <span class="text-xs text-slate-500 dark:text-gray-400">Muestra la segunda foto del producto suavemente al pasar el ratón</span>
                         </div>
                         <input type="checkbox"
+                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer"
                                [checked]="tokens().card_hover_secondary_image ?? true"
-                               (change)="updateToken('card_hover_secondary_image', $any($event.target).checked)"
-                               class="w-5 h-5 rounded text-sky-600 focus:ring-sky-500 border-gray-300 dark:border-gray-700 cursor-pointer">
+                               (change)="updateToken('card_hover_secondary_image', $any($event.target).checked)">
                     </label>
                 </div>
             </div>
@@ -926,8 +907,7 @@
                 <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Define dónde aparece el logo/nombre de tu tienda dentro del header.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     @for (opt of logoPositionOptions; track opt.value) {
-                        <div (click)="updateToken('header_logo_position', opt.value)"
-                             class="p-4 rounded-xl border cursor-pointer transition-all text-center flex flex-col justify-between"
+                        <div class="p-4 rounded-xl border cursor-pointer transition-all text-center flex flex-col justify-between"
                              [class.border-sky-600]="(tokens().header_logo_position ?? 'left') === opt.value"
                              [class.dark:border-sky-500]="(tokens().header_logo_position ?? 'left') === opt.value"
                              [class.bg-sky-50/60]="(tokens().header_logo_position ?? 'left') === opt.value"
@@ -935,7 +915,8 @@
                              [class.border-slate-200]="(tokens().header_logo_position ?? 'left') !== opt.value"
                              [class.dark:border-gray-800]="(tokens().header_logo_position ?? 'left') !== opt.value"
                              [class.bg-white]="(tokens().header_logo_position ?? 'left') !== opt.value"
-                             [class.dark:bg-gray-800/40]="(tokens().header_logo_position ?? 'left') !== opt.value">
+                             [class.dark:bg-gray-800/40]="(tokens().header_logo_position ?? 'left') !== opt.value"
+                             (click)="updateToken('header_logo_position', opt.value)">
                             <!-- Mini header preview -->
                             <div class="h-8 rounded-lg mb-3 border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 flex items-center px-2 gap-1 overflow-hidden">
                                 @if (opt.value === 'left') {
@@ -1136,15 +1117,13 @@
                         label="Tamaño del Logo"
                         [options]="logoSizeOptions"
                         [value]="tokens().header_logo_size || 'md'"
-                        (valueChange)="updateToken('header_logo_size', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('header_logo_size', $event)" />
 
                     <app-dropdown
                         label="Espaciado entre Enlacces del Menú"
                         [options]="navSpacingOptions"
                         [value]="tokens().header_nav_spacing || 'normal'"
-                        (valueChange)="updateToken('header_nav_spacing', $event)">
-                    </app-dropdown>
+                        (valueChange)="updateToken('header_nav_spacing', $event)" />
                 </div>
             </div>
         </div>
@@ -1163,8 +1142,7 @@
                 <p class="text-xs text-slate-500 dark:text-gray-400 mb-4">Elige cuántas columnas de contenido mostrar.</p>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     @for (opt of footerColumnOptions; track opt.value) {
-                        <button (click)="updateToken('footer_columns', opt.value)"
-                            class="flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all cursor-pointer text-xs font-bold"
+                        <button class="flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all cursor-pointer text-xs font-bold"
                             [class.border-sky-500]="(tokens().footer_columns ?? '3') === opt.value"
                             [class.bg-sky-50]="(tokens().footer_columns ?? '3') === opt.value"
                             [class.dark:bg-sky-950\/30]="(tokens().footer_columns ?? '3') === opt.value"
@@ -1172,7 +1150,8 @@
                             [class.border-slate-200]="(tokens().footer_columns ?? '3') !== opt.value"
                             [class.dark:border-gray-700]="(tokens().footer_columns ?? '3') !== opt.value"
                             [class.text-slate-600]="(tokens().footer_columns ?? '3') !== opt.value"
-                            [class.dark:text-gray-400]="(tokens().footer_columns ?? '3') !== opt.value">
+                            [class.dark:text-gray-400]="(tokens().footer_columns ?? '3') !== opt.value"
+                            (click)="updateToken('footer_columns', opt.value)">
                             <span class="text-base font-mono font-bold">{{ opt.icon }}</span>
                             <span>{{ opt.label }}</span>
                             <span class="text-[10px] text-slate-400 text-center font-normal">{{ opt.description }}</span>
@@ -1193,13 +1172,13 @@
                         <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-2">Modo de Fondo</label>
                         <div class="grid grid-cols-2 gap-2">
                             @for (opt of footerThemeModeOptions; track opt.value) {
-                                <button (click)="updateToken('footer_theme_mode', opt.value)"
-                                    class="px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer text-left"
+                                <button class="px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer text-left"
                                     [class.border-sky-500]="(tokens().footer_theme_mode ?? 'auto') === opt.value"
                                     [class.bg-sky-50]="(tokens().footer_theme_mode ?? 'auto') === opt.value"
                                     [class.text-sky-700]="(tokens().footer_theme_mode ?? 'auto') === opt.value"
                                     [class.border-slate-200]="(tokens().footer_theme_mode ?? 'auto') !== opt.value"
-                                    [class.text-slate-600]="(tokens().footer_theme_mode ?? 'auto') !== opt.value">
+                                    [class.text-slate-600]="(tokens().footer_theme_mode ?? 'auto') !== opt.value"
+                                    (click)="updateToken('footer_theme_mode', opt.value)">
                                     {{ opt.label }}
                                 </button>
                             }
@@ -1207,9 +1186,9 @@
                         @if ((tokens().footer_theme_mode ?? 'auto') === 'custom') {
                             <div class="mt-3 flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-lg border border-slate-200 shrink-0 shadow-xs" [style.background-color]="tokens().footer_custom_bg || '#0f172a'"></div>
-                                <input type="color" [value]="tokens().footer_custom_bg || '#0f172a'" (input)="updateToken('footer_custom_bg', $any($event.target).value)" class="sr-only" id="footer-custom-bg">
+                                <input type="color" class="sr-only" id="footer-custom-bg" [value]="tokens().footer_custom_bg || '#0f172a'" (input)="updateToken('footer_custom_bg', $any($event.target).value)">
                                 <label for="footer-custom-bg" class="text-xs px-3 py-1.5 bg-slate-100 dark:bg-gray-800 rounded-lg cursor-pointer font-bold text-slate-700 dark:text-gray-300">Seleccionar color</label>
-                                <input type="text" [value]="tokens().footer_custom_bg || '#0f172a'" (change)="updateToken('footer_custom_bg', $any($event.target).value)" class="flex-1 text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white font-mono">
+                                <input type="text" class="flex-1 text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white font-mono" [value]="tokens().footer_custom_bg || '#0f172a'" (change)="updateToken('footer_custom_bg', $any($event.target).value)">
                             </div>
                         }
                     </div>
@@ -1218,13 +1197,13 @@
                         <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-2">Alineación del Contenido</label>
                         <div class="flex gap-2">
                             @for (opt of footerAlignmentOptions; track opt.value) {
-                                <button (click)="updateToken('footer_alignment', opt.value)"
-                                    class="flex-1 px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer"
+                                <button class="flex-1 px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer"
                                     [class.border-sky-500]="(tokens().footer_alignment ?? 'left') === opt.value"
                                     [class.bg-sky-50]="(tokens().footer_alignment ?? 'left') === opt.value"
                                     [class.text-sky-700]="(tokens().footer_alignment ?? 'left') === opt.value"
                                     [class.border-slate-200]="(tokens().footer_alignment ?? 'left') !== opt.value"
-                                    [class.text-slate-600]="(tokens().footer_alignment ?? 'left') !== opt.value">
+                                    [class.text-slate-600]="(tokens().footer_alignment ?? 'left') !== opt.value"
+                                    (click)="updateToken('footer_alignment', opt.value)">
                                     {{ opt.label }}
                                 </button>
                             }
@@ -1244,10 +1223,10 @@
                         <p class="text-xs font-bold text-slate-900 dark:text-white">Mostrar Logo</p>
                         <p class="text-[11px] text-slate-500">Muestra el logo o nombre de la tienda en el pie</p>
                     </div>
-                    <button (click)="updateToken('footer_show_logo', !(tokens().footer_show_logo ?? true))"
-                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                    <button class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
                         [class.bg-sky-600]="tokens().footer_show_logo ?? true"
-                        [class.bg-slate-200]="!(tokens().footer_show_logo ?? true)">
+                        [class.bg-slate-200]="!(tokens().footer_show_logo ?? true)"
+                        (click)="updateToken('footer_show_logo', !(tokens().footer_show_logo ?? true))">
                         <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
                               [class.translate-x-4.5]="tokens().footer_show_logo ?? true"
                               [class.translate-x-0.5]="!(tokens().footer_show_logo ?? true)"></span>
@@ -1258,10 +1237,10 @@
                         <p class="text-xs font-bold text-slate-900 dark:text-white">Mostrar Descripción</p>
                         <p class="text-[11px] text-slate-500">Lema o reseña descriptiva de tu negocio</p>
                     </div>
-                    <button (click)="updateToken('footer_show_description', !(tokens().footer_show_description ?? true))"
-                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                    <button class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
                         [class.bg-sky-600]="tokens().footer_show_description ?? true"
-                        [class.bg-slate-200]="!(tokens().footer_show_description ?? true)">
+                        [class.bg-slate-200]="!(tokens().footer_show_description ?? true)"
+                        (click)="updateToken('footer_show_description', !(tokens().footer_show_description ?? true))">
                         <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
                               [class.translate-x-4.5]="tokens().footer_show_description ?? true"
                               [class.translate-x-0.5]="!(tokens().footer_show_description ?? true)"></span>
@@ -1271,10 +1250,10 @@
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Texto de Descripción Personalizada</label>
                         <textarea rows="2"
-                            [value]="tokens().footer_description || ''"
-                            (change)="updateToken('footer_description', $any($event.target).value)"
                             placeholder="Breve descripción de tu tienda para el pie de página..."
-                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+                            class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            [value]="tokens().footer_description || ''"
+                            (change)="updateToken('footer_description', $any($event.target).value)"></textarea>
                     </div>
                 }
                 <div class="flex items-center justify-between py-2">
@@ -1282,10 +1261,10 @@
                         <p class="text-xs font-bold text-slate-900 dark:text-white">Redes Sociales</p>
                         <p class="text-[11px] text-slate-500">Iconos con enlaces a tus redes configuradas</p>
                     </div>
-                    <button (click)="updateToken('footer_show_social', !(tokens().footer_show_social ?? true))"
-                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                    <button class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
                         [class.bg-sky-600]="tokens().footer_show_social ?? true"
-                        [class.bg-slate-200]="!(tokens().footer_show_social ?? true)">
+                        [class.bg-slate-200]="!(tokens().footer_show_social ?? true)"
+                        (click)="updateToken('footer_show_social', !(tokens().footer_show_social ?? true))">
                         <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
                               [class.translate-x-4.5]="tokens().footer_show_social ?? true"
                               [class.translate-x-0.5]="!(tokens().footer_show_social ?? true)"></span>
@@ -1300,10 +1279,10 @@
                         <svg class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                         Datos de Contacto
                     </h3>
-                    <button (click)="updateToken('footer_show_contact', !(tokens().footer_show_contact ?? true))"
-                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                    <button class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
                         [class.bg-sky-600]="tokens().footer_show_contact ?? true"
-                        [class.bg-slate-200]="!(tokens().footer_show_contact ?? true)">
+                        [class.bg-slate-200]="!(tokens().footer_show_contact ?? true)"
+                        (click)="updateToken('footer_show_contact', !(tokens().footer_show_contact ?? true))">
                         <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
                               [class.translate-x-4.5]="tokens().footer_show_contact ?? true"
                               [class.translate-x-0.5]="!(tokens().footer_show_contact ?? true)"></span>
@@ -1313,24 +1292,24 @@
                     <div class="space-y-3">
                         <div>
                             <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Dirección Física</label>
-                            <input type="text" [value]="tokens().footer_address || ''"
-                                (change)="updateToken('footer_address', $any($event.target).value)"
-                                placeholder="Ej: Carrera 15 #85-12, Bogotá, Colombia"
-                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <input type="text" placeholder="Ej: Carrera 15 #85-12, Bogotá, Colombia"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                [value]="tokens().footer_address || ''"
+                                (change)="updateToken('footer_address', $any($event.target).value)">
                         </div>
                         <div>
                             <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Teléfono / WhatsApp</label>
-                            <input type="text" [value]="tokens().footer_phone || ''"
-                                (change)="updateToken('footer_phone', $any($event.target).value)"
-                                placeholder="Ej: +57 310 123 4567"
-                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <input type="text" placeholder="Ej: +57 310 123 4567"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                [value]="tokens().footer_phone || ''"
+                                (change)="updateToken('footer_phone', $any($event.target).value)">
                         </div>
                         <div>
                             <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Horario de Atención</label>
-                            <input type="text" [value]="tokens().footer_hours || ''"
-                                (change)="updateToken('footer_hours', $any($event.target).value)"
-                                placeholder="Ej: Lun–Sáb: 8:00 AM – 6:00 PM"
-                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <input type="text" placeholder="Ej: Lun–Sáb: 8:00 AM – 6:00 PM"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                [value]="tokens().footer_hours || ''"
+                                (change)="updateToken('footer_hours', $any($event.target).value)">
                         </div>
                     </div>
                 }
@@ -1343,10 +1322,10 @@
                         <svg class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         Newsletter / Suscripción
                     </h3>
-                    <button (click)="updateToken('footer_show_newsletter', !(tokens().footer_show_newsletter ?? true))"
-                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                    <button class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
                         [class.bg-sky-600]="tokens().footer_show_newsletter ?? true"
-                        [class.bg-slate-200]="!(tokens().footer_show_newsletter ?? true)">
+                        [class.bg-slate-200]="!(tokens().footer_show_newsletter ?? true)"
+                        (click)="updateToken('footer_show_newsletter', !(tokens().footer_show_newsletter ?? true))">
                         <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
                               [class.translate-x-4.5]="tokens().footer_show_newsletter ?? true"
                               [class.translate-x-0.5]="!(tokens().footer_show_newsletter ?? true)"></span>
@@ -1356,17 +1335,17 @@
                     <div class="space-y-3">
                         <div>
                             <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Título del Newsletter</label>
-                            <input type="text" [value]="tokens().footer_newsletter_title || ''"
-                                (change)="updateToken('footer_newsletter_title', $any($event.target).value)"
-                                placeholder="Únete a nuestro club"
-                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <input type="text" placeholder="Únete a nuestro club"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                [value]="tokens().footer_newsletter_title || ''"
+                                (change)="updateToken('footer_newsletter_title', $any($event.target).value)">
                         </div>
                         <div>
                             <label class="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">Descripción de Oferta / Incentivo</label>
-                            <input type="text" [value]="tokens().footer_newsletter_description || ''"
-                                (change)="updateToken('footer_newsletter_description', $any($event.target).value)"
-                                placeholder="Suscríbete y recibe un 10% de descuento en tu primera compra"
-                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <input type="text" placeholder="Suscríbete y recibe un 10% de descuento en tu primera compra"
+                                class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                [value]="tokens().footer_newsletter_description || ''"
+                                (change)="updateToken('footer_newsletter_description', $any($event.target).value)">
                         </div>
                     </div>
                 }
@@ -1379,10 +1358,10 @@
                         <svg class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                         Métodos de Pago Aceptados
                     </h3>
-                    <button (click)="updateToken('footer_show_payments', !(tokens().footer_show_payments ?? true))"
-                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                    <button class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
                         [class.bg-sky-600]="tokens().footer_show_payments ?? true"
-                        [class.bg-slate-200]="!(tokens().footer_show_payments ?? true)">
+                        [class.bg-slate-200]="!(tokens().footer_show_payments ?? true)"
+                        (click)="updateToken('footer_show_payments', !(tokens().footer_show_payments ?? true))">
                         <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
                               [class.translate-x-4.5]="tokens().footer_show_payments ?? true"
                               [class.translate-x-0.5]="!(tokens().footer_show_payments ?? true)"></span>
@@ -1392,13 +1371,13 @@
                     <p class="text-xs text-slate-500">Selecciona las insignias de pago a mostrar:</p>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         @for (method of footerPaymentMethodOptions; track method.id) {
-                            <button (click)="togglePaymentMethod(method.id)"
-                                class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer"
+                            <button class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer"
                                 [class.border-sky-500]="isPaymentMethodEnabled(method.id)"
                                 [class.bg-sky-50]="isPaymentMethodEnabled(method.id)"
                                 [class.text-sky-700]="isPaymentMethodEnabled(method.id)"
                                 [class.border-slate-200]="!isPaymentMethodEnabled(method.id)"
-                                [class.text-slate-600]="!isPaymentMethodEnabled(method.id)">
+                                [class.text-slate-600]="!isPaymentMethodEnabled(method.id)"
+                                (click)="togglePaymentMethod(method.id)">
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     @if (isPaymentMethodEnabled(method.id)) {
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -1420,10 +1399,10 @@
                         <svg class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Enlaces Legales
                     </h3>
-                    <button (click)="updateToken('footer_show_legal', !(tokens().footer_show_legal ?? true))"
-                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
+                    <button class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
                         [class.bg-sky-600]="tokens().footer_show_legal ?? true"
-                        [class.bg-slate-200]="!(tokens().footer_show_legal ?? true)">
+                        [class.bg-slate-200]="!(tokens().footer_show_legal ?? true)"
+                        (click)="updateToken('footer_show_legal', !(tokens().footer_show_legal ?? true))">
                         <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform"
                               [class.translate-x-4.5]="tokens().footer_show_legal ?? true"
                               [class.translate-x-0.5]="!(tokens().footer_show_legal ?? true)"></span>
@@ -1433,22 +1412,22 @@
                     <div class="space-y-2">
                         @for (link of (tokens().footer_legal_links || []); track link.id) {
                             <div class="flex items-center gap-2">
-                                <input type="text" [value]="link.label"
-                                    (change)="updateLegalLink(link.id, 'label', $any($event.target).value)"
-                                    placeholder="Nombre del enlace"
-                                    class="flex-1 text-xs px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none">
-                                <input type="text" [value]="link.url"
-                                    (change)="updateLegalLink(link.id, 'url', $any($event.target).value)"
-                                    placeholder="URL (#, /terminos)"
-                                    class="flex-1 text-xs px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none">
-                                <button (click)="removeLegalLink(link.id)"
-                                    class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
+                                <input type="text" placeholder="Nombre del enlace"
+                                    class="flex-1 text-xs px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none"
+                                    [value]="link.label"
+                                    (change)="updateLegalLink(link.id, 'label', $any($event.target).value)">
+                                <input type="text" placeholder="URL (#, /terminos)"
+                                    class="flex-1 text-xs px-2 py-1.5 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none"
+                                    [value]="link.url"
+                                    (change)="updateLegalLink(link.id, 'url', $any($event.target).value)">
+                                <button class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                    (click)="removeLegalLink(link.id)">
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </div>
                         }
-                        <button (click)="addLegalLink()"
-                            class="flex items-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 cursor-pointer">
+                        <button class="flex items-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 cursor-pointer"
+                            (click)="addLegalLink()">
                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             Agregar enlace legal
                         </button>
@@ -1463,10 +1442,10 @@
                     Texto de Copyright y Créditos
                 </h3>
                 <p class="text-xs text-slate-500 mb-3">Deja vacío para usar el formato automático: <em>© {{'{year}'}} {{'{tienda}'}}. Todos los derechos reservados.</em></p>
-                <input type="text" [value]="tokens().footer_copyright_text || ''"
-                    (change)="updateToken('footer_copyright_text', $any($event.target).value)"
-                    placeholder="© 2026 Mi Tienda. Todos los derechos reservados."
-                    class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+                <input type="text" placeholder="© 2026 Mi Tienda. Todos los derechos reservados."
+                    class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                    [value]="tokens().footer_copyright_text || ''"
+                    (change)="updateToken('footer_copyright_text', $any($event.target).value)">
             </div>
 
         </div>
@@ -1496,15 +1475,15 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <button type="button" (click)="formatCustomCss()"
-                            class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer flex items-center gap-1.5">
+                        <button type="button" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer flex items-center gap-1.5"
+                            (click)="formatCustomCss()">
                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h14" />
                             </svg>
                             Formatear
                         </button>
-                        <button type="button" (click)="clearCustomCss()"
-                            class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-all cursor-pointer flex items-center gap-1.5">
+                        <button type="button" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-all cursor-pointer flex items-center gap-1.5"
+                            (click)="clearCustomCss()">
                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
@@ -1526,8 +1505,8 @@
                     </div>
                     <div class="flex flex-wrap gap-2">
                         @for (snippet of cssSnippets; track snippet.id) {
-                            <button type="button" (click)="insertCssSnippet(snippet)"
-                                class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-gray-800 hover:bg-sky-50 dark:hover:bg-sky-950/50 text-slate-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400 border border-slate-200 dark:border-gray-700 hover:border-sky-300 dark:hover:border-sky-700 transition-all cursor-pointer flex items-center gap-1.5">
+                            <button type="button" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-gray-800 hover:bg-sky-50 dark:hover:bg-sky-950/50 text-slate-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400 border border-slate-200 dark:border-gray-700 hover:border-sky-300 dark:hover:border-sky-700 transition-all cursor-pointer flex items-center gap-1.5"
+                                (click)="insertCssSnippet(snippet)">
                                 <span>+</span>
                                 <span>{{ snippet.name }}</span>
                             </button>
@@ -1550,27 +1529,27 @@
                         
                         <!-- Mode Selector: Editor vs Preview -->
                         <div class="flex items-center bg-slate-200 dark:bg-gray-900/60 p-0.5 rounded-lg text-[11px] font-bold">
-                            <button (click)="cssEditorView.set('edit')"
-                                class="px-2.5 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1.5"
+                            <button class="px-2.5 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1.5"
                                 [class.bg-white]="cssEditorView() === 'edit'"
                                 [class.dark:bg-sky-600]="cssEditorView() === 'edit'"
                                 [class.text-slate-900]="cssEditorView() === 'edit'"
                                 [class.dark:text-white]="cssEditorView() === 'edit'"
                                 [class.shadow-xs]="cssEditorView() === 'edit'"
                                 [class.text-slate-600]="cssEditorView() !== 'edit'"
-                                [class.dark:text-gray-400]="cssEditorView() !== 'edit'">
+                                [class.dark:text-gray-400]="cssEditorView() !== 'edit'"
+                                (click)="cssEditorView.set('edit')">
                                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 <span>Editor</span>
                             </button>
-                            <button (click)="cssEditorView.set('preview')"
-                                class="px-2.5 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1.5"
+                            <button class="px-2.5 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1.5"
                                 [class.bg-white]="cssEditorView() === 'preview'"
                                 [class.dark:bg-sky-600]="cssEditorView() === 'preview'"
                                 [class.text-slate-900]="cssEditorView() === 'preview'"
                                 [class.dark:text-white]="cssEditorView() === 'preview'"
                                 [class.shadow-xs]="cssEditorView() === 'preview'"
                                 [class.text-slate-600]="cssEditorView() !== 'preview'"
-                                [class.dark:text-gray-400]="cssEditorView() !== 'preview'">
+                                [class.dark:text-gray-400]="cssEditorView() !== 'preview'"
+                                (click)="cssEditorView.set('preview')">
                                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 <span>Sintaxis</span>
                             </button>
@@ -1624,12 +1603,12 @@
                             <!-- Editable High-Contrast Textarea -->
                             <textarea
                                 #codeTextarea
-                                [value]="tokens().custom_css || ''"
-                                (input)="onCodeInput($event)"
-                                (keydown.tab)="handleTabKey($event, codeTextarea)"
                                 placeholder="/* Escribe o pega tus reglas CSS aquí... */"
                                 spellcheck="false"
-                                class="code-editor-textarea">
+                                class="code-editor-textarea"
+                                [value]="tokens().custom_css || ''"
+                                (input)="onCodeInput($event)"
+                                (keydown.tab)="handleTabKey($event, codeTextarea)">
                             </textarea>
                         } @else {
                             <!-- Syntax Highlighted Read-only Layer with Tokens -->
@@ -1683,10 +1662,10 @@
                     <div class="relative min-w-[220px]">
                         <input
                             type="text"
-                            [value]="cssSearchQuery()"
-                            (input)="cssSearchQuery.set($any($event.target).value)"
                             placeholder="Buscar variable o propiedad..."
-                            class="w-full text-xs pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            class="w-full text-xs pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            [value]="cssSearchQuery()"
+                            (input)="cssSearchQuery.set($any($event.target).value)">
                         <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
@@ -1695,25 +1674,25 @@
 
                 <!-- Category Filters -->
                 <div class="flex flex-wrap gap-2 border-b border-slate-100 dark:border-gray-800 pb-3">
-                    <button type="button" (click)="activeVariableCategory.set('all')"
-                        class="px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                    <button type="button" class="px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer"
                         [class.bg-sky-600]="activeVariableCategory() === 'all'"
                         [class.text-white]="activeVariableCategory() === 'all'"
                         [class.bg-slate-100]="activeVariableCategory() !== 'all'"
                         [class.dark:bg-gray-800]="activeVariableCategory() !== 'all'"
                         [class.text-slate-600]="activeVariableCategory() !== 'all'"
-                        [class.dark:text-gray-300]="activeVariableCategory() !== 'all'">
+                        [class.dark:text-gray-300]="activeVariableCategory() !== 'all'"
+                        (click)="activeVariableCategory.set('all')">
                         Todas las Variables
                     </button>
                     @for (group of cssVariableCatalog; track group.category) {
-                        <button type="button" (click)="activeVariableCategory.set(group.category)"
-                            class="px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                        <button type="button" class="px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer"
                             [class.bg-sky-600]="activeVariableCategory() === group.category"
                             [class.text-white]="activeVariableCategory() === group.category"
                             [class.bg-slate-100]="activeVariableCategory() !== group.category"
                             [class.dark:bg-gray-800]="activeVariableCategory() !== group.category"
                             [class.text-slate-600]="activeVariableCategory() !== group.category"
-                            [class.dark:text-gray-300]="activeVariableCategory() !== group.category">
+                            [class.dark:text-gray-300]="activeVariableCategory() !== group.category"
+                            (click)="activeVariableCategory.set(group.category)">
                             {{ group.category }}
                         </button>
                     }
@@ -1745,16 +1724,16 @@
                                                 {{ entry.example }}
                                             </code>
                                             <div class="flex items-center gap-1.5 shrink-0">
-                                                <button type="button" (click)="copyCssVariable(entry.variable)"
-                                                    class="px-2 py-1 rounded text-[10px] font-bold bg-slate-200/70 dark:bg-gray-700 hover:bg-slate-300 text-slate-700 dark:text-gray-200 transition-colors cursor-pointer">
+                                                <button type="button" class="px-2 py-1 rounded text-[10px] font-bold bg-slate-200/70 dark:bg-gray-700 hover:bg-slate-300 text-slate-700 dark:text-gray-200 transition-colors cursor-pointer"
+                                                    (click)="copyCssVariable(entry.variable)">
                                                     @if (copiedVariable() === entry.variable) {
                                                         Copiado!
                                                     } @else {
                                                         Copiar
                                                     }
                                                 </button>
-                                                <button type="button" (click)="insertCssVariable(entry.variable)"
-                                                    class="px-2 py-1 rounded text-[10px] font-bold bg-sky-50 dark:bg-sky-950/60 hover:bg-sky-100 text-sky-600 dark:text-sky-400 transition-colors cursor-pointer flex items-center gap-1">
+                                                <button type="button" class="px-2 py-1 rounded text-[10px] font-bold bg-sky-50 dark:bg-sky-950/60 hover:bg-sky-100 text-sky-600 dark:text-sky-400 transition-colors cursor-pointer flex items-center gap-1"
+                                                    (click)="insertCssVariable(entry.variable)">
                                                     <span>+</span> Insertar
                                                 </button>
                                             </div>

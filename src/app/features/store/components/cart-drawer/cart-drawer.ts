@@ -20,8 +20,8 @@ import { CurrencyPipe } from '@angular/common';
   template: `
     <!-- Backdrop -->
     <div
-      (click)="close.emit()"
       class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 transition-opacity animate-in fade-in duration-300"
+      (click)="close.emit()"
     ></div>
 
     <!-- Drawer -->
@@ -36,8 +36,8 @@ import { CurrencyPipe } from '@angular/common';
         <button
           type="button"
           aria-label="Cerrar carrito"
-          (click)="close.emit()"
           class="p-2 hover:bg-slate-100 rounded-full transition-colors"
+          (click)="close.emit()"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -58,9 +58,9 @@ import { CurrencyPipe } from '@angular/common';
             >
               @if (getItemImage(item)) {
                 <img
+                  class="w-full h-full object-cover"
                   [src]="getItemImage(item)"
                   [alt]="item.name"
-                  class="w-full h-full object-cover"
                 />
               } @else {
                 <svg
@@ -84,8 +84,8 @@ import { CurrencyPipe } from '@angular/common';
                 <button
                   type="button"
                   aria-label="Eliminar producto del carrito"
-                  (click)="cartService.removeFromCart(item.id)"
                   class="text-slate-300 hover:text-red-500 transition-colors"
+                  (click)="cartService.removeFromCart(item.id)"
                 >
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -106,8 +106,8 @@ import { CurrencyPipe } from '@angular/common';
                 <button
                   type="button"
                   aria-label="Disminuir cantidad"
-                  (click)="cartService.updateQuantity(item.id, item.quantity - 1)"
                   class="px-2 py-1 hover:bg-slate-50"
+                  (click)="cartService.updateQuantity(item.id, item.quantity - 1)"
                 >
                   -
                 </button>
@@ -115,8 +115,8 @@ import { CurrencyPipe } from '@angular/common';
                 <button
                   type="button"
                   aria-label="Aumentar cantidad"
-                  (click)="cartService.updateQuantity(item.id, item.quantity + 1)"
                   class="px-2 py-1 hover:bg-slate-50"
+                  (click)="cartService.updateQuantity(item.id, item.quantity + 1)"
                 >
                   +
                 </button>
@@ -132,7 +132,7 @@ import { CurrencyPipe } from '@angular/common';
             </div>
             <p class="font-bold text-slate-900 mb-1">Tu carrito está vacío</p>
             <p class="text-sm text-slate-500 mb-6">¡Comienza a comprar y añade productos!</p>
-            <button type="button" (click)="close.emit()" class="text-sky-600 font-bold hover:underline">
+            <button type="button" class="text-sky-600 font-bold hover:underline" (click)="close.emit()">
               Continuar comprando
             </button>
           </div>
@@ -145,15 +145,15 @@ import { CurrencyPipe } from '@angular/common';
           @if (!cartService.appliedCoupon()) {
             <div class="flex gap-2">
               <input
-                [(ngModel)]="couponCode"
                 type="text"
                 placeholder="Código de cupón"
                 class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-sky-500 outline-none transition-all uppercase"
+                [(ngModel)]="couponCode"
               />
               <button
-                (click)="applyCoupon()"
-                [disabled]="!couponCode()"
                 class="px-4 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 disabled:opacity-50 transition-all"
+                [disabled]="!couponCode()"
+                (click)="applyCoupon()"
               >
                 Aplicar
               </button>
@@ -173,8 +173,8 @@ import { CurrencyPipe } from '@angular/common';
                 <span class="text-sm font-bold">{{ cartService.appliedCoupon()?.code }}</span>
               </div>
               <button
-                (click)="cartService.removeCoupon()"
                 class="text-slate-400 hover:text-red-500 font-bold text-sm"
+                (click)="cartService.removeCoupon()"
               >
                 Quitar
               </button>
@@ -209,11 +209,11 @@ import { CurrencyPipe } from '@angular/common';
         </div>
 
         <button
-          (click)="close.emit()"
           routerLink="/store/checkout"
           queryParamsHandling="preserve"
-          [disabled]="items().length === 0"
           class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          [disabled]="items().length === 0"
+          (click)="close.emit()"
         >
           Ir al Pago
         </button>

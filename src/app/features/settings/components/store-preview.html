@@ -1,5 +1,5 @@
 <div class="flex h-full min-h-0 items-center justify-center bg-slate-50 p-4 md:p-8 transition-all duration-300">
-    <div [class]="containerClass + ' store-preview-root'" class="min-h-0 transition-all duration-500 relative flex flex-col"
+    <div class="min-h-0 transition-all duration-500 relative flex flex-col" [class]="`${containerClass} store-preview-root`"
         [ngStyle]="dynamicCssVars()" [style.background-color]="pageBgColor()"
         [style.color]="'var(--store-color-text)'">
 
@@ -12,21 +12,21 @@
                     <div class="w-2.5 h-2.5 rounded-full bg-sky-400"></div>
                 </div>
                 <div class="bg-white rounded-md text-[10px] text-slate-500 px-2.5 py-0.5 border border-slate-200/60 font-mono">
-                    mystore.venti.com/store{{ previewPage() === 'home' ? '' : '/' + previewPage() }}
+                    mystore.venti.com/store{{ previewPage() === 'home' ? '' : `/${previewPage()}` }}
                 </div>
             </div>
 
             <!-- Page Quick Switcher in Preview -->
             <div class="flex items-center gap-1 overflow-x-auto max-w-full py-0.5">
                 @for (p of pageOptions; track p.id) {
-                    <button (click)="previewPage.set(p.id)"
-                        class="px-2.5 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer whitespace-nowrap"
+                    <button class="px-2.5 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer whitespace-nowrap"
                         [class.bg-sky-600]="previewPage() === p.id"
                         [class.text-white]="previewPage() === p.id"
                         [class.bg-white]="previewPage() !== p.id"
                         [class.text-slate-700]="previewPage() !== p.id"
                         [class.border]="previewPage() !== p.id"
-                        [class.border-slate-200]="previewPage() !== p.id">
+                        [class.border-slate-200]="previewPage() !== p.id"
+                        (click)="previewPage.set(p.id)">
                         {{ p.label }}
                     </button>
                 }
@@ -45,7 +45,7 @@
             @if (headerLogoPosition !== 'center') {
                 <div class="flex items-center space-x-3" [class.order-last]="headerLogoPosition === 'right'">
                     @if (activeLogoUrl) {
-                        <img [src]="activeLogoUrl" alt="Logo" [class]="headerLogoSizeClass + ' w-auto object-contain'">
+                        <img alt="Logo" [src]="activeLogoUrl" [class]="`${headerLogoSizeClass} w-auto object-contain`">
                     } @else {
                         <span class="font-bold text-lg" [style.font-family]="activeTokens.font_heading" [style.color]="data().primary_color">
                             {{ data().business_name }}
@@ -58,7 +58,7 @@
                          [class]="headerNavSpacingClass"
                          [style.color]="'var(--store-color-text)'">
                         @for (link of navLinks; track link.label) {
-                            <a [href]="link.url || '#'" (click)="preventDefault($event)" class="hover:opacity-80 transition-opacity">
+                            <a class="hover:opacity-80 transition-opacity" [href]="link.url || '#'" (click)="preventDefault($event)">
                                 {{ link.label }}
                             </a>
                         }
@@ -73,14 +73,14 @@
 
                 <div class="flex items-center space-x-3" [class.order-first]="headerLogoPosition === 'right'">
                     @if (headerShowSearch) {
-                        <button [style.color]="'var(--store-color-text)'" class="hover:opacity-80">
+                        <button class="hover:opacity-80" [style.color]="'var(--store-color-text)'">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </button>
                     }
                     @if (headerShowCart) {
-                        <button [style.color]="'var(--store-color-text)'" class="hover:opacity-80 relative">
+                        <button class="hover:opacity-80 relative" [style.color]="'var(--store-color-text)'">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
@@ -90,7 +90,7 @@
                         </button>
                     }
                     @if (headerHamburger || data().viewMode === 'mobile') {
-                        <button [style.color]="'var(--store-color-text)'" class="hover:opacity-80 p-1">
+                        <button class="hover:opacity-80 p-1" [style.color]="'var(--store-color-text)'">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
@@ -100,13 +100,13 @@
             }
 
             <!-- ===== LOGO CENTER ===== -->
-            @if (headerLogoPosition === 'center') {
+            @else {
                 @if (data().viewMode === 'desktop' && !headerHamburger) {
                     <nav class="hidden md:flex items-center text-xs font-semibold uppercase tracking-wider flex-1"
                          [class]="headerNavSpacingClass"
                          [style.color]="'var(--store-color-text)'">
                         @for (link of navLinks.slice(0, halfNavLinks); track link.label) {
-                            <a [href]="link.url || '#'" (click)="preventDefault($event)" class="hover:opacity-80 transition-opacity">
+                            <a class="hover:opacity-80 transition-opacity" [href]="link.url || '#'" (click)="preventDefault($event)">
                                 {{ link.label }}
                             </a>
                         }
@@ -115,7 +115,7 @@
 
                 <div class="flex items-center space-x-3 absolute left-1/2 -translate-x-1/2">
                     @if (activeLogoUrl) {
-                        <img [src]="activeLogoUrl" alt="Logo" [class]="headerLogoSizeClass + ' w-auto object-contain'">
+                        <img alt="Logo" [src]="activeLogoUrl" [class]="`${headerLogoSizeClass} w-auto object-contain`">
                     } @else {
                         <span class="font-bold text-lg" [style.font-family]="activeTokens.font_heading" [style.color]="data().primary_color">
                             {{ data().business_name }}
@@ -129,7 +129,7 @@
                              [class]="headerNavSpacingClass"
                              [style.color]="'var(--store-color-text)'">
                             @for (link of navLinks.slice(halfNavLinks); track link.label) {
-                                <a [href]="link.url || '#'" (click)="preventDefault($event)" class="hover:opacity-80 transition-opacity">
+                                <a class="hover:opacity-80 transition-opacity" [href]="link.url || '#'" (click)="preventDefault($event)">
                                     {{ link.label }}
                                 </a>
                             }
@@ -142,14 +142,14 @@
                         </nav>
                     }
                     @if (headerShowSearch) {
-                        <button [style.color]="'var(--store-color-text)'" class="hover:opacity-80">
+                        <button class="hover:opacity-80" [style.color]="'var(--store-color-text)'">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </button>
                     }
                     @if (headerShowCart) {
-                        <button [style.color]="'var(--store-color-text)'" class="hover:opacity-80 relative">
+                        <button class="hover:opacity-80 relative" [style.color]="'var(--store-color-text)'">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
@@ -159,7 +159,7 @@
                         </button>
                     }
                     @if (headerHamburger || data().viewMode === 'mobile') {
-                        <button [style.color]="'var(--store-color-text)'" class="hover:opacity-80 p-1">
+                        <button class="hover:opacity-80 p-1" [style.color]="'var(--store-color-text)'">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
@@ -189,8 +189,8 @@
                         <!-- Image -->
                         <div class="space-y-2">
                             <div class="aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm relative group cursor-zoom-in">
-                                <img [src]="mockProducts[0].image" [alt]="mockProducts[0].name"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" [src]="mockProducts[0].image"
+                                     [alt]="mockProducts[0].name">
                                 <div class="absolute top-2.5 left-2.5 flex flex-col gap-1">
                                     @if (cardShowSaleBadge && mockProducts[0].original_price) {
                                         <span class="px-2 py-0.5 text-[9px] font-black text-white uppercase shadow-sm"
@@ -202,11 +202,11 @@
                             <div class="grid grid-cols-4 gap-1.5">
                                 <div class="aspect-square rounded-lg overflow-hidden border-2 cursor-pointer"
                                      [style.border-color]="data().primary_color">
-                                    <img [src]="mockProducts[0].image" class="w-full h-full object-cover">
+                                    <img class="w-full h-full object-cover" [src]="mockProducts[0].image">
                                 </div>
                                 @for (p of mockProducts.slice(1,4); track p.name) {
                                     <div class="aspect-square rounded-lg overflow-hidden border-2 border-slate-200 cursor-pointer hover:border-sky-400 transition-colors">
-                                        <img [src]="p.image" class="w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity">
+                                        <img class="w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity" [src]="p.image">
                                     </div>
                                 }
                             </div>
@@ -246,7 +246,7 @@
                                     @for (s of ['38','39','40','41','42','43']; track s) {
                                         <button class="px-2.5 py-1 rounded-lg border-2 text-[11px] font-semibold transition-colors cursor-pointer"
                                                 [style.border-color]="s === '41' ? (data().primary_color || '#4f46e5') : '#e2e8f0'"
-                                                [style.background-color]="s === '41' ? ((data().primary_color || '#4f46e5') + '15') : 'transparent'"
+                                                [style.background-color]="s === '41' ? (`${data().primary_color || '#4f46e5'}15`) : 'transparent'"
                                                 [style.color]="s === '41' ? (data().primary_color || '#4f46e5') : 'var(--store-color-text)'">
                                             {{ s }}
                                         </button>
@@ -301,7 +301,7 @@
                             @for (p of mockProducts.slice(0,2); track p.name) {
                                 <div class="flex gap-3 p-3 rounded-2xl border border-slate-200 bg-white dark:bg-gray-900/50 shadow-xs">
                                     <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-50 shrink-0">
-                                        <img [src]="p.image" class="w-full h-full object-cover">
+                                        <img class="w-full h-full object-cover" [src]="p.image">
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-xs font-bold truncate" [style.color]="'var(--store-color-text)'">{{ p.name }}</p>
@@ -411,7 +411,7 @@
                                         <button class="px-3 py-1.5 text-[10px] font-bold rounded-lg border-2 cursor-pointer transition-colors"
                                                 [style.border-color]="method === 'Tarjeta' ? (data().primary_color || '#4f46e5') : '#e2e8f0'"
                                                 [style.color]="method === 'Tarjeta' ? (data().primary_color || '#4f46e5') : 'var(--store-color-text)'"
-                                                [style.background-color]="method === 'Tarjeta' ? ((data().primary_color || '#4f46e5') + '12') : 'transparent'">
+                                                [style.background-color]="method === 'Tarjeta' ? (`${data().primary_color || '#4f46e5'}12`) : 'transparent'">
                                             {{ method }}
                                         </button>
                                     }
@@ -435,7 +435,7 @@
                             @for (p of mockProducts.slice(0,2); track p.name) {
                                 <div class="flex gap-2 items-center">
                                     <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-50 shrink-0 relative">
-                                        <img [src]="p.image" class="w-full h-full object-cover">
+                                        <img class="w-full h-full object-cover" [src]="p.image">
                                         <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[8px] flex items-center justify-center text-white font-bold"
                                               [style.background-color]="data().accent_color || 'var(--store-color-accent, #6366f1)'">1</span>
                                     </div>
@@ -482,12 +482,12 @@
             @for (section of activeSections(); track section.id) {
                 @if (section.isActive) {
                     
-                    <div [class]="getSectionDeviceClass(section)" class="store-section" [ngStyle]="getSectionStyle(section)">
+                    <div class="store-section" [class]="getSectionDeviceClass(section)" [ngStyle]="getSectionStyle(section)">
                         
                         <!-- 1. HERO -->
                         @if (section.type === 'hero') {
-                            <section [ngStyle]="getSectionStyle(section)"
-                                class="hero-section relative overflow-hidden flex items-center justify-center transition-all duration-300"
+                            <section class="hero-section relative overflow-hidden flex items-center justify-center transition-all duration-300"
+                                [ngStyle]="getSectionStyle(section)"
                                 [class]="getSectionPaddingClass(section)"
                                 [class.min-h-\[350px\]]="asAny(section.content).height === 'compact'"
                                 [class.md:min-h-\[420px\]]="asAny(section.content).height === 'compact'"
@@ -505,8 +505,8 @@
                                     </video>
                                 } @else if (asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url) {
                                     <!-- Imagen de Fondo -->
-                                    <img [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url"
-                                        class="absolute inset-0 w-full h-full object-cover">
+                                    <img class="absolute inset-0 w-full h-full object-cover"
+                                        [src]="asAny(section.content).backgroundImageUrl || section.styles?.backgroundImageUrl || data().main_banner_url">
                                 }
 
                                 <!-- Overlay Configurable (Color y Opacidad) -->
@@ -632,10 +632,10 @@
                                                     </div>
                                                 </div>
 
-                                                <div [class.md:order-1]="asAny(section.content).splitImagePosition === 'left'"
-                                                    class="relative h-64 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-white/20">
-                                                    <img [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || data().main_banner_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'"
-                                                        class="w-full h-full object-cover">
+                                                <div class="relative h-64 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-white/20"
+                                                    [class.md:order-1]="asAny(section.content).splitImagePosition === 'left'">
+                                                    <img class="w-full h-full object-cover"
+                                                        [src]="asAny(section.content).splitImageUrl || asAny(section.content).backgroundImageUrl || data().main_banner_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'">
                                                 </div>
                                             </div>
                                         }
@@ -691,13 +691,13 @@
 
                         <!-- 2. PROMO BANNER -->
                         @if (section.type === 'promo_banner') {
-                            <section [ngStyle]="getSectionStyle(section)"
-                                class="p-6 text-center relative overflow-hidden"
+                            <section class="p-6 text-center relative overflow-hidden"
+                                [ngStyle]="getSectionStyle(section)"
                                 [class]="getSectionPaddingClass(section)"
                                 [style.backgroundColor]="asAny(section.content).backgroundColor || section.styles?.backgroundColor || data().accent_color || '#4f46e5'"
                                 [style.color]="asAny(section.content).textColor || section.styles?.textColor || '#ffffff'">
                                 
-                                <div [class]="getSectionContainerClass(section)" class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-4" [class]="getSectionContainerClass(section)">
                                     <div class="text-left">
                                         @if (asAny(section.content).badge) {
                                             <span class="inline-block text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-black/20 mb-1">
@@ -720,7 +720,7 @@
 
                         <!-- 3. PRODUCT GRID -->
                         @if (section.type === 'product_grid') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     <div class="flex items-center justify-between mb-4">
                                         <div>
@@ -755,14 +755,14 @@
                                                     [class.w-28]="cardOrientation === 'horizontal'"
                                                     [class.mb-2]="cardOrientation === 'vertical'"
                                                     [ngClass]="cardImageAspectClass">
-                                                    <img [src]="p.image" [alt]="p.name" 
-                                                         class="w-full h-full object-cover transition-all duration-500"
+                                                    <img class="w-full h-full object-cover transition-all duration-500" [src]="p.image" 
+                                                         [alt]="p.name"
                                                          [class.group-hover:scale-105]="!cardHoverSecondaryImage || !p.secondaryImage"
                                                          [class.group-hover:opacity-0]="cardHoverSecondaryImage && p.secondaryImage">
                                                     
                                                     @if (cardHoverSecondaryImage && p.secondaryImage) {
-                                                        <img [src]="p.secondaryImage" [alt]="p.name + ' 2'" 
-                                                             class="w-full h-full object-cover absolute inset-0 opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                                                        <img class="w-full h-full object-cover absolute inset-0 opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" [src]="p.secondaryImage" 
+                                                             [alt]="`${p.name} 2`">
                                                     }
 
                                                     <!-- Badges -->
@@ -823,7 +823,7 @@
                                                         
                                                         @if (cardShowStock) {
                                                             <p class="text-[8px] text-sky-600 dark:text-sky-400 font-medium">
-                                                                {{ p.stock > 0 ? (p.stock + ' en stock') : 'Agotado' }}
+                                                                {{ p.stock > 0 ? (`${p.stock} en stock`) : 'Agotado' }}
                                                             </p>
                                                         }
                                                     </div>
@@ -863,7 +863,7 @@
 
                         <!-- 4. FEATURED CATEGORIES -->
                         @if (section.type === 'featured_categories') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6 text-center" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     <h3 class="text-sm font-bold mb-1" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
                                     @if (asAny(section.content).description) {
@@ -883,8 +883,8 @@
 
                         <!-- 5. OFFERS / FLASH SALE -->
                         @if (section.type === 'offers') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-amber-50/40 border-y border-amber-100/60" [class]="getSectionPaddingClass(section)">
-                                <div [class]="getSectionContainerClass(section)" class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                            <section class="p-6 bg-amber-50/40 border-y border-amber-100/60" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left" [class]="getSectionContainerClass(section)">
                                     <div>
                                         @if (asAny(section.content).badge) {
                                             <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-amber-200 text-amber-900 font-bold mb-1 inline-block">
@@ -910,7 +910,7 @@
 
                         <!-- 6. TESTIMONIALS -->
                         @if (section.type === 'testimonials') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6 text-center" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     <h3 class="text-sm font-bold mb-1" [style.color]="'var(--store-color-text)'" [style.font-family]="activeTokens.font_heading">{{ asAny(section.content).title }}</h3>
                                     <p class="text-xs text-gray-500 mb-6">{{ asAny(section.content).subtitle }}</p>
@@ -922,7 +922,7 @@
                                                     <p class="text-xs italic text-slate-600 dark:text-gray-300 mb-4">"{{ t.content }}"</p>
                                                 </div>
                                                 <div class="flex items-center gap-2.5 pt-2 border-t border-slate-100 dark:border-gray-800">
-                                                    <img [src]="t.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'" class="w-7 h-7 rounded-full object-cover">
+                                                    <img class="w-7 h-7 rounded-full object-cover" [src]="t.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'">
                                                     <div>
                                                         <p class="text-xs font-bold text-slate-900 dark:text-white">{{ t.name }}</p>
                                                         <p class="text-[10px] text-gray-400">{{ t.role }}</p>
@@ -937,7 +937,7 @@
 
                         <!-- 7. REVIEWS -->
                         @if (section.type === 'reviews') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-slate-50/50" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6 bg-slate-50/50" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     <div class="flex items-center justify-between mb-4">
                                         <div>
@@ -967,8 +967,8 @@
 
                         <!-- 8. ABOUT US -->
                         @if (section.type === 'about_us') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-slate-50/20" [class]="getSectionPaddingClass(section)">
-                                <div [class]="getSectionContainerClass(section)" class="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center">
+                            <section class="p-6 bg-slate-50/20" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center" [class]="getSectionContainerClass(section)">
                                     <div [class.sm:order-2]="asAny(section.content).imagePosition === 'right'">
                                         @if (asAny(section.content).badge) {
                                             <span class="text-[9px] font-extrabold uppercase tracking-widest text-sky-600 mb-1 block">
@@ -983,8 +983,8 @@
                                             </button>
                                         }
                                     </div>
-                                    <div [class.sm:order-1]="asAny(section.content).imagePosition === 'right'" class="h-48 rounded-2xl overflow-hidden shadow-sm">
-                                        <img [src]="asAny(section.content).imageUrl || 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=600'" class="w-full h-full object-cover">
+                                    <div class="h-48 rounded-2xl overflow-hidden shadow-sm" [class.sm:order-1]="asAny(section.content).imagePosition === 'right'">
+                                        <img class="w-full h-full object-cover" [src]="asAny(section.content).imageUrl || 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=600'">
                                     </div>
                                 </div>
                             </section>
@@ -992,7 +992,7 @@
 
                         <!-- 9. IMAGE GALLERY -->
                         @if (section.type === 'image_gallery') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6 text-center" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     <h3 class="text-sm font-bold mb-1" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
                                     @if (asAny(section.content).subtitle) {
@@ -1001,7 +1001,7 @@
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                         @for (item of (asAny(section.content).items?.length ? asAny(section.content).items : (data().brand_gallery || [])); track item.id || item.url) {
                                             <div class="aspect-square rounded-xl overflow-hidden group relative shadow-sm">
-                                                <img [src]="item.imageUrl || item.url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" [src]="item.imageUrl || item.url">
                                                 @if (item.caption) {
                                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-center text-white text-xs font-bold">
                                                         {{ item.caption }}
@@ -1016,8 +1016,8 @@
 
                         <!-- 10. NEWSLETTER -->
                         @if (section.type === 'newsletter') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-8 text-center bg-sky-50/60 dark:bg-sky-950/20 border-y border-sky-100 dark:border-sky-900/40" [class]="getSectionPaddingClass(section)">
-                                <div [class]="getSectionContainerClass(section)" class="max-w-md mx-auto">
+                            <section class="p-8 text-center bg-sky-50/60 dark:bg-sky-950/20 border-y border-sky-100 dark:border-sky-900/40" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                                <div class="max-w-md mx-auto" [class]="getSectionContainerClass(section)">
                                     <h3 class="text-base font-bold mb-1" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
                                     <p class="text-xs text-gray-500 mb-4">{{ asAny(section.content).description }}</p>
                                     <div class="flex items-center gap-2">
@@ -1032,8 +1032,8 @@
 
                         <!-- 11. FAQ -->
                         @if (section.type === 'faq') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6" [class]="getSectionPaddingClass(section)">
-                                <div [class]="getSectionContainerClass(section)" class="max-w-2xl mx-auto space-y-3">
+                            <section class="p-6" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                                <div class="max-w-2xl mx-auto space-y-3" [class]="getSectionContainerClass(section)">
                                     <h3 class="text-sm font-bold text-center mb-4" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
                                     @for (faq of (asAny(section.content).items || []); track faq.id) {
                                         <div class="p-3 rounded-xl border border-slate-200/60 bg-white dark:bg-gray-800 shadow-xs space-y-1">
@@ -1050,7 +1050,7 @@
 
                         <!-- 12. BENEFITS -->
                         @if (section.type === 'benefits') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 border-y border-slate-100 dark:border-gray-800" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6 border-y border-slate-100 dark:border-gray-800" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center sm:text-left">
                                         @for (ben of (asAny(section.content).items || []); track ben.id) {
@@ -1069,7 +1069,7 @@
 
                         <!-- 13. BRAND LOGOS -->
                         @if (section.type === 'brand_logos') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center opacity-70" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6 text-center opacity-70" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     @if (asAny(section.content).title) {
                                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">{{ asAny(section.content).title }}</p>
@@ -1085,7 +1085,7 @@
 
                         <!-- 14. COUNTDOWN -->
                         @if (section.type === 'countdown') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-gradient-to-r from-sky-900 to-slate-900 text-white text-center rounded-2xl mx-4 my-2" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6 bg-gradient-to-r from-sky-900 to-slate-900 text-white text-center rounded-2xl mx-4 my-2" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     <h3 class="text-lg font-black mb-1">{{ asAny(section.content).title }}</h3>
                                     <p class="text-xs text-sky-200 mb-4">{{ asAny(section.content).description }}</p>
@@ -1106,14 +1106,14 @@
 
                         <!-- 15. SOCIAL FEED -->
                         @if (section.type === 'social_feed') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 text-center" [class]="getSectionPaddingClass(section)">
+                            <section class="p-6 text-center" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
                                 <div [class]="getSectionContainerClass(section)">
                                     <h3 class="text-sm font-bold mb-0.5" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
                                     <p class="text-xs text-sky-600 font-semibold mb-4">{{ asAny(section.content).handle }}</p>
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                                         @for (post of (asAny(section.content).items || []); track post.id) {
                                             <div class="aspect-square rounded-xl overflow-hidden relative group">
-                                                <img [src]="post.imageUrl" class="w-full h-full object-cover">
+                                                <img class="w-full h-full object-cover" [src]="post.imageUrl">
                                                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1">
                                                     <svg class="w-3.5 h-3.5 fill-current text-red-500" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                                                     <span>{{ post.likes || 100 }}</span>
@@ -1127,8 +1127,8 @@
 
                         <!-- 16. MAP & LOCATION -->
                         @if (section.type === 'map_location') {
-                            <section [ngStyle]="getSectionStyle(section)" class="p-6 bg-slate-50/50" [class]="getSectionPaddingClass(section)">
-                                <div [class]="getSectionContainerClass(section)" class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                            <section class="p-6 bg-slate-50/50" [ngStyle]="getSectionStyle(section)" [class]="getSectionPaddingClass(section)">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center" [class]="getSectionContainerClass(section)">
                                     <div class="space-y-2">
                                         <h3 class="text-sm font-bold" [style.color]="'var(--store-color-text)'">{{ asAny(section.content).title }}</h3>
                                         <p class="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
@@ -1167,7 +1167,7 @@
                             @if (footerShowLegal) {
                                 <div class="flex items-center gap-3">
                                     @for (link of footerLegalLinks; track link.id) {
-                                        <a href="#" (click)="preventDefault($event)" class="hover:underline">{{ link.label }}</a>
+                                        <a href="#" class="hover:underline" (click)="preventDefault($event)">{{ link.label }}</a>
                                     }
                                 </div>
                             }
@@ -1193,7 +1193,7 @@
                                     @if (footerShowLogo) {
                                         <div class="flex items-center gap-2" [class.justify-center]="footerAlignment === 'center' || footerColumns === '1'">
                                             @if (data().logo_url) {
-                                                <img [src]="data().logo_url" alt="Logo" class="h-7 w-auto object-contain">
+                                                <img alt="Logo" class="h-7 w-auto object-contain" [src]="data().logo_url">
                                             } @else {
                                                 <span class="text-sm font-black tracking-tight" [style.font-family]="activeTokens.font_heading">{{ data().business_name }}</span>
                                             }
@@ -1208,13 +1208,13 @@
                                     }
                                     @if (footerShowSocial) {
                                         <div class="flex items-center gap-2 pt-1" [class.justify-center]="footerAlignment === 'center' || footerColumns === '1'">
-                                            <a href="#" (click)="preventDefault($event)" class="w-7 h-7 rounded-lg flex items-center justify-center bg-black/5 dark:bg-white/10 hover:opacity-80 transition-opacity">
+                                            <a href="#" class="w-7 h-7 rounded-lg flex items-center justify-center bg-black/5 dark:bg-white/10 hover:opacity-80 transition-opacity" (click)="preventDefault($event)">
                                                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                                             </a>
-                                            <a href="#" (click)="preventDefault($event)" class="w-7 h-7 rounded-lg flex items-center justify-center bg-black/5 dark:bg-white/10 hover:opacity-80 transition-opacity">
+                                            <a href="#" class="w-7 h-7 rounded-lg flex items-center justify-center bg-black/5 dark:bg-white/10 hover:opacity-80 transition-opacity" (click)="preventDefault($event)">
                                                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                                             </a>
-                                            <a href="#" (click)="preventDefault($event)" class="w-7 h-7 rounded-lg flex items-center justify-center bg-black/5 dark:bg-white/10 hover:opacity-80 transition-opacity">
+                                            <a href="#" class="w-7 h-7 rounded-lg flex items-center justify-center bg-black/5 dark:bg-white/10 hover:opacity-80 transition-opacity" (click)="preventDefault($event)">
                                                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.9-.32-1.98-.23-2.81.36-.54.38-.89.98-1.01 1.62-.13.76.13 1.56.69 2.08.57.52 1.35.74 2.11.66 1.05-.1 1.93-.82 2.22-1.84.14-.54.14-1.1.13-1.66-.02-3.99-.01-7.98-.01-11.97z"/></svg>
                                             </a>
                                         </div>
@@ -1226,11 +1226,11 @@
                                     <div class="space-y-3">
                                         <h4 class="text-xs font-bold uppercase tracking-wider" [style.font-family]="activeTokens.font_heading">Explorar</h4>
                                         <ul class="space-y-1.5 text-xs" [style.color]="footerMutedColor">
-                                            <li><a href="#" (click)="preventDefault($event)" class="hover:underline">Inicio</a></li>
-                                            <li><a href="#" (click)="preventDefault($event)" class="hover:underline">Todos los Productos</a></li>
-                                            <li><a href="#" (click)="preventDefault($event)" class="hover:underline">Ofertas Especiales</a></li>
-                                            <li><a href="#" (click)="preventDefault($event)" class="hover:underline">Sobre Nosotros</a></li>
-                                            <li><a href="#" (click)="preventDefault($event)" class="hover:underline">Contacto</a></li>
+                                            <li><a href="#" class="hover:underline" (click)="preventDefault($event)">Inicio</a></li>
+                                            <li><a href="#" class="hover:underline" (click)="preventDefault($event)">Todos los Productos</a></li>
+                                            <li><a href="#" class="hover:underline" (click)="preventDefault($event)">Ofertas Especiales</a></li>
+                                            <li><a href="#" class="hover:underline" (click)="preventDefault($event)">Sobre Nosotros</a></li>
+                                            <li><a href="#" class="hover:underline" (click)="preventDefault($event)">Contacto</a></li>
                                         </ul>
                                     </div>
                                 }
@@ -1295,7 +1295,7 @@
                                 @if (footerShowLegal) {
                                     <div class="flex flex-wrap items-center justify-center gap-4">
                                         @for (link of footerLegalLinks; track link.id) {
-                                            <a href="#" (click)="preventDefault($event)" class="hover:underline">{{ link.label }}</a>
+                                            <a href="#" class="hover:underline" (click)="preventDefault($event)">{{ link.label }}</a>
                                         }
                                     </div>
                                 }

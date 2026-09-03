@@ -93,8 +93,8 @@ import { ToastService } from '@core/services/toast';
               <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ errorMsg() }}</p>
               <div class="mt-6">
                 <button
-                  (click)="goToDashboard()"
                   class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+                  (click)="goToDashboard()"
                 >
                   Volver
                 </button>
@@ -131,16 +131,16 @@ import { ToastService } from '@core/services/toast';
 
               <div class="pt-4 flex gap-3">
                 <button
-                  (click)="decline()"
-                  [disabled]="isSubmitting()"
                   class="flex-1 flex justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+                  [disabled]="isSubmitting()"
+                  (click)="decline()"
                 >
                   Rechazar
                 </button>
                 <button
-                  (click)="accept()"
-                  [disabled]="isSubmitting()"
                   class="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50"
+                  [disabled]="isSubmitting()"
+                  (click)="accept()"
                 >
                   {{ isSubmitting() ? 'Accepting...' : 'Accept Invite' }}
                 </button>
