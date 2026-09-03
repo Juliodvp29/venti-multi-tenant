@@ -18,7 +18,7 @@ import { ToastService } from '@core/services/toast';
 import { OnboardingService } from '@core/services/onboarding.service';
 import { TicketCategory, TicketSeverity, TroubleshootingGuide } from '@core/models/support';
 
-export type HelpViewMode = 'home' | 'checklist' | 'troubleshooting' | 'contact';
+export type HelpViewMode = 'home' | 'checklist' | 'webhooks' | 'troubleshooting' | 'contact';
 
 @Component({
   selector: 'app-help-drawer',
@@ -65,22 +65,20 @@ export class HelpDrawer {
 
     const queryTokens = query.split(/\s+/).filter(Boolean);
 
-    return guides.filter(
-      (guide) => {
-        const searchableText = this.normalizeSearchText(
-          [
-            guide.title,
-            guide.summary,
-            guide.category,
-            guide.actionLabel ?? '',
-            ...guide.commonCauses,
-            ...guide.solutionSteps,
-          ].join(' ')
-        );
+    return guides.filter((guide) => {
+      const searchableText = this.normalizeSearchText(
+        [
+          guide.title,
+          guide.summary,
+          guide.category,
+          guide.actionLabel ?? '',
+          ...guide.commonCauses,
+          ...guide.solutionSteps,
+        ].join(' '),
+      );
 
-        return queryTokens.every((token) => searchableText.includes(token));
-      }
-    );
+      return queryTokens.every((token) => searchableText.includes(token));
+    });
   });
 
   readonly visibleGuides = computed(() => {

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Supabase } from './supabase';
 import { Order, OrderItem, OrderStatusHistory } from '@core/models/order';
 import { Payment } from '@core/models/payment';
-import { OrderStatus, PaymentStatus } from '@core/enums';
+import { OrderStatus, PaymentMethod, PaymentStatus } from '@core/enums';
 import { TenantService } from './tenant';
 import { AuthService } from './auth';
 import { NotificationsService } from './notifications';
@@ -159,7 +159,8 @@ export class OrdersService {
         total_amount: orderPayload.total_amount?.toString() || '0',
         currency: orderPayload.currency || 'USD',
         customer_email: orderPayload.customer_email,
-        payment_method: paymentData?.payment_method || 'card',
+        payment_method:
+          paymentData?.payment_method || orderData.payment_method || PaymentMethod.CreditCard,
       };
 
       // Only add optional fields if they have values

@@ -13,7 +13,9 @@
     aria-label="Panel de Ayuda y Soporte"
   >
     <!-- Header -->
-    <div class="h-16 px-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shrink-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur">
+    <div
+      class="h-16 px-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shrink-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur"
+    >
       <div class="flex items-center gap-3">
         @if (currentView() !== 'home') {
           <button
@@ -23,17 +25,33 @@
             (click)="setView('home')"
           >
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
         }
         <div>
           <h2 class="font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
             @switch (currentView()) {
-              @case ('checklist') { Guía de Configuración }
-              @case ('troubleshooting') { Solución de Problemas }
-              @case ('contact') { Contactar a Soporte }
-              @default { Ayuda & Soporte }
+              @case ('checklist') {
+                Guía de Configuración
+              }
+              @case ('webhooks') {
+                Guía de Webhooks
+              }
+              @case ('troubleshooting') {
+                Solución de Problemas
+              }
+              @case ('contact') {
+                Contactar a Soporte
+              }
+              @default {
+                Ayuda & Soporte
+              }
             }
           </h2>
         </div>
@@ -41,7 +59,9 @@
 
       <div class="flex items-center gap-3">
         <!-- Status badge (Supabase-like) -->
-        <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+        <div
+          class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400"
+        >
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span>Sistemas Operativos</span>
         </div>
@@ -53,7 +73,12 @@
           (click)="close()"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -61,17 +86,22 @@
 
     <!-- Body Content Area -->
     <div class="flex-1 overflow-y-auto p-6 space-y-6">
-
       <!-- ================= VIEW 1: HOME ================= -->
       @if (currentView() === 'home') {
-        
         <!-- Store Setup Health Card -->
-        <div class="p-5 rounded-2xl bg-linear-to-br from-sky-50 to-indigo-50/40 dark:from-sky-950/20 dark:to-indigo-950/10 border border-sky-100 dark:border-sky-900/40">
+        <div
+          class="p-5 rounded-2xl bg-linear-to-br from-sky-50 to-indigo-50/40 dark:from-sky-950/20 dark:to-indigo-950/10 border border-sky-100 dark:border-sky-900/40"
+        >
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span class="p-1.5 rounded-lg bg-sky-500 text-white shadow-sm shadow-sky-500/30">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </span>
               <h3 class="font-bold text-sm text-gray-900 dark:text-white">Estado de tu Tienda</h3>
@@ -93,7 +123,8 @@
             @if ((healthSummary()?.completionPercentage ?? 0) === 100) {
               ¡Excelente! Tu tienda cuenta con todos los requisitos esenciales listos para vender.
             } @else {
-              Tienes pasos pendientes en la configuración esencial (envíos, branding o catálogo) antes de recibir compras.
+              Tienes pasos pendientes en la configuración esencial (envíos, branding o catálogo)
+              antes de recibir compras.
             }
           </p>
 
@@ -104,14 +135,18 @@
           >
             <span>Ver Checklist de Configuración</span>
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         </div>
 
         <!-- Main Navigation Cards (Supabase Style) -->
         <div class="space-y-3">
-
           @if (onboarding.isDismissed()) {
             <button
               type="button"
@@ -120,10 +155,26 @@
             >
               <span class="flex items-center justify-between gap-3">
                 <span>
-                  <span class="block text-sm font-bold text-gray-900 dark:text-white">Mostrar guía de inicio</span>
-                  <span class="mt-1 block text-xs text-gray-500 dark:text-gray-400">Retoma la configuración de tu tienda desde el Dashboard.</span>
+                  <span class="block text-sm font-bold text-gray-900 dark:text-white"
+                    >Mostrar guía de inicio</span
+                  >
+                  <span class="mt-1 block text-xs text-gray-500 dark:text-gray-400"
+                    >Retoma la configuración de tu tienda desde el Dashboard.</span
+                  >
                 </span>
-                <svg class="h-5 w-5 shrink-0 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <svg
+                  class="h-5 w-5 shrink-0 text-sky-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
               </span>
             </button>
           }
@@ -134,13 +185,22 @@
             (click)="setView('checklist')"
           >
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <div
+                class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
+              >
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
                 </svg>
               </div>
               <div>
-                <h4 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors">
+                <h4
+                  class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors"
+                >
                   Guías de Configuración
                 </h4>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -148,34 +208,113 @@
                 </p>
               </div>
             </div>
-            <svg class="w-5 h-5 text-gray-400 group-hover:text-sky-500 group-hover:translate-x-1 transition-all shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <svg
+              class="w-5 h-5 text-gray-400 group-hover:text-sky-500 group-hover:translate-x-1 transition-all shrink-0 ml-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </div>
 
           <!-- Card 2: Troubleshooting -->
           <div
             class="group p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 hover:border-sky-500 dark:hover:border-sky-500 transition-all cursor-pointer shadow-sm hover:shadow-md flex items-center justify-between"
-            (click)="setView('troubleshooting')"
+            (click)="setView('webhooks')"
           >
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <div
+                class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
+              >
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7h8m-8 5h8m-8 5h5M6 3h12a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z"
+                  />
                 </svg>
               </div>
               <div>
-                <h4 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors">
-                  Solución de Problemas (Troubleshooting)
+                <h4
+                  class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors"
+                >
+                  Conectar Webhooks
                 </h4>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Diagnostica por qué no se calculan envíos, errores de stock o problemas con tu dominio.
+                  Conecta Zapier, Make, n8n o tu propio backend y verifica cada evento.
                 </p>
               </div>
             </div>
-            <svg class="w-5 h-5 text-gray-400 group-hover:text-sky-500 group-hover:translate-x-1 transition-all shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <svg
+              class="w-5 h-5 text-gray-400 group-hover:text-sky-500 group-hover:translate-x-1 transition-all shrink-0 ml-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+
+          <!-- Card 3: Troubleshooting -->
+          <div
+            class="group p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 hover:border-sky-500 dark:hover:border-sky-500 transition-all cursor-pointer shadow-sm hover:shadow-md flex items-center justify-between"
+            (click)="setView('troubleshooting')"
+          >
+            <div class="flex items-start gap-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h4
+                  class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors"
+                >
+                  Solución de Problemas (Troubleshooting)
+                </h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Diagnostica por qué no se calculan envíos, errores de stock o problemas con tu
+                  dominio.
+                </p>
+              </div>
+            </div>
+            <svg
+              class="w-5 h-5 text-gray-400 group-hover:text-sky-500 group-hover:translate-x-1 transition-all shrink-0 ml-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </div>
 
@@ -185,13 +324,22 @@
             (click)="setView('contact')"
           >
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <div
+                class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
+              >
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
               <div>
-                <h4 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors">
+                <h4
+                  class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors"
+                >
                   Contactar a Soporte
                 </h4>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -199,23 +347,42 @@
                 </p>
               </div>
             </div>
-            <svg class="w-5 h-5 text-gray-400 group-hover:text-sky-500 group-hover:translate-x-1 transition-all shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <svg
+              class="w-5 h-5 text-gray-400 group-hover:text-sky-500 group-hover:translate-x-1 transition-all shrink-0 ml-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </div>
         </div>
 
         <!-- Community / Quick Links Banner -->
-        <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200/60 dark:border-gray-800/60 flex items-center justify-between">
+        <div
+          class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200/60 dark:border-gray-800/60 flex items-center justify-between"
+        >
           <div class="flex items-center gap-3">
             <span class="p-2 rounded-xl bg-indigo-500 text-white">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                />
               </svg>
             </span>
             <div>
               <p class="text-xs font-bold text-gray-900 dark:text-white">¿Tienes dudas rápidas?</p>
-              <p class="text-[11px] text-gray-500 dark:text-gray-400">Pregúntale a nuestro Asistente IA en el botón flotante.</p>
+              <p class="text-[11px] text-gray-500 dark:text-gray-400">
+                Pregúntale a nuestro Asistente IA en el botón flotante.
+              </p>
             </div>
           </div>
         </div>
@@ -225,12 +392,15 @@
       @if (currentView() === 'checklist') {
         <div class="space-y-4">
           <p class="text-xs text-gray-500 dark:text-gray-400">
-            Sigue este checklist paso a paso para asegurarte de que tu tienda esté 100% configurada y lista para recibir compras:
+            Sigue este checklist paso a paso para asegurarte de que tu tienda esté 100% configurada
+            y lista para recibir compras:
           </p>
 
           <div class="space-y-3">
             @for (step of healthSummary()?.steps; track step.id) {
-              <div class="p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-start justify-between gap-4">
+              <div
+                class="p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-start justify-between gap-4"
+              >
                 <div class="flex items-start gap-3">
                   <!-- Checkbox Circle -->
                   <div
@@ -245,7 +415,12 @@
                   >
                     @if (step.completed) {
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2.5"
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     } @else {
                       <span class="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-600"></span>
@@ -279,7 +454,112 @@
         </div>
       }
 
-      <!-- ================= VIEW 3: TROUBLESHOOTING ================= -->
+      <!-- ================= VIEW 3: WEBHOOKS ================= -->
+      @if (currentView() === 'webhooks') {
+        <div class="space-y-5 text-sm">
+          <div
+            class="rounded-2xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900/50 dark:bg-sky-950/20"
+          >
+            <h3 class="font-bold text-gray-900 dark:text-white">¿Qué es un webhook?</h3>
+            <p class="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-300">
+              Es un POST automático que Venti envía a una URL cada vez que ocurre un evento
+              suscrito. Úsalo para automatizar tareas sin consultar Venti constantemente.
+            </p>
+          </div>
+
+          <section>
+            <h3 class="font-bold text-gray-900 dark:text-white">Conéctalo en 5 minutos</h3>
+            <ol class="mt-3 space-y-2 text-xs text-gray-600 dark:text-gray-300">
+              <li>
+                <b class="text-sky-600 dark:text-sky-400">1.</b> Abre
+                <b>Integraciones → Webhooks</b> en el panel.
+              </li>
+              <li>
+                <b class="text-sky-600 dark:text-sky-400">2.</b> En Zapier, Make o n8n crea un
+                disparador de tipo “Custom Webhook” y copia la URL.
+              </li>
+              <li>
+                <b class="text-sky-600 dark:text-sky-400">3.</b> Pega la URL en Venti y selecciona
+                los eventos que necesitas.
+              </li>
+              <li>
+                <b class="text-sky-600 dark:text-sky-400">4.</b> Guarda el secreto mostrado una sola
+                vez y configúralo en tu receptor.
+              </li>
+              <li>
+                <b class="text-sky-600 dark:text-sky-400">5.</b> Crea una orden de prueba y revisa
+                la pestaña <b>Entregas</b>.
+              </li>
+            </ol>
+          </section>
+
+          <section>
+            <h3 class="font-bold text-gray-900 dark:text-white">Verificar la firma</h3>
+            <p class="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-300">
+              Calcula HMAC-SHA256 usando el cuerpo JSON exacto recibido y tu secreto. Compara el
+              resultado hexadecimal con el encabezado <code>X-Venti-Signature</code>. No vuelvas a
+              serializar el JSON antes de verificarlo.
+            </p>
+            <pre
+              class="mt-3 overflow-x-auto rounded-xl bg-gray-950 p-3 text-[10px] leading-relaxed text-sky-200"
+            ><code>import crypto from 'node:crypto';
+
+const expected = crypto
+  .createHmac('sha256', process.env.VENTI_WEBHOOK_SECRET)
+  .update(rawBody)
+  .digest('hex');
+
+if (expected !== request.headers['x-venti-signature']) &#123;
+  return response.status(401).send('Firma inválida');
+&#125;</code></pre>
+            <pre
+              class="mt-3 overflow-x-auto rounded-xl bg-gray-950 p-3 text-[10px] leading-relaxed text-emerald-200"
+            ><code>import hmac, hashlib
+
+expected = hmac.new(
+    VENTI_WEBHOOK_SECRET.encode(),
+    raw_body,
+    hashlib.sha256
+).hexdigest()
+
+if not hmac.compare_digest(expected, request.headers['X-Venti-Signature']):
+    return ('Firma inválida', 401)</code></pre>
+          </section>
+
+          <section>
+            <h3 class="font-bold text-gray-900 dark:text-white">Eventos y payloads</h3>
+            <div class="mt-3 space-y-2 text-xs text-gray-600 dark:text-gray-300">
+              <p><code>order.created</code> — payload con la orden recién creada.</p>
+              <p><code>order.status_changed</code> — payload con la orden y su nuevo estado.</p>
+              <p><code>payment.confirmed</code> — payload con el pago confirmado.</p>
+              <p><code>payment.failed</code> — payload con el pago fallido y su respuesta.</p>
+              <p><code>product.stock_low</code> — payload con el producto al alcanzar el umbral.</p>
+            </div>
+            <pre
+              class="mt-3 overflow-x-auto rounded-xl bg-gray-950 p-3 text-[10px] leading-relaxed text-gray-200"
+            ><code>&#123;
+  "id": "uuid-del-recurso",
+  "tenant_id": "uuid-de-tu-tienda",
+  "status": "processing",
+  "created_at": "2026-09-03T13:30:00Z"
+&#125;</code></pre>
+            <p class="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
+              Cada evento conserva la forma del registro correspondiente. Consulta el log de
+              entregas para ver el payload completo enviado.
+            </p>
+          </section>
+
+          <button
+            type="button"
+            class="w-full rounded-xl bg-sky-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-sky-700"
+            (click)="navigateTo('/integrations')"
+          >
+            Abrir Integraciones
+          </button>
+        </div>
+      }
+
+      <!-- ================= VIEW 4: TROUBLESHOOTING ================= -->
       @if (currentView() === 'troubleshooting') {
         <div class="space-y-4">
           <!-- Search input -->
@@ -291,14 +571,27 @@
               [value]="searchQuery()"
               (input)="searchQuery.set($any($event.target).value)"
             />
-            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              class="w-4 h-4 text-gray-400 absolute left-3 top-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           </div>
 
           @if (searchQuery().trim()) {
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
-              {{ filteredGuides().length }} resultado{{ filteredGuides().length === 1 ? '' : 's' }} encontrado{{ filteredGuides().length === 1 ? '' : 's' }}
+              {{ filteredGuides().length }} resultado{{
+                filteredGuides().length === 1 ? '' : 's'
+              }}
+              encontrado{{ filteredGuides().length === 1 ? '' : 's' }}
             </p>
           } @else {
             <p class="text-[11px] text-gray-500 dark:text-gray-400">
@@ -309,7 +602,9 @@
           <!-- Guides Accordion -->
           <div class="space-y-3">
             @for (guide of visibleGuides(); track guide.id) {
-              <div class="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden transition-all">
+              <div
+                class="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden transition-all"
+              >
                 <button
                   type="button"
                   class="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
@@ -325,24 +620,35 @@
                     stroke="currentColor"
                     [class.rotate-180]="selectedGuideId() === guide.id"
                   >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </button>
 
                 @if (selectedGuideId() === guide.id) {
-                  <div class="px-4 pb-4 pt-1 border-t border-gray-100 dark:border-gray-800/60 space-y-3 animate-in fade-in duration-150">
+                  <div
+                    class="px-4 pb-4 pt-1 border-t border-gray-100 dark:border-gray-800/60 space-y-3 animate-in fade-in duration-150"
+                  >
                     <p class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                       {{ guide.summary }}
                     </p>
 
                     <!-- Common Causes -->
                     <div>
-                      <h5 class="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">
+                      <h5
+                        class="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5"
+                      >
                         Causas Frecuentes:
                       </h5>
                       <ul class="space-y-1">
                         @for (cause of guide.commonCauses; track cause) {
-                          <li class="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-300">
+                          <li
+                            class="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-300"
+                          >
                             <span class="text-red-500 shrink-0 mt-0.5">•</span>
                             <span>{{ cause }}</span>
                           </li>
@@ -352,13 +658,19 @@
 
                     <!-- Steps to Fix -->
                     <div>
-                      <h5 class="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">
+                      <h5
+                        class="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5"
+                      >
                         Cómo Solucionarlo:
                       </h5>
                       <ol class="space-y-1.5">
                         @for (step of guide.solutionSteps; track step; let idx = $index) {
-                          <li class="flex items-start gap-2 text-xs text-gray-700 dark:text-gray-300">
-                            <span class="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                          <li
+                            class="flex items-start gap-2 text-xs text-gray-700 dark:text-gray-300"
+                          >
+                            <span
+                              class="w-4 h-4 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5"
+                            >
                               {{ idx + 1 }}
                             </span>
                             <span>{{ step }}</span>
@@ -375,8 +687,18 @@
                           (click)="navigateTo(guide.actionRoute, guide.queryParams)"
                         >
                           <span>{{ guide.actionLabel }}</span>
-                          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          <svg
+                            class="w-3.5 h-3.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
                           </svg>
                         </button>
                       </div>
@@ -385,9 +707,15 @@
                 }
               </div>
             } @empty {
-              <div class="rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 px-4 py-8 text-center">
-                <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">No encontramos una guía relacionada.</p>
-                <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Prueba con otras palabras, como envío, pago, stock o dominio.</p>
+              <div
+                class="rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 px-4 py-8 text-center"
+              >
+                <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  No encontramos una guía relacionada.
+                </p>
+                <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+                  Prueba con otras palabras, como envío, pago, stock o dominio.
+                </p>
               </div>
             }
           </div>
@@ -397,15 +725,20 @@
       <!-- ================= VIEW 4: CONTACT SUPPORT ================= -->
       @if (currentView() === 'contact') {
         <form class="space-y-4" [formGroup]="contactForm" (ngSubmit)="onSubmitTicket()">
-          
           <!-- Store Context (Disabled Display) -->
           <div>
             <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
               Tienda Afectada
             </label>
-            <div class="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-xs text-gray-800 dark:text-gray-200 flex items-center justify-between">
-              <span class="font-bold">{{ tenantService.currentTenant()?.business_name || 'Mi Tienda' }}</span>
-              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+            <div
+              class="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-xs text-gray-800 dark:text-gray-200 flex items-center justify-between"
+            >
+              <span class="font-bold">{{
+                tenantService.currentTenant()?.business_name || 'Mi Tienda'
+              }}</span>
+              <span
+                class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+              >
                 Plan {{ tenantService.currentTenant()?.plan || 'Free' }}
               </span>
             </div>
@@ -413,7 +746,10 @@
 
           <!-- Category Select -->
           <div>
-            <label for="category" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+            <label
+              for="category"
+              class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5"
+            >
               ¿Con qué área tienes problemas?
             </label>
             <select
@@ -434,7 +770,10 @@
 
           <!-- Severity Select -->
           <div>
-            <label for="severity" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+            <label
+              for="severity"
+              class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5"
+            >
               Nivel de Severidad
             </label>
             <select
@@ -451,7 +790,10 @@
 
           <!-- Subject Input -->
           <div>
-            <label for="subject" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+            <label
+              for="subject"
+              class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5"
+            >
               Asunto / Resumen del problema
             </label>
             <input
@@ -469,9 +811,7 @@
               <label for="message" class="block text-xs font-bold text-gray-700 dark:text-gray-300">
                 Descripción Detallada
               </label>
-              <span class="text-[10px] text-gray-400">
-                {{ messageCharCount() }} / 5000
-              </span>
+              <span class="text-[10px] text-gray-400"> {{ messageCharCount() }} / 5000 </span>
             </div>
             <textarea
               id="message"
@@ -492,7 +832,9 @@
             @if (attachments().length > 0) {
               <div class="flex flex-wrap gap-2 mb-2">
                 @for (url of attachments(); track url) {
-                  <div class="relative w-16 h-16 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden group">
+                  <div
+                    class="relative w-16 h-16 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden group"
+                  >
                     <img alt="Adjunto" class="w-full h-full object-cover" [src]="url" />
                     <button
                       type="button"
@@ -500,7 +842,12 @@
                       (click)="removeAttachment($index)"
                     >
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -508,18 +855,48 @@
               </div>
             }
 
-            <label class="w-full p-4 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-800 hover:border-sky-500 dark:hover:border-sky-500 flex flex-col items-center justify-center gap-1 cursor-pointer transition-colors text-center">
+            <label
+              class="w-full p-4 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-800 hover:border-sky-500 dark:hover:border-sky-500 flex flex-col items-center justify-center gap-1 cursor-pointer transition-colors text-center"
+            >
               @if (isUploading()) {
-                <svg class="w-5 h-5 animate-spin text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                <svg
+                  class="w-5 h-5 animate-spin text-sky-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
                 </svg>
                 <span class="text-[11px] text-gray-500">Subiendo captura...</span>
               } @else {
-                <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                <svg
+                  class="w-5 h-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
-                <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Adjuntar captura o imagen</span>
+                <span class="text-xs font-semibold text-gray-700 dark:text-gray-300"
+                  >Adjuntar captura o imagen</span
+                >
                 <span class="text-[10px] text-gray-400">PNG, JPG hasta 5MB</span>
               }
               <input
@@ -540,25 +917,48 @@
               [disabled]="contactForm.invalid || isSubmitting() || isUploading()"
             >
               @if (isSubmitting()) {
-                <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                <svg
+                  class="w-4 h-4 animate-spin"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
                 </svg>
                 <span>Enviando ticket...</span>
               } @else {
                 <span>Enviar Solicitud de Soporte</span>
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
                 </svg>
               }
             </button>
             <p class="text-[11px] text-gray-400 text-center mt-2">
-              Te responderemos al correo: <strong class="text-gray-600 dark:text-gray-300">{{ authService.user()?.email }}</strong>
+              Te responderemos al correo:
+              <strong class="text-gray-600 dark:text-gray-300">{{
+                authService.user()?.email
+              }}</strong>
             </p>
           </div>
         </form>
       }
-
     </div>
   </aside>
 }

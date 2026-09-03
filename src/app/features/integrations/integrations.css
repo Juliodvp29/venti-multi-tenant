@@ -1,0 +1,52 @@
+.integration-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  border: 1px solid rgb(229 231 235);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.integration-card:hover {
+  border-color: rgb(125 211 252);
+  box-shadow: 0 8px 20px rgb(15 23 42 / 0.08);
+  transform: translateY(-1px);
+}
+
+.integration-card:focus-visible {
+  outline: 2px solid rgb(14 165 233);
+  outline-offset: 3px;
+}
+
+.integration-icon {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  font-weight: 800;
+}
+
+.event-chip {
+  display: inline-flex;
+  border-radius: 9999px;
+  background: rgb(240 249 255);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: rgb(3 105 161);
+}
+
+:host-context(.dark) .integration-card {
+  border-color: rgb(55 65 81);
+}
+
+:host-context(.dark) .integration-card:hover {
+  border-color: rgb(14 165 233);
+  box-shadow: 0 8px 20px rgb(2 6 23 / 0.3);
+}

@@ -13,6 +13,7 @@ import {
   ShippingRateType,
   EmailStatus,
   WebhookStatus,
+  WebhookEvent,
   WeightUnit,
 } from '@enums/index';
 
@@ -120,14 +121,16 @@ export interface WebhookEndpoint extends BaseModel {
   tenant_id: string;
   url: string;
   secret_key: string;
-  subscribed_events: string[];
+  subscribed_events: WebhookEvent[];
   is_active: boolean;
 }
+
+export type WebhookEndpointSummary = Omit<WebhookEndpoint, 'secret_key'>;
 
 export interface WebhookDelivery extends BaseModel {
   webhook_endpoint_id: string;
   tenant_id: string;
-  event_type: string;
+  event_type: WebhookEvent;
   payload: Record<string, unknown>;
   status: WebhookStatus;
   http_status_code?: number;
