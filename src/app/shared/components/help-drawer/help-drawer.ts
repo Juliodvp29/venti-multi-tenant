@@ -49,16 +49,41 @@ export class HelpDrawer {
   readonly isCheckingHealth = this.supportService.isCheckingHealth;
   readonly troubleshootingGuides = this.supportService.troubleshootingGuides;
 
+  private normalizeSearchText(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+
   readonly filteredGuides = computed(() => {
-    const query = this.searchQuery().toLowerCase().trim();
+    const query = this.normalizeSearchText(this.searchQuery().trim());
     const guides = this.troubleshootingGuides();
     if (!query) return guides;
+
+    const queryTokens = query.split(/\s+/).filter(Boolean);
+
     return guides.filter(
-      (g) =>
-        g.title.toLowerCase().includes(query) ||
-        g.summary.toLowerCase().includes(query) ||
-        g.commonCauses.some((c) => c.toLowerCase().includes(query))
+      (guide) => {
+        const searchableText = this.normalizeSearchText(
+          [
+            guide.title,
+            guide.summary,
+            guide.category,
+            guide.actionLabel ?? '',
+            ...guide.commonCauses,
+            ...guide.solutionSteps,
+          ].join(' ')
+        );
+
+        return queryTokens.every((token) => searchableText.includes(token));
+      }
     );
+  });
+
+  readonly visibleGuides = computed(() => {
+    const guides = this.filteredGuides();
+    return this.searchQuery().trim() ? guides : guides.slice(0, 10);
   });
 
   readonly contactForm = this.fb.nonNullable.group({

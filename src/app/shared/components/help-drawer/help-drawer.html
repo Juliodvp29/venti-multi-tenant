@@ -280,9 +280,19 @@
             </svg>
           </div>
 
+          @if (searchQuery().trim()) {
+            <p class="text-[11px] text-gray-500 dark:text-gray-400">
+              {{ filteredGuides().length }} resultado{{ filteredGuides().length === 1 ? '' : 's' }} encontrado{{ filteredGuides().length === 1 ? '' : 's' }}
+            </p>
+          } @else {
+            <p class="text-[11px] text-gray-500 dark:text-gray-400">
+              Mostrando las 10 guías más frecuentes. Busca para consultar todas.
+            </p>
+          }
+
           <!-- Guides Accordion -->
           <div class="space-y-3">
-            @for (guide of filteredGuides(); track guide.id) {
+            @for (guide of visibleGuides(); track guide.id) {
               <div class="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden transition-all">
                 <button
                   type="button"
@@ -357,6 +367,11 @@
                     }
                   </div>
                 }
+              </div>
+            } @empty {
+              <div class="rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 px-4 py-8 text-center">
+                <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">No encontramos una guía relacionada.</p>
+                <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Prueba con otras palabras, como envío, pago, stock o dominio.</p>
               </div>
             }
           </div>

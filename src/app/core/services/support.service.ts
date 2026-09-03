@@ -3,6 +3,7 @@ import { Supabase } from './supabase';
 import { TenantService } from './tenant';
 import { AuthService } from './auth';
 import { ToastService } from './toast';
+import { TROUBLESHOOTING_GUIDES } from '@core/constants/troubleshooting-guides';
 import {
   StoreHealthStep,
   StoreHealthSummary,
@@ -22,103 +23,7 @@ export class SupportService {
   readonly isCheckingHealth = signal<boolean>(false);
   readonly healthSummary = signal<StoreHealthSummary | null>(null);
 
-  readonly troubleshootingGuides = signal<TroubleshootingGuide[]>([
-    {
-      id: 'trouble-shipping',
-      title: '¿Por qué los clientes no pueden calcular el envío en el Checkout?',
-      category: 'shipping_taxes',
-      summary:
-        'Si un cliente ingresa su dirección y no ve opciones de envío disponibles, suele deberse a que su país o región no está cubierto por una Zona de Envío.',
-      commonCauses: [
-        'No se ha creado una Zona de Envío para el país de destino del cliente.',
-        'La zona existe pero no tiene ninguna tarifa activa (Tarifa Fija, por Peso o por Precio).',
-        'El peso o valor total del pedido no entra en los rangos mínimos/máximos de la tarifa.',
-      ],
-      solutionSteps: [
-        'Ve a Configuración > Envíos e Impuestos.',
-        'Revisa si el país del comprador está incluido en alguna de tus Zonas de Envío.',
-        'Asegúrate de agregar al menos una tarifa (ej. "Envío Estándar") y guardar los cambios.',
-      ],
-      actionLabel: 'Configurar Envíos',
-      actionRoute: '/settings',
-      queryParams: { tab: 'shipping-taxes' },
-    },
-    {
-      id: 'trouble-draft-publish',
-      title: '¿Por qué no se ven los cambios de diseño en mi tienda pública?',
-      category: 'theme_storefront',
-      summary:
-        'Venti Shop utiliza un sistema de Borrador y Publicación para que puedas experimentar sin alterar tu tienda en vivo.',
-      commonCauses: [
-        'Guardaste cambios en el modo Borrador pero aún no has hecho clic en el botón "Publicar Cambios".',
-        'El navegador del cliente tiene la versión anterior en caché.',
-      ],
-      solutionSteps: [
-        'Entra a Configuración > Temas o Secciones.',
-        'Verifica en la barra superior si dice "Borrador con cambios pendientes".',
-        'Haz clic en el botón verde "Publicar" en la esquina superior derecha.',
-      ],
-      actionLabel: 'Ir al Editor de Tienda',
-      actionRoute: '/settings',
-      queryParams: { tab: 'storefront' },
-    },
-    {
-      id: 'trouble-domain-dns',
-      title: '¿Cómo configurar y verificar mi Dominio Personalizado?',
-      category: 'domain_dns',
-      summary:
-        'Puedes conectar tu propio dominio (ej. mitienda.com) para que los clientes no tengan que usar el subdominio por defecto.',
-      commonCauses: [
-        'El registro DNS CNAME no apunta correctamente al servidor de Venti.',
-        'La propagación DNS aún está en curso (puede tomar de 15 minutos a 24 horas).',
-      ],
-      solutionSteps: [
-        'Ve a tu proveedor de dominio (GoDaddy, Namecheap, Cloudflare, etc.).',
-        'Crea un registro CNAME apuntando a "cname.ventishop.com".',
-        'En Venti Shop ve a Configuración > General > Dominio y haz clic en "Verificar Dominio".',
-      ],
-      actionLabel: 'Verificar Dominio',
-      actionRoute: '/settings',
-      queryParams: { tab: 'general' },
-    },
-    {
-      id: 'trouble-stock-sold-out',
-      title: '¿Por qué mi producto aparece como "Agotado" si acabo de crearlo?',
-      category: 'catalog_products',
-      summary:
-        'Los productos con inventario cero o sin variantes configuradas se marcan automáticamente como fuera de stock en el storefront.',
-      commonCauses: [
-        'El campo "Cantidad en Stock" se dejó en 0.',
-        'El producto tiene variantes (tallas/colores) y ninguna de las variantes tiene inventario disponible.',
-      ],
-      solutionSteps: [
-        'Ve a Catálogo de Productos y edita el producto afectado.',
-        'Verifica la sección de Inventario o la tabla de Variantes.',
-        'Ajusta las cantidades disponibles y guarda los cambios.',
-      ],
-      actionLabel: 'Revisar Productos',
-      actionRoute: '/products',
-    },
-    {
-      id: 'trouble-tax-rates',
-      title: '¿Cómo aplicar impuestos (IVA) automáticamente en las compras?',
-      category: 'shipping_taxes',
-      summary:
-        'Si necesitas cobrar impuestos según el país o estado del cliente, debes activar las tasas correspondientes.',
-      commonCauses: [
-        'No hay tasas de impuestos registradas para la ubicación del comprador.',
-        'La tasa está creada pero está marcada como inactiva.',
-      ],
-      solutionSteps: [
-        'Entra a Configuración > Envíos e Impuestos > Tasas de Impuesto.',
-        'Agrega tu porcentaje de impuesto (ej. 19% o 16%) indicando el país o región.',
-        'Verifica que el estado esté activo.',
-      ],
-      actionLabel: 'Configurar Impuestos',
-      actionRoute: '/settings',
-      queryParams: { tab: 'shipping-taxes' },
-    },
-  ]);
+  readonly troubleshootingGuides = signal<TroubleshootingGuide[]>(TROUBLESHOOTING_GUIDES);
 
   async evaluateStoreHealth(): Promise<StoreHealthSummary> {
     const tenant = this.tenantService.currentTenant();
@@ -158,7 +63,9 @@ export class SupportService {
       const hasShippingZones = (shippingRes.count ?? 0) > 0;
       const hasTaxRates = (taxRes.count ?? 0) > 0;
       const settings = (tenant.settings || {}) as Record<string, any>;
-      const hasCustomizedTheme = Boolean(settings['theme'] || settings['branding']?.colors?.primary);
+      const hasCustomizedTheme = Boolean(
+        settings['theme'] || settings['branding']?.colors?.primary,
+      );
 
       const steps: StoreHealthStep[] = [
         {
@@ -249,7 +156,7 @@ export class SupportService {
   }
 
   async createSupportTicket(
-    ticket: Omit<SupportTicket, 'id' | 'created_at' | 'updated_at' | 'status'>
+    ticket: Omit<SupportTicket, 'id' | 'created_at' | 'updated_at' | 'status'>,
   ): Promise<{ success: boolean; error?: string }> {
     try {
       const { error } = await (this.supabase.client.from as any)('support_tickets').insert({
@@ -264,7 +171,7 @@ export class SupportService {
 
       this.toast.success(
         'Solicitud enviada',
-        'Tu ticket de soporte ha sido recibido. Te responderemos a la brevedad.'
+        'Tu ticket de soporte ha sido recibido. Te responderemos a la brevedad.',
       );
       return { success: true };
     } catch (err: any) {
