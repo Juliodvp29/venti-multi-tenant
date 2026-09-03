@@ -437,6 +437,40 @@ venti-multi-tenant/
 - **Invocación de Herramientas (Function/Tool Calling)**: El asistente no es un simple bot conversacional; cuenta con definiciones de funciones que le permiten consultar la base de datos de la tienda en tiempo real (consultar productos con stock bajo, resumir ventas del día, buscar órdenes por cliente).
 - **Formateo Seguro de Markdown**: Las respuestas complejas (tablas, listas, cifras destacadas) se procesan con `marked` y se sanitizan rigurosamente con `DOMPurify`.
 
+#### Límites diarios por plan
+
+Cada tenant tiene una cuota diaria compartida entre todos sus miembros. Una solicitud
+del usuario consume una unidad y la cuota se reinicia a medianoche UTC:
+
+| Plan | Solicitudes diarias |
+| :--- | ------------------: |
+| `free` | 5 |
+| `basic` | 20 |
+| `professional` | 50 |
+| `enterprise` | 100 |
+
+El control se realiza mediante la función SQL `consume_ai_request`, definida en
+`supabase/migrations/20260903110000_ai_daily_request_limits.sql`. La función valida
+que el usuario sea miembro activo del tenant, consulta su plan y ejecuta el incremento
+de forma atómica. Cuando se alcanza el límite, el asistente bloquea la llamada a
+Gemini y muestra un mensaje indicando que la cuota se renovará al día siguiente.
+
+En esta versión, una solicitud puede producir varias llamadas internas a Gemini si el
+modelo utiliza herramientas para consultar datos. La cuota representa mensajes del
+usuario, no tokens ni llamadas individuales al proveedor. El límite de salida está
+restringido a 1.000 tokens por respuesta, pero el coste real también depende del
+historial enviado y de las respuestas de las herramientas.
+
+Para cambiar estos valores, actualiza el `CASE` de `consume_ai_request` y aplica una
+nueva migración. No dependas únicamente de límites del proveedor: las cuotas de
+Gemini se aplican por proyecto y pueden ser compartidas por todos los tenants.
+
+> **Estado de seguridad:** actualmente la llamada a Gemini se realiza desde el cliente
+> Angular, por lo que `GEMINI_API_KEY` queda expuesta al navegador. La cuota de Supabase
+> protege el flujo normal de la aplicación, pero no evita que una clave comprometida
+> sea utilizada directamente. Antes de ofrecer el chat en producción o usar un modelo
+> pagado, mueve la llamada al modelo y el consumo de cuota a una Supabase Edge Function.
+
 ---
 
 ## ⚙️ Capa Core del Sistema (Servicios, Guards e Interceptores)
@@ -592,6 +626,11 @@ SUPABASE_ANON_KEY=tu-anon-key-de-supabase
 GEMINI_API_KEY=tu-api-key-de-google-gemini
 ```
 
+`GEMINI_API_KEY` solo es necesaria para el asistente actual basado en cliente. No la
+incluyas en el repositorio ni la confundas con `SUPABASE_ANON_KEY`; para producción,
+la integración recomendada es guardar la clave únicamente como secreto de una Edge
+Function.
+
 ### 3. Scripts de Ejecución
 
 ```bash
@@ -616,6 +655,19 @@ El servidor SSR escuchará por defecto en `http://localhost:4000`, mientras que 
 ---
 
 ## ⚙️ Configuración de Servicios Externos
+
+### Migraciones de cuotas de IA
+
+Después de configurar el proyecto Supabase, aplica las migraciones, incluida la que
+crea la tabla diaria `ai_daily_usage` y la función atómica de consumo:
+
+```bash
+supabase db push
+```
+
+La tabla tiene RLS habilitado y no concede acceso directo de lectura o escritura a
+los clientes. Los usuarios autenticados solo pueden ejecutar `consume_ai_request`,
+que valida su pertenencia activa al tenant antes de consumir una unidad.
 
 ### Buckets de Almacenamiento en Supabase Storage
 
