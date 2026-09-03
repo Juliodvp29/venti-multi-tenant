@@ -1,444 +1,700 @@
 <div
-    class="relative max-w-[1600px] mx-auto h-screen overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-gray-950 transition-colors duration-300">
-
-    @if (!tenant() && isTenantLoading()) {
-    <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/90 p-6 backdrop-blur-sm dark:bg-gray-950/90">
-        <div class="w-full max-w-md space-y-4">
-            <div class="h-7 w-56 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-800"></div>
-            <div class="h-4 w-80 max-w-full animate-pulse rounded bg-gray-200 dark:bg-gray-800"></div>
-            <div class="mt-8 grid grid-cols-3 gap-3">
-                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
-                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
-                <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
-            </div>
-            <div class="h-48 animate-pulse rounded-2xl bg-gray-100 dark:bg-gray-900"></div>
-            <p class="pt-2 text-center text-sm font-medium text-gray-500 dark:text-gray-400">Preparando la configuración...</p>
+  class="relative max-w-[1600px] mx-auto h-screen overflow-hidden flex flex-col lg:flex-row bg-white dark:bg-gray-950 transition-colors duration-300"
+>
+  @if (!tenant() && isTenantLoading()) {
+    <div
+      class="absolute inset-0 z-50 flex items-center justify-center bg-white/90 p-6 backdrop-blur-sm dark:bg-gray-950/90"
+    >
+      <div class="w-full max-w-md space-y-4">
+        <div class="h-7 w-56 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-800"></div>
+        <div class="h-4 w-80 max-w-full animate-pulse rounded bg-gray-200 dark:bg-gray-800"></div>
+        <div class="mt-8 grid grid-cols-3 gap-3">
+          <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
+          <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
+          <div class="h-10 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"></div>
         </div>
+        <div class="h-48 animate-pulse rounded-2xl bg-gray-100 dark:bg-gray-900"></div>
+        <p class="pt-2 text-center text-sm font-medium text-gray-500 dark:text-gray-400">
+          Preparando la configuración...
+        </p>
+      </div>
     </div>
+  }
+
+  <div
+    [class.lg:max-w-2xl]="!isPopoutOpen()"
+    [class.xl:max-w-3xl]="!isPopoutOpen()"
+    class="flex-1 border-r border-gray-100 dark:border-gray-800 flex flex-col h-full overflow-hidden"
+  >
+    <!-- Header (Fixed at top) -->
+    <div
+      class="flex-shrink-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-6 md:px-10 pt-6 pb-0"
+    >
+      <nav
+        class="flex mb-2 text-xs font-semibold uppercase tracking-widest text-sky-600 dark:text-sky-400"
+      >
+        <span>Configuración</span>
+        <span class="mx-2 text-gray-300 dark:text-gray-700">/</span>
+        <span class="text-gray-900 dark:text-white capitalize">{{ activeTabLabel() }}</span>
+      </nav>
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Personalización de la Tienda
+          </h1>
+          <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+            Edita tu borrador con previsualización en tiempo real y publica tus cambios cuando estén
+            listos.
+          </p>
+        </div>
+        <button
+          type="button"
+          (click)="toggleMobilePreview()"
+          class="inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 lg:hidden"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+            />
+          </svg>
+          {{ showMobilePreview() ? 'Ocultar preview' : 'Ver preview' }}
+        </button>
+      </div>
+
+      <!-- Professional Publishing & Presets Control Bar -->
+      <div
+        class="mt-4 rounded-2xl border border-gray-200 bg-gray-50/80 p-3.5 dark:border-gray-800 dark:bg-gray-900/80"
+      >
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <!-- Status Indicator -->
+          <div class="flex items-center gap-2.5">
+            @if (hasUnpublishedChanges()) {
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-900/50 px-2.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-300"
+              >
+                <span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+                Borrador con cambios sin publicar
+              </span>
+            } @else {
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full bg-sky-50 dark:bg-sky-950/50 border border-sky-200 dark:border-sky-900/50 px-2.5 py-1 text-xs font-bold text-sky-700 dark:text-sky-300"
+              >
+                <span class="h-2 w-2 rounded-full bg-sky-500"></span>
+                Tienda en vivo al día
+              </span>
+            }
+
+            <button
+              type="button"
+              (click)="openPresetsModal()"
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-200/70 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6"
+                />
+              </svg>
+              Presets & Versiones
+              <span
+                class="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+              >
+                {{ customPresetsCount() }}
+              </span>
+            </button>
+          </div>
+
+          <!-- Main Action Buttons -->
+          <div class="flex items-center gap-2">
+            @if (hasUnpublishedChanges()) {
+              <button
+                type="button"
+                (click)="revertToPublished()"
+                class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                title="Descartar cambios del borrador y volver al diseño publicado en vivo"
+              >
+                Volver al publicado
+              </button>
+            }
+
+            <button
+              type="button"
+              (click)="saveDraftOnly()"
+              [disabled]="isSavingDraft()"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-xs transition-all"
+            >
+              @if (isSavingDraft()) {
+                <span
+                  class="w-3 h-3 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"
+                ></span>
+                Guardando...
+              } @else {
+                <svg
+                  class="w-3.5 h-3.5 text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                  />
+                </svg>
+                Guardar borrador
+              }
+            </button>
+
+            <button
+              type="button"
+              (click)="openPublishModal()"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white shadow-sm hover:shadow-md transition-all"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                />
+              </svg>
+              Publicar cambios
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <nav
+        class="-mb-px mt-6 flex items-start gap-5 border-t border-gray-100 pt-3 overflow-x-auto scrollbar-thin dark:border-gray-800"
+        aria-label="Secciones de configuración"
+        role="tablist"
+      >
+        @for (group of tabGroups; track group.label) {
+          <div
+            class="flex shrink-0 flex-col gap-1.5 border-r border-gray-200 pr-5 last:border-0 last:pr-0 dark:border-gray-800"
+          >
+            <span
+              class="px-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+              >{{ group.label }}</span
+            >
+            <div class="flex items-center gap-1">
+              @for (tab of group.tabs; track tab.id) {
+                <button
+                  type="button"
+                  (click)="setActiveTab(tab.id)"
+                  role="tab"
+                  [attr.aria-selected]="activeTab() === tab.id"
+                  [attr.aria-controls]="'settings-panel-' + tab.id"
+                  [id]="'settings-tab-' + tab.id"
+                  class="inline-flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-lg border-b-2 px-3 text-sm font-semibold transition-all"
+                  [class.border-sky-500]="activeTab() === tab.id"
+                  [class.text-sky-600]="activeTab() === tab.id"
+                  [class.dark:text-sky-400]="activeTab() === tab.id"
+                  [class.bg-sky-100]="activeTab() === tab.id"
+                  [class.dark:bg-sky-900\/20]="activeTab() === tab.id"
+                  [class.border-transparent]="activeTab() !== tab.id"
+                  [class.text-gray-500]="activeTab() !== tab.id"
+                  [class.hover:text-gray-700]="activeTab() !== tab.id"
+                  [class.dark:hover:text-gray-300]="activeTab() !== tab.id"
+                >
+                  <span [innerHTML]="tab.icon"></span>
+                  {{ tab.label }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </nav>
+    </div>
+
+    @if (hasUnsavedChanges()) {
+      <div
+        class="flex shrink-0 items-center justify-between gap-4 border-b border-amber-200 bg-amber-50 px-6 py-2.5 dark:border-amber-900/40 dark:bg-amber-950/30 md:px-10"
+      >
+        <div
+          class="flex min-w-0 items-center gap-2 text-xs font-semibold text-amber-800 dark:text-amber-200"
+        >
+          <span class="h-2 w-2 shrink-0 rounded-full bg-amber-500 animate-pulse"></span>
+          <span class="truncate">Tienes cambios en curso en esta pestaña sin guardar</span>
+        </div>
+        <div class="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            (click)="discardChanges()"
+            class="rounded-lg px-2.5 py-1 text-xs font-semibold text-gray-600 transition-colors hover:bg-amber-100 dark:text-gray-300 dark:hover:bg-amber-900/30"
+          >
+            Descartar
+          </button>
+          <button
+            type="button"
+            (click)="saveDraftOnly()"
+            class="rounded-lg bg-amber-600 px-3 py-1 text-xs font-semibold text-white transition-colors hover:bg-amber-700"
+          >
+            Guardar borrador
+          </button>
+        </div>
+      </div>
     }
 
+    <!-- Scrollable content -->
     <div
-        [class.lg:max-w-2xl]="!isPopoutOpen()"
-        [class.xl:max-w-3xl]="!isPopoutOpen()"
-        class="flex-1 border-r border-gray-100 dark:border-gray-800 flex flex-col h-full overflow-hidden">
-
-        <!-- Header (Fixed at top) -->
-        <div
-            class="flex-shrink-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-6 md:px-10 pt-6 pb-0">
-            <nav class="flex mb-2 text-xs font-semibold uppercase tracking-widest text-sky-600 dark:text-sky-400">
-                <span>Configuración</span>
-                <span class="mx-2 text-gray-300 dark:text-gray-700">/</span>
-                <span class="text-gray-900 dark:text-white capitalize">{{ activeTabLabel() }}</span>
-            </nav>
-            <div class="flex items-end justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Personalización de la Tienda</h1>
-                    <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                        Edita tu borrador con previsualización en tiempo real y publica tus cambios cuando estén listos.
-                    </p>
-                </div>
-                <button type="button" (click)="toggleMobilePreview()"
-                    class="inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 lg:hidden">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                    {{ showMobilePreview() ? 'Ocultar preview' : 'Ver preview' }}
-                </button>
-            </div>
-
-            <!-- Professional Publishing & Presets Control Bar -->
-            <div class="mt-4 rounded-2xl border border-gray-200 bg-gray-50/80 p-3.5 dark:border-gray-800 dark:bg-gray-900/80">
-                <div class="flex flex-wrap items-center justify-between gap-3">
-                    
-                    <!-- Status Indicator -->
-                    <div class="flex items-center gap-2.5">
-                        @if (hasUnpublishedChanges()) {
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-900/50 px-2.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
-                                <span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                Borrador con cambios sin publicar
-                            </span>
-                        } @else {
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-sky-50 dark:bg-sky-950/50 border border-sky-200 dark:border-sky-900/50 px-2.5 py-1 text-xs font-bold text-sky-700 dark:text-sky-300">
-                                <span class="h-2 w-2 rounded-full bg-sky-500"></span>
-                                Tienda en vivo al día
-                            </span>
-                        }
-
-                        <button type="button" (click)="openPresetsModal()"
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-200/70 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700">
-                            <svg class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
-                            </svg>
-                            Presets & Versiones
-                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                                {{ customPresetsCount() }}
-                            </span>
-                        </button>
-                    </div>
-
-                    <!-- Main Action Buttons -->
-                    <div class="flex items-center gap-2">
-                        @if (hasUnpublishedChanges()) {
-                            <button type="button" (click)="revertToPublished()"
-                                class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-                                title="Descartar cambios del borrador y volver al diseño publicado en vivo">
-                                Volver al publicado
-                            </button>
-                        }
-
-                        <button type="button" (click)="saveDraftOnly()" [disabled]="isSavingDraft()"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-xs transition-all">
-                            @if (isSavingDraft()) {
-                                <span class="w-3 h-3 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></span>
-                                Guardando...
-                            } @else {
-                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                                </svg>
-                                Guardar borrador
-                            }
-                        </button>
-
-                        <button type="button" (click)="openPublishModal()"
-                            class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white shadow-sm hover:shadow-md transition-all">
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                            </svg>
-                            Publicar cambios
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Tabs -->
-            <nav class="-mb-px mt-6 flex items-start gap-5 border-t border-gray-100 pt-3 overflow-x-auto scrollbar-thin dark:border-gray-800" aria-label="Secciones de configuración" role="tablist">
-                @for (group of tabGroups; track group.label) {
-                <div class="flex shrink-0 flex-col gap-1.5 border-r border-gray-200 pr-5 last:border-0 last:pr-0 dark:border-gray-800">
-                    <span class="px-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ group.label }}</span>
-                    <div class="flex items-center gap-1">
-                @for (tab of group.tabs; track tab.id) {
-                <button type="button" (click)="setActiveTab(tab.id)" role="tab" [attr.aria-selected]="activeTab() === tab.id"
-                    [attr.aria-controls]="'settings-panel-' + tab.id" [id]="'settings-tab-' + tab.id"
-                    class="inline-flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-lg border-b-2 px-3 text-sm font-semibold transition-all"
-                    [class.border-sky-500]="activeTab() === tab.id" [class.text-sky-600]="activeTab() === tab.id"
-                    [class.dark:text-sky-400]="activeTab() === tab.id"
-                    [class.bg-sky-100]="activeTab() === tab.id"
-                    [class.dark:bg-sky-900\/20]="activeTab() === tab.id"
-                    [class.border-transparent]="activeTab() !== tab.id" [class.text-gray-500]="activeTab() !== tab.id"
-                    [class.hover:text-gray-700]="activeTab() !== tab.id"
-                    [class.dark:hover:text-gray-300]="activeTab() !== tab.id">
-                    <span [innerHTML]="tab.icon"></span>
-                    {{ tab.label }}
-                </button>
-                }
-                    </div>
-                </div>
-                }
-            </nav>
-        </div>
-
-        @if (hasUnsavedChanges()) {
-        <div class="flex shrink-0 items-center justify-between gap-4 border-b border-amber-200 bg-amber-50 px-6 py-2.5 dark:border-amber-900/40 dark:bg-amber-950/30 md:px-10">
-            <div class="flex min-w-0 items-center gap-2 text-xs font-semibold text-amber-800 dark:text-amber-200">
-                <span class="h-2 w-2 shrink-0 rounded-full bg-amber-500 animate-pulse"></span>
-                <span class="truncate">Tienes cambios en curso en esta pestaña sin guardar</span>
-            </div>
-            <div class="flex shrink-0 items-center gap-2">
-                <button type="button" (click)="discardChanges()"
-                    class="rounded-lg px-2.5 py-1 text-xs font-semibold text-gray-600 transition-colors hover:bg-amber-100 dark:text-gray-300 dark:hover:bg-amber-900/30">
-                    Descartar
-                </button>
-                <button type="button" (click)="saveDraftOnly()"
-                    class="rounded-lg bg-amber-600 px-3 py-1 text-xs font-semibold text-white transition-colors hover:bg-amber-700">
-                    Guardar borrador
-                </button>
-            </div>
-        </div>
+      class="flex-1 overflow-y-auto px-6 md:px-10 py-8"
+      role="tabpanel"
+      [attr.aria-labelledby]="'settings-tab-' + activeTab()"
+      [id]="'settings-panel-' + activeTab()"
+    >
+      <div class="pb-20" [class.max-w-2xl]="!isPopoutOpen()" [class.max-w-5xl]="isPopoutOpen()">
+        @switch (activeTab()) {
+          @case ('theme') {
+            @defer {
+              <app-settings-theme
+                (themeChange)="updateThemePreview($event)"
+                (dirtyChange)="onDirtyChange($event)"
+                (openPresetsManager)="openPresetsModal()"
+              />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
+          @case ('branding') {
+            @defer {
+              <app-settings-branding
+                (brandingChange)="updatePreview($event)"
+                (dirtyChange)="onDirtyChange($event)"
+              />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
+          @case ('general') {
+            @defer {
+              <app-settings-general (dirtyChange)="onDirtyChange($event)" />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
+          @case ('address') {
+            @defer {
+              <app-settings-address (dirtyChange)="onDirtyChange($event)" />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
+          @case ('payments') {
+            @defer {
+              <app-settings-payments (dirtyChange)="onDirtyChange($event)" />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
+          @case ('shipping-taxes') {
+            @defer {
+              <app-settings-shipping-taxes />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
+          @case ('commissions') {
+            @defer {
+              <app-settings-commissions />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
+          @case ('storefront') {
+            @defer {
+              <app-settings-storefront
+                (layoutChange)="updateStorefrontPreview($event)"
+                (dirtyChange)="onDirtyChange($event)"
+                (pageChange)="activePreviewPage.set($event)"
+              />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
         }
 
-        <!-- Scrollable content -->
-        <div class="flex-1 overflow-y-auto px-6 md:px-10 py-8" role="tabpanel"
-            [attr.aria-labelledby]="'settings-tab-' + activeTab()" [id]="'settings-panel-' + activeTab()">
-            <div class="pb-20"
-                [class.max-w-2xl]="!isPopoutOpen()"
-                [class.max-w-5xl]="isPopoutOpen()">
-                @switch (activeTab()) {
-                @case ('theme') { 
-                    @defer {
-                        <app-settings-theme 
-                            (themeChange)="updateThemePreview($event)" 
-                            (dirtyChange)="onDirtyChange($event)"
-                            (openPresetsManager)="openPresetsModal()" /> 
-                    } @placeholder {
-                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-                    }
-                }
-                @case ('branding') { 
-                    @defer {
-                        <app-settings-branding (brandingChange)="updatePreview($event)" (dirtyChange)="onDirtyChange($event)" /> 
-                    } @placeholder {
-                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-                    }
-                }
-                @case ('general') { 
-                    @defer {
-                        <app-settings-general (dirtyChange)="onDirtyChange($event)" /> 
-                    } @placeholder {
-                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-                    }
-                }
-                @case ('address') { 
-                    @defer {
-                        <app-settings-address (dirtyChange)="onDirtyChange($event)" /> 
-                    } @placeholder {
-                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-                    }
-                }
-                @case ('shipping-taxes') { 
-                    @defer {
-                        <app-settings-shipping-taxes /> 
-                    } @placeholder {
-                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-                    }
-                }
-                @case ('commissions') { 
-                    @defer {
-                        <app-settings-commissions /> 
-                    } @placeholder {
-                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-                    }
-                }
-                @case ('storefront') { 
-                    @defer {
-                        <app-settings-storefront (layoutChange)="updateStorefrontPreview($event)" (dirtyChange)="onDirtyChange($event)" (pageChange)="activePreviewPage.set($event)" /> 
-                    } @placeholder {
-                        <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-                    }
-                }
-                }
+        <!-- Danger Zone -->
+        @if (activeTab() === 'advanced') {
+          <div class="mt-16 pt-10 border-t border-red-100 dark:border-red-900/30">
+            @defer {
+              <app-settings-danger-zone />
+            } @placeholder {
+              <div class="animate-pulse h-32 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          </div>
+        }
 
-                <!-- Danger Zone -->
-                @if (activeTab() === 'advanced') {
-                <div class="mt-16 pt-10 border-t border-red-100 dark:border-red-900/30">
-                    @defer {
-                        <app-settings-danger-zone />
-                    } @placeholder {
-                        <div class="animate-pulse h-32 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
-                    }
-                </div>
-                }
-
-                @if (showMobilePreview()) {
-                <section class="mt-10 border-t border-gray-200 pt-8 dark:border-gray-800 lg:hidden">
-                    <div class="mb-4 flex items-center justify-between">
-                        <div>
-                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Vista previa móvil</h2>
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Así verán tu tienda tus clientes desde un teléfono.</p>
-                        </div>
-                        <button type="button" (click)="toggleMobilePreview()" aria-label="Ocultar preview móvil"
-                            class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18 18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="h-180 overflow-hidden rounded-2xl border border-gray-200 bg-slate-50 dark:border-gray-800">
-                        <app-store-preview [data]="fullPreviewData()" [(previewPage)]="activePreviewPage" />
-                    </div>
-                </section>
-                }
+        @if (showMobilePreview()) {
+          <section class="mt-10 border-t border-gray-200 pt-8 dark:border-gray-800 lg:hidden">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <h2 class="text-sm font-bold text-gray-900 dark:text-white">Vista previa móvil</h2>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Así verán tu tienda tus clientes desde un teléfono.
+                </p>
+              </div>
+              <button
+                type="button"
+                (click)="toggleMobilePreview()"
+                aria-label="Ocultar preview móvil"
+                class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+              >
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                    d="M6 18 18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-        </div>
-
+            <div
+              class="h-180 overflow-hidden rounded-2xl border border-gray-200 bg-slate-50 dark:border-gray-800"
+            >
+              <app-store-preview [data]="fullPreviewData()" [(previewPage)]="activePreviewPage" />
+            </div>
+          </section>
+        }
+      </div>
     </div>
+  </div>
 
-
-    @if (isPopoutOpen()) {
+  @if (isPopoutOpen()) {
     <!-- Collapsed preview panel when popout is active -->
     <div
-        class="hidden lg:flex flex-col items-center justify-center lg:w-80 xl:w-96 shrink-0 bg-slate-50 dark:bg-gray-900/50 min-h-0 sticky top-0 max-h-screen min-w-0 gap-5 p-10">
-        <div class="flex flex-col items-center gap-4 text-center max-w-xs">
-            <div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-sky-100 dark:bg-sky-900/30">
-                <svg class="w-8 h-8 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24"
-                    stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-sm font-bold text-gray-900 dark:text-white">Preview en otra pestaña</p>
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    La vista previa se está mostrando en una pestaña separada. Los cambios se sincronizan en tiempo
-                    real.
-                </p>
-            </div>
-            <div class="flex items-center gap-1.5 text-[11px] font-semibold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-500/10 px-3 py-1.5 rounded-full">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span>
-                Sincronizando en vivo
-            </div>
-            <button type="button" (click)="closePreviewPopout()"
-                class="mt-2 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25" />
-                </svg>
-                Volver a integrar aquí
-            </button>
+      class="hidden lg:flex flex-col items-center justify-center lg:w-80 xl:w-96 shrink-0 bg-slate-50 dark:bg-gray-900/50 min-h-0 sticky top-0 max-h-screen min-w-0 gap-5 p-10"
+    >
+      <div class="flex flex-col items-center gap-4 text-center max-w-xs">
+        <div
+          class="flex items-center justify-center w-16 h-16 rounded-2xl bg-sky-100 dark:bg-sky-900/30"
+        >
+          <svg
+            class="w-8 h-8 text-sky-600 dark:text-sky-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+            />
+          </svg>
         </div>
+        <div>
+          <p class="text-sm font-bold text-gray-900 dark:text-white">Preview en otra pestaña</p>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            La vista previa se está mostrando en una pestaña separada. Los cambios se sincronizan en
+            tiempo real.
+          </p>
+        </div>
+        <div
+          class="flex items-center gap-1.5 text-[11px] font-semibold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-500/10 px-3 py-1.5 rounded-full"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span>
+          Sincronizando en vivo
+        </div>
+        <button
+          type="button"
+          (click)="closePreviewPopout()"
+          class="mt-2 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25"
+            />
+          </svg>
+          Volver a integrar aquí
+        </button>
+      </div>
     </div>
-    } @else {
+  } @else {
     <!-- Embedded preview panel -->
     <div
-        class="hidden lg:flex flex-col flex-1 bg-slate-50 dark:bg-gray-900/50 min-h-0 sticky top-0 max-h-screen overflow-hidden min-w-0">
+      class="hidden lg:flex flex-col flex-1 bg-slate-50 dark:bg-gray-900/50 min-h-0 sticky top-0 max-h-screen overflow-hidden min-w-0"
+    >
+      <!-- Preview Toolbar -->
+      <div
+        class="flex items-center justify-between px-6 py-3.5 border-b border-gray-200 dark:border-gray-800 bg-white/70 dark:bg-gray-950/70 backdrop-blur-sm"
+      >
+        <!-- Draft vs Published Toggle -->
+        <div class="flex items-center gap-2">
+          <div
+            class="flex items-center bg-gray-100 dark:bg-gray-800 p-0.5 rounded-lg border border-gray-200 dark:border-gray-700"
+          >
+            <button
+              type="button"
+              (click)="previewDataSource.set('draft')"
+              class="px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5"
+              [class.bg-white]="previewDataSource() === 'draft'"
+              [class.dark:bg-gray-700]="previewDataSource() === 'draft'"
+              [class.text-sky-600]="previewDataSource() === 'draft'"
+              [class.dark:text-sky-300]="previewDataSource() === 'draft'"
+              [class.shadow-xs]="previewDataSource() === 'draft'"
+              [class.text-gray-500]="previewDataSource() !== 'draft'"
+            >
+              <span
+                class="w-2 h-2 rounded-full"
+                [class.bg-sky-500]="previewDataSource() === 'draft'"
+                [class.bg-gray-400]="previewDataSource() !== 'draft'"
+              ></span>
+              Borrador (Edición)
+            </button>
 
-        <!-- Preview Toolbar -->
-        <div
-            class="flex items-center justify-between px-6 py-3.5 border-b border-gray-200 dark:border-gray-800 bg-white/70 dark:bg-gray-950/70 backdrop-blur-sm">
-            
-            <!-- Draft vs Published Toggle -->
-            <div class="flex items-center gap-2">
-                <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-0.5 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <button type="button" (click)="previewDataSource.set('draft')"
-                        class="px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5"
-                        [class.bg-white]="previewDataSource() === 'draft'"
-                        [class.dark:bg-gray-700]="previewDataSource() === 'draft'"
-                        [class.text-sky-600]="previewDataSource() === 'draft'"
-                        [class.dark:text-sky-300]="previewDataSource() === 'draft'"
-                        [class.shadow-xs]="previewDataSource() === 'draft'"
-                        [class.text-gray-500]="previewDataSource() !== 'draft'">
-                        <span class="w-2 h-2 rounded-full" [class.bg-sky-500]="previewDataSource() === 'draft'" [class.bg-gray-400]="previewDataSource() !== 'draft'"></span>
-                        Borrador (Edición)
-                    </button>
-
-                    <button type="button" (click)="previewDataSource.set('published')"
-                        class="px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5"
-                        [class.bg-white]="previewDataSource() === 'published'"
-                        [class.dark:bg-gray-700]="previewDataSource() === 'published'"
-                        [class.text-sky-600]="previewDataSource() === 'published'"
-                        [class.dark:text-sky-300]="previewDataSource() === 'published'"
-                        [class.shadow-xs]="previewDataSource() === 'published'"
-                        [class.text-gray-500]="previewDataSource() !== 'published'">
-                        <span class="w-2 h-2 rounded-full" [class.bg-sky-500]="previewDataSource() === 'published'" [class.bg-gray-400]="previewDataSource() !== 'published'"></span>
-                        Tienda en Vivo
-                    </button>
-                </div>
-            </div>
-
-            <!-- Viewport toggle + Popout button -->
-            <div class="flex items-center gap-2">
-                <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg gap-0.5">
-                    <button type="button" (click)="setViewMode('desktop')" aria-label="Vista previa de escritorio"
-                        [attr.aria-pressed]="viewMode() === 'desktop'" title="Vista de escritorio"
-                        class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
-                        [class.bg-white]="viewMode() === 'desktop'" [class.dark:bg-gray-700]="viewMode() === 'desktop'"
-                        [class.shadow-sm]="viewMode() === 'desktop'" [class.text-gray-900]="viewMode() === 'desktop'"
-                        [class.dark:text-white]="viewMode() === 'desktop'">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                    </button>
-                    <button type="button" (click)="setViewMode('mobile')" aria-label="Vista previa móvil"
-                        [attr.aria-pressed]="viewMode() === 'mobile'" title="Vista móvil"
-                        class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
-                        [class.bg-white]="viewMode() === 'mobile'" [class.dark:bg-gray-700]="viewMode() === 'mobile'"
-                        [class.shadow-sm]="viewMode() === 'mobile'" [class.text-gray-900]="viewMode() === 'mobile'"
-                        [class.dark:text-white]="viewMode() === 'mobile'">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Pop-out button -->
-                <button type="button" (click)="openPreviewPopout()" title="Abrir preview en nueva pestaña"
-                    class="p-2 rounded-lg transition-all text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                    </svg>
-                </button>
-            </div>
+            <button
+              type="button"
+              (click)="previewDataSource.set('published')"
+              class="px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5"
+              [class.bg-white]="previewDataSource() === 'published'"
+              [class.dark:bg-gray-700]="previewDataSource() === 'published'"
+              [class.text-sky-600]="previewDataSource() === 'published'"
+              [class.dark:text-sky-300]="previewDataSource() === 'published'"
+              [class.shadow-xs]="previewDataSource() === 'published'"
+              [class.text-gray-500]="previewDataSource() !== 'published'"
+            >
+              <span
+                class="w-2 h-2 rounded-full"
+                [class.bg-sky-500]="previewDataSource() === 'published'"
+                [class.bg-gray-400]="previewDataSource() !== 'published'"
+              ></span>
+              Tienda en Vivo
+            </button>
+          </div>
         </div>
 
-        <!-- Preview Area -->
-        <div class="flex-1 min-h-0 overflow-hidden">
-            <app-store-preview [data]="fullPreviewData()" [(previewPage)]="activePreviewPage" />
+        <!-- Viewport toggle + Popout button -->
+        <div class="flex items-center gap-2">
+          <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg gap-0.5">
+            <button
+              type="button"
+              (click)="setViewMode('desktop')"
+              aria-label="Vista previa de escritorio"
+              [attr.aria-pressed]="viewMode() === 'desktop'"
+              title="Vista de escritorio"
+              class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
+              [class.bg-white]="viewMode() === 'desktop'"
+              [class.dark:bg-gray-700]="viewMode() === 'desktop'"
+              [class.shadow-sm]="viewMode() === 'desktop'"
+              [class.text-gray-900]="viewMode() === 'desktop'"
+              [class.dark:text-white]="viewMode() === 'desktop'"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              (click)="setViewMode('mobile')"
+              aria-label="Vista previa móvil"
+              [attr.aria-pressed]="viewMode() === 'mobile'"
+              title="Vista móvil"
+              class="p-2 rounded-md transition-all text-gray-500 dark:text-gray-400"
+              [class.bg-white]="viewMode() === 'mobile'"
+              [class.dark:bg-gray-700]="viewMode() === 'mobile'"
+              [class.shadow-sm]="viewMode() === 'mobile'"
+              [class.text-gray-900]="viewMode() === 'mobile'"
+              [class.dark:text-white]="viewMode() === 'mobile'"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Pop-out button -->
+          <button
+            type="button"
+            (click)="openPreviewPopout()"
+            title="Abrir preview en nueva pestaña"
+            class="p-2 rounded-lg transition-all text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+              />
+            </svg>
+          </button>
         </div>
+      </div>
+
+      <!-- Preview Area -->
+      <div class="flex-1 min-h-0 overflow-hidden">
+        <app-store-preview [data]="fullPreviewData()" [(previewPage)]="activePreviewPage" />
+      </div>
     </div>
+  }
+
+  <!-- Modal Presets & Versiones -->
+  @if (isPresetsModalOpen()) {
+    @defer {
+      <app-settings-design-presets
+        [currentDraftSnapshot]="currentDraftSnapshot()"
+        (applyPresetSnapshot)="applySnapshotToDraft($event)"
+        (close)="closePresetsModal()"
+      />
     }
+  }
 
-    <!-- Modal Presets & Versiones -->
-    @if (isPresetsModalOpen()) {
-        @defer {
-            <app-settings-design-presets
-                [currentDraftSnapshot]="currentDraftSnapshot()"
-                (applyPresetSnapshot)="applySnapshotToDraft($event)"
-                (close)="closePresetsModal()" />
-        }
-    }
-
-    <!-- Modal Publicar Cambios -->
-    @if (isPublishModalOpen()) {
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
-            <div class="relative w-full max-w-lg rounded-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden p-6">
-                
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="flex items-center justify-center w-11 h-11 rounded-xl bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Publicar cambios en la tienda</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Esta acción actualizará inmediatamente la tienda pública oficial.</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4 my-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Nombre / Etiqueta de la versión *</label>
-                        <input type="text" [ngModel]="publishVersionName()" (ngModelChange)="publishVersionName.set($event)"
-                            placeholder="Ej. Colección Verano 2026, Nuevos Colores de Marca..."
-                            class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Notas de publicación (Opcional)</label>
-                        <textarea [ngModel]="publishNotes()" (ngModelChange)="publishNotes.set($event)" rows="3"
-                            placeholder="Describe brevemente los cambios que estás publicando..."
-                            class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
-                    </div>
-
-                    <div class="p-3 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/50 text-xs text-sky-800 dark:text-sky-300 flex items-start gap-2">
-                        <svg class="w-4 h-4 shrink-0 text-sky-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Se creará un punto de restauración en el Historial de Versiones para que puedas volver a este diseño en cualquier momento.</span>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-                    <button type="button" (click)="closePublishModal()" [disabled]="isPublishing()"
-                        class="px-4 py-2 text-xs font-semibold rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        Cancelar
-                    </button>
-                    <button type="button" (click)="confirmPublish()" [disabled]="isPublishing() || !publishVersionName().trim()"
-                        class="inline-flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white shadow-md transition-all">
-                        @if (isPublishing()) {
-                            <span class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                            Publicando en vivo...
-                        } @else {
-                            Confirmar y Publicar
-                        }
-                    </button>
-                </div>
-
-            </div>
+  <!-- Modal Publicar Cambios -->
+  @if (isPublishModalOpen()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in"
+    >
+      <div
+        class="relative w-full max-w-lg rounded-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden p-6"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="flex items-center justify-center w-11 h-11 rounded-xl bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+              />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+              Publicar cambios en la tienda
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Esta acción actualizará inmediatamente la tienda pública oficial.
+            </p>
+          </div>
         </div>
-    }
 
+        <div class="space-y-4 my-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1"
+              >Nombre / Etiqueta de la versión *</label
+            >
+            <input
+              type="text"
+              [ngModel]="publishVersionName()"
+              (ngModelChange)="publishVersionName.set($event)"
+              placeholder="Ej. Colección Verano 2026, Nuevos Colores de Marca..."
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1"
+              >Notas de publicación (Opcional)</label
+            >
+            <textarea
+              [ngModel]="publishNotes()"
+              (ngModelChange)="publishNotes.set($event)"
+              rows="3"
+              placeholder="Describe brevemente los cambios que estás publicando..."
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            ></textarea>
+          </div>
+
+          <div
+            class="p-3 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/50 text-xs text-sky-800 dark:text-sky-300 flex items-start gap-2"
+          >
+            <svg
+              class="w-4 h-4 shrink-0 text-sky-600 mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span
+              >Se creará un punto de restauración en el Historial de Versiones para que puedas
+              volver a este diseño en cualquier momento.</span
+            >
+          </div>
+        </div>
+
+        <div
+          class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800"
+        >
+          <button
+            type="button"
+            (click)="closePublishModal()"
+            [disabled]="isPublishing()"
+            class="px-4 py-2 text-xs font-semibold rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            (click)="confirmPublish()"
+            [disabled]="isPublishing() || !publishVersionName().trim()"
+            class="inline-flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white shadow-md transition-all"
+          >
+            @if (isPublishing()) {
+              <span
+                class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"
+              ></span>
+              Publicando en vivo...
+            } @else {
+              Confirmar y Publicar
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>

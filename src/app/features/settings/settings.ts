@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, signal, computed, inject, effect, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  signal,
+  computed,
+  inject,
+  effect,
+  viewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SettingsGeneral } from './components/settings-general';
@@ -10,6 +18,7 @@ import { TenantService } from '@core/services/tenant';
 import { SettingsShippingTaxes } from './components/settings-shipping-taxes';
 import { SettingsStorefront } from './components/settings-storefront/settings-storefront';
 import { SettingsCommissions } from './components/settings-commissions/settings-commissions';
+import { SettingsPayments } from './components/settings-payments/settings-payments';
 import { SettingsTheme } from './components/settings-theme/settings-theme';
 import { SettingsDesignPresets } from './components/settings-design-presets/settings-design-presets';
 import { ToastService } from '@core/services/toast';
@@ -43,7 +52,16 @@ export interface PreviewData {
   themeTokens?: ThemeTokens;
 }
 
-type Tab = 'general' | 'theme' | 'branding' | 'address' | 'shipping-taxes' | 'storefront' | 'commissions' | 'advanced';
+type Tab =
+  | 'general'
+  | 'theme'
+  | 'branding'
+  | 'address'
+  | 'shipping-taxes'
+  | 'payments'
+  | 'commissions'
+  | 'storefront'
+  | 'advanced';
 
 @Component({
   selector: 'app-settings',
@@ -59,6 +77,7 @@ type Tab = 'general' | 'theme' | 'branding' | 'address' | 'shipping-taxes' | 'st
     SettingsDangerZone,
     StorePreview,
     SettingsCommissions,
+    SettingsPayments,
     SettingsDesignPresets,
   ],
   templateUrl: './settings.html',
@@ -99,6 +118,7 @@ export class Settings {
   readonly brandingSection = viewChild(SettingsBranding);
   readonly generalSection = viewChild(SettingsGeneral);
   readonly addressSection = viewChild(SettingsAddress);
+  readonly paymentsSection = viewChild(SettingsPayments);
   readonly storefrontSection = viewChild(SettingsStorefront);
 
   readonly tabs: { id: Tab; label: string; icon: string }[] = [
@@ -123,6 +143,11 @@ export class Settings {
       icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>`,
     },
     {
+      id: 'payments',
+      label: 'Métodos de Pago',
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" /></svg>`,
+    },
+    {
       id: 'shipping-taxes',
       label: 'Envío e Impuestos',
       icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.129-1.125V3.375c0-.621-.508-1.125-1.129-1.125H11.25m9.75 16.5h-3.75a1.125 1.125 0 0 1-1.125-1.125V12M3.375 18.75h1.5m1.5-1.5v-1.125c0-.621.504-1.125 1.125-1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V12m0 0h2.625m-2.625 4.5h2.625m-15.75-9.75h3.75m.75 0h1.125m.75 0h3.75m-10.5 2.25h3.75m.75 0h1.125m.75 0h3.75M3.375 7.5h1.5m6-5.25v1.125c0 .621.504 1.125 1.125 1.125h3.75c.621 0 1.125-.504 1.125-1.125V2.25" /></svg>`,
@@ -140,16 +165,26 @@ export class Settings {
   ];
 
   readonly tabGroups: { label: string; tabs: { id: Tab; label: string; icon: string }[] }[] = [
-    { label: 'Apariencia', tabs: this.tabs.filter(tab => ['theme', 'branding', 'storefront'].includes(tab.id)) },
-    { label: 'Cuenta', tabs: this.tabs.filter(tab => ['general', 'address'].includes(tab.id)) },
-    { label: 'Operaciones', tabs: this.tabs.filter(tab => ['shipping-taxes', 'commissions'].includes(tab.id)) },
+    {
+      label: 'Apariencia',
+      tabs: this.tabs.filter((tab) => ['theme', 'branding', 'storefront'].includes(tab.id)),
+    },
+    { label: 'Cuenta', tabs: this.tabs.filter((tab) => ['general', 'address'].includes(tab.id)) },
+    {
+      label: 'Operaciones',
+      tabs: this.tabs.filter((tab) =>
+        ['payments', 'shipping-taxes', 'commissions'].includes(tab.id),
+      ),
+    },
     {
       label: 'Avanzado',
-      tabs: [{
-        id: 'advanced',
-        label: 'Zona de Peligro',
-        icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m0 3h.008M10.29 3.86 2.82 17.25A1.5 1.5 0 0 0 4.13 19.5h15.74a1.5 1.5 0 0 0 1.31-2.25L13.71 3.86a1.95 1.95 0 0 0-3.42 0Z" /></svg>',
-      }],
+      tabs: [
+        {
+          id: 'advanced',
+          label: 'Zona de Peligro',
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m0 3h.008M10.29 3.86 2.82 17.25A1.5 1.5 0 0 0 4.13 19.5h15.74a1.5 1.5 0 0 0 1.31-2.25L13.71 3.86a1.95 1.95 0 0 0-3.42 0Z" /></svg>',
+        },
+      ],
     },
   ];
 
@@ -168,7 +203,7 @@ export class Settings {
     layout: 'modern',
     viewMode: 'desktop',
     storefront_layout: { sections: [] },
-    themeTokens: this.tenantService.draftThemeTokens()
+    themeTokens: this.tenantService.draftThemeTokens(),
   });
 
   readonly currentDraftSnapshot = computed<ThemeDesignSnapshot>(() => {
@@ -183,7 +218,7 @@ export class Settings {
         background_image_url: data.background_image_url,
         background_pattern: data.background_pattern,
         promo_video_url: data.promo_video_url,
-      }
+      },
     };
   });
 
@@ -194,16 +229,26 @@ export class Settings {
       const branding = this.tenantService.branding();
       const tokens = this.tenantService.draftThemeTokens();
       if (t) {
-        this.previewData.update(prev => ({
+        this.previewData.update((prev) => ({
           ...prev,
           business_name: t.business_name,
           logo_url: branding?.logo_url || t.logo_url,
-          logo_dark_url: branding?.logo_dark_url || (t.settings?.['logo_dark_url'] as string) || null,
-          social_share_image_url: branding?.social_share_image_url || (t.settings?.['social_share_image_url'] as string) || null,
-          main_banner_url: branding?.main_banner_url || (t.settings?.['main_banner_url'] as string) || null,
-          background_image_url: branding?.background_image_url || (t.settings?.['background_image_url'] as string) || null,
-          background_pattern: branding?.background_pattern || (t.settings?.['background_pattern'] as any) || 'none',
-          promo_video_url: branding?.promo_video_url || (t.settings?.['promo_video_url'] as string) || null,
+          logo_dark_url:
+            branding?.logo_dark_url || (t.settings?.['logo_dark_url'] as string) || null,
+          social_share_image_url:
+            branding?.social_share_image_url ||
+            (t.settings?.['social_share_image_url'] as string) ||
+            null,
+          main_banner_url:
+            branding?.main_banner_url || (t.settings?.['main_banner_url'] as string) || null,
+          background_image_url:
+            branding?.background_image_url ||
+            (t.settings?.['background_image_url'] as string) ||
+            null,
+          background_pattern:
+            branding?.background_pattern || (t.settings?.['background_pattern'] as any) || 'none',
+          promo_video_url:
+            branding?.promo_video_url || (t.settings?.['promo_video_url'] as string) || null,
           brand_gallery: branding?.brand_gallery || (t.settings?.['brand_gallery'] as any) || [],
           social_links: t.social_links,
           primary_color: tokens.colors.primary || t.primary_color,
@@ -217,7 +262,7 @@ export class Settings {
           font_family: tokens.font_heading || t.font_family,
           layout: t.layout || 'modern',
           storefront_layout: this.tenantService.draftStorefrontLayout(),
-          themeTokens: tokens
+          themeTokens: tokens,
         }));
       }
     });
@@ -225,7 +270,7 @@ export class Settings {
 
   readonly activeTabLabel = computed(() => {
     if (this.activeTab() === 'advanced') return 'Zona de Peligro';
-    return this.tabs.find(t => t.id === this.activeTab())?.label || '';
+    return this.tabs.find((t) => t.id === this.activeTab())?.label || '';
   });
 
   readonly publishedPreviewData = computed<PreviewData>(() => {
@@ -256,7 +301,7 @@ export class Settings {
       layout: t?.layout || 'modern',
       viewMode: this.viewMode(),
       storefront_layout: layout,
-      themeTokens: tokens
+      themeTokens: tokens,
     };
   });
 
@@ -275,7 +320,7 @@ export class Settings {
     if (this.hasUnsavedChanges()) {
       const confirmed = await this.toastService.confirm(
         'Tienes cambios sin guardar en esta sección. ¿Quieres descartarlos y cambiar de pestaña?',
-        'Cambios sin guardar'
+        'Cambios sin guardar',
       );
       if (!confirmed) return;
     }
@@ -323,7 +368,9 @@ export class Settings {
       const result = await this.tenantService.saveDraft(snapshot);
 
       if (result.success) {
-        this.toastService.success('Borrador guardado exitosamente. Los cambios no afectan la tienda pública.');
+        this.toastService.success(
+          'Borrador guardado exitosamente. Los cambios no afectan la tienda pública.',
+        );
         this.hasUnsavedChanges.set(false);
       } else {
         this.toastService.error(result.error || 'Error al guardar el borrador.');
@@ -360,11 +407,13 @@ export class Settings {
       // Publish draft
       const result = await this.tenantService.publishDesign(
         this.publishVersionName().trim(),
-        this.publishNotes().trim()
+        this.publishNotes().trim(),
       );
 
       if (result.success) {
-        this.toastService.success(`¡Diseño publicado exitosamente! Tu tienda pública ya está actualizada.`);
+        this.toastService.success(
+          `¡Diseño publicado exitosamente! Tu tienda pública ya está actualizada.`,
+        );
         this.hasUnsavedChanges.set(false);
         this.closePublishModal();
       } else {
@@ -380,7 +429,7 @@ export class Settings {
   async revertToPublished() {
     const confirmed = await this.toastService.confirm(
       '¿Deseas descartar todos los cambios del borrador y volver al último diseño publicado en vivo?',
-      'Volver al diseño publicado'
+      'Volver al diseño publicado',
     );
     if (!confirmed) return;
 
@@ -404,28 +453,56 @@ export class Settings {
 
   async saveChanges() {
     switch (this.activeTab()) {
-      case 'theme': await this.themeSection()?.save(); break;
-      case 'branding': await this.brandingSection()?.save(); break;
-      case 'general': await this.generalSection()?.save(); break;
-      case 'address': await this.addressSection()?.save(); break;
-      case 'storefront': await this.storefrontSection()?.saveLayout(); break;
+      case 'theme':
+        await this.themeSection()?.save();
+        break;
+      case 'branding':
+        await this.brandingSection()?.save();
+        break;
+      case 'general':
+        await this.generalSection()?.save();
+        break;
+      case 'address':
+        await this.addressSection()?.save();
+        break;
+      case 'payments':
+        await this.paymentsSection()?.save();
+        break;
+      case 'storefront':
+        await this.storefrontSection()?.saveLayout();
+        break;
     }
   }
 
   discardChanges() {
     switch (this.activeTab()) {
-      case 'theme': this.themeSection()?.cancel(); break;
-      case 'branding': this.brandingSection()?.cancel(); break;
-      case 'general': this.generalSection()?.cancel(); break;
-      case 'address': this.addressSection()?.cancel(); break;
-      case 'storefront': this.storefrontSection()?.discardLayout(); break;
+      case 'theme':
+        this.themeSection()?.cancel();
+        break;
+      case 'branding':
+        this.brandingSection()?.cancel();
+        break;
+      case 'general':
+        this.generalSection()?.cancel();
+        break;
+      case 'address':
+        this.addressSection()?.cancel();
+        break;
+      case 'payments':
+        this.paymentsSection()?.cancel();
+        break;
+      case 'storefront':
+        this.storefrontSection()?.discardLayout();
+        break;
     }
     this.hasUnsavedChanges.set(false);
   }
 
-  setViewMode(mode: 'desktop' | 'mobile') { this.viewMode.set(mode); }
+  setViewMode(mode: 'desktop' | 'mobile') {
+    this.viewMode.set(mode);
+  }
   toggleMobilePreview() {
-    this.showMobilePreview.update(isVisible => !isVisible);
+    this.showMobilePreview.update((isVisible) => !isVisible);
     this.viewMode.set('mobile');
   }
 
@@ -442,9 +519,10 @@ export class Settings {
   async copyStoreUrl() {
     try {
       const storeUrl = this.storeUrl();
-      const fullUrl = storeUrl.startsWith('http://') || storeUrl.startsWith('https://')
-        ? storeUrl
-        : `${window.location.origin}${storeUrl}`;
+      const fullUrl =
+        storeUrl.startsWith('http://') || storeUrl.startsWith('https://')
+          ? storeUrl
+          : `${window.location.origin}${storeUrl}`;
       await navigator.clipboard.writeText(fullUrl);
       this.toastService.success('URL copiada al portapapeles');
     } catch {
@@ -453,7 +531,7 @@ export class Settings {
   }
 
   updateThemePreview(tokens: ThemeTokens) {
-    this.previewData.update(prev => ({
+    this.previewData.update((prev) => ({
       ...prev,
       primary_color: tokens.colors.primary,
       secondary_color: tokens.colors.secondary,
@@ -462,18 +540,18 @@ export class Settings {
       header_color: tokens.colors.header,
       footer_color: tokens.colors.footer,
       font_family: tokens.font_heading,
-      themeTokens: tokens
+      themeTokens: tokens,
     }));
     this.broadcastCurrentPreview();
   }
 
   updatePreview(branding: any) {
-    this.previewData.update(prev => ({ ...prev, ...branding }));
+    this.previewData.update((prev) => ({ ...prev, ...branding }));
     this.broadcastCurrentPreview();
   }
 
   updateStorefrontPreview(layout: StorefrontLayout) {
-    this.previewData.update(prev => ({ ...prev, storefront_layout: layout }));
+    this.previewData.update((prev) => ({ ...prev, storefront_layout: layout }));
     this.broadcastCurrentPreview();
   }
 

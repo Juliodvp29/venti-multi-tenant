@@ -201,295 +201,310 @@ export interface SavedCard {
             </div>
 
             <div class="space-y-3">
-              @for (method of paymentMethods; track method.id) {
+              @if (paymentMethods().length === 0) {
                 <div
-                  class="rounded-xl border transition-all overflow-hidden"
-                  [ngClass]="
-                    selectedPaymentMethod() === method.id
-                      ? 'border-sky-500 bg-sky-50/10'
-                      : 'border-slate-200 hover:border-slate-300'
-                  "
+                  class="p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-xs sm:text-sm"
                 >
-                  <label class="flex items-center justify-between p-3.5 cursor-pointer">
-                    <div class="flex items-center gap-3">
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        [value]="method.id"
-                        [checked]="selectedPaymentMethod() === method.id"
-                        (change)="selectedPaymentMethod.set(method.id)"
-                        class="h-4 w-4 text-sky-600 focus:ring-sky-500 border-slate-300"
-                      />
-                      <div>
-                        <p class="font-bold text-xs sm:text-sm text-slate-900">
-                          {{ method.label }}
-                        </p>
-                        <p class="text-[11px] text-slate-500 mt-0.5">
-                          {{ method.description }}
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Icons badge -->
-                    <div class="flex items-center gap-1.5 shrink-0">
-                      @if (method.id === PaymentMethod.CreditCard) {
-                        <span
-                          class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
-                          >Visa</span
-                        >
-                        <span
-                          class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
-                          >Mastercard</span
-                        >
-                        <span
-                          class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
-                          >Amex</span
-                        >
-                      } @else {
-                        <div
-                          class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"
-                        >
-                          <svg
-                            class="w-4 h-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              [attr.d]="method.icon"
-                            />
-                          </svg>
-                        </div>
-                      }
-                    </div>
-                  </label>
-
-                  <!-- Inline Credit Card Form when selected -->
-                  @if (
-                    selectedPaymentMethod() === PaymentMethod.CreditCard &&
-                    method.id === PaymentMethod.CreditCard
-                  ) {
-                    <div
-                      class="px-4 pb-4 pt-2 border-t border-sky-100 bg-white/80 space-y-3.5 animate-in fade-in duration-200"
-                    >
-                      <!-- Saved cards selector if available -->
-                      @if (savedCards().length > 0) {
-                        <div class="space-y-2">
-                          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                            Tarjetas guardadas
-                          </p>
-                          @for (card of savedCards(); track card.id) {
-                            <label
-                              class="flex items-center justify-between p-2.5 rounded-lg border cursor-pointer text-xs transition-all"
-                              [ngClass]="
-                                selectedSavedCardId() === card.id
-                                  ? 'border-sky-500 bg-sky-50/40 font-bold text-slate-900'
-                                  : 'border-slate-200 text-slate-700'
-                              "
-                            >
-                              <div class="flex items-center gap-2.5">
-                                <input
-                                  type="radio"
-                                  name="savedCardChoice"
-                                  [value]="card.id"
-                                  [checked]="selectedSavedCardId() === card.id"
-                                  (change)="selectedSavedCardId.set(card.id)"
-                                  class="h-3.5 w-3.5 text-sky-600 focus:ring-sky-500 border-slate-300"
-                                />
-                                <span class="uppercase tracking-wide font-black text-sky-700">{{
-                                  card.brand
-                                }}</span>
-                                <span>•••• {{ card.last4 }}</span>
-                              </div>
-                              <span class="text-slate-400 text-[11px]"
-                                >Exp: {{ card.expiryMonth }}/{{ card.expiryYear }}</span
-                              >
-                            </label>
-                          }
-
-                          <button
-                            type="button"
-                            (click)="selectedSavedCardId.set(null)"
-                            class="text-[11px] font-bold text-sky-600 hover:text-sky-700 underline"
-                          >
-                            + Usar una tarjeta diferente
-                          </button>
-                        </div>
-                      }
-
-                      <!-- New Card Form (if no card selected or entering new one) -->
-                      @if (!selectedSavedCardId()) {
-                        <div class="space-y-3 pt-1">
-                          <!-- Card Number -->
-                          <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">
-                              Número de Tarjeta
-                            </label>
-                            <div class="relative">
-                              <input
-                                type="text"
-                                maxlength="19"
-                                [value]="cardForm.number"
-                                (input)="onCardNumberInput($event)"
-                                placeholder="0000 0000 0000 0000"
-                                class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono transition-all"
-                              />
-                              <div class="absolute right-3 top-2.5 flex items-center gap-1">
-                                <span
-                                  class="text-[10px] uppercase font-black text-sky-700 bg-sky-100/80 px-1.5 py-0.5 rounded"
-                                >
-                                  {{ detectedCardBrand() }}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Cardholder Name -->
-                          <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">
-                              Nombre del Titular
-                            </label>
-                            <input
-                              type="text"
-                              [value]="cardForm.name"
-                              (input)="cardForm.name = $any($event.target).value"
-                              placeholder="Nombre como figura en la tarjeta"
-                              class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 uppercase transition-all"
-                            />
-                          </div>
-
-                          <!-- Expiry & CVC row -->
-                          <div class="grid grid-cols-2 gap-3">
-                            <div>
-                              <label class="block text-xs font-semibold text-slate-700 mb-1">
-                                Vencimiento (MM/AA)
-                              </label>
-                              <input
-                                type="text"
-                                maxlength="5"
-                                [value]="cardForm.expiry"
-                                (input)="onExpiryInput($event)"
-                                placeholder="MM/AA"
-                                class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono transition-all"
-                              />
-                            </div>
-                            <div>
-                              <label class="block text-xs font-semibold text-slate-700 mb-1">
-                                Código CVC / CVV
-                              </label>
-                              <input
-                                type="password"
-                                maxlength="4"
-                                [value]="cardForm.cvc"
-                                (input)="
-                                  cardForm.cvc = $any($event.target).value.replace(/\\D/g, '')
-                                "
-                                placeholder="123"
-                                class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono transition-all"
-                              />
-                            </div>
-                          </div>
-
-                          <!-- Save Card checkbox -->
-                          <label class="flex items-center gap-2 pt-1 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              [(ngModel)]="saveCardForFuture"
-                              class="rounded border-slate-300 text-sky-600 focus:ring-sky-500 h-3.5 w-3.5"
-                            />
-                            <span class="text-xs text-slate-600 font-medium">
-                              Guardar esta tarjeta de forma segura para futuras compras
-                            </span>
-                          </label>
-                        </div>
-                      }
-                    </div>
-                  }
-
-                  <!-- Inline Details for other payment methods -->
-                  @if (
-                    selectedPaymentMethod() === PaymentMethod.CashOnDelivery &&
-                    method.id === PaymentMethod.CashOnDelivery
-                  ) {
-                    <div
-                      class="px-4 pb-3.5 pt-1 text-xs text-emerald-800 bg-emerald-50/60 border-t border-emerald-100 flex items-center gap-2"
-                    >
-                      <svg
-                        class="w-4 h-4 shrink-0 text-emerald-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span
-                        >Pagas en efectivo o con datáfono directamente al repartidor cuando llegue
-                        tu paquete.</span
-                      >
-                    </div>
-                  }
-
-                  @if (
-                    selectedPaymentMethod() === PaymentMethod.BankTransfer &&
-                    method.id === PaymentMethod.BankTransfer
-                  ) {
-                    <div
-                      class="px-4 pb-3.5 pt-1 text-xs text-indigo-800 bg-indigo-50/60 border-t border-indigo-100 flex items-center gap-2"
-                    >
-                      <svg
-                        class="w-4 h-4 shrink-0 text-indigo-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span
-                        >Te mostraremos los números de cuenta bancaria e instrucciones al confirmar
-                        tu pedido.</span
-                      >
-                    </div>
-                  }
-
-                  @if (
-                    selectedPaymentMethod() === PaymentMethod.PSE && method.id === PaymentMethod.PSE
-                  ) {
-                    <div
-                      class="px-4 pb-3.5 pt-1 text-xs text-sky-800 bg-sky-50/60 border-t border-sky-100 flex items-center gap-2"
-                    >
-                      <svg
-                        class="w-4 h-4 shrink-0 text-sky-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                        />
-                      </svg>
-                      <span
-                        >Serás redirigido a la pasarela segura de tu banco para debitar directamente
-                        de tus fondos.</span
-                      >
-                    </div>
-                  }
+                  <p class="font-bold">No hay métodos de pago disponibles</p>
+                  <p class="mt-1">
+                    Actualmente la tienda no cuenta con métodos de pago habilitados. Por favor
+                    comunícate con el vendedor.
+                  </p>
                 </div>
+              } @else {
+                @for (method of paymentMethods(); track method.id) {
+                  <div
+                    class="rounded-xl border transition-all overflow-hidden"
+                    [ngClass]="
+                      selectedPaymentMethod() === method.id
+                        ? 'border-sky-500 bg-sky-50/10'
+                        : 'border-slate-200 hover:border-slate-300'
+                    "
+                  >
+                    <label class="flex items-center justify-between p-3.5 cursor-pointer">
+                      <div class="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          [value]="method.id"
+                          [checked]="selectedPaymentMethod() === method.id"
+                          (change)="selectedPaymentMethod.set(method.id)"
+                          class="h-4 w-4 text-sky-600 focus:ring-sky-500 border-slate-300"
+                        />
+                        <div>
+                          <p class="font-bold text-xs sm:text-sm text-slate-900">
+                            {{ method.label }}
+                          </p>
+                          <p class="text-[11px] text-slate-500 mt-0.5">
+                            {{ method.description }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <!-- Icons badge -->
+                      <div class="flex items-center gap-1.5 shrink-0">
+                        @if (method.id === PaymentMethod.CreditCard) {
+                          <span
+                            class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
+                            >Visa</span
+                          >
+                          <span
+                            class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
+                            >Mastercard</span
+                          >
+                          <span
+                            class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
+                            >Amex</span
+                          >
+                        } @else {
+                          <div
+                            class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"
+                          >
+                            <svg
+                              class="w-4 h-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                [attr.d]="method.icon"
+                              />
+                            </svg>
+                          </div>
+                        }
+                      </div>
+                    </label>
+
+                    <!-- Inline Credit Card Form when selected -->
+                    @if (
+                      selectedPaymentMethod() === PaymentMethod.CreditCard &&
+                      method.id === PaymentMethod.CreditCard
+                    ) {
+                      <div
+                        class="px-4 pb-4 pt-2 border-t border-sky-100 bg-white/80 space-y-3.5 animate-in fade-in duration-200"
+                      >
+                        <!-- Saved cards selector if available -->
+                        @if (savedCards().length > 0) {
+                          <div class="space-y-2">
+                            <p
+                              class="text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                            >
+                              Tarjetas guardadas
+                            </p>
+                            @for (card of savedCards(); track card.id) {
+                              <label
+                                class="flex items-center justify-between p-2.5 rounded-lg border cursor-pointer text-xs transition-all"
+                                [ngClass]="
+                                  selectedSavedCardId() === card.id
+                                    ? 'border-sky-500 bg-sky-50/40 font-bold text-slate-900'
+                                    : 'border-slate-200 text-slate-700'
+                                "
+                              >
+                                <div class="flex items-center gap-2.5">
+                                  <input
+                                    type="radio"
+                                    name="savedCardChoice"
+                                    [value]="card.id"
+                                    [checked]="selectedSavedCardId() === card.id"
+                                    (change)="selectedSavedCardId.set(card.id)"
+                                    class="h-3.5 w-3.5 text-sky-600 focus:ring-sky-500 border-slate-300"
+                                  />
+                                  <span class="uppercase tracking-wide font-black text-sky-700">{{
+                                    card.brand
+                                  }}</span>
+                                  <span>•••• {{ card.last4 }}</span>
+                                </div>
+                                <span class="text-slate-400 text-[11px]"
+                                  >Exp: {{ card.expiryMonth }}/{{ card.expiryYear }}</span
+                                >
+                              </label>
+                            }
+
+                            <button
+                              type="button"
+                              (click)="selectedSavedCardId.set(null)"
+                              class="text-[11px] font-bold text-sky-600 hover:text-sky-700 underline"
+                            >
+                              + Usar una tarjeta diferente
+                            </button>
+                          </div>
+                        }
+
+                        <!-- New Card Form (if no card selected or entering new one) -->
+                        @if (!selectedSavedCardId()) {
+                          <div class="space-y-3 pt-1">
+                            <!-- Card Number -->
+                            <div>
+                              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                Número de Tarjeta
+                              </label>
+                              <div class="relative">
+                                <input
+                                  type="text"
+                                  maxlength="19"
+                                  [value]="cardForm.number"
+                                  (input)="onCardNumberInput($event)"
+                                  placeholder="0000 0000 0000 0000"
+                                  class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono transition-all"
+                                />
+                                <div class="absolute right-3 top-2.5 flex items-center gap-1">
+                                  <span
+                                    class="text-[10px] uppercase font-black text-sky-700 bg-sky-100/80 px-1.5 py-0.5 rounded"
+                                  >
+                                    {{ detectedCardBrand() }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Cardholder Name -->
+                            <div>
+                              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                Nombre del Titular
+                              </label>
+                              <input
+                                type="text"
+                                [value]="cardForm.name"
+                                (input)="cardForm.name = $any($event.target).value"
+                                placeholder="Nombre como figura en la tarjeta"
+                                class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 uppercase transition-all"
+                              />
+                            </div>
+
+                            <!-- Expiry & CVC row -->
+                            <div class="grid grid-cols-2 gap-3">
+                              <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                  Vencimiento (MM/AA)
+                                </label>
+                                <input
+                                  type="text"
+                                  maxlength="5"
+                                  [value]="cardForm.expiry"
+                                  (input)="onExpiryInput($event)"
+                                  placeholder="MM/AA"
+                                  class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono transition-all"
+                                />
+                              </div>
+                              <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                  Código CVC / CVV
+                                </label>
+                                <input
+                                  type="password"
+                                  maxlength="4"
+                                  [value]="cardForm.cvc"
+                                  (input)="
+                                    cardForm.cvc = $any($event.target).value.replace(/\\D/g, '')
+                                  "
+                                  placeholder="123"
+                                  class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono transition-all"
+                                />
+                              </div>
+                            </div>
+
+                            <!-- Save Card checkbox -->
+                            <label class="flex items-center gap-2 pt-1 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                [(ngModel)]="saveCardForFuture"
+                                class="rounded border-slate-300 text-sky-600 focus:ring-sky-500 h-3.5 w-3.5"
+                              />
+                              <span class="text-xs text-slate-600 font-medium">
+                                Guardar esta tarjeta de forma segura para futuras compras
+                              </span>
+                            </label>
+                          </div>
+                        }
+                      </div>
+                    }
+
+                    <!-- Inline Details for other payment methods -->
+                    @if (
+                      selectedPaymentMethod() === PaymentMethod.CashOnDelivery &&
+                      method.id === PaymentMethod.CashOnDelivery
+                    ) {
+                      <div
+                        class="px-4 pb-3.5 pt-1 text-xs text-emerald-800 bg-emerald-50/60 border-t border-emerald-100 flex items-center gap-2"
+                      >
+                        <svg
+                          class="w-4 h-4 shrink-0 text-emerald-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span
+                          >Pagas en efectivo o con datáfono directamente al repartidor cuando llegue
+                          tu paquete.</span
+                        >
+                      </div>
+                    }
+
+                    @if (
+                      selectedPaymentMethod() === PaymentMethod.BankTransfer &&
+                      method.id === PaymentMethod.BankTransfer
+                    ) {
+                      <div
+                        class="px-4 pb-3.5 pt-1 text-xs text-indigo-800 bg-indigo-50/60 border-t border-indigo-100 flex items-center gap-2"
+                      >
+                        <svg
+                          class="w-4 h-4 shrink-0 text-indigo-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span
+                          >Te mostraremos los números de cuenta bancaria e instrucciones al
+                          confirmar tu pedido.</span
+                        >
+                      </div>
+                    }
+
+                    @if (
+                      selectedPaymentMethod() === PaymentMethod.PSE &&
+                      method.id === PaymentMethod.PSE
+                    ) {
+                      <div
+                        class="px-4 pb-3.5 pt-1 text-xs text-sky-800 bg-sky-50/60 border-t border-sky-100 flex items-center gap-2"
+                      >
+                        <svg
+                          class="w-4 h-4 shrink-0 text-sky-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                          />
+                        </svg>
+                        <span
+                          >Serás redirigido a la pasarela segura de tu banco para debitar
+                          directamente de tus fondos.</span
+                        >
+                      </div>
+                    }
+                  </div>
+                }
               }
             </div>
           </section>
@@ -754,7 +769,12 @@ export interface SavedCard {
             <button
               type="button"
               (click)="placeOrder()"
-              [disabled]="isSubmitting() || showNewAddressForm() || isLoadingAddresses()"
+              [disabled]="
+                isSubmitting() ||
+                showNewAddressForm() ||
+                isLoadingAddresses() ||
+                paymentMethods().length === 0
+              "
               class="w-full mt-6 py-3.5 px-4 bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white rounded-xl font-bold text-xs sm:text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
             >
               @if (isSubmitting()) {
@@ -781,6 +801,8 @@ export interface SavedCard {
                 <span>Procesando pago...</span>
               } @else if (showNewAddressForm()) {
                 <span>Guarda la dirección de envío</span>
+              } @else if (paymentMethods().length === 0) {
+                <span>Sin métodos de pago disponibles</span>
               } @else {
                 <span>Confirmar y Pagar Pedido</span>
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -873,7 +895,7 @@ export class Checkout implements OnInit {
     return 'Tarjeta';
   });
 
-  readonly paymentMethods = [
+  readonly allPaymentMethods = [
     {
       id: PaymentMethod.CreditCard,
       label: 'Tarjeta débito y crédito',
@@ -900,6 +922,19 @@ export class Checkout implements OnInit {
     },
   ];
 
+  readonly paymentMethods = computed(() => {
+    const tenant = this.tenantService.currentTenant();
+    const settings = tenant?.settings?.['payment_methods'] as
+      Record<string, { enabled?: boolean }> | undefined;
+    if (!settings) {
+      return this.allPaymentMethods;
+    }
+    return this.allPaymentMethods.filter((method) => {
+      const config = settings[method.id];
+      return config === undefined ? true : !!config.enabled;
+    });
+  });
+
   private customerId = signal<string | null>(null);
   private resolvedCustomer: any = null;
 
@@ -912,6 +947,14 @@ export class Checkout implements OnInit {
         if (address) {
           this.cartService.setShippingLocation(address.country, address.state || undefined);
         }
+      }
+    });
+
+    effect(() => {
+      const available = this.paymentMethods();
+      const current = this.selectedPaymentMethod();
+      if (available.length > 0 && !available.some((m) => m.id === current)) {
+        this.selectedPaymentMethod.set(available[0].id);
       }
     });
   }
@@ -1051,6 +1094,11 @@ export class Checkout implements OnInit {
   async placeOrder() {
     if (this.cartService.items().length === 0) {
       this.toast.error('El carrito está vacío');
+      return;
+    }
+
+    if (this.paymentMethods().length === 0) {
+      this.toast.error('No hay métodos de pago disponibles');
       return;
     }
 

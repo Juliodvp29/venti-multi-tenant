@@ -1,93 +1,93 @@
 export interface BrandGalleryItem {
-    id: string;
-    url: string;
-    caption?: string;
-    link?: string;
+  id: string;
+  url: string;
+  caption?: string;
+  link?: string;
 }
 
 export type BackgroundPatternOption = 'none' | 'dots' | 'grid' | 'mesh' | 'noise';
 
 export interface TenantBranding {
-    logo_url: string | null;
-    logo_dark_url?: string | null;
-    favicon_url: string | null;
-    social_share_image_url?: string | null;
-    main_banner_url?: string | null;
-    background_image_url?: string | null;
-    background_pattern?: BackgroundPatternOption;
-    promo_video_url?: string | null;
-    brand_gallery?: BrandGalleryItem[];
-    business_name: string;
-    description: string | null;
-    primary_color: string;
-    secondary_color: string;
-    accent_color: string;
-    font_family: string;
-    background_color: string;
-    header_color: string;
-    footer_color: string;
-    layout: 'modern' | 'classic' | 'minimal';
-    social_links?: SocialLinks;
+  logo_url: string | null;
+  logo_dark_url?: string | null;
+  favicon_url: string | null;
+  social_share_image_url?: string | null;
+  main_banner_url?: string | null;
+  background_image_url?: string | null;
+  background_pattern?: BackgroundPatternOption;
+  promo_video_url?: string | null;
+  brand_gallery?: BrandGalleryItem[];
+  business_name: string;
+  description: string | null;
+  primary_color: string;
+  secondary_color: string;
+  accent_color: string;
+  font_family: string;
+  background_color: string;
+  header_color: string;
+  footer_color: string;
+  layout: 'modern' | 'classic' | 'minimal';
+  social_links?: SocialLinks;
 }
 
 export interface SocialLinks {
-    whatsapp?: string;
-    facebook?: string;
-    instagram?: string;
-    tiktok?: string;
-    youtube?: string;
-    twitter?: string;
+  whatsapp?: string;
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
+  youtube?: string;
+  twitter?: string;
 }
 
 export interface TenantAddress {
-    address_line1: string | null;
-    address_line2: string | null;
-    city: string | null;
-    state: string | null;
-    postal_code: string | null;
-    country: string | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  state: string | null;
+  postal_code: string | null;
+  country: string | null;
 }
 
 export interface TenantSettings {
-    [key: string]: unknown;
+  [key: string]: unknown;
 }
 
 export interface TenantSettingItem {
-    id: string;
-    tenant_id: string;
-    setting_key: string;
-    setting_value: unknown;
-    setting_type: 'string' | 'number' | 'boolean' | 'json';
-    created_at: string;
-    updated_at: string;
+  id: string;
+  tenant_id: string;
+  setting_key: string;
+  setting_value: unknown;
+  setting_type: 'string' | 'number' | 'boolean' | 'json';
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TenantMember {
-    id: string;
-    tenant_id: string;
-    user_id: string;
-    role: 'owner' | 'admin' | 'editor' | 'viewer' | 'delivery';
-    permissions: string[];
-    is_active: boolean;
-    invited_by?: string;
-    invited_at?: string | null;
-    joined_at?: string;
-    created_at: string;
-    updated_at?: string | null;
-    email?: string;
-    is_invite?: boolean;
+  id: string;
+  tenant_id: string;
+  user_id: string;
+  role: 'owner' | 'admin' | 'editor' | 'viewer' | 'delivery';
+  permissions: string[];
+  is_active: boolean;
+  invited_by?: string;
+  invited_at?: string | null;
+  joined_at?: string;
+  created_at: string;
+  updated_at?: string | null;
+  email?: string;
+  is_invite?: boolean;
 }
 
 export interface TenantInvitation {
-    id: string;
-    tenant_id: string;
-    email: string;
-    role: 'owner' | 'admin' | 'editor' | 'viewer' | 'delivery';
-    token: string;
-    status: 'pending' | 'accepted' | 'expired';
-    invited_by: string;
-    expires_at: string;
-    created_at: string;
+  id: string;
+  tenant_id: string;
+  email: string;
+  role: 'owner' | 'admin' | 'editor' | 'viewer' | 'delivery';
+  token: string;
+  status: 'pending' | 'accepted' | 'expired';
+  invited_by: string;
+  expires_at: string;
+  created_at: string;
 }
 
 export type SubscriptionPlan = 'free' | 'basic' | 'professional' | 'enterprise';
@@ -95,87 +95,94 @@ export type SubscriptionStatus = 'active' | 'cancelled' | 'suspended' | 'expired
 export type TenantStatus = 'active' | 'suspended' | 'pending' | 'cancelled';
 
 export interface Tenant {
-    id: string;
+  id: string;
 
-    business_name: string;
-    slug: string;
-    subdomain: string;
-    custom_domain: string | null;
-    description?: string | null;
+  business_name: string;
+  slug: string;
+  subdomain: string;
+  custom_domain: string | null;
+  description?: string | null;
 
-    owner_id: string;
-    contact_email: string;
-    contact_phone: string | null;
+  owner_id: string;
+  contact_email: string;
+  contact_phone: string | null;
 
-    plan: SubscriptionPlan;
-    plan_status: SubscriptionStatus;
-    trial_ends_at: string | null;
-    subscription_ends_at: string | null;
+  plan: SubscriptionPlan;
+  plan_status: SubscriptionStatus;
+  trial_ends_at: string | null;
+  subscription_ends_at: string | null;
 
-    status: TenantStatus;
-    is_verified: boolean;
+  status: TenantStatus;
+  is_verified: boolean;
 
-    logo_url: string | null;
-    logo_dark_url?: string | null;
-    favicon_url: string | null;
-    social_share_image_url?: string | null;
-    main_banner_url?: string | null;
-    background_image_url?: string | null;
-    background_pattern?: BackgroundPatternOption;
-    promo_video_url?: string | null;
-    brand_gallery?: BrandGalleryItem[];
-    primary_color: string;
-    secondary_color: string;
-    accent_color: string;
-    font_family: string;
-    background_color: string;
-    header_color: string;
-    footer_color: string;
-    layout: 'modern' | 'classic' | 'minimal';
-    social_links?: SocialLinks;
+  logo_url: string | null;
+  logo_dark_url?: string | null;
+  favicon_url: string | null;
+  social_share_image_url?: string | null;
+  main_banner_url?: string | null;
+  background_image_url?: string | null;
+  background_pattern?: BackgroundPatternOption;
+  promo_video_url?: string | null;
+  brand_gallery?: BrandGalleryItem[];
+  primary_color: string;
+  secondary_color: string;
+  accent_color: string;
+  font_family: string;
+  background_color: string;
+  header_color: string;
+  footer_color: string;
+  layout: 'modern' | 'classic' | 'minimal';
+  social_links?: SocialLinks;
 
-    address_line1: string | null;
-    address_line2: string | null;
-    city: string | null;
-    state: string | null;
-    postal_code: string | null;
-    country: string | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  state: string | null;
+  postal_code: string | null;
+  country: string | null;
 
-    settings: TenantSettings;
+  settings: TenantSettings;
 
-    created_at: string;
-    updated_at: string;
-    deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
 }
 
+export interface PaymentMethodItemConfig {
+  enabled: boolean;
+  config?: Record<string, unknown>;
+}
+
+export type TenantPaymentSettings = Record<string, PaymentMethodItemConfig>;
+
 export interface UpdateTenantDto {
-    business_name?: string;
-    description?: string | null;
-    contact_email?: string;
-    contact_phone?: string | null;
-    logo_url?: string | null;
-    logo_dark_url?: string | null;
-    favicon_url?: string | null;
-    social_share_image_url?: string | null;
-    main_banner_url?: string | null;
-    background_image_url?: string | null;
-    background_pattern?: BackgroundPatternOption;
-    promo_video_url?: string | null;
-    brand_gallery?: BrandGalleryItem[];
-    primary_color?: string;
-    secondary_color?: string;
-    accent_color?: string;
-    font_family?: string;
-    background_color?: string;
-    header_color?: string;
-    footer_color?: string;
-    layout?: 'modern' | 'classic' | 'minimal';
-    social_links?: SocialLinks;
-    address_line1?: string | null;
-    address_line2?: string | null;
-    city?: string | null;
-    state?: string | null;
-    postal_code?: string | null;
-    country?: string | null;
-    settings?: TenantSettings;
+  business_name?: string;
+  description?: string | null;
+  contact_email?: string;
+  contact_phone?: string | null;
+  logo_url?: string | null;
+  logo_dark_url?: string | null;
+  favicon_url?: string | null;
+  social_share_image_url?: string | null;
+  main_banner_url?: string | null;
+  background_image_url?: string | null;
+  background_pattern?: BackgroundPatternOption;
+  promo_video_url?: string | null;
+  brand_gallery?: BrandGalleryItem[];
+  primary_color?: string;
+  secondary_color?: string;
+  accent_color?: string;
+  font_family?: string;
+  background_color?: string;
+  header_color?: string;
+  footer_color?: string;
+  layout?: 'modern' | 'classic' | 'minimal';
+  social_links?: SocialLinks;
+  address_line1?: string | null;
+  address_line2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postal_code?: string | null;
+  country?: string | null;
+  settings?: TenantSettings;
 }
