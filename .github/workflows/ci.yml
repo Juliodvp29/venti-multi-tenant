@@ -34,6 +34,9 @@ jobs:
       - name: Generate environment files
         run: node scripts/set-env.js
 
+      - name: Run lint
+        run: npm run lint
+
       - name: Run tests
         run: npm run test -- --watch=false
 
