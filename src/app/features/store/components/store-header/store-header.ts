@@ -410,7 +410,9 @@ export class StoreHeader {
 
   @HostListener('window:scroll')
   onWindowScroll() {
-    this.scrolledPastHero.set(window.scrollY > 80);
+    if (typeof window !== 'undefined') {
+      this.scrolledPastHero.set(window.scrollY > 80);
+    }
   }
 
   onLogout() {

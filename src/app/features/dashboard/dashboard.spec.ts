@@ -55,6 +55,7 @@ const mockAnalyticsService = {
   }),
   getMonthlySales: vi.fn().mockResolvedValue([]),
   getCategorySales: vi.fn().mockResolvedValue([]),
+  getMonthlyPerformance: vi.fn().mockResolvedValue([]),
   getSalesByCategoryBI: vi.fn().mockResolvedValue([]),
   getRecentTransactions: vi.fn().mockResolvedValue([]),
 };
@@ -65,7 +66,11 @@ const mockOrdersService = {
 
 const mockTenantService = {
   tenant: signal({ id: 'tenant-123', business_name: 'Test Tenant', settings: { currency: 'COP' } }),
-  currentTenant: signal({ id: 'tenant-123', business_name: 'Test Tenant', settings: { currency: 'COP' } }),
+  currentTenant: signal({
+    id: 'tenant-123',
+    business_name: 'Test Tenant',
+    settings: { currency: 'COP' },
+  }),
   tenantId: signal('tenant-123'),
   currency: signal('COP'),
   timezone: signal('America/Bogota'),
