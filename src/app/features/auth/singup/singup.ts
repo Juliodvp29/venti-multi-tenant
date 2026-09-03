@@ -89,13 +89,13 @@ import { Supabase } from '@core/services/supabase';
               </svg>
             </div>
             <h2 class="text-3xl font-black mb-4 dark:text-white tracking-tight">
-              ¡Revisa tu correo!
+              ¡Cuenta creada!
             </h2>
             <p class="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
               {{
                 isInviteFlow()
                   ? 'Tu cuenta ha sido creada y te has unido a la tienda.'
-                  : 'Hemos enviado un enlace de verificación a tu correo. Por favor confírmalo para empezar.'
+                  : 'Tu cuenta y tu tienda fueron creadas correctamente. Ya puedes iniciar sesión.'
               }}
             </p>
           </div>
@@ -567,7 +567,7 @@ export class Singup implements OnInit {
       // Normal sign-up flow
       this.isLoading.set(false);
       this.isSuccess.set(true);
-      this.toast.success('¡Registro exitoso!', 'Revisa tu correo para confirmar tu cuenta');
+      this.toast.success('¡Registro exitoso!', 'Tu cuenta fue creada. Ya puedes iniciar sesión');
       setTimeout(() => {
         this.router.navigate(['/auth/login']);
       }, 3000);
