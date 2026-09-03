@@ -8,13 +8,14 @@ import {
   inject,
   viewChild,
   ElementRef,
-  HostListener
+  HostListener,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ColumnDef, TableAction, TableSort } from '@core/types/table';
+import { ColumnDef, PdfReportOptions, TableAction, TableSort } from '@core/types/table';
 import { ToastService } from '@core/services/toast';
 import { FileProcessorService } from '@core/services/file-processor';
+import { ReportPdfService } from '@core/services/report-pdf';
 import { TenantService } from '@core/services/tenant';
 
 @Component({
@@ -23,13 +24,14 @@ import { TenantService } from '@core/services/tenant';
   templateUrl: './dynamic-table.html',
   styleUrl: './dynamic-table.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [CurrencyPipe, DatePipe]
+  providers: [CurrencyPipe, DatePipe],
 })
 export class DynamicTable<T extends Record<string, any>> {
   private readonly toast = inject(ToastService);
   private readonly currencyPipe = inject(CurrencyPipe);
   private readonly datePipe = inject(DatePipe);
   private readonly fileProcessor = inject(FileProcessorService);
+  private readonly reportPdfService = inject(ReportPdfService);
   private readonly tenantService = inject(TenantService);
 
   fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
@@ -63,6 +65,7 @@ export class DynamicTable<T extends Record<string, any>> {
   openMenuItem = signal<T | null>(null);
   menuPosition = signal<{ top: number; left: number } | null>(null);
   isExportMenuOpen = signal(false);
+  isExporting = signal(false);
 
   @HostListener('document:click')
   onDocumentClick() {
@@ -115,7 +118,10 @@ export class DynamicTable<T extends Record<string, any>> {
           if (!isNaN(numA) && !isNaN(numB)) {
             comp = numA - numB;
           } else {
-            comp = String(valA).localeCompare(String(valB), 'es', { numeric: true, sensitivity: 'base' });
+            comp = String(valA).localeCompare(String(valB), 'es', {
+              numeric: true,
+              sensitivity: 'base',
+            });
           }
         } else if (col?.type === 'date' || valA instanceof Date || valB instanceof Date) {
           const dateA = new Date(valA).getTime();
@@ -123,10 +129,16 @@ export class DynamicTable<T extends Record<string, any>> {
           if (!isNaN(dateA) && !isNaN(dateB)) {
             comp = dateA - dateB;
           } else {
-            comp = String(valA).localeCompare(String(valB), 'es', { numeric: true, sensitivity: 'base' });
+            comp = String(valA).localeCompare(String(valB), 'es', {
+              numeric: true,
+              sensitivity: 'base',
+            });
           }
         } else {
-          comp = String(valA).localeCompare(String(valB), 'es', { numeric: true, sensitivity: 'base' });
+          comp = String(valA).localeCompare(String(valB), 'es', {
+            numeric: true,
+            sensitivity: 'base',
+          });
         }
 
         return sort.direction === 'asc' ? comp : -comp;
@@ -195,7 +207,7 @@ export class DynamicTable<T extends Record<string, any>> {
   nextPage() {
     if (this.currentPage() < this.totalPages()) {
       const next = this.currentPage() + 1;
-      this.currentPage.update(p => p + 1);
+      this.currentPage.update((p) => p + 1);
       if (this.totalItemsOverride() !== null) this.pageChange.emit(next);
     }
   }
@@ -213,7 +225,7 @@ export class DynamicTable<T extends Record<string, any>> {
     const rect = btn.getBoundingClientRect();
     this.menuPosition.set({
       top: rect.bottom + 6,
-      left: rect.right - 192
+      left: rect.right - 192,
     });
     this.openMenuId.set(itemId);
     this.openMenuItem.set(item);
@@ -221,7 +233,7 @@ export class DynamicTable<T extends Record<string, any>> {
 
   toggleExportMenu(event: Event) {
     event.stopPropagation();
-    this.isExportMenuOpen.update(v => !v);
+    this.isExportMenuOpen.update((v) => !v);
   }
 
   closeMenu() {
@@ -232,13 +244,13 @@ export class DynamicTable<T extends Record<string, any>> {
   }
 
   getItemById(id: string): T | undefined {
-    return this.paginatedData().find(item => item['id'] === id);
+    return this.paginatedData().find((item) => item['id'] === id);
   }
 
   prevPage() {
     if (this.currentPage() > 1) {
       const prev = this.currentPage() - 1;
-      this.currentPage.update(p => p - 1);
+      this.currentPage.update((p) => p - 1);
       if (this.totalItemsOverride() !== null) this.pageChange.emit(prev);
     }
   }
@@ -251,15 +263,19 @@ export class DynamicTable<T extends Record<string, any>> {
     this.exportData('xlsx');
   }
 
-  private async exportData(format: 'csv' | 'xlsx') {
+  exportToPdf() {
+    this.exportData('pdf');
+  }
+
+  private async exportData(format: 'csv' | 'xlsx' | 'pdf') {
     if (this.filteredData().length === 0) {
       this.toast.error('No hay datos para exportar');
       return;
     }
 
-    const dataToExport = this.filteredData().map(item => {
+    const dataToExport = this.filteredData().map((item) => {
       const row: Record<string, any> = {};
-      this.columns().forEach(col => {
+      this.columns().forEach((col) => {
         let val = item[col.key];
         if (col.formatter) val = col.formatter(val, item);
         row[col.label] = val;
@@ -268,28 +284,64 @@ export class DynamicTable<T extends Record<string, any>> {
     });
 
     if (format === 'csv') {
-      const headers = this.columns().map(c => c.label).join(',');
-      const rows = dataToExport.map(row => {
-        return Object.values(row).map(val => `"${String(val ?? '').replace(/"/g, '""')}"`).join(',');
+      const headers = this.columns()
+        .map((c) => c.label)
+        .join(',');
+      const rows = dataToExport.map((row) => {
+        return Object.values(row)
+          .map((val) => `"${String(val ?? '').replace(/"/g, '""')}"`)
+          .join(',');
       });
       const csvContent = [headers, ...rows].join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       this.downloadFile(blob, `${this.title() || 'export'}_${new Date().getTime()}.csv`);
-    } else {
+    } else if (format === 'xlsx') {
       try {
         const XLSX = await import('xlsx');
         const worksheet = XLSX.utils.json_to_sheet(dataToExport);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte");
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte');
         XLSX.writeFile(workbook, `${this.title() || 'export'}_${new Date().getTime()}.xlsx`);
       } catch (error) {
         console.error('Error al exportar a Excel:', error);
         this.toast.error('Error al generar archivo Excel');
         return;
       }
+    } else {
+      this.isExporting.set(true);
+      try {
+        const branding = this.tenantService.branding();
+        const pdfOptions: PdfReportOptions = {
+          title: this.title() || 'Reporte',
+          businessName: this.tenantService.businessName(),
+          logoUrl: branding?.logo_url,
+          primaryColor: branding?.primary_color,
+          secondaryColor: branding?.secondary_color,
+          currency: this.currencyCode,
+          timezone: this.timezone,
+          columns: this.columns().map((col) => col.label),
+          rows: dataToExport.map((row) =>
+            this.columns().map((col) => this.toPlainText(row[col.label])),
+          ),
+        };
+        await this.reportPdfService.generate(pdfOptions);
+      } catch (error) {
+        console.error('Error al exportar a PDF:', error);
+        this.toast.error('Error al generar archivo PDF');
+        return;
+      } finally {
+        this.isExporting.set(false);
+      }
     }
 
     this.toast.success('Exportación completada');
+  }
+
+  private toPlainText(value: unknown): string {
+    return String(value ?? '')
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .trim();
   }
 
   private downloadFile(blob: Blob, filename: string) {

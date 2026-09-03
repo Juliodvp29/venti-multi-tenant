@@ -29,17 +29,19 @@ export const storeGuard: CanActivateFn = async (route, state) => {
 
   // 1. Check for query parameter fallback (works in local and prod)
   if (sParam) {
-    const subdomain = sParam.split('=')[0].split('?')[0];
-    const resolved = await tenantService.resolveTenantBySubdomain(subdomain);
-    if (resolved) return true;
+    const subdomain = decodeURIComponent(sParam).trim().split(/[?#]/)[0];
+    if (subdomain) {
+      const resolved = await tenantService.resolveTenantBySubdomain(subdomain);
+      if (resolved) return true;
+    }
   }
 
   // 2. Local development fallback (if no ?s= and no subdomain)
   if (hostname === 'localhost' || hostname === '127.0.0.1' || !hostname) {
     if (tenantService.tenantId()) return true;
     // Default seed store for easy local dev
-    await tenantService.resolveTenantBySubdomain('jd-store');
-    return true;
+    const resolved = await tenantService.resolveTenantBySubdomain('jd-store');
+    if (resolved) return true;
   }
 
   // 3. Production Handling
@@ -66,6 +68,5 @@ export const storeGuard: CanActivateFn = async (route, state) => {
     return true;
   }
 
-  router.navigate(['/404']);
-  return false;
+  return router.createUrlTree(['/404']);
 };

@@ -12,7 +12,7 @@ import { debounceTime } from 'rxjs/operators';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { Order } from '@core/models/order';
-import { OrderStatus } from '@core/enums';
+import { OrderStatus, PaymentStatus } from '@core/enums';
 import { OrdersService, OrderFilters, OrderStats } from '@core/services/orders';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
@@ -25,6 +25,13 @@ import { TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
 import { OrderForm } from '../order-form/order-form';
 
 const PAGE_SIZE = 20;
+const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
+  [PaymentStatus.Pending]: 'Pendiente',
+  [PaymentStatus.Completed]: 'Pagado',
+  [PaymentStatus.Failed]: 'Fallido',
+  [PaymentStatus.Refunded]: 'Reembolsado',
+  [PaymentStatus.PartiallyRefunded]: 'Reembolso Parcial',
+};
 
 @Component({
   selector: 'app-orders-list',
@@ -154,6 +161,7 @@ export class OrdersList implements OnInit, AfterViewInit {
         type: 'custom',
         sortable: true,
         template: this.statusTemplate,
+        formatter: (val) => this.getStatusLabel(val),
       },
       {
         key: 'payment_status',
@@ -161,6 +169,7 @@ export class OrdersList implements OnInit, AfterViewInit {
         type: 'custom',
         sortable: true,
         template: this.paymentTemplate,
+        formatter: (val) => this.getPaymentStatusLabel(val),
       },
       {
         key: 'created_at',
@@ -178,6 +187,14 @@ export class OrdersList implements OnInit, AfterViewInit {
           this.currencyPipe.transform(val, this.currency(), 'symbol', '1.0-0', 'es') ?? val,
       },
     ]);
+  }
+
+  private getStatusLabel(value: unknown): string {
+    return this.statusOptions.find((option) => option.value === value)?.label ?? String(value ?? '');
+  }
+
+  private getPaymentStatusLabel(value: unknown): string {
+    return PAYMENT_STATUS_LABELS[value as PaymentStatus] ?? String(value ?? '');
   }
 
   private buildFilters(): OrderFilters {
