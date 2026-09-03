@@ -1,11 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, effect, Renderer2, ElementRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+  effect,
+  Renderer2,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { TenantService } from '@core/services/tenant';
 import { SeoService } from '@core/services/seo';
-import { themeTokensToCssVars, AVAILABLE_FONTS, getContrastColor } from '@core/constants/theme-presets';
+import {
+  themeTokensToCssVars,
+  AVAILABLE_FONTS,
+  getContrastColor,
+} from '@core/constants/theme-presets';
 import { validateAndSanitizeCss } from '@core/utils/css-validator';
 import { StorePageId, PageLayoutConfig, PageHeaderStyle, PageFooterStyle } from '@core/models';
 import { StoreHeader } from './components/store-header/store-header';
@@ -29,11 +42,11 @@ export class StoreComponent {
 
   readonly currentUrl = toSignal(
     this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
+      filter((e) => e instanceof NavigationEnd),
       map((e: any) => e.urlAfterRedirects || e.url),
-      startWith(this.router.url)
+      startWith(this.router.url),
     ),
-    { initialValue: this.router.url }
+    { initialValue: this.router.url },
   );
 
   readonly activePageId = computed<StorePageId>(() => {
@@ -81,7 +94,7 @@ export class StoreComponent {
       lg: '5rem',
       xl: '7rem',
     };
-    return pt ? (map[pt] || 'var(--store-grid-gap, 1.5rem)') : 'var(--store-grid-gap, 1.5rem)';
+    return pt ? map[pt] || 'var(--store-grid-gap, 1.5rem)' : 'var(--store-grid-gap, 1.5rem)';
   });
 
   readonly pagePaddingBottom = computed<string>(() => {
@@ -93,7 +106,7 @@ export class StoreComponent {
       lg: '5rem',
       xl: '7rem',
     };
-    return pb ? (map[pb] || 'var(--store-section-py, 4rem)') : 'var(--store-section-py, 4rem)';
+    return pb ? map[pb] || 'var(--store-section-py, 4rem)' : 'var(--store-section-py, 4rem)';
   });
 
   // Footer Computeds
@@ -113,7 +126,8 @@ export class StoreComponent {
     const mode = this.footerThemeMode();
     if (mode === 'light') return '#0f172a';
     if (mode === 'dark') return '#ffffff';
-    if (mode === 'custom') return getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a');
+    if (mode === 'custom')
+      return getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a');
     return 'var(--store-color-text, #0f172a)';
   });
 
@@ -122,7 +136,8 @@ export class StoreComponent {
     if (mode === 'light') return '#64748b';
     if (mode === 'dark') return '#94a3b8';
     if (mode === 'custom') {
-      const isDark = getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a') === '#ffffff';
+      const isDark =
+        getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a') === '#ffffff';
       return isDark ? '#94a3b8' : '#64748b';
     }
     return 'var(--store-color-muted, #64748b)';
@@ -130,19 +145,38 @@ export class StoreComponent {
 
   readonly footerBorderColor = computed(() => {
     const mode = this.footerThemeMode();
-    if (mode === 'dark' || (mode === 'custom' && getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a') === '#ffffff')) {
+    if (
+      mode === 'dark' ||
+      (mode === 'custom' &&
+        getContrastColor(this.themeTokens()?.footer_custom_bg || '#0f172a') === '#ffffff')
+    ) {
       return 'rgba(255, 255, 255, 0.1)';
     }
     return 'rgba(0, 0, 0, 0.08)';
   });
 
   readonly footerShowLogo = computed(() => this.themeTokens()?.footer_show_logo ?? true);
-  readonly footerShowDescription = computed(() => this.themeTokens()?.footer_show_description ?? true);
-  readonly footerDescription = computed(() => this.themeTokens()?.footer_description || this.branding()?.description || 'Tu tienda en línea de confianza con los mejores productos y atención.');
+  readonly footerShowDescription = computed(
+    () => this.themeTokens()?.footer_show_description ?? true,
+  );
+  readonly footerDescription = computed(
+    () =>
+      this.themeTokens()?.footer_description ||
+      this.branding()?.description ||
+      'Tu tienda en línea de confianza con los mejores productos y atención.',
+  );
   readonly footerShowSocial = computed(() => this.themeTokens()?.footer_show_social ?? true);
-  readonly footerShowNewsletter = computed(() => this.themeTokens()?.footer_show_newsletter ?? true);
-  readonly footerNewsletterTitle = computed(() => this.themeTokens()?.footer_newsletter_title || 'Suscríbete a nuestro boletín');
-  readonly footerNewsletterDescription = computed(() => this.themeTokens()?.footer_newsletter_description || 'Recibe promociones exclusivas, lanzamientos y novedades directamente en tu email.');
+  readonly footerShowNewsletter = computed(
+    () => this.themeTokens()?.footer_show_newsletter ?? true,
+  );
+  readonly footerNewsletterTitle = computed(
+    () => this.themeTokens()?.footer_newsletter_title || 'Suscríbete a nuestro boletín',
+  );
+  readonly footerNewsletterDescription = computed(
+    () =>
+      this.themeTokens()?.footer_newsletter_description ||
+      'Recibe promociones exclusivas, lanzamientos y novedades directamente en tu email.',
+  );
   readonly footerShowContact = computed(() => this.themeTokens()?.footer_show_contact ?? true);
   readonly footerAddress = computed(() => this.themeTokens()?.footer_address || '');
   readonly footerPhone = computed(() => this.themeTokens()?.footer_phone || '');
@@ -159,7 +193,19 @@ export class StoreComponent {
     ];
   });
   readonly footerShowPayments = computed(() => this.themeTokens()?.footer_show_payments ?? true);
-  readonly footerPaymentMethods = computed(() => this.themeTokens()?.footer_payment_methods || ['visa', 'mastercard', 'amex', 'paypal', 'mercadopago', 'nequi', 'pse', 'cash']);
+  readonly footerPaymentMethods = computed(
+    () =>
+      this.themeTokens()?.footer_payment_methods || [
+        'visa',
+        'mastercard',
+        'amex',
+        'paypal',
+        'mercadopago',
+        'nequi',
+        'pse',
+        'cash',
+      ],
+  );
   readonly footerCopyrightText = computed(() => {
     const custom = this.themeTokens()?.footer_copyright_text;
     const year = new Date().getFullYear().toString();
@@ -181,7 +227,7 @@ export class StoreComponent {
           title: branding.business_name || 'Venti Shop',
           description: branding.description || 'Nuestra tienda online oficial.',
           image: branding.social_share_image_url || branding.logo_url || undefined,
-          siteName: branding.business_name || 'Venti Shop'
+          siteName: branding.business_name || 'Venti Shop',
         });
         if (branding.favicon_url) {
           this.seo.updateFavicon(branding.favicon_url);
@@ -209,7 +255,13 @@ export class StoreComponent {
     return {
       ...cssVars,
       'font-family': tokens.font_body || branding?.font_family || '"Inter", sans-serif',
-      ...(bgImage ? { 'background-image': `url('${bgImage}')`, 'background-size': 'cover', 'background-attachment': 'fixed' } : {})
+      ...(bgImage
+        ? {
+            'background-image': `url('${bgImage}')`,
+            'background-size': 'cover',
+            'background-attachment': 'fixed',
+          }
+        : {}),
     };
   });
 
@@ -240,8 +292,8 @@ export class StoreComponent {
   });
 
   private ensureFontLoaded(fontFamily: string) {
-    if (!fontFamily) return;
-    const fontObj = AVAILABLE_FONTS.find(f => f.family === fontFamily);
+    if (typeof document === 'undefined' || !fontFamily) return;
+    const fontObj = AVAILABLE_FONTS.find((f) => f.family === fontFamily);
     if (!fontObj || !fontObj.googleFontUrl) return;
 
     const linkId = `google-font-${fontObj.name.toLowerCase().replace(/\s+/g, '-')}`;

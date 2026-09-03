@@ -1,5 +1,26 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { Tenant, TenantMember, TenantSettingItem, TenantBranding, StorefrontLayout, TenantSettings, TenantInvitation, SocialLinks, ThemeTokens, ThemePresetId, StorePageId, PageLayoutConfig, DEFAULT_PAGE_LAYOUTS, getDefaultPageLayout, ThemeDesignSnapshot, CustomThemePreset, ThemeDesignVersion, StoreDesignState, BackgroundPatternOption, BrandGalleryItem } from '@core/models';
+import {
+  Tenant,
+  TenantMember,
+  TenantSettingItem,
+  TenantBranding,
+  StorefrontLayout,
+  TenantSettings,
+  TenantInvitation,
+  SocialLinks,
+  ThemeTokens,
+  ThemePresetId,
+  StorePageId,
+  PageLayoutConfig,
+  DEFAULT_PAGE_LAYOUTS,
+  getDefaultPageLayout,
+  ThemeDesignSnapshot,
+  CustomThemePreset,
+  ThemeDesignVersion,
+  StoreDesignState,
+  BackgroundPatternOption,
+  BrandGalleryItem,
+} from '@core/models';
 import { THEME_PRESETS } from '@core/constants/theme-presets';
 import { Nullable } from '@core/types';
 import { Supabase } from './supabase';
@@ -21,7 +42,6 @@ interface TenantState {
 @Injectable({
   providedIn: 'root',
 })
-
 export class TenantService {
   private readonly supabase = inject(Supabase);
   private readonly authService = inject(AuthService);
@@ -73,7 +93,12 @@ export class TenantService {
     }
     // For local development, we need to pass the subdomain as a query parameter
     // if we are not using custom local domains.
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('vercel.app')) {
+    if (
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname.includes('vercel.app'))
+    ) {
       return `/store?s=${tenant.subdomain}`;
     }
     return `/store`;
@@ -93,8 +118,8 @@ export class TenantService {
           buttonText: 'Comprar ahora',
           buttonLink: '/store/productos',
           alignment: 'center' as const,
-          overlayOpacity: 40
-        }
+          overlayOpacity: 40,
+        },
       },
       {
         id: 'default-products',
@@ -103,21 +128,30 @@ export class TenantService {
         content: {
           title: 'Productos Destacados',
           description: 'Descubre nuestros productos más populares.',
-          limit: 8
-        }
-      }
+          limit: 8,
+        },
+      },
     ];
 
     const defaultNavigation = [
       { label: 'Productos', url: '/store/productos' },
       { label: 'Sobre Nosotros', url: '/store/nosotros' },
-      { label: 'Contacto', url: '/store/contacto' }
+      { label: 'Contacto', url: '/store/contacto' },
     ];
 
-    const homeSections = layout?.sections && layout.sections.length > 0 ? layout.sections : defaultHomeSections;
+    const homeSections =
+      layout?.sections && layout.sections.length > 0 ? layout.sections : defaultHomeSections;
     const navigation = layout?.navigation || defaultNavigation;
 
-    const pageKeys: StorePageId[] = ['home', 'catalog', 'product_detail', 'cart', 'checkout', 'contact', 'about'];
+    const pageKeys: StorePageId[] = [
+      'home',
+      'catalog',
+      'product_detail',
+      'cart',
+      'checkout',
+      'contact',
+      'about',
+    ];
     const mergedPages: Partial<Record<StorePageId, PageLayoutConfig>> = {};
 
     for (const key of pageKeys) {
@@ -129,9 +163,9 @@ export class TenantService {
           ...savedPage,
           styles: {
             ...defaultPage.styles,
-            ...(savedPage.styles || {})
+            ...(savedPage.styles || {}),
           },
-          sections: savedPage.sections !== undefined ? savedPage.sections : defaultPage.sections
+          sections: savedPage.sections !== undefined ? savedPage.sections : defaultPage.sections,
         };
       } else {
         mergedPages[key] = defaultPage;
@@ -146,7 +180,7 @@ export class TenantService {
     return {
       sections: homeSections,
       navigation,
-      pages: mergedPages
+      pages: mergedPages,
     };
   });
 
@@ -161,8 +195,14 @@ export class TenantService {
         ...baseTokens,
         ...savedTokens,
         custom_css: savedTokens.custom_css ?? (settings?.['custom_css'] as string) ?? '',
-        font_button: savedTokens.font_button || savedTokens.font_body || baseTokens.font_button || baseTokens.font_body || '"Inter", sans-serif',
-        font_weight_heading: savedTokens.font_weight_heading || baseTokens.font_weight_heading || '700',
+        font_button:
+          savedTokens.font_button ||
+          savedTokens.font_body ||
+          baseTokens.font_button ||
+          baseTokens.font_body ||
+          '"Inter", sans-serif',
+        font_weight_heading:
+          savedTokens.font_weight_heading || baseTokens.font_weight_heading || '700',
         font_size_base: savedTokens.font_size_base || baseTokens.font_size_base || '16px',
         line_height: savedTokens.line_height || baseTokens.line_height || '1.5',
         letter_spacing: savedTokens.letter_spacing || baseTokens.letter_spacing || '0em',
@@ -190,28 +230,28 @@ export class TenantService {
         background: t.background_color || baseTokens.colors.background,
         header: t.header_color || baseTokens.colors.header,
         footer: t.footer_color || baseTokens.colors.footer,
-      }
+      },
     };
   });
 
   readonly isOwner = computed(
-    () => this._state().memberInfo?.role?.toLowerCase() === TenantRole.Owner
+    () => this._state().memberInfo?.role?.toLowerCase() === TenantRole.Owner,
   );
   readonly isAdmin = computed(() =>
     [TenantRole.Owner, TenantRole.Admin].includes(
-      this._state().memberInfo?.role?.toLowerCase() as TenantRole
-    )
+      this._state().memberInfo?.role?.toLowerCase() as TenantRole,
+    ),
   );
   readonly canEdit = computed(() =>
     [TenantRole.Owner, TenantRole.Admin, TenantRole.Editor].includes(
-      this._state().memberInfo?.role?.toLowerCase() as TenantRole
-    )
+      this._state().memberInfo?.role?.toLowerCase() as TenantRole,
+    ),
   );
 
   readonly isAdminOrOwner = computed(() =>
     [TenantRole.Owner, TenantRole.Admin].includes(
-      this._state().memberInfo?.role?.toLowerCase() as TenantRole
-    )
+      this._state().memberInfo?.role?.toLowerCase() as TenantRole,
+    ),
   );
 
   readonly branding = computed<Nullable<TenantBranding>>(() => {
@@ -221,10 +261,15 @@ export class TenantService {
       logo_url: t.logo_url,
       logo_dark_url: t.logo_dark_url || (t.settings?.['logo_dark_url'] as string) || null,
       favicon_url: t.favicon_url,
-      social_share_image_url: t.social_share_image_url || (t.settings?.['social_share_image_url'] as string) || null,
+      social_share_image_url:
+        t.social_share_image_url || (t.settings?.['social_share_image_url'] as string) || null,
       main_banner_url: t.main_banner_url || (t.settings?.['main_banner_url'] as string) || null,
-      background_image_url: t.background_image_url || (t.settings?.['background_image_url'] as string) || null,
-      background_pattern: t.background_pattern || (t.settings?.['background_pattern'] as BackgroundPatternOption) || 'none',
+      background_image_url:
+        t.background_image_url || (t.settings?.['background_image_url'] as string) || null,
+      background_pattern:
+        t.background_pattern ||
+        (t.settings?.['background_pattern'] as BackgroundPatternOption) ||
+        'none',
       promo_video_url: t.promo_video_url || (t.settings?.['promo_video_url'] as string) || null,
       brand_gallery: t.brand_gallery || (t.settings?.['brand_gallery'] as BrandGalleryItem[]) || [],
       business_name: t.business_name,
@@ -262,14 +307,16 @@ export class TenantService {
     const defaultSnapshot: ThemeDesignSnapshot = {
       theme_tokens: publishedTokens,
       storefront_layout: publishedLayout,
-      branding: branding ? {
-        logo_url: branding.logo_url,
-        logo_dark_url: branding.logo_dark_url,
-        main_banner_url: branding.main_banner_url,
-        background_image_url: branding.background_image_url,
-        background_pattern: branding.background_pattern,
-        promo_video_url: branding.promo_video_url,
-      } : undefined,
+      branding: branding
+        ? {
+            logo_url: branding.logo_url,
+            logo_dark_url: branding.logo_dark_url,
+            main_banner_url: branding.main_banner_url,
+            background_image_url: branding.background_image_url,
+            background_pattern: branding.background_pattern,
+            promo_video_url: branding.promo_video_url,
+          }
+        : undefined,
     };
 
     if (!existing) {
@@ -285,8 +332,8 @@ export class TenantService {
             name: 'Versión Inicial Publicada',
             notes: 'Configuración base de la tienda.',
             published_at: this._state().currentTenant?.created_at || new Date().toISOString(),
-            snapshot: structuredClone(defaultSnapshot)
-          }
+            snapshot: structuredClone(defaultSnapshot),
+          },
         ],
         next_version_number: 2,
       };
@@ -295,10 +342,13 @@ export class TenantService {
     return {
       draft: existing.draft || structuredClone(defaultSnapshot),
       published: existing.published || structuredClone(defaultSnapshot),
-      published_at: existing.published_at || this._state().currentTenant?.updated_at || new Date().toISOString(),
+      published_at:
+        existing.published_at ||
+        this._state().currentTenant?.updated_at ||
+        new Date().toISOString(),
       saved_presets: existing.saved_presets || [],
       versions: existing.versions || [],
-      next_version_number: existing.next_version_number || ((existing.versions?.length || 0) + 1),
+      next_version_number: existing.next_version_number || (existing.versions?.length || 0) + 1,
     };
   });
 
@@ -307,7 +357,10 @@ export class TenantService {
   });
 
   readonly draftStorefrontLayout = computed<StorefrontLayout>(() => {
-    return (this.storeDesignState().draft?.storefront_layout as StorefrontLayout) || this.storefrontLayout();
+    return (
+      (this.storeDesignState().draft?.storefront_layout as StorefrontLayout) ||
+      this.storefrontLayout()
+    );
   });
 
   readonly publishedThemeTokens = computed<ThemeTokens>(() => {
@@ -315,7 +368,10 @@ export class TenantService {
   });
 
   readonly publishedStorefrontLayout = computed<StorefrontLayout>(() => {
-    return (this.storeDesignState().published?.storefront_layout as StorefrontLayout) || this.storefrontLayout();
+    return (
+      (this.storeDesignState().published?.storefront_layout as StorefrontLayout) ||
+      this.storefrontLayout()
+    );
   });
 
   readonly savedCustomPresets = computed<CustomThemePreset[]>(() => {
@@ -336,7 +392,6 @@ export class TenantService {
     return draftTokensStr !== pubTokensStr || draftLayoutStr !== pubLayoutStr;
   });
 
-
   constructor() {
     // Effect: Load tenant when user is authenticated
     effect(() => {
@@ -346,7 +401,8 @@ export class TenantService {
 
       // If we are on the storefront, we don't want the staff-auth logic to clear
       // the tenant that was resolved via subdomain.
-      const isStorefront = window.location.pathname.startsWith('/store');
+      const isStorefront =
+        typeof window !== 'undefined' ? window.location.pathname.startsWith('/store') : true;
 
       if (isAuthInit && isAuth && userId && !this.initialized()) {
         this.loadUserTenants();
@@ -364,14 +420,14 @@ export class TenantService {
 
     // If no user, we are initialized but with no tenants
     if (!userId) {
-      this._state.update(s => ({ ...s, initialized: true, loading: false }));
+      this._state.update((s) => ({ ...s, initialized: true, loading: false }));
       return;
     }
 
     this._state.update((s) => ({
       ...s,
       loading: true,
-      error: null
+      error: null,
     }));
 
     try {
@@ -385,7 +441,7 @@ export class TenantService {
           .from('tenants')
           .select('*')
           .eq('owner_id', userId)
-          .is('deleted_at', null)
+          .is('deleted_at', null),
       ]);
 
       if (membershipsRes.error) {
@@ -404,14 +460,14 @@ export class TenantService {
       const tenantMap = new Map<string, Tenant>();
 
       // Add from memberships first
-      membershipData.forEach(m => {
+      membershipData.forEach((m) => {
         if (m.tenant && !m.tenant.deleted_at) {
           tenantMap.set(m.tenant.id, m.tenant);
         }
       });
 
       // Add from owned tenants (might include some missing from membershipData due to RLS)
-      ownedTenants.forEach(t => {
+      ownedTenants.forEach((t) => {
         if (!tenantMap.has(t.id)) {
           tenantMap.set(t.id, t);
         }
@@ -427,23 +483,29 @@ export class TenantService {
         return 0;
       });
 
-      const savedId = localStorage.getItem('last_tenant_id');
-      let selectedMembership = membershipData.find(m => m.tenant?.id === savedId);
+      const savedId = typeof window !== 'undefined' ? localStorage.getItem('last_tenant_id') : null;
+      let selectedMembership = membershipData.find((m) => m.tenant?.id === savedId);
 
       const firstRealMembership = membershipData
-        .filter(m => m.tenant && !(m.tenant.business_name || '').toLowerCase().includes('seed'))
+        .filter((m) => m.tenant && !(m.tenant.business_name || '').toLowerCase().includes('seed'))
         .sort((a, b) => (a.tenant.created_at > b.tenant.created_at ? -1 : 1))[0];
 
-      if (selectedMembership && (selectedMembership.tenant?.business_name || '').toLowerCase().includes('seed') && firstRealMembership) {
+      if (
+        selectedMembership &&
+        (selectedMembership.tenant?.business_name || '').toLowerCase().includes('seed') &&
+        firstRealMembership
+      ) {
         selectedMembership = firstRealMembership;
       }
 
       const finalMembership = selectedMembership || membershipData[0] || null;
 
-      const isStorefront = window.location.pathname.startsWith('/store');
+      const isStorefront =
+        typeof window !== 'undefined' ? window.location.pathname.startsWith('/store') : true;
       const existingTenant = this.currentTenant();
 
-      let selectedTenant = (isStorefront && existingTenant) ? existingTenant : (finalMembership?.tenant || null);
+      let selectedTenant =
+        isStorefront && existingTenant ? existingTenant : finalMembership?.tenant || null;
 
       if (!selectedTenant && sortedTenants.length > 0) {
         selectedTenant = sortedTenants[0];
@@ -453,14 +515,16 @@ export class TenantService {
         ...s,
         tenants: sortedTenants,
         currentTenant: selectedTenant,
-        memberInfo: finalMembership ? {
-          ...finalMembership,
-          tenant: undefined
-        } : null
+        memberInfo: finalMembership
+          ? {
+              ...finalMembership,
+              tenant: undefined,
+            }
+          : null,
       }));
 
       if (selectedTenant) {
-        if (selectedTenant.id !== savedId) {
+        if (selectedTenant.id !== savedId && typeof window !== 'undefined') {
           localStorage.setItem('last_tenant_id', selectedTenant.id);
         }
         // Load settings
@@ -482,7 +546,7 @@ export class TenantService {
   }
 
   async resolveTenantBySubdomain(subdomain: string): Promise<boolean> {
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const { data, error } = await this.supabase.client
@@ -495,28 +559,28 @@ export class TenantService {
       if (error) throw error;
 
       if (!data) {
-        this._state.update(s => ({ ...s, loading: false, currentTenant: null }));
+        this._state.update((s) => ({ ...s, loading: false, currentTenant: null }));
         return false;
       }
 
-      this._state.update(s => ({
+      this._state.update((s) => ({
         ...s,
         currentTenant: data as Tenant,
         loading: false,
-        initialized: true
+        initialized: true,
       }));
 
       await this.loadTenantSettings(data.id);
       return true;
     } catch (error) {
       console.error('Error resolving tenant by subdomain:', error);
-      this._state.update(s => ({ ...s, loading: false, error: 'Store not found' }));
+      this._state.update((s) => ({ ...s, loading: false, error: 'Store not found' }));
       return false;
     }
   }
 
   async resolveTenantByDomain(domain: string): Promise<boolean> {
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const { data, error } = await this.supabase.client
@@ -529,22 +593,22 @@ export class TenantService {
       if (error) throw error;
 
       if (!data) {
-        this._state.update(s => ({ ...s, loading: false, currentTenant: null }));
+        this._state.update((s) => ({ ...s, loading: false, currentTenant: null }));
         return false;
       }
 
-      this._state.update(s => ({
+      this._state.update((s) => ({
         ...s,
         currentTenant: data as Tenant,
         loading: false,
-        initialized: true
+        initialized: true,
       }));
 
       await this.loadTenantSettings(data.id);
       return true;
     } catch (error) {
       console.error('Error resolving tenant by domain:', error);
-      this._state.update(s => ({ ...s, loading: false, error: 'Store not found' }));
+      this._state.update((s) => ({ ...s, loading: false, error: 'Store not found' }));
       return false;
     }
   }
@@ -677,13 +741,21 @@ export class TenantService {
   }
 
   async loadTenantSettings(tenantId: string): Promise<void> {
-    const tenant = this._state().tenants.find(t => t.id === tenantId) || this._state().currentTenant;
+    const tenant =
+      this._state().tenants.find((t) => t.id === tenantId) || this._state().currentTenant;
     if (!tenant) return;
 
-    this._state.update((s) => ({ ...s, settings: (tenant.settings as Record<string, unknown>) || {} }));
+    this._state.update((s) => ({
+      ...s,
+      settings: (tenant.settings as Record<string, unknown>) || {},
+    }));
   }
 
-  async updateSetting(key: string, value: unknown, type: 'string' | 'number' | 'boolean' | 'json' = 'string'): Promise<void> {
+  async updateSetting(
+    key: string,
+    value: unknown,
+    type: 'string' | 'number' | 'boolean' | 'json' = 'string',
+  ): Promise<void> {
     const tenantId = this.tenantId();
     if (!tenantId) return;
 
@@ -693,7 +765,8 @@ export class TenantService {
     const { data, error } = await this.supabase.client
       .from('tenants')
       .update({
-        settings: updatedSettings as unknown as Database['public']['Tables']['tenants']['Update']['settings'],
+        settings:
+          updatedSettings as unknown as Database['public']['Tables']['tenants']['Update']['settings'],
         updated_at: new Date().toISOString(),
       })
       .eq('id', tenantId)
@@ -705,7 +778,7 @@ export class TenantService {
     this._state.update((s) => ({
       ...s,
       currentTenant: data as unknown as Tenant,
-      settings: updatedSettings
+      settings: updatedSettings,
     }));
   }
 
@@ -732,14 +805,16 @@ export class TenantService {
       currentTenant: data as unknown as Tenant,
       tenants: s.tenants.map((t) => (t.id === tenantId ? (data as unknown as Tenant) : t)),
       settings: updates.settings
-        ? (data as unknown as Tenant).settings as Record<string, unknown>
+        ? ((data as unknown as Tenant).settings as Record<string, unknown>)
         : s.settings,
     }));
 
     return data as unknown as Tenant;
   }
 
-  async verifyCustomDomain(domain: string): Promise<{ status: 'verified' | 'error'; reason?: string }> {
+  async verifyCustomDomain(
+    domain: string,
+  ): Promise<{ status: 'verified' | 'error'; reason?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) throw new Error('No tenant found');
 
@@ -758,7 +833,7 @@ export class TenantService {
         custom_domain_last_checked_at: new Date().toISOString(),
         custom_domain_error: data.reason || null,
       };
-      this._state.update(state => ({
+      this._state.update((state) => ({
         ...state,
         currentTenant: { ...currentTenant, settings: updatedSettings },
       }));
@@ -788,7 +863,8 @@ export class TenantService {
       return { success: true };
     } catch (error) {
       console.error('Error updating business info:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update business info';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to update business info';
       this._state.update((s) => ({
         ...s,
         error: errorMessage,
@@ -801,7 +877,9 @@ export class TenantService {
   /**
    * Update branding colors, logos, and brand assets
    */
-  async updateBranding(branding: Partial<TenantBranding> & { [key: string]: unknown }): Promise<{ success: boolean; error?: string }> {
+  async updateBranding(
+    branding: Partial<TenantBranding> & { [key: string]: unknown },
+  ): Promise<{ success: boolean; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) {
       return { success: false, error: 'No tenant found' };
@@ -821,7 +899,8 @@ export class TenantService {
         social_links,
         ...tenantBranding
       } = branding;
-      const currentSettings = (this._state().currentTenant?.settings as Record<string, unknown>) || {};
+      const currentSettings =
+        (this._state().currentTenant?.settings as Record<string, unknown>) || {};
       const settings = {
         ...currentSettings,
         logo_dark_url,
@@ -852,11 +931,13 @@ export class TenantService {
   /**
    * Update storefront layout in the settings JSONB column
    */
-  async updateStorefrontLayout(layout: StorefrontLayout): Promise<{ success: boolean; error?: string }> {
+  async updateStorefrontLayout(
+    layout: StorefrontLayout,
+  ): Promise<{ success: boolean; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No tenant selected' };
 
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const currentTenant = this._state().currentTenant;
@@ -864,14 +945,15 @@ export class TenantService {
 
       const updatedSettings = {
         ...currentSettings,
-        storefront_layout: layout
+        storefront_layout: layout,
       };
 
       const { data, error } = await this.supabase.client
         .from('tenants')
         .update({
-          settings: updatedSettings as unknown as Database['public']['Tables']['tenants']['Update']['settings'],
-          status: 'active' // Activate tenant when layout is saved
+          settings:
+            updatedSettings as unknown as Database['public']['Tables']['tenants']['Update']['settings'],
+          status: 'active', // Activate tenant when layout is saved
         })
         .eq('id', tenantId)
         .select()
@@ -879,17 +961,18 @@ export class TenantService {
 
       if (error) throw error;
 
-      this._state.update(s => ({
+      this._state.update((s) => ({
         ...s,
         currentTenant: data as unknown as Tenant,
-        loading: false
+        loading: false,
       }));
 
       return { success: true };
     } catch (error) {
       console.error('Error updating storefront layout:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update storefront layout';
-      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to update storefront layout';
+      this._state.update((s) => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }
   }
@@ -902,17 +985,20 @@ export class TenantService {
     return getDefaultPageLayout(pageId, layout?.sections);
   }
 
-  async updatePageLayout(pageId: StorePageId, pageConfig: PageLayoutConfig): Promise<{ success: boolean; error?: string }> {
+  async updatePageLayout(
+    pageId: StorePageId,
+    pageConfig: PageLayoutConfig,
+  ): Promise<{ success: boolean; error?: string }> {
     const currentLayout = this.storefrontLayout();
     const updatedPages = {
       ...(currentLayout.pages || {}),
-      [pageId]: pageConfig
+      [pageId]: pageConfig,
     };
 
     const updatedLayout: StorefrontLayout = {
       ...currentLayout,
       pages: updatedPages,
-      sections: pageId === 'home' ? pageConfig.sections : currentLayout.sections
+      sections: pageId === 'home' ? pageConfig.sections : currentLayout.sections,
     };
 
     return this.updateStorefrontLayout(updatedLayout);
@@ -925,7 +1011,7 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No tenant selected' };
 
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const currentTenant = this._state().currentTenant;
@@ -934,7 +1020,7 @@ export class TenantService {
       const updatedSettings = {
         ...currentSettings,
         theme_config: tokens,
-        theme_id: tokens.theme_id
+        theme_id: tokens.theme_id,
       };
 
       const brandingUpdates: Partial<Tenant> = {
@@ -945,16 +1031,19 @@ export class TenantService {
         header_color: tokens.colors.header,
         footer_color: tokens.colors.footer,
         font_family: tokens.font_heading,
-        settings: updatedSettings
+        settings: updatedSettings,
       };
 
       await this.updateTenant(tenantId, brandingUpdates);
-      this._state.update(s => ({ ...s, loading: false }));
+      this._state.update((s) => ({ ...s, loading: false }));
       return { success: true };
     } catch (error: any) {
       console.error('Error updating theme tokens:', error);
-      const errorMessage = error?.message || error?.details || (typeof error === 'string' ? error : 'Failed to update theme tokens');
-      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      const errorMessage =
+        error?.message ||
+        error?.details ||
+        (typeof error === 'string' ? error : 'Failed to update theme tokens');
+      this._state.update((s) => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }
   }
@@ -968,7 +1057,7 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
 
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const currentState = this.storeDesignState();
@@ -978,12 +1067,12 @@ export class TenantService {
       };
 
       await this.updateSetting('store_design_state', updatedState, 'json');
-      this._state.update(s => ({ ...s, loading: false }));
+      this._state.update((s) => ({ ...s, loading: false }));
       return { success: true };
     } catch (error: any) {
       console.error('Error saving store draft:', error);
       const errorMessage = error?.message || 'Error al guardar el borrador de diseño';
-      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      this._state.update((s) => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }
   }
@@ -991,16 +1080,20 @@ export class TenantService {
   /**
    * Publish the current draft design to the live store, creating a version snapshot
    */
-  async publishDesign(versionName?: string, notes?: string): Promise<{ success: boolean; error?: string; version?: ThemeDesignVersion }> {
+  async publishDesign(
+    versionName?: string,
+    notes?: string,
+  ): Promise<{ success: boolean; error?: string; version?: ThemeDesignVersion }> {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
 
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const currentState = this.storeDesignState();
       const currentDraft = currentState.draft;
-      const nextVersionNum = currentState.next_version_number || ((currentState.versions?.length || 0) + 1);
+      const nextVersionNum =
+        currentState.next_version_number || (currentState.versions?.length || 0) + 1;
       const publishedAt = new Date().toISOString();
 
       const newVersion: ThemeDesignVersion = {
@@ -1053,21 +1146,27 @@ export class TenantService {
         brandingUpdates.font_family = currentDraft.theme_tokens.font_heading;
       }
       if (currentDraft.branding) {
-        if (currentDraft.branding.logo_url !== undefined) brandingUpdates.logo_url = currentDraft.branding.logo_url;
-        if (currentDraft.branding.logo_dark_url !== undefined) updatedSettings['logo_dark_url'] = currentDraft.branding.logo_dark_url;
-        if (currentDraft.branding.main_banner_url !== undefined) updatedSettings['main_banner_url'] = currentDraft.branding.main_banner_url;
-        if (currentDraft.branding.background_image_url !== undefined) updatedSettings['background_image_url'] = currentDraft.branding.background_image_url;
-        if (currentDraft.branding.background_pattern !== undefined) updatedSettings['background_pattern'] = currentDraft.branding.background_pattern;
-        if (currentDraft.branding.promo_video_url !== undefined) updatedSettings['promo_video_url'] = currentDraft.branding.promo_video_url;
+        if (currentDraft.branding.logo_url !== undefined)
+          brandingUpdates.logo_url = currentDraft.branding.logo_url;
+        if (currentDraft.branding.logo_dark_url !== undefined)
+          updatedSettings['logo_dark_url'] = currentDraft.branding.logo_dark_url;
+        if (currentDraft.branding.main_banner_url !== undefined)
+          updatedSettings['main_banner_url'] = currentDraft.branding.main_banner_url;
+        if (currentDraft.branding.background_image_url !== undefined)
+          updatedSettings['background_image_url'] = currentDraft.branding.background_image_url;
+        if (currentDraft.branding.background_pattern !== undefined)
+          updatedSettings['background_pattern'] = currentDraft.branding.background_pattern;
+        if (currentDraft.branding.promo_video_url !== undefined)
+          updatedSettings['promo_video_url'] = currentDraft.branding.promo_video_url;
       }
 
       await this.updateTenant(tenantId, brandingUpdates);
-      this._state.update(s => ({ ...s, loading: false }));
+      this._state.update((s) => ({ ...s, loading: false }));
       return { success: true, version: newVersion };
     } catch (error: any) {
       console.error('Error publishing store design:', error);
       const errorMessage = error?.message || 'Error al publicar los cambios de la tienda';
-      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      this._state.update((s) => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }
   }
@@ -1079,7 +1178,7 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
 
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const currentState = this.storeDesignState();
@@ -1089,12 +1188,12 @@ export class TenantService {
       };
 
       await this.updateSetting('store_design_state', updatedState, 'json');
-      this._state.update(s => ({ ...s, loading: false }));
+      this._state.update((s) => ({ ...s, loading: false }));
       return { success: true };
     } catch (error: any) {
       console.error('Error reverting draft to published:', error);
       const errorMessage = error?.message || 'Error al restablecer el borrador al diseño publicado';
-      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      this._state.update((s) => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }
   }
@@ -1102,14 +1201,18 @@ export class TenantService {
   /**
    * Save the current design as a reusable custom preset
    */
-  async saveCurrentAsPreset(name: string, description?: string, snapshot?: ThemeDesignSnapshot): Promise<{ success: boolean; error?: string; preset?: CustomThemePreset }> {
+  async saveCurrentAsPreset(
+    name: string,
+    description?: string,
+    snapshot?: ThemeDesignSnapshot,
+  ): Promise<{ success: boolean; error?: string; preset?: CustomThemePreset }> {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
 
     const targetSnapshot = snapshot || this.storeDesignState().draft;
     if (!targetSnapshot) return { success: false, error: 'No hay diseño disponible para guardar' };
 
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const currentState = this.storeDesignState();
@@ -1122,12 +1225,14 @@ export class TenantService {
         created_at: now,
         updated_at: now,
         snapshot: structuredClone(targetSnapshot),
-        preview_colors: targetSnapshot.theme_tokens?.colors ? {
-          primary: targetSnapshot.theme_tokens.colors.primary,
-          secondary: targetSnapshot.theme_tokens.colors.secondary,
-          background: targetSnapshot.theme_tokens.colors.background,
-          accent: targetSnapshot.theme_tokens.colors.accent,
-        } : undefined,
+        preview_colors: targetSnapshot.theme_tokens?.colors
+          ? {
+              primary: targetSnapshot.theme_tokens.colors.primary,
+              secondary: targetSnapshot.theme_tokens.colors.secondary,
+              background: targetSnapshot.theme_tokens.colors.background,
+              accent: targetSnapshot.theme_tokens.colors.accent,
+            }
+          : undefined,
       };
 
       const updatedPresets = [...(currentState.saved_presets || []), newPreset];
@@ -1137,12 +1242,12 @@ export class TenantService {
       };
 
       await this.updateSetting('store_design_state', updatedState, 'json');
-      this._state.update(s => ({ ...s, loading: false }));
+      this._state.update((s) => ({ ...s, loading: false }));
       return { success: true, preset: newPreset };
     } catch (error: any) {
       console.error('Error saving custom preset:', error);
       const errorMessage = error?.message || 'Error al guardar el preset personalizado';
-      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      this._state.update((s) => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }
   }
@@ -1150,15 +1255,17 @@ export class TenantService {
   /**
    * Duplicate an existing custom preset
    */
-  async duplicatePreset(presetId: string): Promise<{ success: boolean; error?: string; preset?: CustomThemePreset }> {
+  async duplicatePreset(
+    presetId: string,
+  ): Promise<{ success: boolean; error?: string; preset?: CustomThemePreset }> {
     const currentState = this.storeDesignState();
-    const sourcePreset = currentState.saved_presets?.find(p => p.id === presetId);
+    const sourcePreset = currentState.saved_presets?.find((p) => p.id === presetId);
     if (!sourcePreset) return { success: false, error: 'Preset no encontrado' };
 
     return this.saveCurrentAsPreset(
       `${sourcePreset.name} (Copia)`,
       sourcePreset.description ? `Copia de: ${sourcePreset.description}` : 'Diseño duplicado',
-      sourcePreset.snapshot
+      sourcePreset.snapshot,
     );
   }
 
@@ -1169,23 +1276,23 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No hay tienda seleccionada' };
 
-    this._state.update(s => ({ ...s, loading: true, error: null }));
+    this._state.update((s) => ({ ...s, loading: true, error: null }));
 
     try {
       const currentState = this.storeDesignState();
-      const updatedPresets = (currentState.saved_presets || []).filter(p => p.id !== presetId);
+      const updatedPresets = (currentState.saved_presets || []).filter((p) => p.id !== presetId);
       const updatedState: StoreDesignState = {
         ...currentState,
         saved_presets: updatedPresets,
       };
 
       await this.updateSetting('store_design_state', updatedState, 'json');
-      this._state.update(s => ({ ...s, loading: false }));
+      this._state.update((s) => ({ ...s, loading: false }));
       return { success: true };
     } catch (error: any) {
       console.error('Error deleting custom preset:', error);
       const errorMessage = error?.message || 'Error al eliminar el preset';
-      this._state.update(s => ({ ...s, loading: false, error: errorMessage }));
+      this._state.update((s) => ({ ...s, loading: false, error: errorMessage }));
       return { success: false, error: errorMessage };
     }
   }
@@ -1193,16 +1300,22 @@ export class TenantService {
   /**
    * Restore a previous version from the version history into the draft (with optional auto-publish)
    */
-  async restoreVersion(versionId: string, autoPublish: boolean = false): Promise<{ success: boolean; error?: string }> {
+  async restoreVersion(
+    versionId: string,
+    autoPublish: boolean = false,
+  ): Promise<{ success: boolean; error?: string }> {
     const currentState = this.storeDesignState();
-    const version = currentState.versions?.find(v => v.id === versionId);
+    const version = currentState.versions?.find((v) => v.id === versionId);
     if (!version) return { success: false, error: 'Versión no encontrada en el historial' };
 
     const saveResult = await this.saveDraft(version.snapshot);
     if (!saveResult.success) return saveResult;
 
     if (autoPublish) {
-      return this.publishDesign(`Restaurado: ${version.name}`, `Restaurado desde versión anterior #${version.version_number}`);
+      return this.publishDesign(
+        `Restaurado: ${version.name}`,
+        `Restaurado desde versión anterior #${version.version_number}`,
+      );
     }
 
     return { success: true };
@@ -1286,7 +1399,15 @@ export class TenantService {
    */
   async uploadBrandingAsset(
     file: File,
-    type: 'logo' | 'logo_dark' | 'favicon' | 'social_share' | 'main_banner' | 'background' | 'video' | 'media'
+    type:
+      | 'logo'
+      | 'logo_dark'
+      | 'favicon'
+      | 'social_share'
+      | 'main_banner'
+      | 'background'
+      | 'video'
+      | 'media',
   ): Promise<{ success: boolean; url?: string; error?: string }> {
     const tenantId = this.tenantId();
     if (!tenantId) return { success: false, error: 'No tenant found' };
@@ -1296,7 +1417,10 @@ export class TenantService {
       const cleanName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const filePath = `${tenantId}/${type}-${Date.now()}-${cleanName}`;
 
-      const bucketName = environment.storage.buckets.media || environment.storage.buckets.products || 'product-images';
+      const bucketName =
+        environment.storage.buckets.media ||
+        environment.storage.buckets.products ||
+        'product-images';
       const { error: uploadError } = await this.supabase.storage
         .from(bucketName)
         .upload(filePath, file, {
@@ -1313,7 +1437,7 @@ export class TenantService {
       console.error(`Error uploading ${type}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : `Failed to upload ${type}`
+        error: error instanceof Error ? error.message : `Failed to upload ${type}`,
       };
     }
   }
@@ -1321,19 +1445,24 @@ export class TenantService {
   /**
    * List all media assets belonging to the current tenant in storage
    */
-  async listTenantMedia(): Promise<{ name: string; url: string; created_at?: string; size?: number; type: string }[]> {
+  async listTenantMedia(): Promise<
+    { name: string; url: string; created_at?: string; size?: number; type: string }[]
+  > {
     const tenantId = this.tenantId();
     if (!tenantId) return [];
 
     try {
-      const bucketName = environment.storage.buckets.media || environment.storage.buckets.products || 'product-images';
+      const bucketName =
+        environment.storage.buckets.media ||
+        environment.storage.buckets.products ||
+        'product-images';
       const { data, error } = await this.supabase.storage
         .from(bucketName)
         .list(tenantId, { limit: 100, offset: 0, sortBy: { column: 'created_at', order: 'desc' } });
 
       if (error || !data) return [];
 
-      return data.map(item => {
+      return data.map((item) => {
         const fullPath = `${tenantId}/${item.name}`;
         const { data: urlData } = this.supabase.storage.from(bucketName).getPublicUrl(fullPath);
         const ext = item.name.split('.').pop()?.toLowerCase() || '';
@@ -1360,7 +1489,10 @@ export class TenantService {
     if (!tenantId) return { success: false, error: 'No tenant found' };
 
     try {
-      const bucketName = environment.storage.buckets.media || environment.storage.buckets.products || 'product-images';
+      const bucketName =
+        environment.storage.buckets.media ||
+        environment.storage.buckets.products ||
+        'product-images';
       const filePath = `${tenantId}/${fileName}`;
       const { error } = await this.supabase.storage.from(bucketName).remove([filePath]);
 
@@ -1368,7 +1500,10 @@ export class TenantService {
       return { success: true };
     } catch (err) {
       console.error('Error deleting media:', err);
-      return { success: false, error: err instanceof Error ? err.message : 'Failed to delete media' };
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Failed to delete media',
+      };
     }
   }
 
@@ -1381,7 +1516,8 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return [];
 
-    const { data, error } = await this.supabase.client.from('vw_tenant_members')
+    const { data, error } = await this.supabase.client
+      .from('vw_tenant_members')
       .select('*')
       .eq('tenant_id', tenantId);
 
@@ -1401,7 +1537,8 @@ export class TenantService {
       throw new Error('Invalid email');
     }
 
-    const { data: existingInvite } = await this.supabase.client.from('tenant_invitations')
+    const { data: existingInvite } = await this.supabase.client
+      .from('tenant_invitations')
       .select('id')
       .eq('tenant_id', tenantId)
       .eq('email', cleanEmail)
@@ -1411,13 +1548,14 @@ export class TenantService {
       throw new Error('A pending invitation already exists for this email.');
     }
 
-    const { data: insertedInvite, error: insertError } = await this.supabase.client.from('tenant_invitations')
+    const { data: insertedInvite, error: insertError } = await this.supabase.client
+      .from('tenant_invitations')
       .insert({
         tenant_id: tenantId,
         email: cleanEmail,
         role: role,
         status: 'pending',
-        invited_by: this.authService.userId()
+        invited_by: this.authService.userId(),
       })
       .select('token')
       .single();
@@ -1426,13 +1564,16 @@ export class TenantService {
     if (!insertedInvite?.token) throw new Error('Could not generate invitation token.');
 
     const token: string = insertedInvite.token;
-    const inviteLink = `${window.location.origin}/accept-invite?token=${token}`;
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const inviteLink = `${origin}/accept-invite?token=${token}`;
     const storeName = this.businessName() ?? 'Venti Store';
     const inviterEmail = this.authService.userEmail() ?? 'An administrator';
 
     let userExists = false;
     try {
-      const { data, error } = await this.supabase.client.rpc('check_user_exists', { p_email: cleanEmail });
+      const { data, error } = await this.supabase.client.rpc('check_user_exists', {
+        p_email: cleanEmail,
+      });
       if (!error && data !== null) {
         userExists = !!data;
       }
@@ -1441,7 +1582,9 @@ export class TenantService {
     }
 
     try {
-      const { data: { session } } = await this.supabase.client.auth.getSession();
+      const {
+        data: { session },
+      } = await this.supabase.client.auth.getSession();
       const supabaseUrl: string = environment.supabase.url;
       const supabaseKey: string = environment.supabase.anonKey;
 
@@ -1449,8 +1592,8 @@ export class TenantService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token ?? supabaseKey}`,
-          'apikey': supabaseKey,
+          Authorization: `Bearer ${session?.access_token ?? supabaseKey}`,
+          apikey: supabaseKey,
         },
         body: JSON.stringify({
           to_email: cleanEmail,
@@ -1460,7 +1603,7 @@ export class TenantService {
           invite_link: inviteLink,
           user_exists: userExists,
           tenant_id: tenantId,
-        })
+        }),
       });
 
       if (!res.ok) {
@@ -1479,7 +1622,8 @@ export class TenantService {
     const tenantId = this.tenantId();
     if (!tenantId) return [];
 
-    const { data, error } = await this.supabase.client.from('tenant_invitations')
+    const { data, error } = await this.supabase.client
+      .from('tenant_invitations')
       .select('*')
       .eq('tenant_id', tenantId)
       .eq('status', 'pending');
@@ -1506,10 +1650,7 @@ export class TenantService {
    * Remove a member from the tenant
    */
   async removeMember(memberId: string): Promise<void> {
-    const { error } = await this.supabase.client
-      .from('tenant_members')
-      .delete()
-      .eq('id', memberId);
+    const { error } = await this.supabase.client.from('tenant_members').delete().eq('id', memberId);
 
     if (error) throw error;
   }
