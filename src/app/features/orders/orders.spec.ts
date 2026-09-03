@@ -8,7 +8,7 @@ import { OrdersList } from './components/orders-list/orders-list';
 import { OrdersService, OrderStats } from '@core/services/orders';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
-import { OrderStatus, PaymentStatus } from '@core/enums';
+import { OrderStatus, PaymentMethod, PaymentStatus } from '@core/enums';
 import { Order } from '@core/models/order';
 import { vi, describe, beforeEach, it, expect } from 'vitest';
 
@@ -48,6 +48,7 @@ describe('Orders Feature', () => {
         customer_id: 'c1',
         status: OrderStatus.Delivered,
         payment_status: PaymentStatus.Completed,
+        payment_method: PaymentMethod.CashOnDelivery,
         total_amount: 150000,
         subtotal: 140000,
         tax_amount: 10000,
@@ -66,6 +67,7 @@ describe('Orders Feature', () => {
         customer_id: 'c2',
         status: OrderStatus.Pending,
         payment_status: PaymentStatus.Pending,
+        payment_method: PaymentMethod.CashOnDelivery,
         total_amount: 80000,
         subtotal: 75000,
         tax_amount: 5000,
