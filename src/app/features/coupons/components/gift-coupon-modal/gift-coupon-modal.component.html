@@ -15,7 +15,7 @@
                             class="font-mono text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded">{{ coupon()?.code
                             }}</span> por correo electrónico.</p>
                 </div>
-                <button (click)="close.emit()" class="text-gray-400 hover:text-gray-500 transition-colors">
+                <button class="text-gray-400 hover:text-gray-500 transition-colors" (click)="close.emit()">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -30,9 +30,9 @@
                         Buscar Cliente
                     </label>
                     <div class="relative">
-                        <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()"
-                            placeholder="Nombre o correo del cliente..."
-                            class="block w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-sky-500 focus:border-sky-500">
+                        <input type="text" placeholder="Nombre o correo del cliente..." class="block w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-800 text-sm focus:ring-sky-500 focus:border-sky-500"
+                            [(ngModel)]="searchQuery"
+                            (input)="onSearch()">
                         @if (isLoading()) {
                         <div class="absolute right-3 top-2.5">
                             <div
@@ -47,15 +47,15 @@
                 @if (customers().length > 0) {
                 <div class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
                     @for (customer of customers(); track customer.id) {
-                    <button (click)="selectCustomer(customer)"
-                        class="w-full flex items-center justify-between p-3 rounded-xl border transition-all text-left"
+                    <button class="w-full flex items-center justify-between p-3 rounded-xl border transition-all text-left"
                         [class.border-sky-500]="selectedCustomerId() === customer.id"
                         [class.bg-sky-50]="selectedCustomerId() === customer.id"
                         [class.dark:bg-sky-900/20]="selectedCustomerId() === customer.id"
                         [class.border-gray-100]="selectedCustomerId() !== customer.id"
                         [class.dark:border-gray-800]="selectedCustomerId() !== customer.id"
                         [class.hover:bg-gray-50]="selectedCustomerId() !== customer.id"
-                        [class.dark:hover:bg-gray-800/50]="selectedCustomerId() !== customer.id">
+                        [class.dark:hover:bg-gray-800/50]="selectedCustomerId() !== customer.id"
+                        (click)="selectCustomer(customer)">
                         <div>
                             <p class="font-semibold text-gray-900 dark:text-white">
                                 {{ customer.first_name }} {{ customer.last_name }}
@@ -87,12 +87,12 @@
 
             <!-- Footer -->
             <div class="bg-gray-50 dark:bg-gray-800/50 px-6 py-4 flex items-center justify-end gap-3">
-                <button type="button" (click)="close.emit()"
-                    class="rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                <button type="button" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+                    (click)="close.emit()">
                     Cancelar
                 </button>
-                <button type="button" [disabled]="!selectedCustomerId() || isSending()" (click)="sendGift()"
-                    class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="!selectedCustomerId() || isSending()"
+                    (click)="sendGift()">
                     @if (isSending()) {
                     <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                     }

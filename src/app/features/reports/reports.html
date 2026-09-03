@@ -6,10 +6,10 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">Análisis avanzado de ventas, clientes y rendimiento de
                 productos.</p>
         </div>
-        <button (click)="loadReports()"
-            class="flex items-center justify-center gap-2 px-6 py-3 bg-sky-600 text-white dark:shadow-gray-800 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-sky-700 transition-all active:scale-95 shadow-xl shadow-sky-100 disabled:opacity-50">
-            <svg class="w-5 h-5" [class.animate-spin]="isLoading()" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
+        <button class="flex items-center justify-center gap-2 px-6 py-3 bg-sky-600 text-white dark:shadow-gray-800 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-sky-700 transition-all active:scale-95 shadow-xl shadow-sky-100 disabled:opacity-50"
+            (click)="loadReports()">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                [class.animate-spin]="isLoading()">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
@@ -28,12 +28,12 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Sales Evolution Chart -->
         <div class="lg:col-span-2">
-            <app-sales-chart [series]="salesSeries()" [categories]="salesLabels()"></app-sales-chart>
+            <app-sales-chart [series]="salesSeries()" [categories]="salesLabels()" />
         </div>
 
         <!-- Sales by Category Chart -->
         <div class="lg:col-span-1">
-            <app-category-chart [series]="categorySeries()" [labels]="categoryLabels()"></app-category-chart>
+            <app-category-chart [series]="categorySeries()" [labels]="categoryLabels()" />
         </div>
     </div>
 
@@ -49,9 +49,8 @@
                 </h2>
             </div>
             <div class="p-0">
-                <app-dynamic-table [data]="topProducts()" [columns]="productColumns" title="Productos Más Vendidos"
-                    [pageSize]="5">
-                </app-dynamic-table>
+                <app-dynamic-table title="Productos Más Vendidos" [data]="topProducts()" [columns]="productColumns"
+                    [pageSize]="5" />
             </div>
         </div>
 
@@ -65,9 +64,8 @@
                 </h2>
             </div>
             <div class="p-0">
-                <app-dynamic-table [data]="customerLtv()" [columns]="customerColumns" title="Mejores Clientes (LTV)"
-                    [pageSize]="5">
-                </app-dynamic-table>
+                <app-dynamic-table title="Mejores Clientes (LTV)" [data]="customerLtv()" [columns]="customerColumns"
+                    [pageSize]="5" />
             </div>
         </div>
     </div>
@@ -81,8 +79,7 @@
                 Historical Daily Sales
             </h2>
         </div>
-        <app-dynamic-table [data]="dailySummary()" [columns]="summaryColumns" [pageSize]="15" title="" description="">
-        </app-dynamic-table>
+        <app-dynamic-table title="" description="" [data]="dailySummary()" [columns]="summaryColumns" [pageSize]="15" />
     </div>
     }
 </div>

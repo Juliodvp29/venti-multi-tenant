@@ -36,15 +36,15 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                     stroke-linecap="round" stroke-linejoin="round"
                     class="group-hover:rotate-90 transition-transform duration-300">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
             </button>
         </div>
 
         <!-- Messages Area -->
-        <div class="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 p-6 flex flex-col gap-4 scroll-smooth"
-            #scrollContainer>
+        <div #scrollContainer
+            class="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 p-6 flex flex-col gap-4 scroll-smooth">
             @for (msg of messages(); track msg.timestamp) {
             <div class="max-w-[85%] px-4 py-3 rounded-[20px] text-[0.92rem] leading-relaxed relative break-words shadow-sm"
                 [class.self-end]="msg.role === 'user'" [class.bg-[#6366f1]]="msg.role === 'user'"
@@ -74,16 +74,16 @@
 
         <!-- Input Area -->
         <div class="flex gap-2 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
-            <input type="text" [(ngModel)]="userInput" (keyup.enter)="sendMessage()" placeholder="Escribe un mensaje..."
-                class="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-[0.92rem] text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 dark:focus:border-[#6366f1]"
-                [disabled]="isLoading()" />
+            <input type="text" placeholder="Escribe un mensaje..." class="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-[0.92rem] text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 dark:focus:border-[#6366f1]" [disabled]="isLoading()"
+                [(ngModel)]="userInput"
+                (keyup.enter)="sendMessage()" />
             <button
                 class="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-[#6366f1] text-white shadow-lg shadow-[#6366f1]/30 transition-all hover:bg-[#4f46e5] hover:-translate-y-0.5 active:scale-90 disabled:cursor-not-allowed disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:shadow-none disabled:translate-y-0"
-                (click)="sendMessage()" [disabled]="isLoading() || !userInput.trim()">
+                [disabled]="isLoading() || !userInput.trim()" (click)="sendMessage()">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                     stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
                 </svg>
             </button>
         </div>
@@ -91,16 +91,16 @@
     }
 
     <!-- Toggle Bubble -->
-    <button (click)="toggleChat()"
-        class="group relative flex h-[70px] w-[70px] items-center justify-center rounded-[24px] bg-gradient-to-br from-[#6366f1] to-[#a855f7] text-white shadow-[0_15px_30px_-10px_rgba(99,102,241,0.6)] transition-all duration-500 hover:scale-110 active:scale-95 hover:rotate-2"
-        [title]="isOpen ? 'Cerrar chat' : 'Hablar con el asistente'">
+    <button class="group relative flex h-[70px] w-[70px] items-center justify-center rounded-[24px] bg-gradient-to-br from-[#6366f1] to-[#a855f7] text-white shadow-[0_15px_30px_-10px_rgba(99,102,241,0.6)] transition-all duration-500 hover:scale-110 active:scale-95 hover:rotate-2"
+        [title]="isOpen ? 'Cerrar chat' : 'Hablar con el asistente'"
+        (click)="toggleChat()">
 
         <div class="absolute inset-0 rounded-[24px] bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
 
         @if (isOpen) {
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round" class="animate-in fade-in zoom-in duration-300">
-            <polyline points="6 9 12 15 18 9"></polyline>
+            <polyline points="6 9 12 15 18 9" />
         </svg>
         } @else {
         <!-- Large SVG Mascot in Bubble -->

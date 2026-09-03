@@ -2,10 +2,10 @@
   <!-- Trigger Button -->
   <button
     type="button"
-    (click)="toggle()"
     aria-label="Ver notificaciones"
-    [attr.aria-expanded]="isOpen()"
     class="relative p-2 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500"
+    [attr.aria-expanded]="isOpen()"
+    (click)="toggle()"
   >
     <svg
       class="h-6 w-6"
@@ -50,8 +50,8 @@
         @if (unreadCount() > 0) {
           <button
             type="button"
-            (click)="markAllAsRead()"
             class="text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 transition-colors"
+            (click)="markAllAsRead()"
           >
             Marcar leídas
           </button>
@@ -62,7 +62,6 @@
       <div class="flex border-b border-gray-100 dark:border-gray-800 px-4 pt-2 gap-4 text-xs font-semibold">
         <button
           type="button"
-          (click)="setTab('all')"
           class="pb-2 border-b-2 transition-colors relative"
           [class.border-sky-500]="activeTab() === 'all'"
           [class.text-sky-600]="activeTab() === 'all'"
@@ -70,12 +69,12 @@
           [class.border-transparent]="activeTab() !== 'all'"
           [class.text-gray-500]="activeTab() !== 'all'"
           [class.dark:text-gray-400]="activeTab() !== 'all'"
+          (click)="setTab('all')"
         >
           Todas ({{ notifications().length }})
         </button>
         <button
           type="button"
-          (click)="setTab('unread')"
           class="pb-2 border-b-2 transition-colors relative"
           [class.border-sky-500]="activeTab() === 'unread'"
           [class.text-sky-600]="activeTab() === 'unread'"
@@ -83,6 +82,7 @@
           [class.border-transparent]="activeTab() !== 'unread'"
           [class.text-gray-500]="activeTab() !== 'unread'"
           [class.dark:text-gray-400]="activeTab() !== 'unread'"
+          (click)="setTab('unread')"
         >
           No leídas ({{ unreadCount() }})
         </button>
@@ -93,8 +93,8 @@
         @if (isLoading()) {
           <div class="py-12 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
             <svg class="w-6 h-6 animate-spin text-sky-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
             <span class="text-xs">Cargando notificaciones...</span>
           </div>
@@ -115,10 +115,10 @@
         } @else {
           @for (item of filteredNotifications(); track item.id) {
             <div
-              (click)="onNotificationClick(item)"
               class="group relative flex items-start gap-3 p-3.5 hover:bg-gray-50/80 dark:hover:bg-gray-800/40 transition-colors cursor-pointer"
               [class.bg-sky-50/30]="!item.is_read"
               [class.dark:bg-sky-950/10]="!item.is_read"
+              (click)="onNotificationClick(item)"
             >
               <!-- Unread Indicator Dot -->
               @if (!item.is_read) {
@@ -192,9 +192,9 @@
                 @if (!item.is_read) {
                   <button
                     type="button"
-                    (click)="markAsRead($event, item.id)"
                     title="Marcar como leída"
                     class="p-1 rounded-md text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    (click)="markAsRead($event, item.id)"
                   >
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -203,9 +203,9 @@
                 }
                 <button
                   type="button"
-                  (click)="deleteNotification($event, item.id)"
                   title="Eliminar notificación"
                   class="p-1 rounded-md text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  (click)="deleteNotification($event, item.id)"
                 >
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

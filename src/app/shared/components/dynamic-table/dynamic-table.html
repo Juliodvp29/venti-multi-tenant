@@ -9,9 +9,9 @@
         </div>
         <div class="flex items-center gap-3">
             @if (allowImport()) {
-            <input type="file" #fileInput class="hidden" accept=".csv,.xlsx,.xls" (change)="onFileSelected($event)">
-            <button type="button" (click)="triggerImport()"
-                class="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-200 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+            <input #fileInput type="file" class="hidden" accept=".csv,.xlsx,.xls" (change)="onFileSelected($event)">
+            <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-200 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                (click)="triggerImport()">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -21,15 +21,15 @@
             }
             <!-- Consolidated Export Dropdown -->
             <div class="relative">
-                <button type="button" (click)="toggleExportMenu($event)"
-                    class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 transition-all">
+                <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 transition-all"
+                    (click)="toggleExportMenu($event)">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                     </svg>
                     Exportar
-                    <svg class="h-4 w-4 transition-transform duration-200" [class.rotate-180]="isExportMenuOpen()"
-                        fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <svg class="h-4 w-4 transition-transform duration-200" fill="none"
+                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" [class.rotate-180]="isExportMenuOpen()">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </button>
@@ -38,13 +38,13 @@
                 <div
                     class="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-xl bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-white/10 animate-in fade-in zoom-in-95 duration-200">
                     <div class="py-1">
-                        <button type="button" (click)="exportToCsv(); closeMenu()"
-                            class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <button type="button" class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                            (click)="exportToCsv(); closeMenu()">
                             <span class="text-sky-500 font-bold text-[10px] w-5 text-center">CSV</span>
                             CSV
                         </button>
-                        <button type="button" (click)="exportToExcel(); closeMenu()"
-                            class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <button type="button" class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                            (click)="exportToExcel(); closeMenu()">
                             <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -56,7 +56,7 @@
                 </div>
                 }
             </div>
-            <ng-content select="[actions]"></ng-content>
+            <ng-content select="[actions]" />
         </div>
     </div>
 
@@ -70,9 +70,9 @@
                         clip-rule="evenodd" />
                 </svg>
             </div>
-            <input type="text" [value]="searchQuery()" (input)="onSearch($event)"
-                class="block w-full rounded-xl border-0 bg-white py-2.5 pl-10 pr-10 text-gray-900 dark:text-white dark:bg-gray-800  ring-1 ring-inset ring-gray-200 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 text-sm transition-all"
-                [placeholder]="searchPlaceholder()">
+            <input type="text" class="block w-full rounded-xl border-0 bg-white py-2.5 pl-10 pr-10 text-gray-900 dark:text-white dark:bg-gray-800  ring-1 ring-inset ring-gray-200 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 text-sm transition-all" [value]="searchQuery()"
+                [placeholder]="searchPlaceholder()"
+                (input)="onSearch($event)">
 
             <!-- In-input quick clear for search specifically -->
             @if (searchQuery()) {
@@ -89,10 +89,10 @@
             }
         </div>
         <div class="flex-shrink-0 flex items-center gap-2">
-            <ng-content select="[filters]"></ng-content>
+            <ng-content select="[filters]" />
             @if (hasActiveFilters()) {
-            <button type="button" (click)="onClearFilters()"
-                class="text-xs bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 px-3 py-2 rounded-xl border border-red-100 dark:border-red-900/30 font-semibold transition-colors flex items-center gap-1.5 shadow-sm">
+            <button type="button" class="text-xs bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 px-3 py-2 rounded-xl border border-red-100 dark:border-red-900/30 font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
+                (click)="onClearFilters()">
                 Limpiar Filtros
             </button>
             }
@@ -106,9 +106,9 @@
             <thead>
                 <tr class="border-y border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-900/40">
                     @for (col of columns(); track col.key) {
-                    <th scope="col" (click)="col.sortable && onSort(col.key)"
-                        class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
-                        [class.cursor-pointer]="col.sortable" [class.hover:text-gray-600]="col.sortable">
+                    <th scope="col" class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+                        [class.cursor-pointer]="col.sortable"
+                        [class.hover:text-gray-600]="col.sortable" (click)="col.sortable && onSort(col.key)">
                         <div class="flex items-center gap-1.5">
                             {{ col.label }}
                             @if (col.sortable) {
@@ -144,8 +144,8 @@
             <!-- Body -->
             <tbody class="divide-y divide-gray-50 dark:divide-gray-800/80 bg-white dark:bg-transparent">
                 @for (item of paginatedData(); track item['id']) {
-                <tr (click)="rowClick.emit(item)"
-                    class="hover:bg-sky-50/30 dark:hover:bg-sky-900/10 transition-colors duration-150 cursor-pointer group">
+                <tr class="hover:bg-sky-50/30 dark:hover:bg-sky-900/10 transition-colors duration-150 cursor-pointer group"
+                    (click)="rowClick.emit(item)">
 
                     @for (col of columns(); track col.key) {
                     <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm">
@@ -154,7 +154,7 @@
                         <div
                             class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-gray-700 bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center">
                             @if (formatValue(col, item)) {
-                            <img class="h-10 w-10 object-cover" [src]="formatValue(col, item)" alt="">
+                            <img class="h-10 w-10 object-cover" alt="" [src]="formatValue(col, item)">
                             } @else {
                             <svg class="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor">
@@ -191,7 +191,7 @@
 
                         } @else if (col.template) {
                         <ng-container [ngTemplateOutlet]="col.template"
-                            [ngTemplateOutletContext]="{ $implicit: item[col.key], item: item }"></ng-container>
+                            [ngTemplateOutletContext]="{ $implicit: item[col.key], item: item }" />
 
                         } @else if (col.formatter) {
                         <span class="text-gray-700 dark:text-slate-200 font-medium"
@@ -207,9 +207,9 @@
                     @if (actions().length > 0) {
                     <td class="whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm">
                         <div class="relative inline-block">
-                            <button type="button" (click)="toggleMenu($event, item)" aria-label="Opciones de fila"
-                                class="actions-menu-button inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
-                                [class.is-open]="openMenuId() === item['id']">
+                            <button type="button" aria-label="Opciones de fila" class="actions-menu-button inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
+                                [class.is-open]="openMenuId() === item['id']"
+                                (click)="toggleMenu($event, item)">
                                 <!-- Horizontal dots -->
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path
@@ -222,7 +222,7 @@
                 </tr>
                 } @empty {
                 <tr>
-                    <td [attr.colspan]="columns().length + (actions().length > 0 ? 1 : 0)" class="py-16 text-center">
+                    <td class="py-16 text-center" [attr.colspan]="columns().length + (actions().length > 0 ? 1 : 0)">
                         <svg class="mx-auto h-10 w-10 text-gray-200 dark:text-gray-700" fill="none" viewBox="0 0 24 24"
                             stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -244,9 +244,9 @@
         <div class="py-1.5">
             @for (action of actions(); track action['id']) {
             @if (!action.show || action.show(openMenuItem()!)) {
-            <button type="button" (click)="action.callback(openMenuItem()!); closeMenu()"
-                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-left"
-                [ngClass]="action.className || ''">
+            <button type="button" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-left"
+                [ngClass]="action.className || ''"
+                (click)="action.callback(openMenuItem()!); closeMenu()">
                 @if (action.icon) {
                 <span class="flex-shrink-0" [innerHTML]="action.icon"></span>
                 }
@@ -267,8 +267,8 @@
         </p>
         <nav class="isolate inline-flex -space-x-px rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
             aria-label="Pagination">
-            <button type="button" (click)="prevPage()" [disabled]="currentPage() === 1" aria-label="Página anterior"
-                class="relative inline-flex items-center rounded-l-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all">
+            <button type="button" aria-label="Página anterior" class="relative inline-flex items-center rounded-l-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all" [disabled]="currentPage() === 1"
+                (click)="prevPage()">
                 <span class="sr-only">Anterior</span>
                 <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd"
@@ -280,8 +280,8 @@
                 class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-100 dark:ring-gray-800">
                 Página {{ currentPage() }} de {{ totalPages() || 1 }}
             </span>
-            <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()" aria-label="Página siguiente"
-                class="relative inline-flex items-center rounded-r-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all">
+            <button type="button" aria-label="Página siguiente" class="relative inline-flex items-center rounded-r-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all" [disabled]="currentPage() === totalPages()"
+                (click)="nextPage()">
                 <span class="sr-only">Siguiente</span>
                 <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd"

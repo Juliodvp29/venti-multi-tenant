@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col h-full">
+<form class="flex flex-col h-full" [formGroup]="form" (ngSubmit)="submit()">
   <!-- Form Header -->
   <div
     class="flex-shrink-0 px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
@@ -54,11 +54,11 @@
           <input
             type="text"
             formControlName="name"
-            (input)="onNameInput($event)"
             placeholder="ej. Camiseta de Algodón Premium"
             class="block w-full rounded-xl border px-3.5 py-2.5 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
             [class.border-red-500]="hasError('name')"
             [class.focus:ring-red-500]="hasError('name')"
+            (input)="onNameInput($event)"
           />
           @if (hasError('name')) {
             <p class="mt-1.5 text-xs text-red-500">
@@ -75,8 +75,8 @@
             </label>
             <button
               type="button"
-              (click)="autoGenerateSlug()"
               class="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 transition-colors"
+              (click)="autoGenerateSlug()"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -98,10 +98,10 @@
           <input
             type="text"
             formControlName="slug"
-            (input)="onSlugInput()"
             placeholder="premium-cotton-t-shirt"
             class="block w-full rounded-xl border px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
             [class.border-red-500]="hasError('slug')"
+            (input)="onSlugInput()"
           />
           @if (hasError('slug')) {
             <p class="mt-1.5 text-xs text-red-500">
@@ -142,12 +142,11 @@
             Estado <span class="text-red-500">*</span>
           </label>
           <app-dropdown
+            placeholder="Seleccionar estado..."
             [options]="statusOptions"
             [value]="form.get('status')?.value"
             (valueChange)="form.patchValue({ status: $event }); form.get('status')?.markAsTouched()"
-            placeholder="Seleccionar estado..."
-          >
-          </app-dropdown>
+          />
         </div>
 
         <!-- Categories -->
@@ -169,7 +168,6 @@
               @for (cat of categories(); track cat.id) {
                 <button
                   type="button"
-                  (click)="toggleCategory(cat.id)"
                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150"
                   [class.bg-sky-600]="selectedCategoryIds().has(cat.id)"
                   [class.text-white]="selectedCategoryIds().has(cat.id)"
@@ -180,6 +178,7 @@
                   [class.dark:text-gray-300]="!selectedCategoryIds().has(cat.id)"
                   [class.border-gray-300]="!selectedCategoryIds().has(cat.id)"
                   [class.dark:border-gray-600]="!selectedCategoryIds().has(cat.id)"
+                  (click)="toggleCategory(cat.id)"
                 >
                   @if (selectedCategoryIds().has(cat.id)) {
                     <svg
@@ -341,9 +340,9 @@
           <button
             type="button"
             aria-label="Seguir inventario"
-            (click)="form.patchValue({ track_inventory: !form.getRawValue().track_inventory })"
             class="toggle-btn"
             [class.active]="form.getRawValue().track_inventory"
+            (click)="form.patchValue({ track_inventory: !form.getRawValue().track_inventory })"
           >
             <span class="toggle-thumb"></span>
           </button>
@@ -382,9 +381,9 @@
           <button
             type="button"
             aria-label="Producto destacado"
-            (click)="form.patchValue({ is_featured: !form.getRawValue().is_featured })"
             class="toggle-btn"
             [class.active]="form.getRawValue().is_featured"
+            (click)="form.patchValue({ is_featured: !form.getRawValue().is_featured })"
           >
             <span class="toggle-thumb"></span>
           </button>
@@ -408,9 +407,9 @@
           <button
             type="button"
             aria-label="Activar variantes"
-            (click)="toggleVariants()"
             class="toggle-btn scale-90"
             [class.active]="hasVariants()"
+            (click)="toggleVariants()"
           >
             <span class="toggle-thumb"></span>
           </button>
@@ -429,8 +428,8 @@
               </p>
               <button
                 type="button"
-                (click)="addOption()"
                 class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:text-sky-800 transition-colors flex items-center gap-1"
+                (click)="addOption()"
               >
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
@@ -453,12 +452,12 @@
                     >Nombre</label
                   >
                   <input
-                    type="text"
-                    [value]="opt.name"
-                    (input)="updateOptionName($index, nameInput.value)"
                     #nameInput
+                    type="text"
                     placeholder="ej. Talla"
                     class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-sky-500/20"
+                    [value]="opt.name"
+                    (input)="updateOptionName($index, nameInput.value)"
                   />
                 </div>
                 <div class="sm:col-span-7">
@@ -466,20 +465,20 @@
                     >Valores (separados por comas)</label
                   >
                   <input
-                    type="text"
-                    [value]="opt.values.join(', ')"
-                    (change)="updateOptionValues($index, valInput.value)"
                     #valInput
+                    type="text"
                     placeholder="ej. S, M, L"
                     class="block w-full rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-sky-500/20"
+                    [value]="opt.values.join(', ')"
+                    (change)="updateOptionValues($index, valInput.value)"
                   />
                 </div>
                 <div class="sm:col-span-1 flex justify-center">
                   <button
                     type="button"
                     aria-label="Eliminar opción"
-                    (click)="removeOption($index)"
                     class="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    (click)="removeOption($index)"
                   >
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
@@ -542,8 +541,8 @@
                     <ng-container formArrayName="variants">
                       @for (v of variants.controls; track $index) {
                         <tr
-                          [formGroupName]="$index"
                           class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                          [formGroupName]="$index"
                         >
                           <td class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
                             {{ v.getRawValue().name }}
@@ -586,12 +585,12 @@
                           <td class="px-4 py-3 text-right">
                             <button
                               type="button"
-                              (click)="v.patchValue({ is_active: !v.getRawValue().is_active })"
                               class="text-[10px] font-bold px-2 py-1 rounded-full transition-colors"
                               [class.bg-green-100]="v.getRawValue().is_active"
                               [class.text-green-700]="v.getRawValue().is_active"
                               [class.bg-gray-100]="!v.getRawValue().is_active"
                               [class.text-gray-500]="!v.getRawValue().is_active"
+                              (click)="v.patchValue({ is_active: !v.getRawValue().is_active })"
                             >
                               {{ v.getRawValue().is_active ? 'ON' : 'OFF' }}
                             </button>
@@ -632,8 +631,7 @@
     <app-product-image-uploader
       [productId]="isEditMode() ? (product()?.id ?? null) : null"
       [existingImages]="product()?.images ?? []"
-    >
-    </app-product-image-uploader>
+    />
   </div>
 
   <!-- Form Footer -->
@@ -642,15 +640,15 @@
   >
     <button
       type="button"
-      (click)="cancel()"
       class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+      (click)="cancel()"
     >
       Cancelar
     </button>
     <button
       type="submit"
-      [disabled]="isSaving()"
       class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl transition-all duration-200 shadow-sm"
+      [disabled]="isSaving()"
     >
       @if (isSaving()) {
         <svg
@@ -666,12 +664,12 @@
             r="10"
             stroke="currentColor"
             stroke-width="4"
-          ></circle>
+          />
           <path
             class="opacity-75"
             fill="currentColor"
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-          ></path>
+          />
         </svg>
         Guardando...
       } @else {

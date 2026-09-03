@@ -15,8 +15,8 @@
         </div>
       </div>
 
-      <button type="button" (click)="close.emit()" aria-label="Cerrar modal"
-        class="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <button type="button" aria-label="Cerrar modal" class="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        (click)="close.emit()">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
         </svg>
@@ -26,13 +26,13 @@
     <!-- Tabs Navigation -->
     <div class="flex items-center justify-between px-6 pt-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
       <div class="flex gap-2">
-        <button type="button" (click)="activeTab.set('presets')"
-          class="flex items-center gap-2 pb-3 px-3 text-sm font-semibold border-b-2 transition-all"
+        <button type="button" class="flex items-center gap-2 pb-3 px-3 text-sm font-semibold border-b-2 transition-all"
           [class.border-sky-600]="activeTab() === 'presets'"
           [class.text-sky-600]="activeTab() === 'presets'"
           [class.dark:text-sky-400]="activeTab() === 'presets'"
           [class.border-transparent]="activeTab() !== 'presets'"
-          [class.text-gray-500]="activeTab() !== 'presets'">
+          [class.text-gray-500]="activeTab() !== 'presets'"
+          (click)="activeTab.set('presets')">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M16.5 12l3.432-3.432a2.25 2.25 0 0 0 0-3.182l-1.318-1.318a2.25 2.25 0 0 0-3.182 0L12 7.5m4.5 4.5d-4.5 4.5" />
           </svg>
@@ -42,13 +42,13 @@
           </span>
         </button>
 
-        <button type="button" (click)="activeTab.set('versions')"
-          class="flex items-center gap-2 pb-3 px-3 text-sm font-semibold border-b-2 transition-all"
+        <button type="button" class="flex items-center gap-2 pb-3 px-3 text-sm font-semibold border-b-2 transition-all"
           [class.border-sky-600]="activeTab() === 'versions'"
           [class.text-sky-600]="activeTab() === 'versions'"
           [class.dark:text-sky-400]="activeTab() === 'versions'"
           [class.border-transparent]="activeTab() !== 'versions'"
-          [class.text-gray-500]="activeTab() !== 'versions'">
+          [class.text-gray-500]="activeTab() !== 'versions'"
+          (click)="activeTab.set('versions')">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
@@ -60,8 +60,8 @@
       </div>
 
       @if (activeTab() === 'presets') {
-        <button type="button" (click)="openNewPresetModal()"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors mb-2">
+        <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors mb-2"
+          (click)="openNewPresetModal()">
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
@@ -81,7 +81,7 @@
               <h3 class="text-sm font-bold text-gray-900 dark:text-white">Guardar Preset Personalizado</h3>
               <p class="text-xs text-gray-500 dark:text-gray-400">Guarda una copia de todos los colores, tipografías y secciones del borrador actual.</p>
             </div>
-            <button type="button" (click)="closeNewPresetModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+            <button type="button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" (click)="closeNewPresetModal()">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" /></svg>
             </button>
           </div>
@@ -89,25 +89,25 @@
           <div class="space-y-3">
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Nombre del Preset *</label>
-              <input type="text" [ngModel]="newPresetName()" (ngModelChange)="newPresetName.set($event)"
-                placeholder="Ej. Tema Otoño Elegante, Black Friday 2026..."
-                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              <input type="text" placeholder="Ej. Tema Otoño Elegante, Black Friday 2026..." class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                [ngModel]="newPresetName()"
+                (ngModelChange)="newPresetName.set($event)" />
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Descripción o Notas (Opcional)</label>
-              <input type="text" [ngModel]="newPresetDescription()" (ngModelChange)="newPresetDescription.set($event)"
-                placeholder="Ej. Estilo minimalista con tipografía Serif y Hero centrado"
-                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              <input type="text" placeholder="Ej. Estilo minimalista con tipografía Serif y Hero centrado" class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                [ngModel]="newPresetDescription()"
+                (ngModelChange)="newPresetDescription.set($event)" />
             </div>
 
             <div class="flex items-center justify-end gap-2 pt-2">
-              <button type="button" (click)="closeNewPresetModal()" [disabled]="isSavingPreset()"
-                class="px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+              <button type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors" [disabled]="isSavingPreset()"
+                (click)="closeNewPresetModal()">
                 Cancelar
               </button>
-              <button type="button" (click)="saveCurrentPreset()" [disabled]="isSavingPreset() || !newPresetName().trim()"
-                class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white shadow-sm transition-colors">
+              <button type="button" class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white shadow-sm transition-colors" [disabled]="isSavingPreset() || !newPresetName().trim()"
+                (click)="saveCurrentPreset()">
                 @if (isSavingPreset()) {
                   <span class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                   Guardando...
@@ -133,8 +133,8 @@
             <p class="text-xs text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-5">
               Puedes guardar combinaciones personalizadas de temas, colores y estructuras de página para reutilizarlas en promociones, temporadas o eventos especiales.
             </p>
-            <button type="button" (click)="openNewPresetModal()"
-              class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors">
+            <button type="button" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors"
+              (click)="openNewPresetModal()">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
@@ -157,10 +157,10 @@
                     <!-- Color Swatches -->
                     @if (preset.snapshot.theme_tokens.colors; as c) {
                       <div class="flex items-center gap-1 shrink-0 p-1 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
-                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.backgroundColor]="c.primary" title="Color Primario"></span>
-                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.backgroundColor]="c.secondary" title="Color Secundario"></span>
-                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.backgroundColor]="c.accent" title="Color de Acento"></span>
-                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.backgroundColor]="c.background" title="Fondo"></span>
+                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" title="Color Primario" [style.backgroundColor]="c.primary"></span>
+                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" title="Color Secundario" [style.backgroundColor]="c.secondary"></span>
+                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" title="Color de Acento" [style.backgroundColor]="c.accent"></span>
+                        <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" title="Fondo" [style.backgroundColor]="c.background"></span>
                       </div>
                     }
                   </div>
@@ -176,22 +176,22 @@
 
                 <div class="flex items-center justify-between gap-2 border-t border-gray-100 dark:border-gray-800 pt-3 mt-4">
                   <div class="flex items-center gap-1">
-                    <button type="button" (click)="duplicate(preset)" title="Duplicar preset"
-                      class="p-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <button type="button" title="Duplicar preset" class="p-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                      (click)="duplicate(preset)">
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v2.25A2.25 2.25 0 0 1 13.5 21.75h-7.5A2.25 2.25 0 0 1 3.75 19.5V12a2.25 2.25 0 0 1 2.25-2.25H6m9.75 7.5H18a2.25 2.25 0 0 0 2.25-2.25V6A2.25 2.25 0 0 0 17.25 3.75h-7.5A2.25 2.25 0 0 0 7.5 6v1.5m9.75 9.75" />
                       </svg>
                     </button>
-                    <button type="button" (click)="deletePreset(preset)" title="Eliminar preset"
-                      class="p-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <button type="button" title="Eliminar preset" class="p-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                      (click)="deletePreset(preset)">
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                       </svg>
                     </button>
                   </div>
 
-                  <button type="button" (click)="apply(preset)"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:hover:bg-sky-900/50 dark:text-sky-300 transition-colors">
+                  <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:hover:bg-sky-900/50 dark:text-sky-300 transition-colors"
+                    (click)="apply(preset)">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
@@ -253,16 +253,16 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-100 dark:border-gray-800">
-                  <button type="button" (click)="restore(version, false)" [disabled]="isRestoring()"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors">
+                  <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors" [disabled]="isRestoring()"
+                    (click)="restore(version, false)">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
                     </svg>
                     Restaurar en Borrador
                   </button>
 
-                  <button type="button" (click)="restore(version, true)" [disabled]="isRestoring()"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 text-white shadow-xs transition-colors">
+                  <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 text-white shadow-xs transition-colors" [disabled]="isRestoring()"
+                    (click)="restore(version, true)">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                     </svg>
@@ -280,8 +280,8 @@
     <!-- Modal Footer -->
     <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50 text-xs text-gray-500 dark:text-gray-400">
       <span>Todos los presets y versiones quedan guardados de forma segura en la nube.</span>
-      <button type="button" (click)="close.emit()"
-        class="px-4 py-2 text-xs font-semibold rounded-xl bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-colors">
+      <button type="button" class="px-4 py-2 text-xs font-semibold rounded-xl bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition-colors"
+        (click)="close.emit()">
         Cerrar
       </button>
     </div>

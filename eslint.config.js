@@ -53,11 +53,22 @@ module.exports = tseslint.config(
   {
     files: ['**/*.html'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-    rules: Object.fromEntries(
-      Object.keys(angular.templatePlugin.rules).map((ruleName) => [
-        `@angular-eslint/template/${ruleName}`,
-        'warn',
-      ]),
-    ),
+    rules: {
+      // Enable all template rules as warnings by default
+      ...Object.fromEntries(
+        Object.keys(angular.templatePlugin.rules).map((ruleName) => [
+          `@angular-eslint/template/${ruleName}`,
+          'warn',
+        ]),
+      ),
+      // Disable i18n — app is Spanish-only, no Angular i18n system in use
+      '@angular-eslint/template/i18n': 'off',
+      // Disable no-call-expression — too many false positives with Angular signals
+      '@angular-eslint/template/no-call-expression': 'off',
+      // Disable no-inline-styles — dynamic styles are needed for theme/branding
+      '@angular-eslint/template/no-inline-styles': 'off',
+      // Raise cyclomatic complexity limit (default 5 is too strict for real templates)
+      '@angular-eslint/template/cyclomatic-complexity': ['warn', { maxComplexity: 15 }],
+    },
   },
 );

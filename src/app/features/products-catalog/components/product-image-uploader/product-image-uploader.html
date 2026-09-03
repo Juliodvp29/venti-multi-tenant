@@ -32,7 +32,7 @@
         @for (img of savedImages(); track img.id) {
         <div
             class="group relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 aspect-square bg-gray-50 dark:bg-gray-800">
-            <img [src]="img.url" [alt]="img.alt_text ?? 'Imagen'" class="w-full h-full object-cover" />
+            <img class="w-full h-full object-cover" [src]="img.url" [alt]="img.alt_text ?? 'Imagen'" />
 
             <!-- Primary badge -->
             @if (img.is_primary) {
@@ -47,9 +47,9 @@
                 class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <!-- Set primary -->
                 @if (!img.is_primary) {
-                <button type="button" (click)="setPrimaryImage(img); $event.stopPropagation()"
-                    title="Establecer como imagen principal"
-                    class="p-1.5 rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors">
+                <button type="button" title="Establecer como imagen principal"
+                    class="p-1.5 rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors"
+                    (click)="setPrimaryImage(img); $event.stopPropagation()">
                     <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M12 2.25l2.935 6.262 6.565.956-4.75 4.629 1.121 6.538L12 17.687l-5.871 3.088 1.121-6.538L2.5 9.468l6.565-.956L12 2.25z" />
@@ -57,8 +57,8 @@
                 </button>
                 }
                 <!-- Delete -->
-                <button type="button" (click)="deleteSavedImage(img); $event.stopPropagation()" title="Eliminar imagen"
-                    class="p-1.5 rounded-full bg-white/20 hover:bg-red-500/80 text-white transition-colors">
+                <button type="button" title="Eliminar imagen" class="p-1.5 rounded-full bg-white/20 hover:bg-red-500/80 text-white transition-colors"
+                    (click)="deleteSavedImage(img); $event.stopPropagation()">
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -71,27 +71,26 @@
         @for (item of pendingImages(); track item.previewUrl) {
         <div
             class="group relative rounded-lg overflow-hidden border border-dashed border-sky-300 dark:border-sky-700 aspect-square bg-sky-50/50 dark:bg-sky-950/30">
-            <img [src]="item.previewUrl" alt="Preview" class="w-full h-full object-cover"
+            <img alt="Preview" class="w-full h-full object-cover" [src]="item.previewUrl"
                 [class.opacity-50]="item.uploading" />
 
             <!-- Uploading spinner -->
             @if (item.uploading) {
             <div class="absolute inset-0 flex items-center justify-center">
                 <svg class="animate-spin h-6 w-6 text-sky-500" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                     <path class="opacity-75" fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.823 3 7.938l3-2.647z">
-                    </path>
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.823 3 7.938l3-2.647z" />
                 </svg>
             </div>
             }
 
             <!-- Pending label + remove -->
-            @if (!item.uploading) {
+            @else {
             <div
                 class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <button type="button" (click)="removePendingImage(item); $event.stopPropagation()" title="Quitar imagen"
-                    class="p-1.5 rounded-full bg-white/20 hover:bg-red-500/80 text-white transition-colors">
+                <button type="button" title="Quitar imagen" class="p-1.5 rounded-full bg-white/20 hover:bg-red-500/80 text-white transition-colors"
+                    (click)="removePendingImage(item); $event.stopPropagation()">
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>

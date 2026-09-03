@@ -19,8 +19,8 @@
             <p class="text-sm font-semibold text-red-800 dark:text-red-200">No se pudo cargar esta sección</p>
             <p class="mt-1 text-sm text-red-700 dark:text-red-300">{{ errorMessage }}</p>
         </div>
-        <button type="button" (click)="loadData()"
-            class="shrink-0 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700">
+        <button type="button" class="shrink-0 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700"
+            (click)="loadData()">
             Reintentar
         </button>
     </div>
@@ -29,8 +29,8 @@
     <section class="space-y-6">
         <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Zonas de Envío</h3>
-            <button (click)="openZoneModal()"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm">
+            <button class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm"
+                (click)="openZoneModal()">
                 Agregar Zona de Envío
             </button>
         </div>
@@ -53,15 +53,15 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button (click)="openZoneModal(zone)"
-                            class="p-2 text-gray-400 hover:text-sky-600 transition-colors">
+                        <button class="p-2 text-gray-400 hover:text-sky-600 transition-colors"
+                            (click)="openZoneModal(zone)">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
                         </button>
-                        <button (click)="deleteZone(zone.id)"
-                            class="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                        <button class="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                            (click)="deleteZone(zone.id)">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -92,18 +92,18 @@
                                 <td class="px-4 py-3 text-right">
                                     <div
                                         class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button (click)="openRateModal(zone.id, rate)"
-                                            class="p-1 px-2 text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/20 rounded">Editar</button>
-                                        <button (click)="deleteRate(rate.id)"
-                                            class="p-1 px-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">Eliminar</button>
+                                        <button class="p-1 px-2 text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-900/20 rounded"
+                                            (click)="openRateModal(zone.id, rate)">Editar</button>
+                                        <button class="p-1 px-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                                            (click)="deleteRate(rate.id)">Eliminar</button>
                                     </div>
                                 </td>
                             </tr>
                             }
                         </tbody>
                     </table>
-                    <button (click)="openRateModal(zone.id)"
-                        class="w-full py-3 text-xs font-bold text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/20 transition-colors uppercase tracking-widest border-t border-gray-100 dark:border-gray-800">
+                    <button class="w-full py-3 text-xs font-bold text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/20 transition-colors uppercase tracking-widest border-t border-gray-100 dark:border-gray-800"
+                        (click)="openRateModal(zone.id)">
                         + Agregar Tarifa de Envío
                     </button>
                 </div>
@@ -118,8 +118,8 @@
     <section class="space-y-6">
         <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Reglas de Impuestos (IVA/VAT)</h3>
-            <button (click)="openTaxModal()"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm">
+            <button class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 transition-colors shadow-sm"
+                (click)="openTaxModal()">
                 Agregar Tasa de Impuesto
             </button>
         </div>
@@ -140,7 +140,7 @@
                     @for (tax of taxRates(); track tax.id) {
                     <tr>
                         <td class="px-6 py-4 font-bold text-gray-900 dark:text-white">{{ tax.name }}</td>
-                        <td class="px-6 py-4 text-gray-500">{{ tax.country }}{{ tax.state ? ' / ' + tax.state : '' }}
+                        <td class="px-6 py-4 text-gray-500">{{ tax.country }}{{ tax.state ? ` / ${tax.state}` : '' }}
                         </td>
                         <td class="px-6 py-4 text-center">
                             <span
@@ -150,15 +150,15 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <button (click)="openTaxModal(tax)"
-                                    class="p-2 text-gray-400 hover:text-sky-600 transition-colors">
+                                <button class="p-2 text-gray-400 hover:text-sky-600 transition-colors"
+                                    (click)="openTaxModal(tax)">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                     </svg>
                                 </button>
-                                <button (click)="deleteTax(tax.id)"
-                                    class="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                                <button class="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                                    (click)="deleteTax(tax.id)">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -190,14 +190,14 @@
         <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ editingZone() ? 'Editar' : 'Agregar' }} Zona
                 de Envío</h3>
-            <button type="button" (click)="closeModal()" aria-label="Cerrar modal"
-                class="text-gray-400 hover:text-gray-500 transition-colors">
+            <button type="button" aria-label="Cerrar modal" class="text-gray-400 hover:text-gray-500 transition-colors"
+                (click)="closeModal()">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-        <form [formGroup]="zoneForm" (ngSubmit)="saveZone()" class="p-6 space-y-4">
+        <form class="p-6 space-y-4" [formGroup]="zoneForm" (ngSubmit)="saveZone()">
             <div>
                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nombre de la Zona</label>
                 <input formControlName="name" type="text" placeholder="p. ej. Nacional, Internacional"
@@ -211,12 +211,12 @@
             </div>
 
             <div class="flex gap-3 pt-4">
-                <button type="button" (click)="closeModal()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                <button type="button" class="flex-1 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    (click)="closeModal()">
                     Cancelar
                 </button>
-                <button type="submit" [disabled]="isSaving()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
+                <button type="submit" class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all"
+                    [disabled]="isSaving()">
                     {{ isSaving() ? 'Guardando...' : 'Guardar Zona' }}
                 </button>
             </div>
@@ -237,14 +237,14 @@
                 </h3>
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Define el precio y el tiempo estimado de entrega.</p>
             </div>
-            <button type="button" (click)="closeModal()" aria-label="Cerrar modal"
-                class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors">
+            <button type="button" aria-label="Cerrar modal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors"
+                (click)="closeModal()">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-        <form [formGroup]="rateForm" (ngSubmit)="saveRate()" class="p-6 space-y-4">
+        <form class="p-6 space-y-4" [formGroup]="rateForm" (ngSubmit)="saveRate()">
             <div>
                 <label for="rate-name" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nombre de la tarifa</label>
                 <input id="rate-name" formControlName="name" type="text" placeholder="p. ej. Envío Estándar"
@@ -287,12 +287,12 @@
             </div>
 
             <div class="flex gap-3 pt-4">
-                <button type="button" (click)="closeModal()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                <button type="button" class="flex-1 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    (click)="closeModal()">
                     Cancelar
                 </button>
-                <button type="submit" [disabled]="rateForm.invalid || isSaving()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
+                <button type="submit" class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all"
+                    [disabled]="rateForm.invalid || isSaving()">
                     {{ isSaving() ? 'Guardando...' : 'Guardar Tarifa' }}
                 </button>
             </div>
@@ -310,14 +310,14 @@
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ editingTax() ? 'Editar' : 'Agregar' }} Tasa
                 de Impuesto
             </h3>
-            <button type="button" (click)="closeModal()" aria-label="Cerrar modal"
-                class="text-gray-400 hover:text-gray-500 transition-colors">
+            <button type="button" aria-label="Cerrar modal" class="text-gray-400 hover:text-gray-500 transition-colors"
+                (click)="closeModal()">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-        <form [formGroup]="taxForm" (ngSubmit)="saveTax()" class="p-6 space-y-4">
+        <form class="p-6 space-y-4" [formGroup]="taxForm" (ngSubmit)="saveTax()">
             <div>
                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nombre del Impuesto</label>
                 <input formControlName="name" type="text" placeholder="p. ej. IVA, Impuesto a las Ventas"
@@ -344,12 +344,12 @@
             </div>
 
             <div class="flex gap-3 pt-4">
-                <button type="button" (click)="closeModal()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                <button type="button" class="flex-1 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    (click)="closeModal()">
                     Cancelar
                 </button>
-                <button type="submit" [disabled]="isSaving()"
-                    class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all">
+                <button type="submit" class="flex-1 px-4 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 rounded-lg shadow-sm transition-all"
+                    [disabled]="isSaving()">
                     {{ isSaving() ? 'Guardando...' : 'Guardar Regla de Impuesto' }}
                 </button>
             </div>

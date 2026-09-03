@@ -85,7 +85,7 @@
 
                         <div class="lg:col-span-6">
                             @if (asAny(section.content).imageUrl) {
-                                <img [src]="asAny(section.content).imageUrl" alt="About us" class="rounded-2xl w-full h-80 object-cover shadow-md">
+                                <img alt="About us" class="rounded-2xl w-full h-80 object-cover shadow-md" [src]="asAny(section.content).imageUrl">
                             }
                         </div>
                     </div>
