@@ -1,295 +1,453 @@
-<div class="bg-white dark:bg-gray-900/50 py-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+<div
+  class="bg-white dark:bg-gray-900/50 py-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm"
+>
+  <!-- Header Area -->
+  <div class="px-6 flex items-start justify-between mb-6">
+    <div>
+      <h1 class="text-xl font-bold text-gray-900 dark:text-white">{{ title() }}</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ description() }}</p>
+    </div>
+    <div class="flex items-center gap-3">
+      @if (allowImport()) {
+        <input
+          #fileInput
+          type="file"
+          class="hidden"
+          accept=".csv,.xlsx,.xls"
+          (change)="onFileSelected($event)"
+        />
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-200 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+          (click)="triggerImport()"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+            />
+          </svg>
+          Importar
+        </button>
+      }
+      <!-- Consolidated Export Dropdown -->
+      <div class="relative">
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 transition-all"
+          (click)="toggleExportMenu($event)"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+            />
+          </svg>
+          Exportar
+          <svg
+            class="h-4 w-4 transition-transform duration-200"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            [class.rotate-180]="isExportMenuOpen()"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
 
-
-    <!-- Header Area -->
-    <div class="px-6 flex items-start justify-between mb-6">
-        <div>
-            <h1 class="text-xl font-bold text-gray-900 dark:text-white">{{ title() }}</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ description() }}</p>
-        </div>
-        <div class="flex items-center gap-3">
-            @if (allowImport()) {
-            <input #fileInput type="file" class="hidden" accept=".csv,.xlsx,.xls" (change)="onFileSelected($event)">
-            <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-200 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
-                (click)="triggerImport()">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+        @if (isExportMenuOpen()) {
+          <div
+            class="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-xl bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-white/10 animate-in fade-in zoom-in-95 duration-200"
+          >
+            <div class="py-1">
+              <button
+                type="button"
+                class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                (click)="exportToCsv(); closeMenu()"
+              >
+                <span class="text-sky-500 font-bold text-[10px] w-5 text-center">CSV</span>
+                CSV
+              </button>
+              <button
+                type="button"
+                class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                (click)="exportToExcel(); closeMenu()"
+              >
+                <svg
+                  class="h-4 w-4 text-sky-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V4.5m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125h-7.5c-.621 0-1.125.504-1.125 1.125m0-11.25V4.5m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m11.25-11.25V4.5m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125h-7.5c-.621 0-1.125.504-1.125 1.125m0-11.25V4.5"
+                  />
                 </svg>
-                Importar
-            </button>
-            }
-            <!-- Consolidated Export Dropdown -->
-            <div class="relative">
-                <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 transition-all"
-                    (click)="toggleExportMenu($event)">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                    </svg>
-                    Exportar
-                    <svg class="h-4 w-4 transition-transform duration-200" fill="none"
-                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" [class.rotate-180]="isExportMenuOpen()">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                </button>
+                Excel
+              </button>
+              <button
+                type="button"
+                class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                [disabled]="isExporting()"
+                (click)="exportToPdf(); closeMenu()"
+              >
+                <span class="text-red-500 font-bold text-[10px] w-5 text-center">PDF</span>
+                {{ isExporting() ? 'Generando...' : 'PDF' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+      <ng-content select="[actions]" />
+    </div>
+  </div>
 
-                @if (isExportMenuOpen()) {
-                <div
-                    class="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-xl bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-white/10 animate-in fade-in zoom-in-95 duration-200">
-                    <div class="py-1">
-                        <button type="button" class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-                            (click)="exportToCsv(); closeMenu()">
-                            <span class="text-sky-500 font-bold text-[10px] w-5 text-center">CSV</span>
-                            CSV
-                        </button>
-                        <button type="button" class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-                            (click)="exportToExcel(); closeMenu()">
-                            <svg class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V4.5m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125h-7.5c-.621 0-1.125.504-1.125 1.125m0-11.25V4.5m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m11.25-11.25V4.5m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125h-7.5c-.621 0-1.125.504-1.125 1.125m0-11.25V4.5" />
-                            </svg>
-                            Excel
-                        </button>
-                    </div>
-                </div>
+  <!-- Search + Filters Row -->
+  <div class="px-6 mb-4 flex items-center gap-3">
+    <div class="relative flex-1 min-w-0">
+      <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+        <svg class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+          <path
+            fill-rule="evenodd"
+            d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      <input
+        type="text"
+        class="block w-full rounded-xl border-0 bg-white py-2.5 pl-10 pr-10 text-gray-900 dark:text-white dark:bg-gray-800 ring-1 ring-inset ring-gray-200 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 text-sm transition-all"
+        [value]="searchQuery()"
+        [placeholder]="searchPlaceholder()"
+        (input)="onSearch($event)"
+      />
+
+      <!-- In-input quick clear for search specifically -->
+      @if (searchQuery()) {
+        <button
+          type="button"
+          aria-label="Limpiar búsqueda"
+          class="absolute inset-y-0 right-0 flex items-center pr-3 group"
+          (click)="onClearFilters()"
+        >
+          <div
+            class="bg-gray-100 dark:bg-gray-700 rounded-full p-1 group-hover:bg-gray-200 dark:group-hover:bg-gray-600 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3 w-3 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
+        </button>
+      }
+    </div>
+    <div class="flex-shrink-0 flex items-center gap-2">
+      <ng-content select="[filters]" />
+      @if (hasActiveFilters()) {
+        <button
+          type="button"
+          class="text-xs bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 px-3 py-2 rounded-xl border border-red-100 dark:border-red-900/30 font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
+          (click)="onClearFilters()"
+        >
+          Limpiar Filtros
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full">
+      <!-- Head -->
+      <thead>
+        <tr class="border-y border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-900/40">
+          @for (col of columns(); track col.key) {
+            <th
+              scope="col"
+              class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+              [class.cursor-pointer]="col.sortable"
+              [class.hover:text-gray-600]="col.sortable"
+              (click)="col.sortable && onSort(col.key)"
+            >
+              <div class="flex items-center gap-1.5">
+                {{ col.label }}
+                @if (col.sortable) {
+                  <div class="flex flex-col">
+                    @if (sortState()?.key === col.key && sortState()?.direction === 'asc') {
+                      <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 3l-7 7h14l-7-7z" />
+                      </svg>
+                    } @else if (sortState()?.key === col.key && sortState()?.direction === 'desc') {
+                      <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 17l7-7H3l7 7z" />
+                      </svg>
+                    } @else {
+                      <svg
+                        class="h-3 w-3 text-gray-300 dark:text-gray-600"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M10 3l-7 7h14l-7-7zM10 17l7-7H3l7 7z" />
+                      </svg>
+                    }
+                  </div>
                 }
-            </div>
-            <ng-content select="[actions]" />
-        </div>
-    </div>
+              </div>
+            </th>
+          }
+          @if (actions().length > 0) {
+            <th
+              scope="col"
+              class="py-3.5 pl-3 pr-6 text-right text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+            >
+              Acciones
+            </th>
+          }
+        </tr>
+      </thead>
 
-    <!-- Search + Filters Row -->
-    <div class="px-6 mb-4 flex items-center gap-3">
-        <div class="relative flex-1 min-w-0">
-            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                <svg class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                        clip-rule="evenodd" />
-                </svg>
-            </div>
-            <input type="text" class="block w-full rounded-xl border-0 bg-white py-2.5 pl-10 pr-10 text-gray-900 dark:text-white dark:bg-gray-800  ring-1 ring-inset ring-gray-200 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 text-sm transition-all" [value]="searchQuery()"
-                [placeholder]="searchPlaceholder()"
-                (input)="onSearch($event)">
-
-            <!-- In-input quick clear for search specifically -->
-            @if (searchQuery()) {
-            <button type="button" aria-label="Limpiar búsqueda" class="absolute inset-y-0 right-0 flex items-center pr-3 group" (click)="onClearFilters()">
-                <div
-                    class="bg-gray-100 dark:bg-gray-700 rounded-full p-1 group-hover:bg-gray-200 dark:group-hover:bg-gray-600 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-500" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </div>
-            </button>
-            }
-        </div>
-        <div class="flex-shrink-0 flex items-center gap-2">
-            <ng-content select="[filters]" />
-            @if (hasActiveFilters()) {
-            <button type="button" class="text-xs bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 px-3 py-2 rounded-xl border border-red-100 dark:border-red-900/30 font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
-                (click)="onClearFilters()">
-                Limpiar Filtros
-            </button>
-            }
-        </div>
-    </div>
-
-    <!-- Table -->
-    <div class="overflow-x-auto">
-        <table class="min-w-full">
-            <!-- Head -->
-            <thead>
-                <tr class="border-y border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-900/40">
-                    @for (col of columns(); track col.key) {
-                    <th scope="col" class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
-                        [class.cursor-pointer]="col.sortable"
-                        [class.hover:text-gray-600]="col.sortable" (click)="col.sortable && onSort(col.key)">
-                        <div class="flex items-center gap-1.5">
-                            {{ col.label }}
-                            @if (col.sortable) {
-                            <div class="flex flex-col">
-                                @if (sortState()?.key === col.key && sortState()?.direction === 'asc') {
-                                <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 3l-7 7h14l-7-7z" />
-                                </svg>
-                                } @else if (sortState()?.key === col.key && sortState()?.direction === 'desc') {
-                                <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 17l7-7H3l7 7z" />
-                                </svg>
-                                } @else {
-                                <svg class="h-3 w-3 text-gray-300 dark:text-gray-600" fill="currentColor"
-                                    viewBox="0 0 20 20">
-                                    <path d="M10 3l-7 7h14l-7-7zM10 17l7-7H3l7 7z" />
-                                </svg>
-                                }
-                            </div>
-                            }
-                        </div>
-                    </th>
+      <!-- Body -->
+      <tbody class="divide-y divide-gray-50 dark:divide-gray-800/80 bg-white dark:bg-transparent">
+        @for (item of paginatedData(); track item['id']) {
+          <tr
+            class="hover:bg-sky-50/30 dark:hover:bg-sky-900/10 transition-colors duration-150 cursor-pointer group"
+            (click)="rowClick.emit(item)"
+          >
+            @for (col of columns(); track col.key) {
+              <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm">
+                @if (col.type === 'image') {
+                  <div
+                    class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-gray-700 bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center"
+                  >
+                    @if (formatValue(col, item)) {
+                      <img class="h-10 w-10 object-cover" alt="" [src]="formatValue(col, item)" />
+                    } @else {
+                      <svg
+                        class="w-5 h-5 text-sky-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                        />
+                      </svg>
                     }
-                    @if (actions().length > 0) {
-                    <th scope="col"
-                        class="py-3.5 pl-3 pr-6 text-right text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                        Acciones
-                    </th>
-                    }
-                </tr>
-            </thead>
-
-            <!-- Body -->
-            <tbody class="divide-y divide-gray-50 dark:divide-gray-800/80 bg-white dark:bg-transparent">
-                @for (item of paginatedData(); track item['id']) {
-                <tr class="hover:bg-sky-50/30 dark:hover:bg-sky-900/10 transition-colors duration-150 cursor-pointer group"
-                    (click)="rowClick.emit(item)">
-
-                    @for (col of columns(); track col.key) {
-                    <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm">
-
-                        @if (col.type === 'image') {
+                  </div>
+                } @else if (col.type === 'status') {
+                  <!-- Status badge with toggle look -->
+                  <div class="flex items-center gap-2.5">
+                    @if (formatValue(col, item) === 'active') {
+                      <!-- Toggle ON -->
+                      <div
+                        class="relative flex-shrink-0 w-9 h-5 bg-sky-500 rounded-full transition-colors"
+                      >
                         <div
-                            class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-gray-700 bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center">
-                            @if (formatValue(col, item)) {
-                            <img class="h-10 w-10 object-cover" alt="" [src]="formatValue(col, item)">
-                            } @else {
-                            <svg class="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                            </svg>
-                            }
-                        </div>
-
-                        } @else if (col.type === 'status') {
-                        <!-- Status badge with toggle look -->
-                        <div class="flex items-center gap-2.5">
-                            @if (formatValue(col, item) === 'active') {
-                            <!-- Toggle ON -->
-                            <div class="relative flex-shrink-0 w-9 h-5 bg-sky-500 rounded-full transition-colors">
-                                <div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div>
-                            </div>
-                            <span
-                                class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">
-                                Activo
-                            </span>
-                            } @else {
-                            <!-- Toggle OFF -->
-                            <div
-                                class="relative flex-shrink-0 w-9 h-5 bg-gray-200 dark:bg-gray-700 rounded-full transition-colors">
-                                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"></div>
-                            </div>
-                            <span
-                                class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                                Inactivo
-                            </span>
-                            }
-                        </div>
-
-                        } @else if (col.template) {
-                        <ng-container [ngTemplateOutlet]="col.template"
-                            [ngTemplateOutletContext]="{ $implicit: item[col.key], item: item }" />
-
-                        } @else if (col.formatter) {
-                        <span class="text-gray-700 dark:text-slate-200 font-medium"
-                            [innerHTML]="formatValue(col, item)"></span>
-                        } @else {
-                        <span class="text-gray-700 dark:text-slate-200 font-medium">{{ formatValue(col, item) }}</span>
-                        }
-
-                    </td>
+                          class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"
+                        ></div>
+                      </div>
+                      <span
+                        class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400"
+                      >
+                        Activo
+                      </span>
+                    } @else {
+                      <!-- Toggle OFF -->
+                      <div
+                        class="relative flex-shrink-0 w-9 h-5 bg-gray-200 dark:bg-gray-700 rounded-full transition-colors"
+                      >
+                        <div
+                          class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"
+                        ></div>
+                      </div>
+                      <span
+                        class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+                      >
+                        Inactivo
+                      </span>
                     }
-
-                    <!-- Actions cell -->
-                    @if (actions().length > 0) {
-                    <td class="whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm">
-                        <div class="relative inline-block">
-                            <button type="button" aria-label="Opciones de fila" class="actions-menu-button inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
-                                [class.is-open]="openMenuId() === item['id']"
-                                (click)="toggleMenu($event, item)">
-                                <!-- Horizontal dots -->
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M5 12a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </td>
-                    }
-                </tr>
-                } @empty {
-                <tr>
-                    <td class="py-16 text-center" [attr.colspan]="columns().length + (actions().length > 0 ? 1 : 0)">
-                        <svg class="mx-auto h-10 w-10 text-gray-200 dark:text-gray-700" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25-2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                        </svg>
-                        <h3 class="mt-3 text-sm font-semibold text-gray-900 dark:text-white">Sin resultados</h3>
-                        <p class="mt-1 text-sm text-gray-400">Ajusta tu búsqueda o filtros.</p>
-                    </td>
-                </tr>
+                  </div>
+                } @else if (col.template) {
+                  <ng-container
+                    [ngTemplateOutlet]="col.template"
+                    [ngTemplateOutletContext]="{ $implicit: item[col.key], item: item }"
+                  />
+                } @else if (col.formatter) {
+                  <span
+                    class="text-gray-700 dark:text-slate-200 font-medium"
+                    [innerHTML]="formatValue(col, item)"
+                  ></span>
+                } @else {
+                  <span class="text-gray-700 dark:text-slate-200 font-medium">{{
+                    formatValue(col, item)
+                  }}</span>
                 }
-            </tbody>
-        </table>
-    </div>
+              </td>
+            }
 
-    <!-- Fixed-position dropdown (avoids overflow clipping) -->
-    @if (openMenuId() !== null && menuPosition() && openMenuItem()) {
-    <div class="fixed z-[9999] w-48 rounded-xl bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-white/10 animate-in"
-        [style.top.px]="menuPosition()!.top" [style.left.px]="menuPosition()!.left" (click)="$event.stopPropagation()">
-        <div class="py-1.5">
-            @for (action of actions(); track action['id']) {
-            @if (!action.show || action.show(openMenuItem()!)) {
-            <button type="button" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-left"
-                [ngClass]="action.className || ''"
-                (click)="action.callback(openMenuItem()!); closeMenu()">
-                @if (action.icon) {
+            <!-- Actions cell -->
+            @if (actions().length > 0) {
+              <td class="whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm">
+                <div class="relative inline-block">
+                  <button
+                    type="button"
+                    aria-label="Opciones de fila"
+                    class="actions-menu-button inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
+                    [class.is-open]="openMenuId() === item['id']"
+                    (click)="toggleMenu($event, item)"
+                  >
+                    <!-- Horizontal dots -->
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path
+                        d="M5 12a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td
+              class="py-16 text-center"
+              [attr.colspan]="columns().length + (actions().length > 0 ? 1 : 0)"
+            >
+              <svg
+                class="mx-auto h-10 w-10 text-gray-200 dark:text-gray-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25-2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+                />
+              </svg>
+              <h3 class="mt-3 text-sm font-semibold text-gray-900 dark:text-white">
+                Sin resultados
+              </h3>
+              <p class="mt-1 text-sm text-gray-400">Ajusta tu búsqueda o filtros.</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Fixed-position dropdown (avoids overflow clipping) -->
+  @if (openMenuId() !== null && menuPosition() && openMenuItem()) {
+    <div
+      class="fixed z-[9999] w-48 rounded-xl bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black/5 dark:ring-white/10 animate-in"
+      [style.top.px]="menuPosition()!.top"
+      [style.left.px]="menuPosition()!.left"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="py-1.5">
+        @for (action of actions(); track action['id']) {
+          @if (!action.show || action.show(openMenuItem()!)) {
+            <button
+              type="button"
+              class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-left"
+              [ngClass]="action.className || ''"
+              (click)="action.callback(openMenuItem()!); closeMenu()"
+            >
+              @if (action.icon) {
                 <span class="flex-shrink-0" [innerHTML]="action.icon"></span>
-                }
-                {{ action.label }}
+              }
+              {{ action.label }}
             </button>
-            }
-            }
-        </div>
+          }
+        }
+      </div>
     </div>
-    }
+  }
 
-    <!-- Pagination -->
-    <div class="px-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
-        <p class="text-sm text-gray-400 dark:text-gray-500">
-            Mostrando <span class="font-semibold text-gray-700 dark:text-gray-300">{{ startIndex() }}</span> a
-            <span class="font-semibold text-gray-700 dark:text-gray-300">{{ endIndex() }}</span> de
-            <span class="font-semibold text-gray-700 dark:text-gray-300">{{ totalItems() }}</span> resultados
-        </p>
-        <nav class="isolate inline-flex -space-x-px rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
-            aria-label="Pagination">
-            <button type="button" aria-label="Página anterior" class="relative inline-flex items-center rounded-l-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all" [disabled]="currentPage() === 1"
-                (click)="prevPage()">
-                <span class="sr-only">Anterior</span>
-                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                        clip-rule="evenodd" />
-                </svg>
-            </button>
-            <span
-                class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-100 dark:ring-gray-800">
-                Página {{ currentPage() }} de {{ totalPages() || 1 }}
-            </span>
-            <button type="button" aria-label="Página siguiente" class="relative inline-flex items-center rounded-r-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all" [disabled]="currentPage() === totalPages()"
-                (click)="nextPage()">
-                <span class="sr-only">Siguiente</span>
-                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                        clip-rule="evenodd" />
-                </svg>
-            </button>
-        </nav>
-    </div>
-
+  <!-- Pagination -->
+  <div
+    class="px-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between"
+  >
+    <p class="text-sm text-gray-400 dark:text-gray-500">
+      Mostrando
+      <span class="font-semibold text-gray-700 dark:text-gray-300">{{ startIndex() }}</span> a
+      <span class="font-semibold text-gray-700 dark:text-gray-300">{{ endIndex() }}</span> de
+      <span class="font-semibold text-gray-700 dark:text-gray-300">{{ totalItems() }}</span>
+      resultados
+    </p>
+    <nav
+      class="isolate inline-flex -space-x-px rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
+      aria-label="Pagination"
+    >
+      <button
+        type="button"
+        aria-label="Página anterior"
+        class="relative inline-flex items-center rounded-l-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all"
+        [disabled]="currentPage() === 1"
+        (click)="prevPage()"
+      >
+        <span class="sr-only">Anterior</span>
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path
+            fill-rule="evenodd"
+            d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+      <span
+        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
+      >
+        Página {{ currentPage() }} de {{ totalPages() || 1 }}
+      </span>
+      <button
+        type="button"
+        aria-label="Página siguiente"
+        class="relative inline-flex items-center rounded-r-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all"
+        [disabled]="currentPage() === totalPages()"
+        (click)="nextPage()"
+      >
+        <span class="sr-only">Siguiente</span>
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path
+            fill-rule="evenodd"
+            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </nav>
+  </div>
 </div>
