@@ -626,6 +626,74 @@ Para habilitar la verificación en vivo de dominios personalizados de los inquil
 supabase functions deploy verify-domain --no-verify-jwt
 ```
 
+### Edge Function: `dispatch-webhook`
+
+La función `dispatch-webhook` está diseñada para llamadas internas desde triggers de
+Postgres o servicios backend. No debe invocarse desde el navegador. Configura un
+secreto compartido en Supabase y despliega la función sin la validación JWT
+automática; la función valida el encabezado `X-Venti-Internal-Secret` antes de
+procesar cualquier evento:
+
+```bash
+supabase secrets set DISPATCH_WEBHOOK_SECRET="$(openssl rand -hex 32)"
+supabase functions deploy dispatch-webhook --no-verify-jwt
+```
+
+La llamada interna debe enviar `tenant_id`, un `event_type` del catálogo v1 y
+`payload`. La firma HMAC-SHA256 del JSON enviado se incluye en
+`X-Venti-Signature`; cada entrega se registra en `webhook_deliveries`.
+
+### Triggers de Webhooks (Opción A)
+
+Los triggers están definidos en
+`supabase/migrations/20260903085000_webhook_event_triggers.sql`. Antes de aplicar
+la migración, guarda en Supabase Vault la URL desplegada y el mismo secreto
+interno configurado para la Edge Function:
+
+```sql
+select vault.create_secret(
+  'https://TU_PROJECT_REF.supabase.co/functions/v1/dispatch-webhook',
+  'dispatch-webhook-url'
+);
+
+select vault.create_secret(
+  'EL_VALOR_DE_DISPATCH_WEBHOOK_SECRET',
+  'dispatch-webhook-secret'
+);
+```
+
+Después aplica la migración con `supabase db push`. Se crearán triggers para
+`order.created`, `order.status_changed`, `payment.confirmed`,
+`payment.failed` y `product.stock_low`. El último solo se dispara al cruzar
+el umbral de inventario hacia abajo, evitando enviar el mismo evento en cada
+actualización posterior.
+
+### Reintentos automáticos
+
+Despliega también la función de reintentos:
+
+```bash
+supabase functions deploy retry-webhooks --no-verify-jwt
+```
+
+Guarda su URL en Vault y aplica la migración del cron:
+
+```sql
+select vault.create_secret(
+  'https://TU_PROJECT_REF.supabase.co/functions/v1/retry-webhooks',
+  'retry-webhooks-url'
+);
+```
+
+La migración `20260903090000_webhook_retry_cron.sql` programa una ejecución cada
+minuto. Los fallos se reintentan después de 1, 5 y 30 minutos; el cuarto intento
+marca la entrega como `failed`. El cron procesa como máximo 100 entregas por
+ejecución.
+
+La guía para merchants está disponible desde el `HelpDrawer` en
+**Conectar Webhooks** e incluye configuración con Zapier/Make/n8n, verificación
+HMAC en Node/Python y ejemplos de eventos.
+
 ---
 
 ## 📝 Licencia

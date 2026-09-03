@@ -49,7 +49,11 @@ interface NavItem {
           [class.opacity-0]="isCollapsed()"
           [class.invisible]="isCollapsed()"
         >
-          <svg viewBox="0 0 520 150" class="h-10 w-auto" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+          <svg
+            viewBox="0 0 520 150"
+            class="h-10 w-auto"
+            style="font-family: 'Plus Jakarta Sans', sans-serif;"
+          >
             <defs>
               <linearGradient id="ventiGradient" x1="0%" y1="100%" x2="100%" y2="0%">
                 <stop offset="0%" stop-color="#0284c7" />
@@ -185,7 +189,11 @@ interface NavItem {
             </svg>
             <span
               class="text-xs text-gray-500 dark:text-gray-400 capitalize font-bold tracking-tight truncate"
-              [title]="authService.user()?.email ? authService.user()?.email + ' (' + (tenantService.memberRole() ?? '') + ')' : (tenantService.memberRole() ?? '')"
+              [title]="
+                authService.user()?.email
+                  ? authService.user()?.email + ' (' + (tenantService.memberRole() ?? '') + ')'
+                  : (tenantService.memberRole() ?? '')
+              "
               >{{ userDisplayName() }}</span
             >
           </div>
@@ -330,6 +338,12 @@ export class SidebarComponent {
         link: '/settings',
         icon: '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>',
         permission: 'settings',
+      },
+      {
+        label: 'Integraciones',
+        link: '/integrations',
+        icon: '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM10 10.5v2.25m0 0a3.75 3.75 0 003.75 3.75h.75m-4.5-3.75a3.75 3.75 0 01-3.75 3.75H5.5m8.25-9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0z" /></svg>',
+        permission: 'integrations',
       },
     ] as NavItem[]
   ).map((item) => ({ ...item, icon: this.sanitizer.bypassSecurityTrustHtml(item.icon as string) }));

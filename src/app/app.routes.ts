@@ -6,14 +6,20 @@ import { AuthService } from '@core/services/auth';
 import { MainLayoutComponent } from '@core/layouts/main-layout/main-layout.component';
 import { storeGuard } from '@core/guards/store.guard';
 import { TenantRole } from '@core/enums';
-import { roleGuard, adminGuard, editorGuard, viewerGuard, deliveryRedirectGuard } from '@core/guards/role.guard';
+import {
+  roleGuard,
+  adminGuard,
+  editorGuard,
+  viewerGuard,
+  deliveryRedirectGuard,
+} from '@core/guards/role.guard';
 
 export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () => import('@features/landing/landing').then((m) => m.Landing),
   },
- {
+  {
     path: '',
     pathMatch: 'full',
     canActivate: [
@@ -38,12 +44,14 @@ export const routes: Routes = [
   {
     path: 'select-store',
     canActivate: [authGuard],
-    loadComponent: () => import('@features/store-selection/select-store').then((m) => m.SelectStoreComponent),
+    loadComponent: () =>
+      import('@features/store-selection/select-store').then((m) => m.SelectStoreComponent),
   },
   {
     path: 'accept-invite',
     canActivate: [authGuard],
-    loadComponent: () => import('@features/store-selection/accept-invite').then((m) => m.AcceptInviteComponent),
+    loadComponent: () =>
+      import('@features/store-selection/accept-invite').then((m) => m.AcceptInviteComponent),
   },
   {
     path: '',
@@ -52,18 +60,28 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        canActivate: [deliveryRedirectGuard, roleGuard([TenantRole.Owner, TenantRole.Admin, TenantRole.Viewer])],
+        canActivate: [
+          deliveryRedirectGuard,
+          roleGuard([TenantRole.Owner, TenantRole.Admin, TenantRole.Viewer]),
+        ],
         loadComponent: () => import('@features/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'products',
         canActivate: [viewerGuard],
-        loadComponent: () => import('@features/products-catalog/products-catalog').then((m) => m.ProductsCatalog),
+        loadComponent: () =>
+          import('@features/products-catalog/products-catalog').then((m) => m.ProductsCatalog),
       },
       {
         path: 'settings',
         canActivate: [adminGuard],
         loadComponent: () => import('@features/settings/settings').then((m) => m.Settings),
+      },
+      {
+        path: 'integrations',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('@features/integrations/integrations').then((m) => m.Integrations),
       },
       {
         path: 'members',
@@ -78,7 +96,8 @@ export const routes: Routes = [
       {
         path: 'subscription',
         canActivate: [adminGuard],
-        loadComponent: () => import('@features/subscription/subscription').then((m) => m.Subscription),
+        loadComponent: () =>
+          import('@features/subscription/subscription').then((m) => m.Subscription),
       },
       {
         path: 'orders',
@@ -87,22 +106,26 @@ export const routes: Routes = [
       {
         path: 'customers',
         canActivate: [editorGuard],
-        loadChildren: () => import('@features/customers/customers.routes').then((m) => m.customersRoutes),
+        loadChildren: () =>
+          import('@features/customers/customers.routes').then((m) => m.customersRoutes),
       },
       {
         path: 'inventory-history',
         canActivate: [editorGuard],
-        loadComponent: () => import('@features/inventory-history/inventory-history').then((m) => m.InventoryHistory),
+        loadComponent: () =>
+          import('@features/inventory-history/inventory-history').then((m) => m.InventoryHistory),
       },
       {
         path: 'reviews',
         canActivate: [editorGuard],
-        loadChildren: () => import('@features/reviews/reviews.routes').then((m) => m.REVIEWS_ROUTES),
+        loadChildren: () =>
+          import('@features/reviews/reviews.routes').then((m) => m.REVIEWS_ROUTES),
       },
       {
         path: 'abandoned-carts',
         canActivate: [editorGuard],
-        loadComponent: () => import('@features/abandoned-carts/abandoned-carts').then((m) => m.AbandonedCarts),
+        loadComponent: () =>
+          import('@features/abandoned-carts/abandoned-carts').then((m) => m.AbandonedCarts),
       },
       {
         path: 'reports',
@@ -112,14 +135,18 @@ export const routes: Routes = [
       {
         path: 'commissions',
         canActivate: [adminGuard],
-        loadChildren: () => import('@features/commissions/commissions.routes').then((m) => m.COMMISSIONS_ROUTES),
+        loadChildren: () =>
+          import('@features/commissions/commissions.routes').then((m) => m.COMMISSIONS_ROUTES),
       },
     ],
   },
   {
     path: 'preview',
     canActivate: [authGuard],
-    loadComponent: () => import('@features/settings/components/standalone-preview/standalone-preview').then((m) => m.StandalonePreview),
+    loadComponent: () =>
+      import('@features/settings/components/standalone-preview/standalone-preview').then(
+        (m) => m.StandalonePreview,
+      ),
   },
   {
     path: 'store',
@@ -128,7 +155,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    loadComponent: () =>
-      import('@shared/components/not-found/not-found').then((m) => m.NotFound),
+    loadComponent: () => import('@shared/components/not-found/not-found').then((m) => m.NotFound),
   },
 ];

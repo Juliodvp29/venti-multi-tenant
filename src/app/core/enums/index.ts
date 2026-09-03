@@ -111,8 +111,18 @@ export enum EmailStatus {
 
 export enum WebhookStatus {
   Pending = 'pending',
+  PendingRetry = 'pending_retry',
+  Processing = 'processing',
   Success = 'success',
   Failed = 'failed',
+}
+
+export enum WebhookEvent {
+  OrderCreated = 'order.created',
+  OrderStatusChanged = 'order.status_changed',
+  PaymentConfirmed = 'payment.confirmed',
+  PaymentFailed = 'payment.failed',
+  ProductStockLow = 'product.stock_low',
 }
 
 export enum WeightUnit {
