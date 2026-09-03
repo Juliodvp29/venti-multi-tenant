@@ -52,7 +52,7 @@
 La plataforma opera bajo un modelo dual:
 
 1. **Panel de Gestión para Comerciantes (B2B SaaS Admin)**: Una interfaz moderna, reactiva (Zoneless + Signals) y con soporte nativo de modos Claro/Oscuro. Permite a dueños y colaboradores gestionar catálogo, inventario con auditoría histórica, procesamiento de órdenes, carritos abandonados, liquidación de comisiones, cupones de descuento, miembros de equipo con roles granulares y un diseñador visual de tienda con simulador interactivo de dispositivos.
-2. **Storefront Público de Alto Rendimiento (B2C eCommerce)**: Tiendas públicas renderizadas en el servidor (**Server-Side Rendering con Angular 22 y Express**), lo que asegura tiempos de carga instantáneos (FCP), hidratación con repetición de eventos (*Event Replay*), metaetiquetas OpenGraph/Twitter Cards dinámicas para previsualizaciones sociales y marcado estructurado Schema.org (JSON-LD) para indexación SEO superior.
+2. **Storefront Público de Alto Rendimiento (B2C eCommerce)**: Tiendas públicas renderizadas en el servidor (**Server-Side Rendering con Angular 22 y Express**), lo que asegura tiempos de carga instantáneos (FCP), hidratación con repetición de eventos (_Event Replay_), metaetiquetas OpenGraph/Twitter Cards dinámicas para previsualizaciones sociales y marcado estructurado Schema.org (JSON-LD) para indexación SEO superior.
 
 ---
 
@@ -63,11 +63,11 @@ La plataforma opera bajo un modelo dual:
 - 📊 **Dashboard Ejecutivo en Tiempo Real**: Métricas financieras consolidadas (ingresos, pedidos, ticket promedio, clientes nuevos), gráficos dinámicos con ApexCharts (tendencias diarias/mensuales y distribución por categorías), listado de productos más vendidos y alertas de stock crítico.
 - 🛒 **Catálogo de Productos & Matriz de Variantes**: Creación exhaustiva de productos con control de SKU, código de barras, precios comparativos, costo unitario, control de inventario por variante (talla, color, material, etc.), árbol de categorías jerárquicas y optimización SEO.
 - 📜 **Auditoría y Trazabilidad de Stock (`/inventory-history`)**: Historial inmutable de cada entrada, salida, venta, devolución o ajuste manual de inventario, con motivos y referencia al pedido asociado.
-- 📦 **Gestión del Ciclo de Vida de Pedidos (`/orders`)**: Pipeline de estados (*Pendiente, Procesando, Pagado, Enviado, Entregado, Cancelado, Reembolsado*), timeline cronológico de auditoría, notas internas de equipo y snapshots JSON inmutables de productos y direcciones del cliente al momento de la compra.
+- 📦 **Gestión del Ciclo de Vida de Pedidos (`/orders`)**: Pipeline de estados (_Pendiente, Procesando, Pagado, Enviado, Entregado, Cancelado, Reembolsado_), timeline cronológico de auditoría, notas internas de equipo y snapshots JSON inmutables de productos y direcciones del cliente al momento de la compra.
 - 👥 **CRM de Clientes (`/customers`)**: Fichas de compradores con historial completo de pedidos, valor total gastado (LTV), libreta de direcciones múltiples y estado de consentimientos de marketing.
 - 🎟️ **Motor de Cupones y Promociones (`/coupons`)**: Descuentos porcentuales, montos fijos o envío gratuito, con restricciones de compra mínima, límites de usos globales y por cliente, vigencia temporal y asignación a productos o categorías específicas.
 - 🛒 **Recuperación de Carritos Abandonados (`/abandoned-carts`)**: Monitorización de sesiones de compra incompletas, cálculo de tasas de abandono, desglose de ítems y métricas de recuperación.
-- 💰 **Motor de Comisiones y Liquidaciones (`/commissions`)**: Reglas de comisión por pasarela y plan de suscripción, libro mayor (*ledger*) de comisiones generadas en tiempo real y conciliación de estados (*Pendiente, Pagado*).
+- 💰 **Motor de Comisiones y Liquidaciones (`/commissions`)**: Reglas de comisión por pasarela y plan de suscripción, libro mayor (_ledger_) de comisiones generadas en tiempo real y conciliación de estados (_Pendiente, Pagado_).
 - ⭐ **Moderación de Reseñas de Producto (`/reviews`)**: Aprobación, rechazo y eliminación de comentarios y calificaciones, con distintivo de compra verificada.
 - 👥 **Gestión de Equipo & Control de Acceso Granular (`/members`)**: Invitaciones por correo electrónico con tokens de seguridad y roles estrictos: `Owner`, `Admin`, `Editor`, `Viewer` y `Delivery`.
 - 📊 **Reportes Financieros y Exportación a Excel (`/reports`)**: Análisis de ventas por periodos personalizables con exportación instantánea de libros de trabajo en formato `.xlsx` nativo.
@@ -105,22 +105,22 @@ La plataforma opera bajo un modelo dual:
 
 ## 🛠 Stack Tecnológico
 
-| Capa | Tecnología / Paquete | Versión | Propósito en la Plataforma |
-| :--- | :--- | :--- | :--- |
-| **Frontend Framework** | Angular Standalone | 22.x | Componentes independientes, Signals, `@if`/`@for`, nuevas APIs de Control Flow |
-| **Server-Side Rendering** | `@angular/ssr` + Express | 22.x / 5.x | Servidor Node.js para renderizado SSR en rutas públicas y motor de hidratación |
-| **Lenguaje de Programación** | TypeScript | 6.x | Tipado estricto, interfaces de dominio y verificación estática avanzada |
-| **Diseño y Estilos** | Tailwind CSS + PostCSS | 4.x | Motor CSS moderno basado en utilidades, temas dinámicos y modo oscuro |
-| **Backend as a Service** | Supabase (`@supabase/supabase-js`) | 2.x | Base de datos PostgreSQL, Auth (GoTrue), Storage de archivos y canales Realtime |
-| **Edge Compute** | Supabase Edge Functions (Deno) | - | Verificación DNS/HTTPS de dominios personalizados y lógica serverless |
-| **Inteligencia Artificial** | `@google/generative-ai` (Gemini) | 0.24.x | Agente de IA con capacidades de invocación de herramientas (Function Calling) |
-| **Visualización de Datos** | ApexCharts + `ng-apexcharts` | 5.x / 2.x | Gráficas interactivas de ventas, ingresos y distribución de categorías |
-| **Formateo Markdown & XSS** | `marked` + `dompurify` | 17.x / 3.x | Renderizado y sanitización estricta de respuestas del asistente de IA y notas |
-| **Exportación de Datos** | `xlsx` (SheetJS) | 0.18.x | Generación y descarga de informes de ventas y comisiones en formato Excel |
-| **Testing Unitario** | Vitest + JSDOM | 4.x / 27.x | Suite de pruebas unitarias ultrarrápidas para servicios y componentes |
-| **Calidad de Código** | ESLint + Angular-ESLint | 10.x / 22.x | Linter con configuración plana (*Flat Config*) y reglas para Signals y TypeScript |
-| **Formateo de Código** | Prettier | 3.x | Formato uniforme en TypeScript, HTML de Angular y archivos de configuración |
-| **CI / CD** | GitHub Actions | - | Pipeline automatizado de linting, testing unitario y compilación de producción |
+| Capa                         | Tecnología / Paquete               | Versión     | Propósito en la Plataforma                                                        |
+| :--------------------------- | :--------------------------------- | :---------- | :-------------------------------------------------------------------------------- |
+| **Frontend Framework**       | Angular Standalone                 | 22.x        | Componentes independientes, Signals, `@if`/`@for`, nuevas APIs de Control Flow    |
+| **Server-Side Rendering**    | `@angular/ssr` + Express           | 22.x / 5.x  | Servidor Node.js para renderizado SSR en rutas públicas y motor de hidratación    |
+| **Lenguaje de Programación** | TypeScript                         | 6.x         | Tipado estricto, interfaces de dominio y verificación estática avanzada           |
+| **Diseño y Estilos**         | Tailwind CSS + PostCSS             | 4.x         | Motor CSS moderno basado en utilidades, temas dinámicos y modo oscuro             |
+| **Backend as a Service**     | Supabase (`@supabase/supabase-js`) | 2.x         | Base de datos PostgreSQL, Auth (GoTrue), Storage de archivos y canales Realtime   |
+| **Edge Compute**             | Supabase Edge Functions (Deno)     | -           | Verificación DNS/HTTPS de dominios personalizados y lógica serverless             |
+| **Inteligencia Artificial**  | `@google/generative-ai` (Gemini)   | 0.24.x      | Agente de IA con capacidades de invocación de herramientas (Function Calling)     |
+| **Visualización de Datos**   | ApexCharts + `ng-apexcharts`       | 5.x / 2.x   | Gráficas interactivas de ventas, ingresos y distribución de categorías            |
+| **Formateo Markdown & XSS**  | `marked` + `dompurify`             | 17.x / 3.x  | Renderizado y sanitización estricta de respuestas del asistente de IA y notas     |
+| **Exportación de Datos**     | `xlsx` (SheetJS)                   | 0.18.x      | Generación y descarga de informes de ventas y comisiones en formato Excel         |
+| **Testing Unitario**         | Vitest + JSDOM                     | 4.x / 27.x  | Suite de pruebas unitarias ultrarrápidas para servicios y componentes             |
+| **Calidad de Código**        | ESLint + Angular-ESLint            | 10.x / 22.x | Linter con configuración plana (_Flat Config_) y reglas para Signals y TypeScript |
+| **Formateo de Código**       | Prettier                           | 3.x         | Formato uniforme en TypeScript, HTML de Angular y archivos de configuración       |
+| **CI / CD**                  | GitHub Actions                     | -           | Pipeline automatizado de linting, testing unitario y compilación de producción    |
 
 ---
 
@@ -172,7 +172,7 @@ Venti Shop implementa un esquema de renderizado híbrido de última generación 
   - El servidor Express (`src/server.ts`) renderiza en tiempo real el árbol DOM completo con los datos del tenant y del producto obtenidos desde Supabase.
   - `SeoService` inyecta las etiquetas `<title>`, `<meta name="description">`, `og:title`, `og:image`, `og:price:amount` y `twitter:card`.
   - `StructuredDataService` inserta esquemas `schema.org/Product` y `schema.org/Store` en JSON-LD.
-  - Al llegar al navegador del cliente, la aplicación se hidrata utilizando `provideClientHydration(withEventReplay())`, evitando saltos visuales (*layout shifts*) y registrando cualquier clic o interacción ocurrida antes de la activación del JavaScript.
+  - Al llegar al navegador del cliente, la aplicación se hidrata utilizando `provideClientHydration(withEventReplay())`, evitando saltos visuales (_layout shifts_) y registrando cualquier clic o interacción ocurrida antes de la activación del JavaScript.
 - **RenderMode.Client (CSR)**:
   - Aplicado al panel de administración (`/dashboard`, `/settings`, `/orders`, etc.) y flujos de autenticación.
   - Al requerir autenticación GoTrue, almacenamiento en sesión, suscripciones Realtime y paneles con gráficas pesadas (ApexCharts), estas rutas se sirven puramente como Single Page Application (SPA), optimizando el consumo de CPU del servidor.
@@ -196,6 +196,7 @@ La identificación del tenant se orquesta de forma transparente tanto en SSR (a 
 ### Motor de Sincronización en Vivo del Storefront (`PreviewSyncService`)
 
 Para proporcionar una experiencia WYSIWYG de alto nivel:
+
 - El editor de temas y secciones (`/settings`) se comunica de forma bidireccional con el frame de previsualización (`/preview`) a través de un canal reactivo basado en Angular Signals y `window.postMessage`.
 - Cualquier modificación en la paleta de colores, tipografía, radio de botones o visibilidad de secciones se refleja inmediatamente en el simulador sin necesidad de guardar en la base de datos ni recargar la página.
 
@@ -270,52 +271,63 @@ venti-multi-tenant/
 ## 🧩 Módulos del Panel Administrativo (Guía por Vistas)
 
 ### 1. Panel de Control Principal (`/dashboard`)
+
 - **Tarjetas de Métricas Clave (KPIs)**: Visualización en tiempo real de ingresos totales, volumen de pedidos, ticket medio y compradores activos con comparativa porcentual frente al periodo anterior.
 - **Gráficas Interactivas con ApexCharts**:
-  - *Tendencia de Ventas*: Ingresos temporales filtrables por día, semana o mes.
-  - *Ventas por Categoría*: Gráfico de dona con distribución porcentual de facturación por línea de productos.
+  - _Tendencia de Ventas_: Ingresos temporales filtrables por día, semana o mes.
+  - _Ventas por Categoría_: Gráfico de dona con distribución porcentual de facturación por línea de productos.
 - **Productos Más Vendidos & Transacciones Recientes**: Acceso rápido a las órdenes más recientes con indicación de estado y acceso al desglose de artículos.
 
 ### 2. Catálogo de Productos y Categorías (`/products`)
-- **Gestión Exhaustiva de Productos**: Creación y edición con título, descripción enriquecida, SKU, código de barras, precio de venta, precio de comparación, costo unitario y estado (*Publicado, Borrador, Archivado*).
+
+- **Gestión Exhaustiva de Productos**: Creación y edición con título, descripción enriquecida, SKU, código de barras, precio de venta, precio de comparación, costo unitario y estado (_Publicado, Borrador, Archivado_).
 - **Matriz de Variantes**: Generación dinámica de combinaciones por atributos (ej. Talla, Color), asignando stock individual, SKU único y sobreprecio.
 - **Árbol Jerárquico de Categorías**: Categorías padre e hijas con slugs amigables para optimización SEO.
-- **Cargador Multimedia Integrado**: Subida directa de múltiples imágenes con reordenamiento arrastrable (*drag-and-drop*) y selección de portada conectada a Supabase Storage.
+- **Cargador Multimedia Integrado**: Subida directa de múltiples imágenes con reordenamiento arrastrable (_drag-and-drop_) y selección de portada conectada a Supabase Storage.
 
 ### 3. Historial y Auditoría de Inventario (`/inventory-history`)
+
 - **Trazabilidad Completa**: Registro cronológico de todas las fluctuaciones de stock de la tienda.
 - **Diferenciación de Movimientos**: Clasificación por tipo de evento: Venta en tienda, Devolución de cliente, Reabastecimiento de proveedor, Ajuste por merma o Ajuste manual.
 
 ### 4. Gestión de Órdenes y Cumplimiento (`/orders`)
+
 - **Listado y Filtros Avanzados**: Filtrado por estado de orden, estado de pago, cliente, rango de fechas y buscador de número de pedido.
 - **Detalle de la Orden**: Visualización del snapshot inmutable de los productos comprados, dirección de despacho, método de envío y cálculo de impuestos aplicados.
-- **Historial de Estados y Notas Internas**: Registro con fecha y usuario de cada cambio de fase (*Pendiente -> En preparación -> Enviado -> Entregado*) y área de notas confidenciales para el equipo de despacho.
+- **Historial de Estados y Notas Internas**: Registro con fecha y usuario de cada cambio de fase (_Pendiente -> En preparación -> Enviado -> Entregado_) y área de notas confidenciales para el equipo de despacho.
 
 ### 5. CRM de Clientes (`/customers`)
+
 - **Directorio de Compradores**: Búsqueda instantánea por nombre, correo electrónico o teléfono.
 - **Detalle del Cliente**: Métricas agregadas de compras (cantidad de pedidos realizados, dinero total gastado), historial completo de compras y libreta de direcciones guardadas.
 
 ### 6. Cupones y Promociones (`/coupons`)
+
 - **Reglas de Descuento**: Creación de códigos alfanuméricos con descuento porcentual, rebaja de monto fijo o exoneración de costos de envío.
 - **Condiciones de Aplicación**: Requisito de monto mínimo en carrito, cupo máximo de redenciones totales y restricción a un uso por cliente.
 
 ### 7. Carritos Abandonados (`/abandoned-carts`)
+
 - **Detección de Sesiones Incompletas**: Identificación automática de carritos que no completaron el pago tras un umbral de tiempo determinado.
 - **Analítica de Recuperación**: Visualización de los artículos retenidos, monto potencial de venta y datos de contacto para acciones de remarketing.
 
 ### 8. Informes y Exportación Financiera (`/reports`)
+
 - **Filtros Temporales Precisos**: Selector de rangos de fecha mediante el componente interactivo `app-date-range-picker`.
 - **Exportación a Excel**: Generación directa de hojas de cálculo `.xlsx` estructuradas con resumen de órdenes, productos más vendidos y totales contables.
 
 ### 9. Motor de Comisiones (`/commissions`)
+
 - **Reglas por Pasarela y Plan**: Configuración de comisiones porcentuales o fijas aplicables a cada venta según la pasarela utilizada o el plan del comercio.
-- **Libro Contable de Comisiones**: Registro de cada comisión causada por pedido, con seguimiento de liquidación (*Pendiente* vs *Liquidada/Pagada*).
+- **Libro Contable de Comisiones**: Registro de cada comisión causada por pedido, con seguimiento de liquidación (_Pendiente_ vs _Liquidada/Pagada_).
 
 ### 10. Moderación de Reseñas (`/reviews`)
+
 - **Bandeja de Moderación**: Revisión de comentarios y estrellas otorgadas por compradores en el storefront.
-- **Acciones de Moderación**: Aprobación para publicación inmediata, rechazo o eliminación, destacando insignias de *Comprador Verificado*.
+- **Acciones de Moderación**: Aprobación para publicación inmediata, rechazo o eliminación, destacando insignias de _Comprador Verificado_.
 
 ### 11. Miembros de Equipo y Roles (`/members`)
+
 - **Sistema de Invitaciones**: Envío de invitaciones por correo electrónico con tokens de un solo uso enlazados a la pantalla de aceptación (`/accept-invite`).
 - **Control de Roles (RBAC)**:
   - `Owner`: Propietario con control total y facturación.
@@ -325,21 +337,24 @@ venti-multi-tenant/
   - `Delivery`: Acceso restringido exclusivamente a la visualización y despacho de pedidos.
 
 ### 12. Suscripción y Cuotas (`/subscription`)
-- **Niveles de Plan**: Visualización del plan activo (*Gratis, Básico, Pro, Enterprise*).
+
+- **Niveles de Plan**: Visualización del plan activo (_Gratis, Básico, Pro, Enterprise_).
 - **Indicadores de Uso (`app-usage-progress`)**: Barras de progreso de cuota de productos publicados y consumo de almacenamiento.
 - **Historial de Facturación**: Registro de cobros y pagos de la suscripción SaaS.
 
 ### 13. Suite de Configuración de Tienda (`/settings`)
+
 - **Ajustes Generales**: Nombre legal, moneda de operación predeterminada y zona horaria.
 - **Dirección Física**: Ubicación física del centro de despacho para el cálculo de fletes.
 - **Branding & Identidad**: Logotipo principal, favicon, banner de encabezado y paleta de colores de marca reflejada dinámicamente mediante variables CSS.
-- **Presets de Diseño**: Catálogo de estilos visuales prediseñados (*Moderno, Minimalista, Neón, Elegante*) aplicables al instante.
+- **Presets de Diseño**: Catálogo de estilos visuales prediseñados (_Moderno, Minimalista, Neón, Elegante_) aplicables al instante.
 - **Constructor de Secciones (Storefront Builder)**: Personalización modular de la página de inicio (activar, ocultar, configurar y reordenar bloques).
 - **Envíos e Impuestos**: Creación de zonas de transporte con tarifas fijas o por peso y configuración de tasas impositivas.
 - **Pasarelas de Pago**: Activación de métodos de pago soportados (transferencia bancaria, pago contra entrega y pasarela Wompi multi-tenant).
 - **Zona de Peligro**: Opciones de archivado o eliminación irreversible del tenant.
 
 ### 14. Previsualizador de Tienda en Vivo (`/preview`)
+
 - **Simulador Multidispositivo**: Marco interactivo que permite previsualizar la tienda en resoluciones de Teléfono Móvil, Tablet y Monitor de Escritorio.
 - **Sincronización en Tiempo Real**: Recepción inmediata de cambios emitidos desde el panel de ajustes sin requerir refresco de página.
 
@@ -348,35 +363,42 @@ venti-multi-tenant/
 ## 🛒 Módulos del Storefront Público & Experiencia de Compra
 
 ### 1. Página de Inicio Dinámica (`/store`)
+
 - **Arquitectura de Secciones Modulares**: Renderizada en el servidor (SSR) en base a la configuración guardada por el comerciante:
-  - *Hero Banner*: Carrusel promocional con llamados a la acción (CTA).
-  - *Categorías Destacadas*: Cuadrícula visual para exploración rápida.
-  - *Productos Destacados & Ofertas*: Muestrario de productos con badges de descuento.
-  - *Testimonios & Propuesta de Valor*: Beneficios de compra y valoraciones.
-  - *Suscripción a Newsletter*: Captación de correos para marketing.
+  - _Hero Banner_: Carrusel promocional con llamados a la acción (CTA).
+  - _Categorías Destacadas_: Cuadrícula visual para exploración rápida.
+  - _Productos Destacados & Ofertas_: Muestrario de productos con badges de descuento.
+  - _Testimonios & Propuesta de Valor_: Beneficios de compra y valoraciones.
+  - _Suscripción a Newsletter_: Captación de correos para marketing.
 
 ### 2. Catálogo y Búsqueda de Productos (`/store/productos`)
+
 - **Filtros en Tiempo Real**: Filtrado facetado por categoría, rango de precios, ordenación por precio o fecha de novedad y paginación reactiva.
 - **Tarjetas de Producto Inteligentes (`app-product-card`)**: Indicadores visuales de stock, botón de adición rápida al carrito y cálculo dinámico de porcentajes de ahorro.
 
 ### 3. Ficha de Producto con SSR y SEO (`/store/product/:id`)
+
 - **Generación en Servidor & Metaetiquetas**: Carga con SSR que provee títulos, descripciones, etiquetas OpenGraph completas y marcado JSON-LD (`schema.org/Product`) para indexación en Google y vista previa rica en WhatsApp, Telegram o Twitter.
 - **Selector Reactivo de Variantes**: Cambio instantáneo de opciones (ej. color o talla) que recalcula dinámicamente la disponibilidad de stock y el precio aplicable.
 - **Sistema de Reseñas**: Visualización de opiniones calificadas con estrellas y formulario para que compradores verificados dejen su valoración.
 
 ### 4. Carrito de Compras (`/store/carrito`)
+
 - **Persistencia Reactiva**: Manejado mediante el servicio `CartService` con almacenamiento seguro en localStorage y sincronización con sesiones de carritos abandonados.
 - **Aplicación de Cupones**: Validación instantánea contra las reglas configuradas por el comerciante y visualización desglosada del descuento.
 
 ### 5. Checkout y Pasarela (`/store/checkout`)
+
 - **Integración Geográfica de Colombia**: Conexión con la API oficial de geografía colombiana para desplegar departamentos y municipios en cascada sin errores tipográficos.
 - **Cálculo de Envío e Impuestos**: Determinación automática de la tarifa de transporte aplicable según la zona geográfica seleccionada.
 - **Selección de Método de Pago**: Soporte para transferencias, efectivo contra entrega y pasarelas de pago digitales.
 
 ### 6. Confirmación de Compra (`/store/success`)
+
 - **Resumen Inmutable**: Presentación de la orden recién generada con número único de seguimiento, desglose financiero y copia de confirmación.
 
 ### 7. Portal del Cliente (`/store/account`)
+
 - **Autenticación Independiente (`CustomerAuthService`)**: Los compradores cuentan con su propio sistema de sesión desacoplado del panel administrativo.
 - **Gestión de Direcciones (`/store/account/direcciones`)**: Libreta de direcciones guardadas para agilizar futuras compras.
 
@@ -385,23 +407,26 @@ venti-multi-tenant/
 ## 🔔 Herramientas del Header: Soporte, Notificaciones e IA
 
 ### ❓ Centro de Ayuda & Diagnóstico (Drawer Interactivo)
+
 - **Diagnóstico de Salud de la Tienda (Health Diagnostic)**: Evaluación automatizada del estado de configuración del comercio en 6 áreas clave:
-  1. *Información General* (Nombre, contacto, moneda).
-  2. *Branding* (Logo e identidad visual).
-  3. *Catálogo de Productos* (Al menos un producto publicado).
-  4. *Zonas de Envío* (Reglas y tarifas de entrega).
-  5. *Personalización Visual* (Tema y secciones de portada).
-  6. *Impuestos* (Tasas fiscales configuradas).
-  Cada área incluye accesos directos de navegación para completar la configuración pendiente.
+  1. _Información General_ (Nombre, contacto, moneda).
+  2. _Branding_ (Logo e identidad visual).
+  3. _Catálogo de Productos_ (Al menos un producto publicado).
+  4. _Zonas de Envío_ (Reglas y tarifas de entrega).
+  5. _Personalización Visual_ (Tema y secciones de portada).
+  6. _Impuestos_ (Tasas fiscales configuradas).
+     Cada área incluye accesos directos de navegación para completar la configuración pendiente.
 - **Base de Conocimientos de Resolución de Problemas**: Acordeón interactivo con soluciones detalladas para incidencias comunes (verificación DNS, visibilidad de borradores, cálculo de fletes, etc.).
-- **Creador de Tickets de Soporte**: Formulario modal para remitir incidencias con clasificación de severidad (*Baja, Media, Alta, Urgente*), categorización y subida de capturas de pantalla adjuntas a Supabase Storage.
+- **Creador de Tickets de Soporte**: Formulario modal para remitir incidencias con clasificación de severidad (_Baja, Media, Alta, Urgente_), categorización y subida de capturas de pantalla adjuntas a Supabase Storage.
 
 ### 🔔 Centro de Notificaciones en Tiempo Real
+
 - **Canal WebSocket de Supabase**: Escucha eventos `INSERT` en la tabla `notifications` filtrados por el inquilino activo.
 - **Contador con Badge Dinámico**: Indicador numérico animado de notificaciones pendientes de lectura en el encabezado.
-- **Bandeja Interactiva**: Pestañas para filtrar entre *Todas* y *No leídas*, opciones para marcar individualmente o en bloque como leídas y redirección contextual (al pulsar sobre un nuevo pedido abre directamente `/orders/:id`).
+- **Bandeja Interactiva**: Pestañas para filtrar entre _Todas_ y _No leídas_, opciones para marcar individualmente o en bloque como leídas y redirección contextual (al pulsar sobre un nuevo pedido abre directamente `/orders/:id`).
 
 ### 🤖 Asistente de Inteligencia Artificial Gemini
+
 - **Modelo Google Gemini**: Integración mediante la librería oficial `@google/generative-ai`.
 - **Invocación de Herramientas (Function/Tool Calling)**: El asistente no es un simple bot conversacional; cuenta con definiciones de funciones que le permiten consultar la base de datos de la tienda en tiempo real (consultar productos con stock bajo, resumir ventas del día, buscar órdenes por cliente).
 - **Formateo Seguro de Markdown**: Las respuestas complejas (tablas, listas, cifras destacadas) se procesan con `marked` y se sanitizan rigurosamente con `DOMPurify`.
@@ -414,40 +439,40 @@ venti-multi-tenant/
 
 El núcleo de Venti Shop está compuesto por **32 servicios especializados** desacoplados:
 
-| Servicio | Responsabilidad Principal |
-| :--- | :--- |
-| `TenantService` | Estado central del comercio activo, branding, subdominios y configuración |
-| `AuthService` | Autenticación administrativa de Supabase (GoTrue), control de sesiones y tokens |
-| `CustomerAuthService` | Autenticación y gestión de sesiones para compradores del Storefront |
-| `ProductsService` | CRUD de productos, variantes, matrices de stock y asociación con categorías |
-| `CategoriesService` | Estructura jerárquica de categorías padre e hijas y slugs de navegación |
-| `OrdersService` | Consulta de pedidos, transiciones de estado, notas internas y snapshots |
-| `CustomersService` | CRM de clientes, cálculo de LTV, órdenes históricas y libreta de direcciones |
-| `InventoryService` | Registro de movimientos de inventario y auditoría de ajustes |
-| `CartService` | Estado reactivo del carrito de compras del cliente con persistencia local |
-| `AbandonedCartService` | Seguimiento y métricas de carritos sin finalizar |
-| `DiscountsService` | Creación, validación y cómputo de cupones de descuento |
-| `CommissionsService` | Cálculo y liquidación de comisiones por pasarela y exportación a Excel |
-| `ReviewsService` | Moderación de opiniones y cálculo de promedios de calificación |
-| `AnalyticsService` | Agregación de KPIs, series temporales y formateo para ApexCharts |
-| `ShippingService` | Zonas de envío, cálculo de fletes y tarifas por peso o precio |
-| `GeographyService` | Carga de departamentos y municipios mediante la API de Colombia |
-| `SupportService` | Diagnóstico de salud de tienda, base de conocimientos y tickets de soporte |
-| `NotificationsService` | Notificaciones en tiempo real vía Supabase Realtime y gestión de lectura |
-| `AiAssistantService` | Integración con Gemini AI y ejecución de herramientas de consulta a BD |
-| `PreviewSyncService` | Puente de comunicación en tiempo real entre el panel de diseño y el preview |
-| `SeoService` | Gestión de etiquetas meta dinámicas, títulos y OpenGraph para SSR |
-| `StructuredDataService` | Inyección de esquemas JSON-LD (Schema.org/Product y Store) |
-| `StorageService` | Carga, borrado y obtención de URLs públicas en buckets de Supabase |
-| `FileProcessorService` | Validación de tipos MIME, compresión de imágenes y extracción de metadatos |
-| `SubscriptionService` | Monitoreo de planes SaaS, verificación de cuotas y facturación |
-| `PaymentsService` | Registro de transacciones y estados de pago |
-| `PermissionsService` | Verificación de permisos y capacidades según el rol del usuario (RBAC) |
-| `EmailService` | Trazabilidad y auditoría de correos transaccionales enviados |
-| `LoggerService` | Sistema de logging centralizado con niveles configurables por entorno |
-| `ToastService` | Cola reactiva de alertas y notificaciones emergentes |
-| `LoaderService` | Señal global de carga para operaciones asíncronas |
-| `Supabase` | Singleton de inicialización y configuración del cliente Supabase |
+| Servicio                | Responsabilidad Principal                                                       |
+| :---------------------- | :------------------------------------------------------------------------------ |
+| `TenantService`         | Estado central del comercio activo, branding, subdominios y configuración       |
+| `AuthService`           | Autenticación administrativa de Supabase (GoTrue), control de sesiones y tokens |
+| `CustomerAuthService`   | Autenticación y gestión de sesiones para compradores del Storefront             |
+| `ProductsService`       | CRUD de productos, variantes, matrices de stock y asociación con categorías     |
+| `CategoriesService`     | Estructura jerárquica de categorías padre e hijas y slugs de navegación         |
+| `OrdersService`         | Consulta de pedidos, transiciones de estado, notas internas y snapshots         |
+| `CustomersService`      | CRM de clientes, cálculo de LTV, órdenes históricas y libreta de direcciones    |
+| `InventoryService`      | Registro de movimientos de inventario y auditoría de ajustes                    |
+| `CartService`           | Estado reactivo del carrito de compras del cliente con persistencia local       |
+| `AbandonedCartService`  | Seguimiento y métricas de carritos sin finalizar                                |
+| `DiscountsService`      | Creación, validación y cómputo de cupones de descuento                          |
+| `CommissionsService`    | Cálculo y liquidación de comisiones por pasarela y exportación a Excel          |
+| `ReviewsService`        | Moderación de opiniones y cálculo de promedios de calificación                  |
+| `AnalyticsService`      | Agregación de KPIs, series temporales y formateo para ApexCharts                |
+| `ShippingService`       | Zonas de envío, cálculo de fletes y tarifas por peso o precio                   |
+| `GeographyService`      | Carga de departamentos y municipios mediante la API de Colombia                 |
+| `SupportService`        | Diagnóstico de salud de tienda, base de conocimientos y tickets de soporte      |
+| `NotificationsService`  | Notificaciones en tiempo real vía Supabase Realtime y gestión de lectura        |
+| `AiAssistantService`    | Integración con Gemini AI y ejecución de herramientas de consulta a BD          |
+| `PreviewSyncService`    | Puente de comunicación en tiempo real entre el panel de diseño y el preview     |
+| `SeoService`            | Gestión de etiquetas meta dinámicas, títulos y OpenGraph para SSR               |
+| `StructuredDataService` | Inyección de esquemas JSON-LD (Schema.org/Product y Store)                      |
+| `StorageService`        | Carga, borrado y obtención de URLs públicas en buckets de Supabase              |
+| `FileProcessorService`  | Validación de tipos MIME, compresión de imágenes y extracción de metadatos      |
+| `SubscriptionService`   | Monitoreo de planes SaaS, verificación de cuotas y facturación                  |
+| `PaymentsService`       | Registro de transacciones y estados de pago                                     |
+| `PermissionsService`    | Verificación de permisos y capacidades según el rol del usuario (RBAC)          |
+| `EmailService`          | Trazabilidad y auditoría de correos transaccionales enviados                    |
+| `LoggerService`         | Sistema de logging centralizado con niveles configurables por entorno           |
+| `ToastService`          | Cola reactiva de alertas y notificaciones emergentes                            |
+| `LoaderService`         | Señal global de carga para operaciones asíncronas                               |
+| `Supabase`              | Singleton de inicialización y configuración del cliente Supabase                |
 
 ### Guards de Enrutamiento (`src/app/core/guards`)
 
@@ -466,21 +491,21 @@ El núcleo de Venti Shop está compuesto por **32 servicios especializados** des
 
 ## 🧱 Componentes Compartidos Reutilizables
 
-| Componente | Selector | Descripción |
-| :--- | :--- | :--- |
-| `HelpDrawer` | `app-help-drawer` | Drawer lateral con diagnóstico de configuración de tienda y envío de tickets |
-| `NotificationsDropdown` | `app-notifications-dropdown` | Desplegable de notificaciones Realtime con conteo de no leídas y navegación |
-| `AiAssistant` | `app-ai-assistant` | Widget flotante de chat con Google Gemini y renderizado Markdown sanitizado |
-| `DynamicTable` | `app-dynamic-table` | Tabla avanzada con ordenamiento por columnas, buscador, paginación y slots de acción |
-| `MediaManagerModal` | `app-media-manager-modal` | Galería modal para explorar, subir y seleccionar imágenes desde Supabase Storage |
-| `CustomerAuthModal` | `app-customer-auth-modal` | Modal emergente para login y registro de clientes finales en el Storefront |
-| `DateRangePicker` | `app-date-range-picker` | Selector de rangos de fechas con atajos rápidos para reportes analíticos |
-| `DatePicker` | `app-date-picker` | Selector accesible de fecha única |
-| `Dropdown` | `app-dropdown` | Menú desplegable estilizado con soporte de iconos y estados activos |
-| `OrderStatusBadge` | `app-order-status-badge` | Píldora visual con código de color según el estado del pedido |
-| `UsageProgress` | `app-usage-progress` | Medidor de cuota de recursos y límites de suscripción |
-| `Toast` | `app-toast` | Pila de notificaciones emergentes con animaciones fluidas |
-| `NotFound` | `app-not-found` | Vista 404 estilizada tanto para rutas administrativas como de storefront |
+| Componente              | Selector                     | Descripción                                                                          |
+| :---------------------- | :--------------------------- | :----------------------------------------------------------------------------------- |
+| `HelpDrawer`            | `app-help-drawer`            | Drawer lateral con diagnóstico de configuración de tienda y envío de tickets         |
+| `NotificationsDropdown` | `app-notifications-dropdown` | Desplegable de notificaciones Realtime con conteo de no leídas y navegación          |
+| `AiAssistant`           | `app-ai-assistant`           | Widget flotante de chat con Google Gemini y renderizado Markdown sanitizado          |
+| `DynamicTable`          | `app-dynamic-table`          | Tabla avanzada con ordenamiento por columnas, buscador, paginación y slots de acción |
+| `MediaManagerModal`     | `app-media-manager-modal`    | Galería modal para explorar, subir y seleccionar imágenes desde Supabase Storage     |
+| `CustomerAuthModal`     | `app-customer-auth-modal`    | Modal emergente para login y registro de clientes finales en el Storefront           |
+| `DateRangePicker`       | `app-date-range-picker`      | Selector de rangos de fechas con atajos rápidos para reportes analíticos             |
+| `DatePicker`            | `app-date-picker`            | Selector accesible de fecha única                                                    |
+| `Dropdown`              | `app-dropdown`               | Menú desplegable estilizado con soporte de iconos y estados activos                  |
+| `OrderStatusBadge`      | `app-order-status-badge`     | Píldora visual con código de color según el estado del pedido                        |
+| `UsageProgress`         | `app-usage-progress`         | Medidor de cuota de recursos y límites de suscripción                                |
+| `Toast`                 | `app-toast`                  | Pila de notificaciones emergentes con animaciones fluidas                            |
+| `NotFound`              | `app-not-found`              | Vista 404 estilizada tanto para rutas administrativas como de storefront             |
 
 ---
 
@@ -533,6 +558,7 @@ El esquema relacional en PostgreSQL está diseñado para operar con aislamiento 
 ## 💻 Guía de Instalación y Ejecución
 
 ### Prerrequisitos
+
 - **Node.js**: v20.x o v22.x LTS recomendado.
 - **npm**: v10.x o v11.x (o `bun`).
 - Una cuenta y proyecto activo en **Supabase**.
@@ -587,10 +613,10 @@ El servidor SSR escuchará por defecto en `http://localhost:4000`, mientras que 
 
 Es indispensable que existan los siguientes buckets públicos en tu proyecto de Supabase:
 
-| Nombre del Bucket | Visibilidad | Propósito |
-| :--- | :--- | :--- |
-| `products` | ✅ Público | Almacena galerías de imágenes de productos, logotipos de marca y banners de tienda |
-| `support-attachments` | ✅ Público | Almacena capturas de pantalla y diagnósticos adjuntos a los tickets de soporte |
+| Nombre del Bucket     | Visibilidad | Propósito                                                                          |
+| :-------------------- | :---------- | :--------------------------------------------------------------------------------- |
+| `products`            | ✅ Público  | Almacena galerías de imágenes de productos, logotipos de marca y banners de tienda |
+| `support-attachments` | ✅ Público  | Almacena capturas de pantalla y diagnósticos adjuntos a los tickets de soporte     |
 
 ### Edge Function: `verify-domain`
 
