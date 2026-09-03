@@ -34,7 +34,7 @@ export interface StoreHealthStep {
   actionLabel: string;
   actionRoute: string;
   queryParams?: Record<string, string>;
-  category: 'essential' | 'design' | 'operations';
+  category: 'essential' | 'design' | 'operations' | 'finance' | 'general';
 }
 
 export interface StoreHealthSummary {

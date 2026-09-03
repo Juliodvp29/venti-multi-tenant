@@ -7,8 +7,9 @@ import {
   OnDestroy,
   signal,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BILLING_PLANS } from '@core/models/billing.model';
@@ -31,6 +32,7 @@ interface Slide {
 export class Landing implements AfterViewInit, OnDestroy, OnInit {
   private readonly el = inject(ElementRef);
   private readonly seo = inject(SeoService);
+  private readonly platformId = inject(PLATFORM_ID);
   private observer: IntersectionObserver | null = null;
   readonly plans = BILLING_PLANS;
   readonly mobileMenuOpen = signal(false);
@@ -60,15 +62,25 @@ export class Landing implements AfterViewInit, OnDestroy, OnInit {
   ];
 
   ngOnInit(): void {
-    this.startAutoPlay();
+    if (isPlatformBrowser(this.platformId)) {
+      this.startAutoPlay();
+    }
   }
 
   ngAfterViewInit() {
-    this.initScrollReveal();
-    const hash = window.location.hash;
-    if (hash) {
-      const id = hash.replace('#', '');
-      setTimeout(() => this.scrollToSection(id), 100);
+    if (isPlatformBrowser(this.platformId)) {
+      this.initScrollReveal();
+      const hash = window.location.hash;
+      if (hash) {
+        const id = hash.replace('#', '');
+        setTimeout(() => this.scrollToSection(id), 100);
+      }
+
+      this.seo.setOrganizationSchema({
+        name: 'Venti Shop',
+        url: window.location.origin,
+        logo: window.location.origin + '/assets/logo.png',
+      });
     }
 
     this.seo.updateTags({
@@ -86,11 +98,6 @@ export class Landing implements AfterViewInit, OnDestroy, OnInit {
       type: 'website',
     });
 
-    this.seo.setOrganizationSchema({
-      name: 'Venti Shop',
-      url: window.location.origin,
-      logo: window.location.origin + '/assets/logo.png',
-    });
   }
 
   ngOnDestroy() {

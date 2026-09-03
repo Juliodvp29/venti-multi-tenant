@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AnalyticsService } from '@core/services/analytics';
 import { OrdersService } from '@core/services/orders';
 import { TenantService } from '@core/services/tenant';
+import { OnboardingService } from '@core/services/onboarding.service';
+import { OnboardingWizard } from './components/onboarding-wizard/onboarding-wizard';
 import { StatCard } from './components/stat-card/stat-card';
 import { SalesChart } from './components/sales-chart/sales-chart';
 import { CategoryChart } from './components/category-chart/category-chart';
@@ -16,7 +25,16 @@ import {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink, StatCard, SalesChart, CategoryChart, TopProducts, RecentTransactions],
+  imports: [
+    CommonModule,
+    RouterLink,
+    StatCard,
+    SalesChart,
+    CategoryChart,
+    TopProducts,
+    RecentTransactions,
+    OnboardingWizard,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -24,6 +42,7 @@ export class Dashboard {
   private readonly analytics = inject(AnalyticsService);
   private readonly ordersService = inject(OrdersService);
   protected readonly tenantService = inject(TenantService);
+  protected readonly onboarding = inject(OnboardingService);
 
   readonly currentPlan = computed(() => this.tenantService.currentTenant()?.plan || 'free');
   readonly isFreePlan = computed(() => this.currentPlan() === 'free');
@@ -90,6 +109,7 @@ export class Dashboard {
     effect(() => {
       const id = this.tenantService.tenantId();
       if (id) {
+        void this.onboarding.refresh();
         this.refreshData();
       }
     });
@@ -182,7 +202,9 @@ export class Dashboard {
           customerName: fullName,
           customerInitial: (first?.[0] || 'I') + (last?.[0] || ''),
           product: 'Múltiples artículos',
-          date: new Date(o.created_at).toLocaleDateString('es', { timeZone: this.tenantService.timezone() }),
+          date: new Date(o.created_at).toLocaleDateString('es', {
+            timeZone: this.tenantService.timezone(),
+          }),
           amount: o.total_amount,
           status: this.mapStatus(o.status),
         };

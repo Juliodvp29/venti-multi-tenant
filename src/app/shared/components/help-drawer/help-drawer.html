@@ -66,7 +66,7 @@
       @if (currentView() === 'home') {
         
         <!-- Store Setup Health Card -->
-        <div class="p-5 rounded-2xl bg-gradient-to-br from-sky-50 to-indigo-50/40 dark:from-sky-950/20 dark:to-indigo-950/10 border border-sky-100 dark:border-sky-900/40">
+        <div class="p-5 rounded-2xl bg-linear-to-br from-sky-50 to-indigo-50/40 dark:from-sky-950/20 dark:to-indigo-950/10 border border-sky-100 dark:border-sky-900/40">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span class="p-1.5 rounded-lg bg-sky-500 text-white shadow-sm shadow-sky-500/30">
@@ -84,7 +84,7 @@
           <!-- Progress bar -->
           <div class="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden mb-3">
             <div
-              class="h-full bg-gradient-to-r from-sky-500 to-indigo-500 transition-all duration-500 rounded-full"
+              class="h-full bg-linear-to-r from-sky-500 to-indigo-500 transition-all duration-500 rounded-full"
               [style.width.%]="healthSummary()?.completionPercentage ?? 0"
             ></div>
           </div>
@@ -111,6 +111,22 @@
 
         <!-- Main Navigation Cards (Supabase Style) -->
         <div class="space-y-3">
+
+          @if (onboarding.isDismissed()) {
+            <button
+              type="button"
+              class="w-full rounded-2xl border border-sky-200 bg-sky-50 p-4 text-left transition hover:border-sky-400 dark:border-sky-900/50 dark:bg-sky-950/20"
+              (click)="restoreOnboarding()"
+            >
+              <span class="flex items-center justify-between gap-3">
+                <span>
+                  <span class="block text-sm font-bold text-gray-900 dark:text-white">Mostrar guía de inicio</span>
+                  <span class="mt-1 block text-xs text-gray-500 dark:text-gray-400">Retoma la configuración de tu tienda desde el Dashboard.</span>
+                </span>
+                <svg class="h-5 w-5 shrink-0 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </span>
+            </button>
+          }
 
           <!-- Card 1: Checklist & Guía -->
           <div
