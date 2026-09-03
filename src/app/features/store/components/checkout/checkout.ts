@@ -93,12 +93,12 @@ export interface SavedCard {
                     r="10"
                     stroke="currentColor"
                     stroke-width="4"
-                  ></circle>
+                  />
                   <path
                     class="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  ></path>
+                  />
                 </svg>
               </div>
             } @else {
@@ -116,10 +116,10 @@ export interface SavedCard {
                       <input
                         type="radio"
                         name="addressSelection"
+                        class="mt-1 h-4 w-4 text-sky-600 focus:ring-sky-500 border-slate-300"
                         [value]="addr.id"
                         [checked]="selectedAddressId() === addr.id"
                         (change)="selectedAddressId.set(addr.id)"
-                        class="mt-1 h-4 w-4 text-sky-600 focus:ring-sky-500 border-slate-300"
                       />
                       <div class="flex-1 text-xs">
                         <div class="flex items-center justify-between">
@@ -163,9 +163,9 @@ export interface SavedCard {
                 </div>
 
                 <button
-                  (click)="showNewAddressForm.set(true)"
                   type="button"
                   class="mt-3 text-xs font-bold text-sky-600 hover:text-sky-700 transition-colors flex items-center gap-1"
+                  (click)="showNewAddressForm.set(true)"
                 >
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -181,7 +181,7 @@ export interface SavedCard {
                 <app-address-form
                   (save)="onAddressFormSaved($event)"
                   (cancel)="onAddressFormCanceled()"
-                ></app-address-form>
+                />
               }
             }
           </section>
@@ -201,17 +201,7 @@ export interface SavedCard {
             </div>
 
             <div class="space-y-3">
-              @if (paymentMethods().length === 0) {
-                <div
-                  class="p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-xs sm:text-sm"
-                >
-                  <p class="font-bold">No hay métodos de pago disponibles</p>
-                  <p class="mt-1">
-                    Actualmente la tienda no cuenta con métodos de pago habilitados. Por favor
-                    comunícate con el vendedor.
-                  </p>
-                </div>
-              } @else {
+              
                 @for (method of paymentMethods(); track method.id) {
                   <div
                     class="rounded-xl border transition-all overflow-hidden"
@@ -226,10 +216,10 @@ export interface SavedCard {
                         <input
                           type="radio"
                           name="paymentMethod"
+                          class="h-4 w-4 text-sky-600 focus:ring-sky-500 border-slate-300"
                           [value]="method.id"
                           [checked]="selectedPaymentMethod() === method.id"
                           (change)="selectedPaymentMethod.set(method.id)"
-                          class="h-4 w-4 text-sky-600 focus:ring-sky-500 border-slate-300"
                         />
                         <div>
                           <p class="font-bold text-xs sm:text-sm text-slate-900">
@@ -307,10 +297,10 @@ export interface SavedCard {
                                   <input
                                     type="radio"
                                     name="savedCardChoice"
+                                    class="h-3.5 w-3.5 text-sky-600 focus:ring-sky-500 border-slate-300"
                                     [value]="card.id"
                                     [checked]="selectedSavedCardId() === card.id"
                                     (change)="selectedSavedCardId.set(card.id)"
-                                    class="h-3.5 w-3.5 text-sky-600 focus:ring-sky-500 border-slate-300"
                                   />
                                   <span class="uppercase tracking-wide font-black text-sky-700">{{
                                     card.brand
@@ -325,8 +315,8 @@ export interface SavedCard {
 
                             <button
                               type="button"
-                              (click)="selectedSavedCardId.set(null)"
                               class="text-[11px] font-bold text-sky-600 hover:text-sky-700 underline"
+                              (click)="selectedSavedCardId.set(null)"
                             >
                               + Usar una tarjeta diferente
                             </button>
@@ -345,10 +335,10 @@ export interface SavedCard {
                                 <input
                                   type="text"
                                   maxlength="19"
-                                  [value]="cardForm.number"
-                                  (input)="onCardNumberInput($event)"
                                   placeholder="0000 0000 0000 0000"
                                   class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono transition-all"
+                                  [value]="cardForm.number"
+                                  (input)="onCardNumberInput($event)"
                                 />
                                 <div class="absolute right-3 top-2.5 flex items-center gap-1">
                                   <span
@@ -367,10 +357,10 @@ export interface SavedCard {
                               </label>
                               <input
                                 type="text"
-                                [value]="cardForm.name"
-                                (input)="cardForm.name = $any($event.target).value"
                                 placeholder="Nombre como figura en la tarjeta"
                                 class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 uppercase transition-all"
+                                [value]="cardForm.name"
+                                (input)="cardForm.name = $any($event.target).value"
                               />
                             </div>
 
@@ -383,10 +373,10 @@ export interface SavedCard {
                                 <input
                                   type="text"
                                   maxlength="5"
-                                  [value]="cardForm.expiry"
-                                  (input)="onExpiryInput($event)"
                                   placeholder="MM/AA"
                                   class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono transition-all"
+                                  [value]="cardForm.expiry"
+                                  (input)="onExpiryInput($event)"
                                 />
                               </div>
                               <div>
@@ -396,12 +386,12 @@ export interface SavedCard {
                                 <input
                                   type="password"
                                   maxlength="4"
+                                  placeholder="123"
+                                  class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono transition-all"
                                   [value]="cardForm.cvc"
                                   (input)="
                                     cardForm.cvc = $any($event.target).value.replace(/\\D/g, '')
                                   "
-                                  placeholder="123"
-                                  class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono transition-all"
                                 />
                               </div>
                             </div>
@@ -410,8 +400,8 @@ export interface SavedCard {
                             <label class="flex items-center gap-2 pt-1 cursor-pointer">
                               <input
                                 type="checkbox"
-                                [(ngModel)]="saveCardForFuture"
                                 class="rounded border-slate-300 text-sky-600 focus:ring-sky-500 h-3.5 w-3.5"
+                                [(ngModel)]="saveCardForFuture"
                               />
                               <span class="text-xs text-slate-600 font-medium">
                                 Guardar esta tarjeta de forma segura para futuras compras
@@ -504,7 +494,17 @@ export interface SavedCard {
                       </div>
                     }
                   </div>
-                }
+                } @empty {
+                <div
+                  class="p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-xs sm:text-sm"
+                >
+                  <p class="font-bold">No hay métodos de pago disponibles</p>
+                  <p class="mt-1">
+                    Actualmente la tienda no cuenta con métodos de pago habilitados. Por favor
+                    comunícate con el vendedor.
+                  </p>
+                </div>
+              
               }
             </div>
           </section>
@@ -531,8 +531,8 @@ export interface SavedCard {
             >
               <input
                 type="checkbox"
-                [(ngModel)]="useDifferentBilling"
                 class="rounded border-slate-300 text-sky-600 focus:ring-sky-500 h-4 w-4"
+                [(ngModel)]="useDifferentBilling"
               />
               <div>
                 <p class="text-sm font-bold text-slate-800">
@@ -552,18 +552,18 @@ export interface SavedCard {
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre</label>
                     <input
                       type="text"
-                      [(ngModel)]="billingForm.first_name"
                       placeholder="Nombre"
                       class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                      [(ngModel)]="billingForm.first_name"
                     />
                   </div>
                   <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Apellido</label>
                     <input
                       type="text"
-                      [(ngModel)]="billingForm.last_name"
                       placeholder="Apellido"
                       class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                      [(ngModel)]="billingForm.last_name"
                     />
                   </div>
                 </div>
@@ -576,9 +576,9 @@ export interface SavedCard {
                   </label>
                   <input
                     type="text"
-                    [(ngModel)]="billingForm.company"
                     placeholder="Ej. Mi Empresa S.A.S. · NIT 900123456-7"
                     class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    [(ngModel)]="billingForm.company"
                   />
                 </div>
 
@@ -589,9 +589,9 @@ export interface SavedCard {
                   >
                   <input
                     type="text"
-                    [(ngModel)]="billingForm.address_line1"
                     placeholder="Calle, Carrera, Av..."
                     class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    [(ngModel)]="billingForm.address_line1"
                   />
                 </div>
 
@@ -601,9 +601,9 @@ export interface SavedCard {
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Ciudad</label>
                     <input
                       type="text"
-                      [(ngModel)]="billingForm.city"
                       placeholder="Ciudad"
                       class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                      [(ngModel)]="billingForm.city"
                     />
                   </div>
                   <div>
@@ -612,9 +612,9 @@ export interface SavedCard {
                     >
                     <input
                       type="text"
-                      [(ngModel)]="billingForm.state"
                       placeholder="Departamento"
                       class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                      [(ngModel)]="billingForm.state"
                     />
                   </div>
                 </div>
@@ -628,18 +628,18 @@ export interface SavedCard {
                     </label>
                     <input
                       type="text"
-                      [(ngModel)]="billingForm.postal_code"
                       placeholder="110111"
                       class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                      [(ngModel)]="billingForm.postal_code"
                     />
                   </div>
                   <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">País</label>
                     <input
                       type="text"
-                      [(ngModel)]="billingForm.country"
                       placeholder="Colombia"
                       class="w-full bg-slate-50/50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                      [(ngModel)]="billingForm.country"
                     />
                   </div>
                 </div>
@@ -688,9 +688,9 @@ export interface SavedCard {
                   >
                     @if (getItemImage(item)) {
                       <img
+                        class="w-full h-full object-cover"
                         [src]="getItemImage(item)"
                         [alt]="item.name"
-                        class="w-full h-full object-cover"
                       />
                     } @else {
                       <svg
@@ -768,14 +768,14 @@ export interface SavedCard {
             <!-- Place Order Button -->
             <button
               type="button"
-              (click)="placeOrder()"
+              class="w-full mt-6 py-3.5 px-4 bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white rounded-xl font-bold text-xs sm:text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
               [disabled]="
                 isSubmitting() ||
                 showNewAddressForm() ||
                 isLoadingAddresses() ||
                 paymentMethods().length === 0
               "
-              class="w-full mt-6 py-3.5 px-4 bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white rounded-xl font-bold text-xs sm:text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+              (click)="placeOrder()"
             >
               @if (isSubmitting()) {
                 <svg
@@ -791,12 +791,12 @@ export interface SavedCard {
                     r="10"
                     stroke="currentColor"
                     stroke-width="4"
-                  ></circle>
+                  />
                   <path
                     class="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  ></path>
+                  />
                 </svg>
                 <span>Procesando pago...</span>
               } @else if (showNewAddressForm()) {

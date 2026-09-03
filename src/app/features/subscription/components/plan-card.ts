@@ -41,15 +41,15 @@ import { BillingPlan } from '@core/models/billing.model';
       </div>
 
       <button
-        (click)="onUpgrade.emit(plan().id)"
-        [disabled]="isCurrent() || isLoading()"
         class="w-full py-3 px-6 rounded-xl font-bold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="isCurrent() || isLoading()"
         [class.bg-sky-600]="!isCurrent()"
         [class.text-white]="!isCurrent()"
         [class.hover:bg-sky-700]="!isCurrent()"
         [class.bg-gray-100]="isCurrent()"
         [class.dark:bg-gray-800]="isCurrent()"
         [class.text-gray-500]="isCurrent()"
+        (click)="onUpgrade.emit(plan().id)"
       >
         {{ isCurrent() ? 'Plan actual' : 'Cambiar a ' + plan().name }}
       </button>

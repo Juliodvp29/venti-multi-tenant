@@ -9,8 +9,8 @@ import { ColumnDef, TableAction } from '@core/types/table';
     imports: [CommonModule, DynamicTable],
     template: `
     <app-dynamic-table
-      [title]="'Miembros de la Tienda'"
-      [description]="'Gestiona los miembros de tu equipo y sus permisos de cuenta.'"
+      title="Miembros de la Tienda"
+      description="Gestiona los miembros de tu equipo y sus permisos de cuenta."
       [data]="members()"
       [columns]="columns()"
       [actions]="actions"
@@ -21,8 +21,8 @@ import { ColumnDef, TableAction } from '@core/types/table';
         <div class="flex items-center">
             <div class="h-10 w-10 flex-shrink-0">
                 <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800" 
-                     [src]="'https://ui-avatars.com/api/?name=' + (item.email || item.user_id) + '&background=random'" 
-                     alt="">
+                     alt="" 
+                     [src]="'https://ui-avatars.com/api/?name=' + (item.email || item.user_id) + '&background=random'">
             </div>
             <div class="ml-4">
                 <div class="font-semibold text-gray-900 dark:text-white capitalize">{{ (item.email?.split('@')[0] || 'Miembro').replace('.', ' ') }}</div>

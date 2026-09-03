@@ -28,8 +28,8 @@ export interface DashboardTransaction {
           Transacciones Recientes
         </h3>
         <a
-          [routerLink]="['/orders']"
           class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors cursor-pointer"
+          [routerLink]="['/orders']"
           >Ver todo</a
         >
       </div>

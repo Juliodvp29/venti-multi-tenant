@@ -84,19 +84,19 @@ interface NavItem {
         <!-- Collapse Toggle Button -->
         <button
           type="button"
-          [attr.aria-label]="isCollapsed() ? 'Expandir menú lateral' : 'Colapsar menú lateral'"
-          (click)="toggleCollapse.emit()"
           class="hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 w-7 h-7 items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full shadow-md text-gray-500 hover:text-sky-600 dark:hover:text-sky-400 transition-all hover:scale-110"
+          [attr.aria-label]="isCollapsed() ? 'Expandir menú lateral' : 'Colapsar menú lateral'"
           [class.right-2]="!isCollapsed()"
           [class.left-1/2]="isCollapsed()"
           [class.-translate-x-1/2]="isCollapsed()"
+          (click)="toggleCollapse.emit()"
         >
           <svg
             class="h-4 w-4 transition-transform duration-300"
-            [class.rotate-180]="isCollapsed()"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            [class.rotate-180]="isCollapsed()"
           >
             <path
               stroke-linecap="round"
@@ -137,10 +137,10 @@ interface NavItem {
         @for (item of navItems; track item.label) {
           @if (permissions.canAccess(item.permission)) {
             <a
-              [routerLink]="item.link"
               routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: item.link === '/dashboard' }"
               class="flex items-center py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white group transition-all duration-200 [&.active]:bg-sky-50 [&.active]:text-sky-600 dark:[&.active]:bg-gray-800 dark:[&.active]:text-sky-400"
+              [routerLink]="item.link"
+              [routerLinkActiveOptions]="{ exact: item.link === '/dashboard' }"
               [class.px-3]="!isCollapsed()"
               [class.justify-center]="isCollapsed()"
               [class.w-12]="isCollapsed()"
@@ -194,17 +194,17 @@ interface NavItem {
         <button
           type="button"
           aria-label="Cerrar Sesión"
-          (click)="onLogout()"
           class="flex items-center w-full px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all group"
           [class.justify-center]="isCollapsed()"
           [title]="isCollapsed() ? 'Cerrar Sesión' : ''"
+          (click)="onLogout()"
         >
           <svg
             class="shrink-0 h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"
-            [class.mr-3]="!isCollapsed()"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            [class.mr-3]="!isCollapsed()"
           >
             <path
               stroke-linecap="round"

@@ -25,7 +25,7 @@ import { computed } from '@angular/core';
     styleUrl: './category-form.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CategoryForm implements OnInit {
+export class CategoryForm implements OnInit, OnDestroy {
     private readonly fb = inject(FormBuilder);
     private readonly categoriesService = inject(CategoriesService);
     private readonly toast = inject(ToastService);

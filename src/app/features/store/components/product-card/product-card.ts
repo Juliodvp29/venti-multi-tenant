@@ -50,16 +50,16 @@ import { TenantService } from '@core/services/tenant';
         "
       >
         <a
-          [routerLink]="['/store/product', product().id]"
           queryParamsHandling="preserve"
           class="block w-full h-full cursor-pointer relative"
+          [routerLink]="['/store/product', product().id]"
         >
           <!-- Primary Image -->
           <img
-            [src]="primaryImage()"
-            [alt]="product().name"
             loading="lazy"
             class="w-full h-full object-cover object-top transition-all duration-700"
+            [src]="primaryImage()"
+            [alt]="product().name"
             [class.group-hover:scale-105]="!hoverSecondaryImage() || !secondaryImage()"
             [class.group-hover:opacity-0]="hoverSecondaryImage() && secondaryImage()"
           />
@@ -67,10 +67,10 @@ import { TenantService } from '@core/services/tenant';
           <!-- Secondary Image on Hover -->
           @if (hoverSecondaryImage() && secondaryImage()) {
             <img
-              [src]="secondaryImage()"
-              [alt]="product().name + ' - Vista 2'"
               loading="lazy"
               class="w-full h-full object-cover object-top absolute inset-0 opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+              [src]="secondaryImage()"
+              [alt]="product().name + ' - Vista 2'"
             />
           }
         </a>
@@ -131,12 +131,12 @@ import { TenantService } from '@core/services/tenant';
         @if (cartButtonStyle() === 'icon_only') {
           <div class="absolute bottom-3 right-3 z-10">
             <button
-              (click)="addToCart($event)"
+              class="w-10 h-10 rounded-full shadow-lg transition-transform active:scale-90 flex items-center justify-center cursor-pointer text-white"
               [title]="added() ? 'Producto en el carrito' : 'Añadir al Carrito'"
               [attr.aria-label]="added() ? 'Producto en el carrito' : 'Añadir al Carrito'"
-              class="w-10 h-10 rounded-full shadow-lg transition-transform active:scale-90 flex items-center justify-center cursor-pointer text-white"
               [style.background-color]="added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'"
               [style.color]="added() ? '#ffffff' : 'var(--store-color-primary-contrast, #ffffff)'"
+              (click)="addToCart($event)"
             >
               @if (added()) {
                 <svg
@@ -173,7 +173,6 @@ import { TenantService } from '@core/services/tenant';
           >
             @if (!product().variants?.length) {
               <button
-                (click)="addToCart($event)"
                 class="w-full py-2 sm:py-2.5 font-bold text-xs shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
                 [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                 [style.text-transform]="'var(--store-btn-transform, none)'"
@@ -181,6 +180,7 @@ import { TenantService } from '@core/services/tenant';
                   added() ? '#10b981' : 'var(--store-color-primary, #0f172a)'
                 "
                 [style.color]="added() ? '#ffffff' : 'var(--store-color-primary-contrast, #ffffff)'"
+                (click)="addToCart($event)"
               >
                 @if (added()) {
                   <span class="flex items-center gap-1 text-white">
@@ -205,9 +205,9 @@ import { TenantService } from '@core/services/tenant';
               </button>
             } @else {
               <a
-                [routerLink]="['/store/product', product().id]"
                 queryParamsHandling="preserve"
                 class="w-full py-2 sm:py-2.5 font-bold text-xs shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 bg-slate-900/90 hover:bg-slate-900 text-white backdrop-blur-md cursor-pointer active:scale-95"
+                [routerLink]="['/store/product', product().id]"
                 [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                 [style.text-transform]="'var(--store-btn-transform, none)'"
               >
@@ -241,9 +241,9 @@ import { TenantService } from '@core/services/tenant';
             [style.font-family]="'var(--store-font-heading)'"
           >
             <a
-              [routerLink]="['/store/product', product().id]"
               queryParamsHandling="preserve"
               class="hover:underline"
+              [routerLink]="['/store/product', product().id]"
             >
               {{ product().name }}
             </a>
@@ -302,9 +302,9 @@ import { TenantService } from '@core/services/tenant';
             }
 
             <a
-              [routerLink]="['/store/product', product().id]"
               queryParamsHandling="preserve"
               class="p-1.5 transition-colors hover:opacity-75"
+              [routerLink]="['/store/product', product().id]"
               [style.color]="'var(--store-color-muted, #737373)'"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -323,7 +323,6 @@ import { TenantService } from '@core/services/tenant';
             <div class="mt-3">
               @if (!product().variants?.length) {
                 <button
-                  (click)="addToCart($event)"
                   class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                   [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                   [style.text-transform]="'var(--store-btn-transform, none)'"
@@ -333,6 +332,7 @@ import { TenantService } from '@core/services/tenant';
                   [style.color]="
                     added() ? '#ffffff' : 'var(--store-color-primary-contrast, #ffffff)'
                   "
+                  (click)="addToCart($event)"
                 >
                   @if (added()) {
                     <svg
@@ -363,9 +363,9 @@ import { TenantService } from '@core/services/tenant';
                 </button>
               } @else {
                 <a
-                  [routerLink]="['/store/product', product().id]"
                   queryParamsHandling="preserve"
                   class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                  [routerLink]="['/store/product', product().id]"
                   [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                   [style.text-transform]="'var(--store-btn-transform, none)'"
                   [style.background-color]="'var(--store-color-primary, #0f172a)'"

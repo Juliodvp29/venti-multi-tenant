@@ -73,8 +73,8 @@ import { AuthService } from '@core/services/auth';
             <div class="space-y-4">
               @for (store of stores(); track store.id) {
                 <button
-                  (click)="selectStore(store.id)"
                   class="w-full text-left p-4 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-sky-200 dark:hover:border-sky-500 transition-all flex items-center justify-between group"
+                  (click)="selectStore(store.id)"
                 >
                   <div class="flex items-center space-x-4">
                     <div
@@ -109,7 +109,7 @@ import { AuthService } from '@core/services/auth';
                 </button>
               }
 
-              @if (stores().length === 0) {
+              @empty {
                 <div class="text-center py-6">
                   <p class="text-gray-500 dark:text-gray-400 mb-4">No tienes tiendas activas.</p>
                 </div>
@@ -118,8 +118,8 @@ import { AuthService } from '@core/services/auth';
 
             <div class="mt-8 border-t border-gray-100 dark:border-gray-700 pt-6">
               <button
-                (click)="logout()"
                 class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                (click)="logout()"
               >
                 Sign out
               </button>

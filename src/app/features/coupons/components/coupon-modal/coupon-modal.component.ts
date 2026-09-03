@@ -38,8 +38,8 @@ import { TenantService } from '@core/services/tenant';
             <p class="text-sm text-gray-500 dark:text-gray-400">Configura tu oferta promocional</p>
           </div>
           <button
-            (click)="close.emit()"
             class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            (click)="close.emit()"
           >
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
@@ -53,7 +53,7 @@ import { TenantService } from '@core/services/tenant';
         </div>
 
         <!-- Form -->
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex-1 p-6 space-y-8">
+        <form class="flex-1 p-6 space-y-8" [formGroup]="form" (ngSubmit)="onSubmit()">
           <!-- Basic Info -->
           <section class="space-y-4">
             <div
@@ -80,8 +80,8 @@ import { TenantService } from '@core/services/tenant';
                 />
                 <button
                   type="button"
-                  (click)="generateCode()"
                   class="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-sky-600 hover:text-sky-700"
+                  (click)="generateCode()"
                 >
                   GENERAR
                 </button>
@@ -95,10 +95,10 @@ import { TenantService } from '@core/services/tenant';
               <div class="grid grid-cols-2 gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
                 <button
                   type="button"
-                  (click)="form.patchValue({ type: 'percentage' })"
+                  class="flex items-center justify-center gap-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-lg transition-all"
                   [class.bg-white]="form.get('type')?.value === 'percentage'"
                   [class.shadow-sm]="form.get('type')?.value === 'percentage'"
-                  class="flex items-center justify-center gap-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-lg transition-all"
+                  (click)="form.patchValue({ type: 'percentage' })"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -112,10 +112,10 @@ import { TenantService } from '@core/services/tenant';
                 </button>
                 <button
                   type="button"
-                  (click)="form.patchValue({ type: 'fixed_amount' })"
+                  class="flex items-center justify-center gap-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-lg transition-all"
                   [class.bg-white]="form.get('type')?.value === 'fixed_amount'"
                   [class.shadow-sm]="form.get('type')?.value === 'fixed_amount'"
-                  class="flex items-center justify-center gap-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-lg transition-all"
+                  (click)="form.patchValue({ type: 'fixed_amount' })"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -173,7 +173,7 @@ import { TenantService } from '@core/services/tenant';
                 <app-date-picker
                   formControlName="starts_at"
                   placeholder="Seleccionar inicio"
-                ></app-date-picker>
+                />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
@@ -183,7 +183,7 @@ import { TenantService } from '@core/services/tenant';
                   formControlName="ends_at"
                   placeholder="Seleccionar fin"
                   align="right"
-                ></app-date-picker>
+                />
               </div>
             </div>
           </section>
@@ -260,16 +260,16 @@ import { TenantService } from '@core/services/tenant';
         >
           <button
             type="button"
-            (click)="close.emit()"
             class="flex-1 px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 transition-colors"
+            (click)="close.emit()"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            (click)="onSubmit()"
-            [disabled]="form.invalid"
             class="flex-1 px-4 py-3 text-sm font-semibold text-white bg-sky-600 rounded-xl hover:bg-sky-700 transition-colors disabled:opacity-50 shadow-lg shadow-sky-200 dark:shadow-none"
+            [disabled]="form.invalid"
+            (click)="onSubmit()"
           >
             <span class="flex items-center justify-center gap-2">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

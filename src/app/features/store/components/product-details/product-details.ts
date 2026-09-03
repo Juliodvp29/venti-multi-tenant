@@ -42,10 +42,10 @@ import { SeoService } from '@core/services/seo';
               (click)="isZoomed.set(true)"
             >
               <img
-                [src]="displayImage()"
-                [alt]="product()?.name"
                 loading="lazy"
                 class="w-full h-full object-cover object-top transition-all duration-700 hover:scale-105"
+                [src]="displayImage()"
+                [alt]="product()?.name"
               />
               <div
                 class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
@@ -72,9 +72,9 @@ import { SeoService } from '@core/services/seo';
               <!-- Navigation Arrows -->
               @if ((product()?.images?.length || 0) > 1) {
                 <button
-                  (click)="prevImage($event)"
                   class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-slate-900 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 z-10 shadow-md border border-slate-200/60"
                   title="Previous image"
+                  (click)="prevImage($event)"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -86,9 +86,9 @@ import { SeoService } from '@core/services/seo';
                   </svg>
                 </button>
                 <button
-                  (click)="nextImage($event)"
                   class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-slate-900 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 z-10 shadow-md border border-slate-200/60"
                   title="Next image"
+                  (click)="nextImage($event)"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -105,16 +105,16 @@ import { SeoService } from '@core/services/seo';
               <div class="grid grid-cols-5 gap-2">
                 @for (img of product()?.images; track img.id) {
                   <div
-                    (click)="selectedImage.set(img.url)"
                     class="aspect-square bg-white rounded-lg border-2 overflow-hidden cursor-pointer hover:border-sky-500 transition-all"
                     [class.border-sky-500]="displayImage() === img.url"
                     [class.border-slate-200]="displayImage() !== img.url"
+                    (click)="selectedImage.set(img.url)"
                   >
                     <img
-                      [src]="img.url"
-                      [alt]="(product()?.name ?? '') + ' view'"
                       loading="lazy"
                       class="w-full h-full object-cover object-top"
+                      [src]="img.url"
+                      [alt]="(product()?.name ?? '') + ' view'"
                     />
                   </div>
                 }
@@ -133,10 +133,10 @@ import { SeoService } from '@core/services/seo';
                 class="relative w-full h-full overflow-hidden flex items-center justify-center pointer-events-none"
               >
                 <img
+                  class="max-w-none h-full w-auto object-contain transition-transform duration-300 ease-out"
                   [src]="displayImage()"
                   [style.transform]="'scale(2)'"
                   [style.transformOrigin]="zoomOrigin()"
-                  class="max-w-none h-full w-auto object-contain transition-transform duration-300 ease-out"
                 />
               </div>
 
@@ -211,7 +211,6 @@ import { SeoService } from '@core/services/seo';
                     <div class="flex flex-wrap gap-2">
                       @for (val of opt.values; track val) {
                         <button
-                          (click)="selectOption(opt.name, val)"
                           class="px-3 py-1.5 rounded-lg border-2 text-sm font-semibold transition-all cursor-pointer"
                           [class.border-sky-600]="selectedOptions()[opt.name] === val"
                           [class.bg-sky-50]="selectedOptions()[opt.name] === val"
@@ -219,6 +218,7 @@ import { SeoService } from '@core/services/seo';
                           [class.border-slate-200]="selectedOptions()[opt.name] !== val"
                           [class.text-slate-600]="selectedOptions()[opt.name] !== val"
                           [class.hover:border-slate-300]="selectedOptions()[opt.name] !== val"
+                          (click)="selectOption(opt.name, val)"
                         >
                           {{ val }}
                         </button>
@@ -235,8 +235,8 @@ import { SeoService } from '@core/services/seo';
                   class="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm"
                 >
                   <button
-                    (click)="qty.set(math.max(1, qty() - 1))"
                     class="px-4 py-2.5 hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer border-r border-slate-100 text-slate-700 font-bold"
+                    (click)="qty.set(math.max(1, qty() - 1))"
                   >
                     −
                   </button>
@@ -244,8 +244,8 @@ import { SeoService } from '@core/services/seo';
                     qty()
                   }}</span>
                   <button
-                    (click)="qty.set(qty() + 1)"
                     class="px-4 py-2.5 hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer border-l border-slate-100 text-slate-700 font-bold"
+                    (click)="qty.set(qty() + 1)"
                   >
                     +
                   </button>
@@ -260,14 +260,14 @@ import { SeoService } from '@core/services/seo';
               </div>
 
               <button
-                (click)="addToCart()"
-                [disabled]="!isSelectionComplete()"
                 class="w-full py-3.5 rounded-xl font-bold shadow-lg shadow-slate-200 transition-all duration-300 transform active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                [disabled]="!isSelectionComplete()"
                 [class]="
                   added()
                     ? 'bg-green-500 text-white shadow-green-100'
                     : 'bg-slate-900 text-white hover:bg-slate-800'
                 "
+                (click)="addToCart()"
               >
                 @if (added()) {
                   <span
@@ -304,9 +304,9 @@ import { SeoService } from '@core/services/seo';
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               @for (p of relatedProducts(); track p.id) {
                 <app-product-card
-                  [product]="p"
                   class="animate-in fade-in slide-in-from-bottom-2 duration-500"
-                ></app-product-card>
+                  [product]="p"
+                />
               }
             </div>
           </section>
@@ -349,10 +349,10 @@ import { SeoService } from '@core/services/seo';
                       <div class="flex gap-2">
                         @for (star of [1, 2, 3, 4, 5]; track star) {
                           <button
-                            (click)="setRating(star)"
                             class="p-1 transition-all hover:scale-110 cursor-pointer"
                             [class.text-amber-400]="reviewForm().rating >= star"
                             [class.text-slate-300]="reviewForm().rating < star"
+                            (click)="setRating(star)"
                           >
                             <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
                               <path
@@ -370,10 +370,10 @@ import { SeoService } from '@core/services/seo';
                         >Título (Opcional)</label
                       >
                       <input
-                        [(ngModel)]="reviewForm().title"
                         type="text"
                         placeholder="p. ej. ¡Me encantó!"
                         class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition-all"
+                        [(ngModel)]="reviewForm().title"
                       />
                     </div>
 
@@ -383,17 +383,17 @@ import { SeoService } from '@core/services/seo';
                         >Reseña (Opcional)</label
                       >
                       <textarea
-                        [(ngModel)]="reviewForm().review"
                         rows="4"
                         placeholder="Cuéntanos qué te pareció el producto..."
                         class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none transition-all resize-none"
+                        [(ngModel)]="reviewForm().review"
                       ></textarea>
                     </div>
 
                     <button
-                      (click)="submitReview()"
-                      [disabled]="reviewForm().rating === 0 || isSubmittingReview()"
                       class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                      [disabled]="reviewForm().rating === 0 || isSubmittingReview()"
+                      (click)="submitReview()"
                     >
                       {{ isSubmittingReview() ? 'Enviando...' : 'Publicar Reseña' }}
                     </button>
@@ -418,8 +418,8 @@ import { SeoService } from '@core/services/seo';
                       aprobada.
                     </p>
                     <button
-                      (click)="reviewStep.set('form')"
                       class="text-sky-600 font-bold hover:underline"
+                      (click)="reviewStep.set('form')"
                     >
                       Enviar otra reseña
                     </button>
@@ -430,7 +430,7 @@ import { SeoService } from '@core/services/seo';
 
             <!-- Reviews List -->
             <div class="lg:col-span-2 space-y-8">
-              @if (reviews().length > 0) {
+              
                 @for (review of reviews(); track review.id) {
                   <div
                     class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500"
@@ -441,9 +441,9 @@ import { SeoService } from '@core/services/seo';
                           @for (star of [1, 2, 3, 4, 5]; track star) {
                             <svg
                               class="w-4 h-4"
+                              viewBox="0 0 20 20"
                               [class.fill-current]="review.rating >= star"
                               [class.text-slate-200]="review.rating < star"
-                              viewBox="0 0 20 20"
                             >
                               <path
                                 d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
@@ -496,7 +496,7 @@ import { SeoService } from '@core/services/seo';
                     </div>
                   </div>
                 }
-              } @else {
+              @empty {
                 <div
                   class="bg-slate-50 rounded-3xl p-16 text-center border border-dashed border-slate-200"
                 >

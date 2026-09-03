@@ -30,8 +30,8 @@ import { getContrastColor } from '@core/constants/theme-presets';
   ],
   template: `
     <header
-      [class.sticky]="isSticky()"
       class="top-0 z-30 border-b transition-all duration-300 backdrop-blur-md w-full relative shadow-xs"
+      [class.sticky]="isSticky()"
       [style.background-color]="branding()?.header_color || 'var(--store-color-header, #ffffff)'"
       [style.border-color]="'var(--store-color-border, rgba(0,0,0,0.08))'"
     >
@@ -54,7 +54,7 @@ import { getContrastColor } from '@core/constants/theme-presets';
                 class="overflow-hidden rounded-xl bg-slate-50 border border-slate-100 p-1 flex-shrink-0"
                 [class]="logoSizeClass()"
               >
-                <img [src]="activeLogoUrl()" alt="Logo" class="w-full h-full object-contain" />
+                <img alt="Logo" class="w-full h-full object-contain" [src]="activeLogoUrl()" />
               </div>
             }
             <span
@@ -70,9 +70,9 @@ import { getContrastColor } from '@core/constants/theme-presets';
             <nav class="hidden md:flex items-center" [class]="navSpacingClass()">
               @for (link of navigation(); track link.label) {
                 <a
-                  [routerLink]="link.url"
                   queryParamsHandling="preserve"
                   class="text-sm font-semibold transition-opacity hover:opacity-75"
+                  [routerLink]="link.url"
                   [style.color]="'var(--store-color-text, #0f172a)'"
                 >
                   {{ link.label }}
@@ -80,7 +80,7 @@ import { getContrastColor } from '@core/constants/theme-presets';
               }
               @if (showSocials()) {
                 <div class="flex items-center gap-3 border-l border-slate-200 pl-4 ml-2">
-                  <ng-container *ngTemplateOutlet="socialsTemplate"></ng-container>
+                  <ng-container *ngTemplateOutlet="socialsTemplate" />
                 </div>
               }
             </nav>
@@ -90,19 +90,19 @@ import { getContrastColor } from '@core/constants/theme-presets';
             class="flex items-center gap-2 md:gap-3"
             [class.order-first]="logoPosition() === 'right'"
           >
-            <ng-container *ngTemplateOutlet="actionsTemplate"></ng-container>
+            <ng-container *ngTemplateOutlet="actionsTemplate" />
           </div>
         }
 
         <!-- ===== LOGO CENTER ===== -->
-        @if (logoPosition() === 'center') {
+        @else {
           @if (!isHamburger()) {
             <nav class="hidden md:flex items-center flex-1" [class]="navSpacingClass()">
               @for (link of navigation().slice(0, halfNav()); track link.label) {
                 <a
-                  [routerLink]="link.url"
                   queryParamsHandling="preserve"
                   class="text-sm font-semibold transition-opacity hover:opacity-75"
+                  [routerLink]="link.url"
                   [style.color]="'var(--store-color-text, #0f172a)'"
                 >
                   {{ link.label }}
@@ -121,7 +121,7 @@ import { getContrastColor } from '@core/constants/theme-presets';
                 class="overflow-hidden rounded-xl bg-slate-50 border border-slate-100 p-1 flex-shrink-0"
                 [class]="logoSizeClass()"
               >
-                <img [src]="activeLogoUrl()" alt="Logo" class="w-full h-full object-contain" />
+                <img alt="Logo" class="w-full h-full object-contain" [src]="activeLogoUrl()" />
               </div>
             }
             <span
@@ -138,9 +138,9 @@ import { getContrastColor } from '@core/constants/theme-presets';
               <nav class="hidden md:flex items-center" [class]="navSpacingClass()">
                 @for (link of navigation().slice(halfNav()); track link.label) {
                   <a
-                    [routerLink]="link.url"
                     queryParamsHandling="preserve"
                     class="text-sm font-semibold transition-opacity hover:opacity-75"
+                    [routerLink]="link.url"
                     [style.color]="'var(--store-color-text, #0f172a)'"
                   >
                     {{ link.label }}
@@ -148,12 +148,12 @@ import { getContrastColor } from '@core/constants/theme-presets';
                 }
                 @if (showSocials()) {
                   <div class="flex items-center gap-3 border-l border-slate-200 pl-4 ml-2">
-                    <ng-container *ngTemplateOutlet="socialsTemplate"></ng-container>
+                    <ng-container *ngTemplateOutlet="socialsTemplate" />
                   </div>
                 }
               </nav>
             }
-            <ng-container *ngTemplateOutlet="actionsTemplate"></ng-container>
+            <ng-container *ngTemplateOutlet="actionsTemplate" />
           </div>
         }
       </div>
@@ -169,18 +169,18 @@ import { getContrastColor } from '@core/constants/theme-presets';
         >
           @for (link of navigation(); track link.label) {
             <a
-              [routerLink]="link.url"
               queryParamsHandling="preserve"
-              (click)="mobileMenuOpen.set(false)"
               class="block py-2 px-3 text-sm font-semibold rounded-lg transition-colors hover:bg-black/5"
+              [routerLink]="link.url"
               [style.color]="'var(--store-color-text, #0f172a)'"
+              (click)="mobileMenuOpen.set(false)"
             >
               {{ link.label }}
             </a>
           }
           @if (showSocials()) {
             <div class="flex items-center gap-4 pt-3 px-3 border-t border-slate-100 mt-2">
-              <ng-container *ngTemplateOutlet="socialsTemplate"></ng-container>
+              <ng-container *ngTemplateOutlet="socialsTemplate" />
             </div>
           }
         </div>
@@ -212,9 +212,9 @@ import { getContrastColor } from '@core/constants/theme-presets';
         <button
           type="button"
           aria-label="Cerrar sesión"
-          (click)="onLogout()"
           class="hidden md:block text-xs font-bold uppercase tracking-widest transition-opacity hover:opacity-75 cursor-pointer"
           [style.color]="'var(--store-color-muted, #64748b)'"
+          (click)="onLogout()"
         >
           Salir
         </button>
@@ -228,9 +228,9 @@ import { getContrastColor } from '@core/constants/theme-presets';
         <button
           type="button"
           aria-label="Iniciar sesión"
-          (click)="customerAuth.openLogin()"
           class="p-2 rounded-full transition-opacity hover:opacity-75 cursor-pointer"
           [style.color]="'var(--store-color-text, #0f172a)'"
+          (click)="customerAuth.openLogin()"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -247,13 +247,13 @@ import { getContrastColor } from '@core/constants/theme-presets';
         <button
           type="button"
           aria-label="Ver carrito de compras"
-          (click)="openCart.emit()"
           class="relative p-2.5 rounded-2xl transition-all active:scale-95 shadow-md hover:opacity-90 cursor-pointer"
           [style.background-color]="
             branding()?.primary_color || 'var(--store-color-primary, #0a0a0a)'
           "
           [style.color]="primaryContrastColor()"
           [style.border-radius]="'var(--store-radius-btn, 1rem)'"
+          (click)="openCart.emit()"
         >
           <svg class="w-5 h-5 fill-none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -277,11 +277,11 @@ import { getContrastColor } from '@core/constants/theme-presets';
       <!-- Hamburger button -->
       <button
         type="button"
-        [attr.aria-label]="mobileMenuOpen() ? 'Cerrar menú' : 'Abrir menú'"
-        (click)="mobileMenuOpen.set(!mobileMenuOpen())"
         class="p-2 rounded-lg transition-opacity hover:opacity-75 cursor-pointer"
+        [attr.aria-label]="mobileMenuOpen() ? 'Cerrar menú' : 'Abrir menú'"
         [class.md:hidden]="!isHamburger()"
         [style.color]="'var(--store-color-text, #0f172a)'"
+        (click)="mobileMenuOpen.set(!mobileMenuOpen())"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           @if (mobileMenuOpen()) {
@@ -338,8 +338,7 @@ import { getContrastColor } from '@core/constants/theme-presets';
       <app-customer-auth-modal
         (close)="customerAuth.closeModal()"
         (authenticated)="onAuthenticated()"
-      >
-      </app-customer-auth-modal>
+      />
     }
   `,
 })
