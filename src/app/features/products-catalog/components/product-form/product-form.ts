@@ -16,13 +16,14 @@ import {
   UpdateProductDto,
   ProductVariant,
   ProductOption,
+  ProductImage,
 } from '@core/models/product';
 import { Category } from '@core/models/category';
 import { ProductsService } from '@core/services/products';
 import { ToastService } from '@core/services/toast';
 import { AiAssistantService } from '@core/services/ai-assistant';
 import { ProductStatus } from '@core/enums';
-import { ProductImageUploader } from '../product-image-uploader/product-image-uploader';
+import { ProductImageUploader, UploadedPendingImage } from '../product-image-uploader/product-image-uploader';
 import {
   AbstractControl,
   FormArray,
@@ -60,6 +61,7 @@ export class ProductForm implements OnInit, OnDestroy {
   readonly isEditMode = signal(false);
   readonly slugManuallyEdited = signal(false);
   readonly selectedCategoryIds = signal<Set<string>>(new Set());
+  readonly imageChoices = signal<ProductImage[]>([]);
 
   // Variants & Options State
   readonly hasVariants = signal(false);
@@ -124,6 +126,8 @@ export class ProductForm implements OnInit, OnDestroy {
           this.optionDefinitions.set([]);
         }
 
+        this.imageChoices.set([...(p.images ?? [])]);
+
         // Populate selected categories from product relation
         const catIds = (p.categories ?? [])
           .map((c: any) => c?.category?.id ?? c?.id ?? c)
@@ -140,6 +144,7 @@ export class ProductForm implements OnInit, OnDestroy {
         });
         this.slugManuallyEdited.set(false);
         this.selectedCategoryIds.set(new Set());
+        this.imageChoices.set([]);
       }
     });
 
@@ -188,6 +193,7 @@ export class ProductForm implements OnInit, OnDestroy {
           cost_price: [v.cost_price],
           stock_quantity: [v.stock_quantity, [Validators.min(0)]],
           options: [v.options], // Immutable metadata
+          image_url: [v.image_url],
           is_active: [v.is_active],
         }),
       );
@@ -300,11 +306,12 @@ export class ProductForm implements OnInit, OnDestroy {
           id: [existing?.id || null],
           name: [nv.name, Validators.required],
           sku: [existing?.sku ?? null],
-          price: [existing?.price || nv.price, [Validators.min(0)]],
-          compare_at_price: [existing?.compare_at_price || null],
-          cost_price: [existing?.cost_price || null],
+          price: [existing?.price ?? nv.price, [Validators.min(0)]],
+          compare_at_price: [existing?.compare_at_price ?? null],
+          cost_price: [existing?.cost_price ?? null],
           stock_quantity: [existing?.stock_quantity ?? nv.stock_quantity, [Validators.min(0)]],
           options: [nv.options],
+          image_url: [existing?.image_url ?? null],
           is_active: [existing?.is_active ?? true],
         }),
       );
@@ -318,6 +325,28 @@ export class ProductForm implements OnInit, OnDestroy {
       else next.add(id);
       return next;
     });
+  }
+
+  onSavedImagesChange(images: ProductImage[]) {
+    this.imageChoices.set(images);
+  }
+
+  onPendingFilesChange() {
+    const pending = this.imageUploader?.pendingImages() ?? [];
+    const saved = this.imageChoices();
+    this.imageChoices.set([
+      ...saved,
+      ...pending.map((item) => ({
+        id: item.previewUrl,
+        product_id: '',
+        tenant_id: '',
+        url: item.previewUrl,
+        alt_text: item.file.name,
+        sort_order: saved.length,
+        is_primary: false,
+        created_at: '',
+      })),
+    ]);
   }
 
   onNameInput(event: Event) {
@@ -386,7 +415,16 @@ export class ProductForm implements OnInit, OnDestroy {
         result = await this.productsService.createProduct(dto);
         // Upload any pending images for the newly created product
         if (this.imageUploader) {
-          await this.imageUploader.uploadAllPending(result.id);
+          const uploaded = await this.imageUploader.uploadAllPending(result.id);
+          const uploadedByPreview = new Map(
+            uploaded.map((item: UploadedPendingImage) => [item.previewUrl, item.image.url]),
+          );
+          for (const variant of this.variants.controls) {
+            const imageUrl = variant.get('image_url')?.value;
+            if (imageUrl && uploadedByPreview.has(imageUrl)) {
+              variant.patchValue({ image_url: uploadedByPreview.get(imageUrl) });
+            }
+          }
         }
         this.toast.success(`¡Producto "${result.name}" creado con éxito!`);
       }
@@ -413,6 +451,7 @@ export class ProductForm implements OnInit, OnDestroy {
       });
       this.slugManuallyEdited.set(false);
       this.selectedCategoryIds.set(new Set());
+      this.imageChoices.set([]);
     } catch (error: any) {
       console.error('Error saving product:', error);
       this.toast.error(error?.message ?? 'Error al guardar el producto.');
@@ -429,6 +468,7 @@ export class ProductForm implements OnInit, OnDestroy {
       price: 0,
     });
     this.slugManuallyEdited.set(false);
+    this.imageChoices.set([]);
     this.cancelled.emit();
   }
 

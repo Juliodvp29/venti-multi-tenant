@@ -20,6 +20,11 @@ export interface PendingImage {
     uploading: boolean;
 }
 
+export interface UploadedPendingImage {
+    previewUrl: string;
+    image: ProductImage;
+}
+
 @Component({
     selector: 'app-product-image-uploader',
     imports: [CommonModule],
@@ -104,11 +109,11 @@ export class ProductImageUploader implements OnInit {
     }
 
     /** Called by parent after product creation to upload queued images */
-    async uploadAllPending(productId: string): Promise<ProductImage[]> {
+    async uploadAllPending(productId: string): Promise<UploadedPendingImage[]> {
         const pending = this.pendingImages();
         if (!pending.length) return [];
 
-        const uploaded: ProductImage[] = [];
+        const uploaded: UploadedPendingImage[] = [];
         const currentSaved = this.savedImages();
         const isFirstImage = currentSaved.length === 0;
 
@@ -120,7 +125,7 @@ export class ProductImageUploader implements OnInit {
             try {
                 const isPrimary = isFirstImage && i === 0;
                 const image = await this.productsService.uploadImage(item.file, productId, isPrimary, undefined, i);
-                uploaded.push(image);
+                uploaded.push({ previewUrl: item.previewUrl, image });
                 URL.revokeObjectURL(item.previewUrl);
             } catch (e: any) {
                 this.toast.error(`Error al subir "${item.file.name}": ${e?.message ?? 'Error desconocido'}`);
@@ -128,7 +133,7 @@ export class ProductImageUploader implements OnInit {
         }
 
         this.pendingImages.set([]);
-        const allSaved = [...currentSaved, ...uploaded];
+        const allSaved = [...currentSaved, ...uploaded.map(item => item.image)];
         this.savedImages.set(allSaved);
         this.savedImagesChange.emit(allSaved);
         return uploaded;

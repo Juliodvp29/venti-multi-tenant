@@ -3060,6 +3060,10 @@ export type Database = {
       }
     }
     Functions: {
+      consume_ai_request: {
+        Args: { p_tenant_id: string }
+        Returns: Json
+      }
       accept_tenant_invitation: {
         Args: { invitation_token: string }
         Returns: undefined

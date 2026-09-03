@@ -212,6 +212,9 @@ import { SeoService } from '@core/services/seo';
                       @for (val of opt.values; track val) {
                         <button
                           class="px-3 py-1.5 rounded-lg border-2 text-sm font-semibold transition-all cursor-pointer"
+                          [class.p-1.5]="isColorOption(opt.name)"
+                          [attr.aria-label]="isColorOption(opt.name) ? opt.name + ': ' + val : null"
+                          [title]="isColorOption(opt.name) ? val : null"
                           [class.border-sky-600]="selectedOptions()[opt.name] === val"
                           [class.bg-sky-50]="selectedOptions()[opt.name] === val"
                           [class.text-sky-700]="selectedOptions()[opt.name] === val"
@@ -220,7 +223,14 @@ import { SeoService } from '@core/services/seo';
                           [class.hover:border-slate-300]="selectedOptions()[opt.name] !== val"
                           (click)="selectOption(opt.name, val)"
                         >
-                          {{ val }}
+                          @if (isColorOption(opt.name)) {
+                            <span
+                              class="block w-7 h-7 rounded-full border border-slate-300 shadow-inner"
+                              [style.backgroundColor]="colorValue(val)"
+                            ></span>
+                          } @else {
+                            {{ val }}
+                          }
                         </button>
                       }
                     </div>
@@ -653,10 +663,9 @@ export class ProductDetails implements OnInit {
   });
 
   readonly displayImage = computed(() => {
-    if (this.selectedImage()) return this.selectedImage();
     const v = this.selectedVariant();
     const p = this.product();
-    return v?.image_url || p?.primary_image_url || p?.images?.[0]?.url;
+    return this.selectedImage() || v?.image_url || p?.primary_image_url || p?.images?.[0]?.url;
   });
 
   readonly isSelectionComplete = computed(() => {
@@ -783,10 +792,36 @@ export class ProductDetails implements OnInit {
   }
 
   selectOption(name: string, value: string) {
+    this.selectedImage.set(null);
     this.selectedOptions.update((opts) => ({
       ...opts,
       [name]: value,
     }));
+  }
+
+  isColorOption(name: string): boolean {
+    return /(^|\s)(color|colour|colores)(\s|$)/i.test(name.trim());
+  }
+
+  colorValue(value: string): string {
+    const normalized = value.trim().toLowerCase();
+    const colors: Record<string, string> = {
+      blanco: '#ffffff',
+      negro: '#111827',
+      rojo: '#ef4444',
+      azul: '#3b82f6',
+      verde: '#22c55e',
+      amarillo: '#facc15',
+      naranja: '#f97316',
+      rosado: '#f472b6',
+      rosa: '#f472b6',
+      morado: '#a855f7',
+      gris: '#9ca3af',
+      marron: '#92400e',
+      café: '#92400e',
+      cafe: '#92400e',
+    };
+    return colors[normalized] || (normalized.startsWith('#') ? normalized : '#cbd5e1');
   }
 
   private updateSeo(product: Product) {
