@@ -1,13 +1,22 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit, computed, effect } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  OnInit,
+  computed,
+  effect,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbandonedCartService, AbandonedCart } from '@core/services/abandoned-cart';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { FormsModule } from '@angular/forms';
+import { TableSkeleton } from '@shared/components/skeleton/table-skeleton';
 
 @Component({
   selector: 'app-abandoned-carts',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TableSkeleton],
   templateUrl: './abandoned-carts.html',
   styleUrl: './abandoned-carts.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,7 +33,7 @@ export class AbandonedCarts implements OnInit {
   readonly isLoading = signal(false);
 
   readonly totalPotential = computed(() =>
-    this.carts().reduce((acc, cat) => acc + cat.total_amount, 0)
+    this.carts().reduce((acc, cat) => acc + cat.total_amount, 0),
   );
 
   ngOnInit() {

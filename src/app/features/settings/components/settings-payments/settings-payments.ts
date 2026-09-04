@@ -105,9 +105,9 @@ export class SettingsPayments {
     this.dirtyChange.emit(true);
   }
 
-  async save(): Promise<void> {
+  async save(silent = false): Promise<boolean> {
     const tenant = this.tenant();
-    if (!tenant) return;
+    if (!tenant) return false;
 
     this.isSaving.set(true);
     try {
@@ -127,12 +127,14 @@ export class SettingsPayments {
         },
       });
 
-      this.toastService.success('Métodos de pago actualizados');
+      if (!silent) this.toastService.success('Métodos de pago actualizados');
       this.isDirty.set(false);
       this.dirtyChange.emit(false);
+      return true;
     } catch (error) {
       console.error('Error saving payment methods:', error);
-      this.toastService.error('Error al guardar los métodos de pago');
+      if (!silent) this.toastService.error('Error al guardar los métodos de pago');
+      return false;
     } finally {
       this.isSaving.set(false);
     }

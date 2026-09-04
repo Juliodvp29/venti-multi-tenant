@@ -1,135 +1,223 @@
 <div class="space-y-6">
-
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div
-            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
-            <div
-                class="flex-shrink-0 w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-600 dark:text-sky-400" fill="none"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ totalProducts() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Total</p>
-            </div>
-        </div>
-
-        <div
-            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
-            <div
-                class="flex-shrink-0 w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 dark:text-green-400" fill="none"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ activeProducts() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Activos
-                </p>
-            </div>
-        </div>
-
-        <div
-            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
-            <div
-                class="flex-shrink-0 w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ draftProducts() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Borradores
-                </p>
-            </div>
-        </div>
-
-        <div
-            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
-            <div
-                class="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                </svg>
-            </div>
-            <div>
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ lowStockProducts() }}</p>
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Stock Bajo
-                </p>
-            </div>
-        </div>
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div
+      class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200"
+    >
+      <div
+        class="flex-shrink-0 w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-sky-600 dark:text-sky-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+          />
+        </svg>
+      </div>
+      <div>
+        <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
+          {{ totalProducts() }}
+        </p>
+        <p
+          class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+        >
+          Total
+        </p>
+      </div>
     </div>
 
-    <!-- Loading State (initial load only, no data yet) -->
-    @if (isLoading() && products().length === 0) {
-    <div class="flex items-center justify-center py-20">
-        <div class="flex flex-col items-center gap-3">
-            <svg class="animate-spin h-8 w-8 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Cargando productos...</p>
-        </div>
+    <div
+      class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200"
+    >
+      <div
+        class="flex-shrink-0 w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-green-600 dark:text-green-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+      <div>
+        <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
+          {{ activeProducts() }}
+        </p>
+        <p
+          class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+        >
+          Activos
+        </p>
+      </div>
     </div>
-    }
 
-    <!-- Dynamic Table — always rendered once data has loaded; dims during page transitions -->
-    @if (products().length > 0 || !isLoading()) {
-    <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
-        [class.pointer-events-none]="isLoading()">
-        <app-dynamic-table title="Productos" description="Administra tu catálogo completo de productos." searchPlaceholder="Buscar por nombre, SKU..." [data]="filteredProducts()"
-            [columns]="columns" [actions]="actions"
-            [allowImport]="true" [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE"
-            [hasActiveFilters]="hasActiveFilters()" (importData)="onImportData($event)" (pageChange)="loadProducts($event)"
-            (searchChange)="onSearchChange($event)" (sortChange)="onSortChange($event)" (clearFilters)="clearFilters()">
-
-            <!-- Actions Slot -->
-            <div actions>
-                <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200"
-                    (click)="openCreate()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                        stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Nuevo Producto
-                </button>
-            </div>
-
-            <!-- Filters Slot -->
-            <div filters class="flex items-center gap-2">
-                <!-- Category filter -->
-                <app-dropdown width="w-48" placeholder="Categoría"
-                    [options]="categoryDropdownOptions()" [value]="categoryFilter()" (valueChange)="categoryFilter.set($event); loadProducts(1)" />
-
-                <!-- Status filter -->
-                <app-dropdown width="w-44" placeholder="Estado"
-                    [options]="statusDropdownOptions" [value]="statusFilter()" (valueChange)="statusFilter.set($event); loadProducts(1)" />
-                <app-date-range-picker placeholder="Rango de fechas" [(value)]="dateRange"
-                    (rangeChange)="onDateRangeChange($event)" />
-            </div>
-
-        </app-dynamic-table>
+    <div
+      class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200"
+    >
+      <div
+        class="flex-shrink-0 w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700/50 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-gray-500 dark:text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+          />
+        </svg>
+      </div>
+      <div>
+        <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
+          {{ draftProducts() }}
+        </p>
+        <p
+          class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+        >
+          Borradores
+        </p>
+      </div>
     </div>
-    }
 
+    <div
+      class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200"
+    >
+      <div
+        class="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-amber-600 dark:text-amber-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+          />
+        </svg>
+      </div>
+      <div>
+        <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
+          {{ lowStockProducts() }}
+        </p>
+        <p
+          class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+        >
+          Stock Bajo
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Table — skeleton en carga inicial, atenuado en transiciones con datos -->
+  <div
+    class="transition-opacity duration-200"
+    [class.opacity-50]="isLoading() && products().length > 0"
+    [class.pointer-events-none]="isLoading() && products().length > 0"
+  >
+    <app-dynamic-table
+      title="Productos"
+      description="Administra tu catálogo completo de productos."
+      searchPlaceholder="Buscar por nombre, SKU..."
+      [data]="filteredProducts()"
+      [columns]="columns"
+      [actions]="actions"
+      [allowImport]="true"
+      [totalItemsOverride]="totalCount()"
+      [pageSize]="PAGE_SIZE"
+      [isLoading]="isLoading() && products().length === 0"
+      [hasActiveFilters]="hasActiveFilters()"
+      (importData)="onImportData($event)"
+      (pageChange)="loadProducts($event)"
+      (searchChange)="onSearchChange($event)"
+      (sortChange)="onSortChange($event)"
+      (clearFilters)="clearFilters()"
+    >
+      <!-- Actions Slot -->
+      <div actions>
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200"
+          (click)="openCreate()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Nuevo Producto
+        </button>
+      </div>
+
+      <!-- Filters Slot -->
+      <div filters class="flex items-center gap-2">
+        <!-- Category filter -->
+        <app-dropdown
+          width="w-48"
+          placeholder="Categoría"
+          [options]="categoryDropdownOptions()"
+          [value]="categoryFilter()"
+          (valueChange)="categoryFilter.set($event); loadProducts(1)"
+        />
+
+        <!-- Status filter -->
+        <app-dropdown
+          width="w-44"
+          placeholder="Estado"
+          [options]="statusDropdownOptions"
+          [value]="statusFilter()"
+          (valueChange)="statusFilter.set($event); loadProducts(1)"
+        />
+        <app-date-range-picker
+          placeholder="Rango de fechas"
+          [(value)]="dateRange"
+          (rangeChange)="onDateRangeChange($event)"
+        />
+      </div>
+    </app-dynamic-table>
+  </div>
 </div>
 
 <!-- Drawer Overlay -->
 @if (showDrawer()) {
-<div class="drawer-overlay" (click)="closeDrawer()"></div>
-<div class="drawer bg-white dark:bg-gray-900 flex flex-col">
-    <app-product-form class="flex-1 h-full" [product]="editingProduct()" [categories]="categories()"
-        (saved)="onProductSaved($event)" (cancelled)="closeDrawer()" />
-</div>
+  <div class="drawer-overlay" (click)="closeDrawer()"></div>
+  <div class="drawer bg-white dark:bg-gray-900 flex flex-col">
+    <app-product-form
+      class="flex-1 h-full"
+      [product]="editingProduct()"
+      [categories]="categories()"
+      (saved)="onProductSaved($event)"
+      (cancelled)="closeDrawer()"
+    />
+  </div>
 }

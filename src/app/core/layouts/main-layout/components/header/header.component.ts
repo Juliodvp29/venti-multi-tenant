@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output, viewChild } from '@angular/core';
 import { TenantService } from '@core/services/tenant';
+import { CommandPaletteService } from '@core/services/command-palette';
 import { NotificationsDropdown } from '@shared/components/notifications-dropdown/notifications-dropdown';
 import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
 
@@ -38,7 +39,36 @@ import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
 
       <div class="flex-1 flex justify-between items-center">
         <div class="flex-1 flex">
-          <!-- Search bar could go here -->
+          <!-- Búsqueda global (Cmd+K / Ctrl+K) -->
+          <button
+            type="button"
+            aria-label="Abrir búsqueda global"
+            title="Buscar o ir a… (Ctrl+K)"
+            class="hidden md:flex items-center gap-2.5 w-full max-w-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 text-sm text-gray-400 dark:text-gray-500 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors"
+            (click)="palette.open()"
+          >
+            <svg
+              class="h-4 w-4 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+              />
+            </svg>
+            <span class="flex-1 truncate text-left">Buscar o ir a…</span>
+            <kbd
+              class="flex items-center gap-0.5 rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 px-1.5 py-0.5 text-[10px] font-semibold text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+            >
+              ⌘K
+            </kbd>
+          </button>
         </div>
         <div class="ml-4 flex items-center gap-3 md:ml-6">
           <!-- View Store Link -->
@@ -68,7 +98,12 @@ import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
             (click)="openHelp()"
           >
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </button>
 
@@ -77,7 +112,10 @@ import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
           @defer (on idle) {
             <app-notifications-dropdown />
           } @placeholder {
-            <span class="h-10 w-10 rounded-full animate-pulse bg-gray-100 dark:bg-gray-800" aria-hidden="true"></span>
+            <span
+              class="h-10 w-10 rounded-full animate-pulse bg-gray-100 dark:bg-gray-800"
+              aria-hidden="true"
+            ></span>
           }
         </div>
       </div>
@@ -95,6 +133,7 @@ import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
 export class HeaderComponent {
   readonly toggleSidebar = output<void>();
   protected readonly tenantService = inject(TenantService);
+  protected readonly palette = inject(CommandPaletteService);
   private readonly helpDrawer = viewChild<{ open: () => void }>('helpDrawerRef');
 
   openHelp(): void {

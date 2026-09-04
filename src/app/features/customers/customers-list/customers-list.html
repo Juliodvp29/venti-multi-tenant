@@ -1,35 +1,37 @@
 <div class="p-6 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <!-- Tabs Navigation -->
-    <div class="mb-6 border-b border-slate-200 dark:border-slate-800">
-        <nav class="flex space-x-8" aria-label="Tabs">
-            @for (tab of tabs; track tab.id) {
-            <button class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200" [class.border-sky-500]="activeTab() === tab.id"
-                [class.text-sky-600]="activeTab() === tab.id" [class.dark:text-sky-400]="activeTab() === tab.id"
-                [class.border-transparent]="activeTab() !== tab.id" [class.text-slate-500]="activeTab() !== tab.id"
-                [class.dark:text-slate-400]="activeTab() !== tab.id"
-                [class.hover:text-slate-700]="activeTab() !== tab.id"
-                [class.dark:hover:text-slate-200]="activeTab() !== tab.id"
-                [class.hover:border-slate-300]="activeTab() !== tab.id"
-                (click)="activeTab.set(tab.id)">
-                {{ tab.label }}
-            </button>
-            }
-        </nav>
-    </div>
+  <!-- Tabs Navigation -->
+  <div class="mb-6 border-b border-slate-200 dark:border-slate-800">
+    <nav class="flex space-x-8" aria-label="Tabs">
+      @for (tab of tabs; track tab.id) {
+        <button
+          class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200"
+          [class.border-sky-500]="activeTab() === tab.id"
+          [class.text-sky-600]="activeTab() === tab.id"
+          [class.dark:text-sky-400]="activeTab() === tab.id"
+          [class.border-transparent]="activeTab() !== tab.id"
+          [class.text-slate-500]="activeTab() !== tab.id"
+          [class.dark:text-slate-400]="activeTab() !== tab.id"
+          [class.hover:text-slate-700]="activeTab() !== tab.id"
+          [class.dark:hover:text-slate-200]="activeTab() !== tab.id"
+          [class.hover:border-slate-300]="activeTab() !== tab.id"
+          (click)="activeTab.set(tab.id)"
+        >
+          {{ tab.label }}
+        </button>
+      }
+    </nav>
+  </div>
 
-    <div class="relative">
-        @if (isLoading()) {
-        <div
-            class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 backdrop-blur-[2px] z-10 flex items-center justify-center min-h-[250px] rounded-2xl">
-            <div class="flex flex-col items-center gap-2">
-                <div class="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Cargando clientes...</p>
-            </div>
-        </div>
-        }
-        <app-dynamic-table title="Base de Datos de Clientes"
-            description="Gestiona clientes y ve su historial de compras." searchPlaceholder="Buscar por nombre o correo..."
-            [columns]="columns" [data]="filteredCustomers()" [pageSize]="10"
-            (rowClick)="onCustomerClick($event)" />
-    </div>
+  <div class="relative">
+    <app-dynamic-table
+      title="Base de Datos de Clientes"
+      description="Gestiona clientes y ve su historial de compras."
+      searchPlaceholder="Buscar por nombre o correo..."
+      [columns]="columns"
+      [data]="filteredCustomers()"
+      [pageSize]="10"
+      [isLoading]="isLoading()"
+      (rowClick)="onCustomerClick($event)"
+    />
+  </div>
 </div>

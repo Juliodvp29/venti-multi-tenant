@@ -1,162 +1,223 @@
 <div class="space-y-6 pb-24">
-    <!-- Status Templates -->
-    <ng-template #statusTemplate let-status>
-        <app-order-status-badge variant="order" [status]="status" />
-    </ng-template>
+  <!-- Status Templates -->
+  <ng-template #statusTemplate let-status>
+    <app-order-status-badge variant="order" [status]="status" />
+  </ng-template>
 
-    <ng-template #paymentTemplate let-payment>
-        <app-order-status-badge variant="payment" [status]="payment" />
-    </ng-template>
+  <ng-template #paymentTemplate let-payment>
+    <app-order-status-badge variant="payment" [status]="payment" />
+  </ng-template>
 
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Órdenes</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gestiona y revisa las órdenes de tu tienda.</p>
-        </div>
-        <button class="flex items-center gap-2 px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-sky-200 dark:shadow-sky-900/20 transition-all active:scale-95"
-            (click)="openCreate()">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Crear Orden
-        </button>
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Órdenes</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Gestiona y revisa las órdenes de tu tienda.
+      </p>
+    </div>
+    <button
+      class="flex items-center gap-2 px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-sky-200 dark:shadow-sky-900/20 transition-all active:scale-95"
+      (click)="openCreate()"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+        />
+      </svg>
+      Crear Orden
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <!-- Total del mes -->
+    <div
+      class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200"
+    >
+      <div
+        class="flex-shrink-0 w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-sky-600 dark:text-sky-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"
+          />
+        </svg>
+      </div>
+      <div>
+        @if (isStatsLoading()) {
+          <div class="h-7 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+        } @else {
+          <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
+            {{ stats()?.totalThisMonth ?? 0 }}
+          </p>
+        }
+        <p
+          class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+        >
+          Órdenes este mes
+        </p>
+      </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-        <!-- Total del mes -->
-        <div
-            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
-            <div
-                class="flex-shrink-0 w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-600 dark:text-sky-400" fill="none"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
-                </svg>
-            </div>
-            <div>
-                @if (isStatsLoading()) {
-                <div class="h-7 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                } @else {
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
-                    {{ stats()?.totalThisMonth ?? 0 }}</p>
-                }
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Órdenes
-                    este mes</p>
-            </div>
-        </div>
-
-        <!-- Pendientes de fulfillment -->
-        <div
-            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
-            <div
-                class="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-            </div>
-            <div>
-                @if (isStatsLoading()) {
-                <div class="h-7 w-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                } @else {
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
-                    {{ stats()?.pendingFulfillment ?? 0 }}
-                    @if ((stats()?.pendingFulfillment ?? 0) > 0) {
-                    <span class="ml-2 text-xs font-semibold text-amber-600 dark:text-amber-400">Atención</span>
-                    }
-                </p>
-                }
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Pendiente de envío</p>
-            </div>
-        </div>
-
-        <!-- Revenue hoy -->
-        <div
-            class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200">
-            <div
-                class="flex-shrink-0 w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 dark:text-green-400" fill="none"
-                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33" />
-                </svg>
-            </div>
-            <div>
-                @if (isStatsLoading()) {
-                <div class="h-7 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                } @else {
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
-                    {{ stats()?.revenueToday ?? 0 | currency:currency() }}
-                    @if (revenueChange() !== null) {
-                    <span
-                        class="ml-2 text-xs font-semibold {{ revenueChange()! >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500' }}">
-                        {{ revenueChange()! >= 0 ? '+' : '' }}{{ revenueChange()! | number:'1.0-0' }}%
-                    </span>
-                    }
-                </p>
-                }
-                <p class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Ingresos hoy</p>
-            </div>
-        </div>
-
+    <!-- Pendientes de fulfillment -->
+    <div
+      class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200"
+    >
+      <div
+        class="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-amber-600 dark:text-amber-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+          />
+        </svg>
+      </div>
+      <div>
+        @if (isStatsLoading()) {
+          <div class="h-7 w-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+        } @else {
+          <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
+            {{ stats()?.pendingFulfillment ?? 0 }}
+            @if ((stats()?.pendingFulfillment ?? 0) > 0) {
+              <span class="ml-2 text-xs font-semibold text-amber-600 dark:text-amber-400"
+                >Atención</span
+              >
+            }
+          </p>
+        }
+        <p
+          class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+        >
+          Pendiente de envío
+        </p>
+      </div>
     </div>
 
-    <!-- Loading State (initial load only) -->
-    @if (isLoading() && orders().length === 0) {
-    <div class="flex items-center justify-center py-20">
-        <div class="flex flex-col items-center gap-3">
-            <svg class="animate-spin h-8 w-8 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Cargando órdenes...</p>
-        </div>
+    <!-- Revenue hoy -->
+    <div
+      class="flex items-center gap-4 p-5 bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-px transition-all duration-200"
+    >
+      <div
+        class="flex-shrink-0 w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-green-600 dark:text-green-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33"
+          />
+        </svg>
+      </div>
+      <div>
+        @if (isStatsLoading()) {
+          <div class="h-7 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+        } @else {
+          <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
+            {{ stats()?.revenueToday ?? 0 | currency: currency() }}
+            @if (revenueChange() !== null) {
+              <span
+                class="ml-2 text-xs font-semibold {{
+                  revenueChange()! >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500'
+                }}"
+              >
+                {{ revenueChange()! >= 0 ? '+' : '' }}{{ revenueChange()! | number: '1.0-0' }}%
+              </span>
+            }
+          </p>
+        }
+        <p
+          class="mt-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+        >
+          Ingresos hoy
+        </p>
+      </div>
     </div>
-    }
+  </div>
 
-    <!-- Table -->
-    @if (orders().length > 0 || !isLoading()) {
-    <div class="transition-opacity duration-200" [class.opacity-50]="isLoading()"
-        [class.pointer-events-none]="isLoading()">
-        <app-dynamic-table title="Órdenes" description="Haz clic en una orden para ver los detalles completos." searchPlaceholder="Buscar por #orden o email..."
-            [data]="orders()"
-            [columns]="columns()" [totalItemsOverride]="totalCount()" [pageSize]="PAGE_SIZE"
-            (pageChange)="loadOrders($event)" (rowClick)="onRowClick($event)" (searchChange)="onSearchChange($event)"
-            (sortChange)="onSortChange($event)">
+  <!-- Table (skeleton en carga inicial, atenuado en recargas con datos) -->
+  <div
+    class="transition-opacity duration-200"
+    [class.opacity-50]="isLoading() && orders().length > 0"
+    [class.pointer-events-none]="isLoading() && orders().length > 0"
+  >
+    <app-dynamic-table
+      title="Órdenes"
+      description="Haz clic en una orden para ver los detalles completos."
+      searchPlaceholder="Buscar por #orden o email..."
+      [data]="orders()"
+      [columns]="columns()"
+      [totalItemsOverride]="totalCount()"
+      [pageSize]="PAGE_SIZE"
+      [isLoading]="isLoading() && orders().length === 0"
+      (pageChange)="loadOrders($event)"
+      (rowClick)="onRowClick($event)"
+      (searchChange)="onSearchChange($event)"
+      (sortChange)="onSortChange($event)"
+    >
+      <!-- Filters Slot -->
+      <div filters class="flex items-center gap-2">
+        <!-- Status filter -->
+        <app-dropdown
+          width="w-44"
+          placeholder="Estado"
+          [options]="statusDropdownOptions"
+          [value]="statusFilter()"
+          (valueChange)="statusFilter.set($event); loadOrders(1)"
+        />
+        <!-- Date range picker -->
+        <app-date-range-picker
+          placeholder="Rango de fechas"
+          [(value)]="dateRange"
+          (rangeChange)="onDateRangeChange($event)"
+        />
+      </div>
+    </app-dynamic-table>
+  </div>
 
-            <!-- Filters Slot -->
-            <div filters class="flex items-center gap-2">
-                <!-- Status filter -->
-                <app-dropdown width="w-44" placeholder="Estado"
-                    [options]="statusDropdownOptions" [value]="statusFilter()" (valueChange)="statusFilter.set($event); loadOrders(1)" />
-                <!-- Date range picker -->
-                <app-date-range-picker placeholder="Rango de fechas" [(value)]="dateRange"
-                    (rangeChange)="onDateRangeChange($event)" />
-            </div>
-
-        </app-dynamic-table>
-    </div>
-    }
-
-    <!-- Side Drawer -->
-    @if (showDrawer()) {
+  <!-- Side Drawer -->
+  @if (showDrawer()) {
     <div class="fixed inset-0 z-50 flex justify-end">
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" (click)="closeDrawer()"></div>
+      <!-- Backdrop -->
+      <div
+        class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+        (click)="closeDrawer()"
+      ></div>
 
-        <!-- Panel -->
-        <div
-            class="relative w-full max-w-2xl bg-white dark:bg-gray-900 shadow-2xl h-full transform transition-transform duration-300 ease-out translate-x-0">
-            <app-order-form (saved)="onOrderCreated($event)" (cancelled)="closeDrawer()" />
-        </div>
+      <!-- Panel -->
+      <div
+        class="relative w-full max-w-2xl bg-white dark:bg-gray-900 shadow-2xl h-full transform transition-transform duration-300 ease-out translate-x-0"
+      >
+        <app-order-form (saved)="onOrderCreated($event)" (cancelled)="closeDrawer()" />
+      </div>
     </div>
-    }
+  }
 </div>

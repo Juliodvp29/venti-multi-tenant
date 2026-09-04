@@ -114,21 +114,10 @@
     </div>
   </div>
 
-  <!-- Filters & Table -->
+  <!-- Filters & Table (skeleton por sección en carga inicial) -->
   <div
     class="bg-white dark:bg-gray-900 rounded-[2.5rem] border border-slate-100 dark:border-gray-800 shadow-sm overflow-hidden relative"
   >
-    @if (isLoading()) {
-      <div
-        class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 backdrop-blur-[2px] z-10 flex items-center justify-center min-h-[250px]"
-      >
-        <div class="flex flex-col items-center gap-2">
-          <div class="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
-          <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Cargando reseñas...</p>
-        </div>
-      </div>
-    }
-
     <div
       class="p-8 border-b border-slate-50 dark:border-gray-800 flex flex-wrap items-center justify-between gap-6"
     >
@@ -148,6 +137,7 @@
       [actions]="actions"
       [totalItemsOverride]="totalItems()"
       [pageSize]="pageSize()"
+      [isLoading]="isLoading() && reviews().length === 0"
       (pageChange)="onPageChange($event)"
       (actionClick)="onAction($event)"
     />

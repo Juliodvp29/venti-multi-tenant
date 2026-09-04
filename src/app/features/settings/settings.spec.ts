@@ -99,16 +99,45 @@ describe('Settings', () => {
     expect(component.activeTab()).toBe('branding');
   });
 
-  it('should prompt confirmation when switching tabs with unsaved changes', async () => {
+  it('should flush pending changes via autosave when switching tabs', async () => {
+    component.onDirtyChange(true);
+
+    await component.setActiveTab('general');
+
+    expect(tenantServiceMock.saveDraft).toHaveBeenCalled();
+    expect(toastServiceMock.confirm).not.toHaveBeenCalled();
+    expect(component.activeTab()).toBe('general'); // Should switch without asking
+    expect(component.autosaveStatus()).toBe('saved');
+  });
+
+  it('should prompt confirmation when autosave flush fails on tab switch', async () => {
+    tenantServiceMock.saveDraft.mockRejectedValueOnce(new Error('offline'));
     component.onDirtyChange(true);
     toastServiceMock.confirm.mockResolvedValue(false);
 
     await component.setActiveTab('general');
     expect(component.activeTab()).toBe('theme'); // Should stay on theme
+    expect(component.autosaveStatus()).toBe('error');
 
     toastServiceMock.confirm.mockResolvedValue(true);
     await component.setActiveTab('general');
-    expect(component.activeTab()).toBe('general'); // Should switch
+    expect(component.activeTab()).toBe('general'); // Should switch after confirm
+  });
+
+  it('should schedule an autosave after dirty changes', async () => {
+    vi.useFakeTimers();
+    try {
+      component.onDirtyChange(true);
+      expect(tenantServiceMock.saveDraft).not.toHaveBeenCalled();
+
+      await vi.advanceTimersByTimeAsync(1500);
+
+      expect(tenantServiceMock.saveDraft).toHaveBeenCalled();
+      expect(component.autosaveStatus()).toBe('saved');
+      expect(component.lastAutosavedLabel()).not.toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('should toggle viewMode between desktop and mobile', () => {

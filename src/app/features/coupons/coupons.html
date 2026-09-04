@@ -85,39 +85,24 @@
     </div>
   </div>
 
-  <!-- Table -->
+  <!-- Table (skeleton por sección en carga inicial) -->
   <div
     class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden text-black dark:text-white relative"
   >
-    @if (isLoading()) {
-      <div
-        class="absolute inset-0 bg-white/50 dark:bg-gray-800/50 backdrop-blur-[2px] z-10 flex items-center justify-center"
-      >
-        <div class="flex flex-col items-center gap-2">
-          <div
-            class="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"
-          ></div>
-          <p class="text-xs font-medium text-gray-500">Cargando cupones...</p>
-        </div>
-      </div>
-    }
     <app-dynamic-table
       title="Lista de Cupones"
       [data]="coupons()"
       [columns]="columns"
       [actions]="actions"
       [pageSize]="10"
+      [isLoading]="isLoading()"
       (actionClick)="onAction($event)"
     />
   </div>
 </div>
 
 @if (isModalOpen()) {
-  <app-coupon-modal
-    [coupon]="selectedCoupon()"
-    (close)="onModalClose()"
-    (saved)="loadCoupons()"
-  />
+  <app-coupon-modal [coupon]="selectedCoupon()" (close)="onModalClose()" (saved)="loadCoupons()" />
 }
 
 <app-gift-coupon-modal

@@ -6,6 +6,7 @@ import {
   inject,
   effect,
   viewChild,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -65,6 +66,11 @@ type Tab =
   | 'seo'
   | 'advanced';
 
+/** Pausa tras el último cambio antes de autoguardar el borrador. */
+const AUTOSAVE_DELAY_MS = 1200;
+
+export type AutosaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
 @Component({
   selector: 'app-settings',
   imports: [
@@ -91,6 +97,7 @@ export class Settings {
   private readonly tenantService = inject(TenantService);
   private readonly toastService = inject(ToastService);
   private readonly previewSyncService = inject(PreviewSyncService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly isPopoutOpen = this.previewSyncService.isPopoutOpen;
 
@@ -107,6 +114,12 @@ export class Settings {
   readonly isPublishModalOpen = signal(false);
   readonly isPublishing = signal(false);
   readonly isSavingDraft = signal(false);
+  readonly autosaveStatus = signal<AutosaveStatus>('idle');
+  readonly lastAutosavedLabel = signal<string | null>(null);
+  readonly autosaveError = signal<string | null>(null);
+  private autosaveTimer: ReturnType<typeof setTimeout> | null = null;
+  private autosaveInFlight = false;
+  private autosaveQueued = false;
   readonly publishVersionName = signal('');
   readonly publishNotes = signal('');
   readonly previewDataSource = signal<'draft' | 'published'>('draft');
@@ -236,6 +249,8 @@ export class Settings {
   });
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.cancelPendingAutosave());
+
     // Sync preview data when tenant or layout changes
     effect(() => {
       const t = this.tenantService.tenant();
@@ -331,11 +346,16 @@ export class Settings {
   async setActiveTab(tab: Tab) {
     if (tab === this.activeTab()) return;
     if (this.hasUnsavedChanges()) {
-      const confirmed = await this.toastService.confirm(
-        'Tienes cambios sin guardar en esta sección. ¿Quieres descartarlos y cambiar de pestaña?',
-        'Cambios sin guardar',
-      );
-      if (!confirmed) return;
+      // El borrador se autoguardó (o se intenta guardar ahora): cambiar de
+      // pestaña nunca pierde trabajo. Solo se pregunta si el guardado falló.
+      const flushed = await this.flushAutosave();
+      if (!flushed) {
+        const confirmed = await this.toastService.confirm(
+          'No pudimos guardar automáticamente tus cambios. ¿Quieres descartarlos y cambiar de pestaña?',
+          'Cambios sin guardar',
+        );
+        if (!confirmed) return;
+      }
     }
     this.hasUnsavedChanges.set(false);
     this.activeTab.set(tab);
@@ -343,6 +363,89 @@ export class Settings {
 
   onDirtyChange(isDirty: boolean) {
     this.hasUnsavedChanges.set(isDirty);
+    if (isDirty) {
+      this.autosaveError.set(null);
+      this.scheduleAutosave();
+    } else {
+      this.cancelPendingAutosave();
+    }
+  }
+
+  // ── Autoguardado del borrador ──
+
+  private scheduleAutosave(): void {
+    this.cancelPendingAutosave();
+    this.autosaveTimer = setTimeout(() => {
+      this.autosaveTimer = null;
+      void this.persistDraft({ silent: true });
+    }, AUTOSAVE_DELAY_MS);
+  }
+
+  private cancelPendingAutosave(): void {
+    if (this.autosaveTimer) {
+      clearTimeout(this.autosaveTimer);
+      this.autosaveTimer = null;
+    }
+  }
+
+  /**
+   * Guarda de inmediato lo pendiente (cancela el debounce). Se usa al cambiar
+   * de pestaña y en el reintento manual. Retorna si todo quedó persistido.
+   */
+  async flushAutosave(): Promise<boolean> {
+    this.cancelPendingAutosave();
+    if (!this.hasUnsavedChanges() && this.autosaveStatus() !== 'error') return true;
+    return this.persistDraft({ silent: true });
+  }
+
+  private async persistDraft(options: { silent: boolean }): Promise<boolean> {
+    if (this.autosaveInFlight) {
+      // Un guardado está en curso: reintentarlo al terminar con el estado final.
+      this.autosaveQueued = true;
+      return true;
+    }
+    this.autosaveInFlight = true;
+    this.autosaveQueued = false;
+    this.isSavingDraft.set(true);
+    if (options.silent) this.autosaveStatus.set('saving');
+
+    try {
+      // 1. Persiste la pestaña activa (marca su estado como guardado).
+      const sectionOk = await this.saveActiveSection(options.silent);
+      // 2. Persiste el snapshot completo del borrador (diseño + preview).
+      const snapshot = this.currentDraftSnapshot();
+      const result = await this.tenantService.saveDraft(snapshot);
+
+      const ok = sectionOk && result.success;
+      if (ok) {
+        this.autosaveError.set(null);
+        if (options.silent) {
+          this.autosaveStatus.set('saved');
+          this.lastAutosavedLabel.set(
+            new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }),
+          );
+        }
+      } else {
+        const message = result.error || 'No se pudo guardar una sección. Revisa los campos.';
+        this.autosaveError.set(message);
+        if (options.silent) this.autosaveStatus.set('error');
+        else this.toastService.error(message);
+      }
+      return ok;
+    } catch {
+      const message = 'Error al guardar el borrador de diseño.';
+      this.autosaveError.set(message);
+      if (options.silent) this.autosaveStatus.set('error');
+      else this.toastService.error(message);
+      return false;
+    } finally {
+      this.isSavingDraft.set(false);
+      this.autosaveInFlight = false;
+      if (this.autosaveQueued) {
+        this.autosaveQueued = false;
+        this.scheduleAutosave();
+      }
+    }
   }
 
   // ── Presets Modal Management ──
@@ -365,33 +468,23 @@ export class Settings {
     if (snapshot.branding) {
       this.updatePreview(snapshot.branding);
     }
-    this.hasUnsavedChanges.set(true);
-    this.toastService.success('Diseño cargado en el borrador de trabajo.');
+    this.onDirtyChange(true);
+    this.toastService.success('Diseño cargado en el borrador. Se guardará automáticamente.');
   }
 
   // ── Draft & Publish Operations ──
+
+  /**
+   * Guardado manual con notificaciones (botón "Reintentar" tras un error de
+   * autoguardado). El flujo normal ya no lo necesita: el borrador se persiste solo.
+   */
   async saveDraftOnly() {
-    this.isSavingDraft.set(true);
-    try {
-      const snapshot = this.currentDraftSnapshot();
-
-      // First save local tab form
-      await this.saveChanges();
-
-      const result = await this.tenantService.saveDraft(snapshot);
-
-      if (result.success) {
-        this.toastService.success(
-          'Borrador guardado exitosamente. Los cambios no afectan la tienda pública.',
-        );
-        this.hasUnsavedChanges.set(false);
-      } else {
-        this.toastService.error(result.error || 'Error al guardar el borrador.');
-      }
-    } catch {
-      this.toastService.error('Error al guardar el borrador de diseño.');
-    } finally {
-      this.isSavingDraft.set(false);
+    const ok = await this.persistDraft({ silent: false });
+    if (ok) {
+      this.toastService.success(
+        'Borrador guardado exitosamente. Los cambios no afectan la tienda pública.',
+      );
+      this.hasUnsavedChanges.set(false);
     }
   }
 
@@ -411,8 +504,8 @@ export class Settings {
     try {
       const snapshot = this.currentDraftSnapshot();
 
-      // Save changes in current tab first
-      await this.saveChanges();
+      // Save changes in current tab first (silent: el toast de publicado basta)
+      await this.saveChanges(true);
 
       // Save draft
       await this.tenantService.saveDraft(snapshot);
@@ -464,57 +557,52 @@ export class Settings {
     }
   }
 
-  async saveChanges() {
-    switch (this.activeTab()) {
-      case 'theme':
-        await this.themeSection()?.save();
-        break;
-      case 'branding':
-        await this.brandingSection()?.save();
-        break;
-      case 'general':
-        await this.generalSection()?.save();
-        break;
-      case 'address':
-        await this.addressSection()?.save();
-        break;
-      case 'payments':
-        await this.paymentsSection()?.save();
-        break;
-      case 'seo':
-        await this.seoSection()?.save();
-        break;
-      case 'storefront':
-        await this.storefrontSection()?.saveLayout();
-        break;
-    }
+  /**
+   * Persiste la pestaña activa. Retorna si quedó sin cambios pendientes.
+   * En modo silencioso (autoguardado) no muestra toasts por sección.
+   * Si la sección no está renderizada (bloque diferido) o la pestaña no tiene
+   * formulario propio, no hay nada que persistir a ese nivel: el snapshot del
+   * borrador cubre el resto.
+   */
+  async saveActiveSection(silent: boolean): Promise<boolean> {
+    const saver = this.activeSectionSaver();
+    if (!saver) return true;
+    await saver(silent);
+    return !this.hasUnsavedChanges();
   }
 
-  discardChanges() {
-    switch (this.activeTab()) {
-      case 'theme':
-        this.themeSection()?.cancel();
-        break;
-      case 'branding':
-        this.brandingSection()?.cancel();
-        break;
-      case 'general':
-        this.generalSection()?.cancel();
-        break;
-      case 'address':
-        this.addressSection()?.cancel();
-        break;
-      case 'payments':
-        this.paymentsSection()?.cancel();
-        break;
-      case 'seo':
-        this.seoSection()?.cancel();
-        break;
-      case 'storefront':
-        this.storefrontSection()?.discardLayout();
-        break;
+  async saveChanges(silent = false) {
+    await this.activeSectionSaver()?.(silent);
+  }
+
+  private activeSectionSaver(): ((silent: boolean) => Promise<unknown>) | undefined {
+    const section = (() => {
+      switch (this.activeTab()) {
+        case 'theme':
+          return this.themeSection();
+        case 'branding':
+          return this.brandingSection();
+        case 'general':
+          return this.generalSection();
+        case 'address':
+          return this.addressSection();
+        case 'payments':
+          return this.paymentsSection();
+        case 'seo':
+          return this.seoSection();
+        case 'storefront':
+          return this.storefrontSection();
+        default:
+          return undefined;
+      }
+    })();
+    if (!section) return undefined;
+    if ('saveLayout' in section) {
+      const storefront = section as { saveLayout: (silent: boolean) => Promise<unknown> };
+      return (silent) => storefront.saveLayout(silent);
     }
-    this.hasUnsavedChanges.set(false);
+    const formSection = section as { save: (silent: boolean) => Promise<unknown> };
+    return (silent) => formSection.save(silent);
   }
 
   setViewMode(mode: 'desktop' | 'mobile') {

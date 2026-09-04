@@ -98,15 +98,15 @@ export class SettingsSeo {
     this.dirtyChange.emit(true);
   }
 
-  async save(): Promise<void> {
+  async save(silent = false): Promise<boolean> {
     if (this.form.invalid) {
-      this.toastService.error('Por favor, corrige los errores en el formulario');
+      if (!silent) this.toastService.error('Por favor, corrige los errores en el formulario');
       this.form.markAllAsTouched();
-      return;
+      return false;
     }
 
     const tenant = this.tenant();
-    if (!tenant) return;
+    if (!tenant) return false;
 
     this.isSaving.set(true);
     this.saveError.set(null);
@@ -122,15 +122,17 @@ export class SettingsSeo {
           seo_og_image: seo_og_image.trim(),
         },
       });
-      this.toastService.success('Configuración SEO guardada exitosamente');
+      if (!silent) this.toastService.success('Configuración SEO guardada exitosamente');
       this.form.markAsPristine();
       this.dirtyChange.emit(false);
+      return true;
     } catch (error) {
       console.error('Error saving SEO settings:', error);
       this.saveError.set(
         'No pudimos guardar los cambios. Revisa tu conexión e inténtalo de nuevo.',
       );
-      this.toastService.error('Error al guardar la configuración SEO');
+      if (!silent) this.toastService.error('Error al guardar la configuración SEO');
+      return false;
     } finally {
       this.isSaving.set(false);
     }
