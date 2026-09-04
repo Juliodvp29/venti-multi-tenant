@@ -85,6 +85,11 @@ export class Dashboard {
 
   readonly recentTransactions = signal<DashboardTransaction[]>([]);
 
+  // Carga por fases: pinta stats primero (LCP), resto en background
+  readonly isLoadingStats = signal(true);
+  readonly isLoadingDetails = signal(true);
+  private refreshInFlight = false;
+
   formatCurrency(value: number): string {
     const currency = this.tenantService.currentTenant()?.settings?.['currency'];
     return new Intl.NumberFormat('es', {
@@ -116,13 +121,23 @@ export class Dashboard {
   }
 
   private async refreshData() {
-    await Promise.all([
-      this.loadStats(),
-      this.loadSalesChart(),
-      this.loadCategories(),
-      this.loadTopProducts(),
-      this.loadRecentOrders(),
-    ]);
+    if (this.refreshInFlight) return;
+    this.refreshInFlight = true;
+    try {
+      // Fase 1 (crítica, bloquea LCP): solo stats
+      await this.loadStats();
+      this.isLoadingStats.set(false);
+      // Fase 2 ( diferida, no bloquea): charts + listas en paralelo
+      await Promise.allSettled([
+        this.loadSalesChart(),
+        this.loadCategories(),
+        this.loadTopProducts(),
+        this.loadRecentOrders(),
+      ]);
+    } finally {
+      this.isLoadingDetails.set(false);
+      this.refreshInFlight = false;
+    }
   }
 
   private async loadStats() {
@@ -190,7 +205,11 @@ export class Dashboard {
   }
 
   private async loadRecentOrders() {
-    const { data } = await this.ordersService.getOrders(1, 5);
+    // Query liviana: solo columnas usadas + sin count exact (evita el planificador COUNT)
+    const { data } = await this.ordersService.getOrders(1, 5, undefined, {
+      columns: 'order_number,customer_first_name,customer_last_name,created_at,total_amount,status',
+      withCount: false,
+    });
     this.recentTransactions.set(
       (data as any[]).map((o) => {
         const first = o.customer_first_name || 'Invitado';

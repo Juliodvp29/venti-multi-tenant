@@ -41,10 +41,15 @@ export interface DashboardProduct {
                   >{{ $index + 1 }}</span
                 >
                 @if (product.image) {
+                  <!-- Thumb 44px con object-cover: el recorte lo hace CSS, sin warnings de aspect-ratio -->
                   <img
                     class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                     [src]="product.image"
                     [alt]="product.name"
+                    width="44"
+                    height="44"
+                    loading="lazy"
+                    decoding="async"
                   />
                 } @else {
                   <svg
