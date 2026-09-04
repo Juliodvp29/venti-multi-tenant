@@ -1,0 +1,14 @@
+/* La animación de entrada usa las utilidades animate-in del proyecto. */
+:host {
+  display: contents;
+}
+
+/* El input de la paleta no lleva anillo de foco: el panel y el caret ya indican
+   el foco, y el box-shadow global de formularios se vería como un borde
+   cuadrado. No se toca styles.css para no afectar al resto de formularios. */
+:host input[type='text']:focus,
+:host input[type='text']:focus-visible {
+  border-color: transparent;
+  outline: none;
+  box-shadow: none;
+}

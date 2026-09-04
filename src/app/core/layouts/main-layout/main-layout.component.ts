@@ -3,11 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assistant';
+import { CommandPalette } from '@shared/components/command-palette/command-palette';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-main-layout',
-  imports: [RouterOutlet, SidebarComponent, HeaderComponent, AiAssistantComponent],
+  imports: [RouterOutlet, SidebarComponent, HeaderComponent, AiAssistantComponent, CommandPalette],
   template: `
     <div class="flex h-screen bg-[#f9f9f9] dark:bg-gray-800 overflow-hidden">
       <!-- Mobile sidebar backdrop -->
@@ -35,6 +35,8 @@ import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assista
           <router-outlet />
         </main>
       </div>
+
+      <app-command-palette />
 
       @defer (on idle) {
         <app-ai-assistant />
