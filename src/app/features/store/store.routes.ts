@@ -14,6 +14,10 @@ export const STORE_ROUTES: Routes = [
                 loadComponent: () => import('./components/product-grid/product-grid').then(m => m.ProductGrid)
             },
             {
+                path: 'categoria/:slug',
+                loadComponent: () => import('./components/product-grid/product-grid').then(m => m.ProductGrid)
+            },
+            {
                 path: 'product/:id',
                 loadComponent: () => import('./components/product-details/product-details').then(m => m.ProductDetails)
             },

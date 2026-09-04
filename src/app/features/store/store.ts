@@ -38,6 +38,7 @@ export class StoreComponent {
 
   readonly isCartOpen = signal(false);
   readonly branding = this.tenantService.branding;
+  readonly tenantSettings = this.tenantService.settings;
   readonly themeTokens = this.tenantService.publishedThemeTokens;
 
   readonly currentUrl = toSignal(
@@ -223,11 +224,24 @@ export class StoreComponent {
     effect(() => {
       const branding = this.branding();
       if (branding) {
+        const isPrivateStorePage =
+          ['cart', 'checkout', 'success'].includes(this.activePageId()) ||
+          this.currentUrl().includes('/store/account');
+        const settings = this.tenantSettings();
+        const seoTitle = String(settings['seo_title'] || '').trim();
+        const seoDescription = String(settings['seo_description'] || '').trim();
+        const seoKeywords = String(settings['seo_keywords'] || '')
+          .split(',')
+          .map((keyword) => keyword.trim())
+          .filter(Boolean);
+        const seoOgImage = String(settings['seo_og_image'] || '').trim();
         this.seo.updateTags({
-          title: branding.business_name || 'Venti Shop',
-          description: branding.description || 'Nuestra tienda online oficial.',
-          image: branding.social_share_image_url || branding.logo_url || undefined,
+          title: seoTitle || branding.business_name || 'Venti Shop',
+          description: seoDescription || branding.description || 'Nuestra tienda online oficial.',
+          keywords: seoKeywords.length > 0 ? seoKeywords : undefined,
+          image: seoOgImage || branding.social_share_image_url || branding.logo_url || undefined,
           siteName: branding.business_name || 'Venti Shop',
+          robots: isPrivateStorePage ? 'noindex, nofollow' : 'index, follow',
         });
         if (branding.favicon_url) {
           this.seo.updateFavicon(branding.favicon_url);

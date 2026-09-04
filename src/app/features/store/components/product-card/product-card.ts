@@ -52,7 +52,7 @@ import { TenantService } from '@core/services/tenant';
         <a
           queryParamsHandling="preserve"
           class="block w-full h-full cursor-pointer relative"
-          [routerLink]="['/store/product', product().id]"
+          [routerLink]="productUrl()"
         >
           <!-- Primary Image -->
           <img
@@ -207,7 +207,7 @@ import { TenantService } from '@core/services/tenant';
               <a
                 queryParamsHandling="preserve"
                 class="w-full py-2 sm:py-2.5 font-bold text-xs shadow-xl transition-all duration-300 flex items-center justify-center gap-1.5 bg-slate-900/90 hover:bg-slate-900 text-white backdrop-blur-md cursor-pointer active:scale-95"
-                [routerLink]="['/store/product', product().id]"
+                [routerLink]="productUrl()"
                 [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                 [style.text-transform]="'var(--store-btn-transform, none)'"
               >
@@ -243,7 +243,7 @@ import { TenantService } from '@core/services/tenant';
             <a
               queryParamsHandling="preserve"
               class="hover:underline"
-              [routerLink]="['/store/product', product().id]"
+                [routerLink]="productUrl()"
             >
               {{ product().name }}
             </a>
@@ -304,7 +304,7 @@ import { TenantService } from '@core/services/tenant';
             <a
               queryParamsHandling="preserve"
               class="p-1.5 transition-colors hover:opacity-75"
-              [routerLink]="['/store/product', product().id]"
+                [routerLink]="productUrl()"
               [style.color]="'var(--store-color-muted, #737373)'"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -365,7 +365,7 @@ import { TenantService } from '@core/services/tenant';
                 <a
                   queryParamsHandling="preserve"
                   class="w-full py-2.5 font-bold text-xs sm:text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                  [routerLink]="['/store/product', product().id]"
+                  [routerLink]="productUrl()"
                   [style.border-radius]="'var(--store-radius-btn, 0.75rem)'"
                   [style.text-transform]="'var(--store-btn-transform, none)'"
                   [style.background-color]="'var(--store-color-primary, #0f172a)'"
@@ -397,6 +397,10 @@ import { TenantService } from '@core/services/tenant';
 })
 export class ProductCard {
   readonly product = input.required<Product>();
+
+  productUrl(): string[] {
+    return ['/store/product', this.product().slug];
+  }
   readonly config = input<Partial<ThemeTokens>>();
 
   private readonly cartService = inject(CartService);

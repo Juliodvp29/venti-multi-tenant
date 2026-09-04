@@ -33,15 +33,16 @@
 5. [Estructura del Proyecto](#-estructura-del-proyecto)
 6. [Módulos del Panel Administrativo (Guía por Vistas)](#-módulos-del-panel-administrativo-guía-por-vistas)
 7. [Módulos del Storefront Público & Experiencia de Compra](#-módulos-del-storefront-público--experiencia-de-compra)
-8. [Herramientas del Header: Soporte, Notificaciones e IA](#-herramientas-del-header-soporte-notificaciones-e-ia)
-9. [Capa Core del Sistema (Servicios, Guards e Interceptores)](#️-capa-core-del-sistema-servicios-guards-e-interceptores)
-10. [Componentes Compartidos Reutilizables](#-componentes-compartidos-reutilizables)
-11. [Modelo de Base de Datos y Seguridad](#️-modelo-de-base-de-datos-y-seguridad)
-12. [DevOps, Pruebas y Calidad de Código](#-devops-pruebas-y-calidad-de-código)
-13. [Guía de Instalación y Ejecución](#-guía-de-instalación-y-ejecución)
-14. [Configuración de Servicios Externos](#️-configuración-de-servicios-externos)
-15. [Roadmap](#-roadmap)
-16. [Licencia](#-licencia)
+8. [SEO del Storefront (URLs, Sitemap y Metadatos)](#-seo-del-storefront-urls-sitemap-y-metadatos)
+9. [Herramientas del Header: Soporte, Notificaciones e IA](#-herramientas-del-header-soporte-notificaciones-e-ia)
+10. [Capa Core del Sistema (Servicios, Guards e Interceptores)](#️-capa-core-del-sistema-servicios-guards-e-interceptores)
+11. [Componentes Compartidos Reutilizables](#-componentes-compartidos-reutilizables)
+12. [Modelo de Base de Datos y Seguridad](#️-modelo-de-base-de-datos-y-seguridad)
+13. [DevOps, Pruebas y Calidad de Código](#-devops-pruebas-y-calidad-de-código)
+14. [Guía de Instalación y Ejecución](#-guía-de-instalación-y-ejecución)
+15. [Configuración de Servicios Externos](#️-configuración-de-servicios-externos)
+16. [Roadmap](#-roadmap)
+17. [Licencia](#-licencia)
 
 ---
 
@@ -80,6 +81,7 @@ La plataforma opera bajo un modelo dual:
   - **Constructor de Secciones (Storefront Builder)**: Activación, reordenamiento y configuración de bloques modulares (Hero, Productos Destacados, Categorías, Banners, Testimonios, Newsletter, FAQ).
   - **Envíos e Impuestos**: Zonas de envío geográficas (integradas con la API de departamentos y municipios de Colombia), tarifas fijas o por peso y tasas de impuestos.
   - **Pasarelas de Pago**: Activación y parametrización de métodos de pago (Tarjetas, Transferencia, Contra entrega, Wompi multi-tenant).
+  - **SEO por Tienda (tab Marketing)**: Título, descripción, keywords e imagen OG editables con vista previa estilo Google, consumidos por el storefront.
   - **Simulador de Tienda en Vivo (`/preview`)**: Previsualización sincronizada en tiempo real con alternador de vista Responsive (Escritorio, Tablet, Móvil).
 
 ### 🛍️ Para Compradores en el Storefront Público
@@ -380,9 +382,10 @@ venti-multi-tenant/
 ### 2. Catálogo y Búsqueda de Productos (`/store/productos`)
 
 - **Filtros en Tiempo Real**: Filtrado facetado por categoría, rango de precios, ordenación por precio o fecha de novedad y paginación reactiva.
+- **URLs por Categoría (`/store/categoria/:slug`)**: Cada categoría tiene página propia con SEO dedicado (título, descripción y BreadcrumbList); los filtros del catálogo son links rastreables.
 - **Tarjetas de Producto Inteligentes (`app-product-card`)**: Indicadores visuales de stock, botón de adición rápida al carrito y cálculo dinámico de porcentajes de ahorro.
 
-### 3. Ficha de Producto con SSR y SEO (`/store/product/:id`)
+### 3. Ficha de Producto con SSR y SEO (`/store/product/:slug`)
 
 - **Generación en Servidor & Metaetiquetas**: Carga con SSR que provee títulos, descripciones, etiquetas OpenGraph completas y marcado JSON-LD (`schema.org/Product`) para indexación en Google y vista previa rica en WhatsApp, Telegram o Twitter.
 - **Selector Reactivo de Variantes**: Cambio instantáneo de opciones (ej. color o talla) que recalcula dinámicamente la disponibilidad de stock y el precio aplicable.
@@ -407,6 +410,47 @@ venti-multi-tenant/
 
 - **Autenticación Independiente (`CustomerAuthService`)**: Los compradores cuentan con su propio sistema de sesión desacoplado del panel administrativo.
 - **Gestión de Direcciones (`/store/account/direcciones`)**: Libreta de direcciones guardadas para agilizar futuras compras.
+
+---
+
+## 🔍 SEO del Storefront (URLs, Sitemap y Metadatos)
+
+### URLs canónicas por slug
+
+- **Productos**: `/store/product/:slug` (ej. `/store/product/tenis-samba-og`). `ProductDetails` resuelve primero por `slug` (`ProductsService.getProductBySlug`) con fallback por `id`, y si se entró por `id` redirige con `replaceUrl` a la URL canónica del slug.
+- **Categorías**: `/store/categoria/:slug` (ej. `/store/categoria/calzado`). Reutiliza `ProductGrid`, que resuelve el slug contra las categorías cargadas (con el mismo fallback por `id` + redirección canónica) y filtra incluyendo subcategorías descendientes.
+- **Filtro embebido sin URL**: el grid incrustado en el home (`Productos Destacados`, con `limit > 0`) filtra en local sin tocar la URL — es un widget, no una página indexable.
+- **Links rastreables**: en las vistas ruteadas (`/store/productos`, `/store/categoria/:slug`) los pills de categorías son `<a [routerLink]>` con `queryParamsHandling="preserve"` para que los crawlers descubran cada categoría.
+
+### Metadatos editables por tenant (tab Marketing → SEO en `/settings`)
+
+Cada tienda configura en `settings` (JSONB de `tenants`) sus propios metadatos mediante `SettingsSeo`:
+
+| Campo en `settings` | Uso                                                                                                   |
+| :------------------ | :---------------------------------------------------------------------------------------------------- |
+| `seo_title`         | `<title>` y `og:title` (recomendado ≤ 60 caracteres, con contador)                                    |
+| `seo_description`   | `meta description` y `og:description` (recomendado ≤ 160 caracteres)                                  |
+| `seo_keywords`      | Meta `keywords` (separadas por comas)                                                                 |
+| `seo_og_image`      | `og:image` / Twitter Card (subida a Storage o URL; recomendado 1200x630) + vista previa estilo Google |
+
+El efecto de `StoreComponent` (`src/app/features/store/store.ts`) los consume con fallback al comportamiento anterior (nombre/descripción/logo de branding). El asistente de IA también los expone vía `get_store_profile`.
+
+### Datos estructurados JSON-LD (`SeoService` + `StructuredDataService`)
+
+- **Producto** (`schema.org/Product` con `offers`, precio, disponibilidad, SKU, marca y categoría) en la ficha de producto.
+- **Organización** (`schema.org/Organization`) en el catálogo principal.
+- **BreadcrumbList** en producto (`Inicio > Categoría > Producto`) y en categoría (`Inicio > Productos > Categoría`); el grid limpia schemas stale con `clearSchemas()` al volver del detalle.
+- Las URLs del breadcrumb son absolutas (con `origin` + preservación de `?s=` en desarrollo) y el helper es SSR-safe.
+
+### Sitemap y robots multi-tenant (`src/server.ts`)
+
+- **`GET /sitemap.xml`**: resuelve el tenant por `?s=`, subdominio o dominio personalizado y devuelve XML válido con: `/store`, `/store/productos`, `/store/contacto`, `/store/nosotros`, cada categoría activa (`/store/categoria/:slug` con `lastmod`) y cada producto activo (`/store/product/:slug` con `lastmod`). Si falla la carga de categorías, se registra el error pero igual se sirve el resto (no tumba todo el sitemap).
+- **`GET /robots.txt`**: `Allow: /` + `Disallow` en rutas privadas (`/auth/`, `/dashboard`, `/products`, `/settings`, `/members`, `/orders`, `/customers`, `/store/checkout`, `/store/carrito`, `/store/success`, `/store/account`), bloqueo total a `GPTBot`/`CCBot` y puntero `Sitemap:` absoluto.
+- **Páginas privadas con `noindex, nofollow`**: el storefront marca así carrito, checkout, success y account vía `SeoService.updateTags`.
+
+### Dominios personalizados (`verify-domain`)
+
+La Edge Function `supabase/functions/verify-domain` valida que el dominio pertenezca al tenant y comprueba DNS CNAME + HTTPS. Incluye endurecimientos: validación de `tenant_id` como UUID (400), rate limiting de 1 verificación cada 30s por tenant (429 con `retry_after_seconds`), timeouts cortos (4s DNS / 5s fetch con `AbortController`) y bloqueo anti-SSRF (no hace fetch si el dominio resuelve a IP privada/loopback/link-local). Ver [Edge Function: `verify-domain`](#edge-function-verify-domain).
 
 ---
 

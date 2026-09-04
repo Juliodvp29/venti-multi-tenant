@@ -3,6 +3,15 @@ import { AiAssistantService } from './ai-assistant';
 import { Supabase } from './supabase';
 import { TenantService } from './tenant';
 
+// El entorno de tests no provee localStorage: stub en memoria.
+const memoryStorage = new Map<string, string>();
+vi.stubGlobal('localStorage', {
+  getItem: (key: string) => memoryStorage.get(key) ?? null,
+  setItem: (key: string, value: string) => void memoryStorage.set(key, value),
+  removeItem: (key: string) => void memoryStorage.delete(key),
+  clear: () => memoryStorage.clear(),
+});
+
 describe('AiAssistantService', () => {
   let service: AiAssistantService;
   let rpc: ReturnType<typeof vi.fn>;

@@ -155,12 +155,12 @@
                 </div>
                 <div class="divide-y divide-gray-100 dark:divide-gray-800">
                     @for (item of o.items ?? []; track item.id) {
-                    <div class="flex items-center gap-4 px-6 py-4">
+                    <div class="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 flex-wrap">
                         <!-- Product thumbnail -->
                         <div
                             class="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden">
-                            @if (item.product_snapshot?.['image_url']) {
-                            <img class="w-full h-full object-cover" [src]="item.product_snapshot?.['image_url']"
+                            @if (getItemImage(item)) {
+                            <img class="w-full h-full object-cover" [src]="getItemImage(item)"
                                 [alt]="item.product_name" />
                             } @else {
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none"
@@ -182,13 +182,13 @@
                         <!-- Qty -->
                         <span class="flex-shrink-0 text-sm text-gray-600 dark:text-gray-400">x{{ item.quantity }}</span>
                         <!-- Unit price -->
-                        <span class="flex-shrink-0 text-sm text-gray-600 dark:text-gray-400 w-24 text-right">
+                        <span
+                            class="hidden sm:block flex-shrink-0 text-sm text-gray-600 dark:text-gray-400 w-32 text-right whitespace-nowrap">
                             {{ currencyPipe.transform(item.unit_price, o.currency) }}
                         </span>
-
-                        <br>
                         <!-- Total -->
-                        <span class="flex-shrink-0 text-sm font-semibold text-gray-900 dark:text-white w-24 text-right">
+                        <span
+                            class="flex-shrink-0 text-sm font-semibold text-gray-900 dark:text-white ml-auto sm:ml-0 whitespace-nowrap">
                             {{ currencyPipe.transform(item.total_amount, o.currency) }}
                         </span>
                     </div>

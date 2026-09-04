@@ -39,6 +39,21 @@ export class CategoriesService {
         return data as Category;
     }
 
+    async getCategoryBySlug(slug: string): Promise<Category | null> {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) return null;
+
+        const { data, error } = await this.supabase.client
+            .from('categories')
+            .select('*')
+            .eq('tenant_id', tenantId)
+            .eq('slug', slug)
+            .maybeSingle();
+
+        if (error) throw error;
+        return (data as Category) || null;
+    }
+
     async createCategory(category: CreateCategoryDto): Promise<Category> {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');

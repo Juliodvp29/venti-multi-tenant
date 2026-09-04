@@ -1220,6 +1220,9 @@ export class Checkout implements OnInit {
         discount_amount: 0,
         tax_amount: 0,
         total_amount: item.price * item.quantity,
+        product_snapshot: {
+          image_url: this.getItemImage(item),
+        },
       }));
 
       const appliedCoupon = this.cartService.appliedCoupon();

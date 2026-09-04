@@ -8,7 +8,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductsService } from '@core/services/products';
 import { CartService } from '@core/services/cart';
 import { AnalyticsService } from '@core/services/analytics';
@@ -568,6 +568,7 @@ export class ProductDetails implements OnInit {
   private readonly reviewsService = inject(ReviewsService);
   private readonly analytics = inject(AnalyticsService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   private readonly customerAuth = inject(CustomerAuthService);
   private readonly seo = inject(SeoService);
@@ -685,7 +686,14 @@ export class ProductDetails implements OnInit {
 
   async loadProduct(id: string) {
     try {
-      const data = await this.productsService.getProduct(id);
+      let data = await this.productsService.getProductBySlug(id);
+      if (!data) {
+        data = await this.productsService.getProduct(id);
+        if (data?.slug && data.slug !== id) {
+          await this.router.navigate(['/store/product', data.slug], { replaceUrl: true });
+          return;
+        }
+      }
       if (data) {
         // Infer options if missing
         if (!data.options || data.options.length === 0) {
@@ -825,22 +833,53 @@ export class ProductDetails implements OnInit {
   }
 
   private updateSeo(product: Product) {
+    const storeName = this.tenantService.branding()?.business_name || 'Venti Shop';
+    const image = product.primary_image_url || product.images?.[0]?.url || undefined;
+    const firstCategory = (product as any).categories
+      ?.map((c: any) => c.category)
+      .find((c: any) => c?.slug);
     this.seo.updateTags({
       title: product.name,
       description: product.description || undefined,
-      image: product.primary_image_url || product.images?.[0]?.url || undefined,
+      image,
       type: 'product',
       keywords: [product.name, 'ecommerce', 'venti'],
+      siteName: storeName,
     });
 
     this.seo.setProductSchema({
       name: product.name,
       description: product.description || undefined,
-      image: product.primary_image_url || product.images?.[0]?.url || undefined,
+      image,
       price: product.price,
       currency: this.currency(),
       sku: product.sku || undefined,
+      brand: storeName,
+      category: firstCategory?.name,
       availability: product.stock_quantity > 0 ? 'InStock' : 'OutOfStock',
     });
+
+    // Breadcrumb: Inicio > (Categoría) > Producto
+    const crumbs = [{ name: 'Inicio', url: this.storeUrl('/store') }];
+    if (firstCategory) {
+      crumbs.push({
+        name: firstCategory.name,
+        url: this.storeUrl(`/store/categoria/${firstCategory.slug}`),
+      });
+    }
+    crumbs.push({
+      name: product.name,
+      url: this.storeUrl(`/store/product/${product.slug || product.id}`),
+    });
+    this.seo.setBreadcrumbSchema(crumbs);
+  }
+
+  private storeUrl(path: string): string {
+    const shop = this.route.snapshot.queryParamMap.get('s');
+    const suffix = shop ? `?s=${encodeURIComponent(shop)}` : '';
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}${path}${suffix}`;
+    }
+    return `${path}${suffix}`;
   }
 }
