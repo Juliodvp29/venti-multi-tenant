@@ -299,7 +299,7 @@ export class OrdersService {
       .select(
         `
                 *,
-                items:order_items(*),
+                items:order_items(*, product:products(images:product_images(url, is_primary))),
                 status_history:order_status_history(*),
                 refunds:refunds(*)
             `,

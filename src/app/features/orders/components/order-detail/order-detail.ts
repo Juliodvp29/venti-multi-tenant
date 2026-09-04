@@ -181,12 +181,18 @@ export class OrderDetail implements OnInit {
   }
 
   async loadDeliveryPersonnel() {
+    const tenantId = this.tenantService.tenantId();
+    if (!tenantId) {
+      this.deliveryPersonnelOptions.set([{ label: 'Sin asignar', value: '' }]);
+      return;
+    }
+
     try {
       // Fetch users with 'delivery' role for this tenant
       const { data, error } = await this.ordersService['supabase'].client
         .from('tenant_members')
-        .select('user_id, role, users:auth.users!user_id(email)' as any)
-        .eq('tenant_id', this.ordersService['tenantService'].tenantId() || '')
+        .select('user_id, role')
+        .eq('tenant_id', tenantId)
         .eq('role', 'delivery')
         .eq('is_active', true);
 
@@ -195,7 +201,7 @@ export class OrderDetail implements OnInit {
       if (data) {
         const options: DropdownOption[] = [{ label: 'Sin asignar', value: '' }];
         for (const member of data as any[]) {
-          options.push({ label: member.users?.email || member.user_id, value: member.user_id });
+          options.push({ label: member.user_id, value: member.user_id });
         }
         this.deliveryPersonnelOptions.set(options);
       }
@@ -229,6 +235,18 @@ export class OrderDetail implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  getItemImage(item: NonNullable<Order['items']>[number]): string | null {
+    const snapshot = item.product_snapshot;
+    if (snapshot && typeof snapshot === 'object') {
+      const imageUrl = snapshot['image_url'];
+      if (typeof imageUrl === 'string' && imageUrl) return imageUrl;
+    }
+
+    const product = (item as any).product;
+    const images = product?.images as { url?: string; is_primary?: boolean }[] | undefined;
+    return images?.find((image) => image.is_primary)?.url || images?.[0]?.url || null;
   }
 
   async saveNote() {
