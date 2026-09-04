@@ -1,233 +1,275 @@
 <form class="space-y-8" [formGroup]="form" (ngSubmit)="save()">
-    @if (saveError(); as errorMessage) {
-    <div class="flex items-start justify-between gap-4 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900/40 dark:bg-red-950/20"
-        role="alert">
-        <div class="flex items-start gap-3">
-            <svg class="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 9v3.75m0 3h.008M10.29 3.86 2.82 17.25A1.5 1.5 0 0 0 4.13 19.5h15.74a1.5 1.5 0 0 0 1.31-2.25L13.71 3.86a1.95 1.95 0 0 0-3.42 0Z" />
-            </svg>
-            <div>
-                <p class="text-sm font-semibold text-red-800 dark:text-red-200">No se guardaron los cambios</p>
-                <p class="mt-1 text-sm text-red-700 dark:text-red-300">{{ errorMessage }}</p>
-            </div>
+  @if (saveError(); as errorMessage) {
+    <div
+      class="flex items-start justify-between gap-4 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900/40 dark:bg-red-950/20"
+      role="alert"
+    >
+      <div class="flex items-start gap-3">
+        <svg
+          class="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v3.75m0 3h.008M10.29 3.86 2.82 17.25A1.5 1.5 0 0 0 4.13 19.5h15.74a1.5 1.5 0 0 0 1.31-2.25L13.71 3.86a1.95 1.95 0 0 0-3.42 0Z"
+          />
+        </svg>
+        <div>
+          <p class="text-sm font-semibold text-red-800 dark:text-red-200">
+            No se guardaron los cambios
+          </p>
+          <p class="mt-1 text-sm text-red-700 dark:text-red-300">{{ errorMessage }}</p>
         </div>
-        <button type="submit" class="shrink-0 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-            [disabled]="isSaving() || form.invalid">
-            Reintentar
-        </button>
+      </div>
+      <button
+        type="submit"
+        class="shrink-0 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+        [disabled]="isSaving() || form.invalid"
+      >
+        Reintentar
+      </button>
     </div>
-    }
+  }
 
-    @if (isSaving()) {
-    <div class="flex items-center gap-3 rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-700 dark:border-sky-900/40 dark:bg-sky-950/20 dark:text-sky-300"
-        role="status" aria-live="polite">
-        <span class="h-4 w-4 animate-spin rounded-full border-2 border-sky-300 border-t-sky-600 dark:border-sky-700 dark:border-t-sky-300"></span>
-        Guardando configuración...
+  @if (isSaving()) {
+    <div
+      class="flex items-center gap-3 rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-700 dark:border-sky-900/40 dark:bg-sky-950/20 dark:text-sky-300"
+      role="status"
+      aria-live="polite"
+    >
+      <span
+        class="h-4 w-4 animate-spin rounded-full border-2 border-sky-300 border-t-sky-600 dark:border-sky-700 dark:border-t-sky-300"
+      ></span>
+      Guardando configuración...
     </div>
-    }
+  }
 
-    <!-- Business Name -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="md:col-span-1">
-            <label for="business_name" class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Nombre del Negocio
-            </label>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                El nombre público de tu tienda en línea.
-            </p>
-        </div>
-        <div class="md:col-span-2">
-            <input id="business_name" type="text" formControlName="business_name"
-                class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
-                placeholder="Venti Coffee Roasters" />
-            @if (form.controls.business_name.touched && form.controls.business_name.errors) {
-            <p class="mt-1 text-sm text-red-600">El nombre del negocio es obligatorio</p>
-            }
-        </div>
+  <!-- Business Name -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1">
+      <label for="business_name" class="block text-sm font-semibold text-gray-900 dark:text-white">
+        Nombre del Negocio
+      </label>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        El nombre público de tu tienda en línea.
+      </p>
     </div>
-
-    <hr class="border-gray-100 dark:border-gray-800" />
-
-    <!-- Store Slug -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="md:col-span-1">
-            <label for="slug" class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Slug de la Tienda
-            </label>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Utilizado para la identificación interna de tu tienda.
-            </p>
-        </div>
-        <div class="md:col-span-2">
-            <input id="slug" type="text" formControlName="slug"
-                class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-500 bg-gray-50 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 cursor-not-allowed"
-                readonly />
-        </div>
+    <div class="md:col-span-2">
+      <input
+        id="business_name"
+        type="text"
+        formControlName="business_name"
+        class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+        placeholder="Venti Coffee Roasters"
+      />
+      @if (form.controls.business_name.touched && form.controls.business_name.errors) {
+        <p class="mt-1 text-sm text-red-600">El nombre del negocio es obligatorio</p>
+      }
     </div>
+  </div>
 
-    <hr class="border-gray-100 dark:border-gray-800" />
+  <hr class="border-gray-100 dark:border-gray-800" />
 
-    <!-- Subdomain -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="md:col-span-1">
-            <label for="subdomain" class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Subdominio
-            </label>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Tu tienda será accesible a través de esta URL.
-            </p>
-        </div>
-        <div class="md:col-span-2">
-            <div
-                class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-sky-600 dark:ring-gray-700">
-                <input type="text" formControlName="subdomain" id="subdomain"
-                    class="block flex-1 border-0 bg-transparent py-2.5 px-4 text-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 dark:text-gray-400 cursor-not-allowed"
-                    readonly>
-                <span
-                    class="flex select-none items-center pr-4 text-gray-500 sm:text-sm dark:bg-gray-800 dark:text-gray-400 bg-gray-50 rounded-r-md border-l border-gray-300 dark:border-gray-700 px-3">.venti.com</span>
-            </div>
-        </div>
+  <!-- Store Slug -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1">
+      <label for="slug" class="block text-sm font-semibold text-gray-900 dark:text-white">
+        Slug de la Tienda
+      </label>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Utilizado para la identificación interna de tu tienda.
+      </p>
     </div>
-
-    <hr class="border-gray-100 dark:border-gray-800" />
-
-    <!-- Custom Domain -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="md:col-span-1">
-            <label for="custom_domain" class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Dominio personalizado
-            </label>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Usa tu propio dominio para que tus clientes visiten la tienda.
-            </p>
-        </div>
-        <div class="md:col-span-2">
-            <div class="flex items-center gap-3">
-                <input id="custom_domain" type="text" formControlName="custom_domain"
-                    class="block min-w-0 flex-1 rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
-                    placeholder="www.mitienda.com" />
-                @if (form.controls.custom_domain.value) {
-                <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
-                    [class.bg-amber-50]="domainStatus() === 'pending'"
-                    [class.text-amber-700]="domainStatus() === 'pending'"
-                    [class.dark:bg-amber-900/20]="domainStatus() === 'pending'"
-                    [class.dark:text-amber-300]="domainStatus() === 'pending'"
-                    [class.bg-sky-50]="domainStatus() === 'verified'"
-                    [class.text-sky-700]="domainStatus() === 'verified'"
-                    [class.dark:bg-sky-900/20]="domainStatus() === 'verified'"
-                    [class.dark:text-sky-300]="domainStatus() === 'verified'"
-                    [class.bg-red-50]="domainStatus() === 'error'"
-                    [class.text-red-700]="domainStatus() === 'error'"
-                    [class.dark:bg-red-900/20]="domainStatus() === 'error'"
-                    [class.dark:text-red-300]="domainStatus() === 'error'">
-                    <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
-                    {{ domainStatus() === 'verified' ? 'Conectado' : domainStatus() === 'error' ? 'Error' : 'Pendiente' }}
-                </span>
-                }
-            </div>
-            @if (form.controls.custom_domain.touched && form.controls.custom_domain.hasError('pattern')) {
-            <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">
-                Introduce un dominio válido, por ejemplo: www.mitienda.com
-            </p>
-            }
-            <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">
-                Configura el DNS con tu proveedor y luego verifica la conexión.
-            </p>
-            @if (form.controls.custom_domain.value) {
-            <div class="mt-3 flex items-center gap-3">
-                <button type="button" class="rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50" [disabled]="isVerifyingDomain() || form.controls.custom_domain.invalid"
-                    (click)="verifyDomain()">
-                    {{ isVerifyingDomain() ? 'Verificando...' : 'Verificar dominio' }}
-                </button>
-                @if (domainStatus() === 'error' && domainError()) {
-                <span class="text-xs text-red-600 dark:text-red-400">{{ domainError() }}</span>
-                }
-            </div>
-            }
-        </div>
+    <div class="md:col-span-2">
+      <input
+        id="slug"
+        type="text"
+        formControlName="slug"
+        class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-500 bg-gray-50 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 cursor-not-allowed"
+        readonly
+      />
     </div>
+  </div>
 
-    <hr class="border-gray-100 dark:border-gray-800" />
+  <hr class="border-gray-100 dark:border-gray-800" />
 
-    <!-- Regional Preferences -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="md:col-span-1">
-            <label class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Preferencias regionales
-            </label>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Define cómo se muestran precios y horarios en tu tienda.
-            </p>
-        </div>
-        <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <app-dropdown
-                label="Moneda"
-                placeholder="Seleccionar moneda"
-                [options]="currencyOptions"
-                [value]="form.controls.currency.value"
-                (valueChange)="form.controls.currency.setValue($event)" />
-            <app-dropdown
-                label="Zona horaria"
-                placeholder="Seleccionar zona horaria"
-                [options]="timezoneOptions"
-                [value]="form.controls.timezone.value"
-                (valueChange)="form.controls.timezone.setValue($event)" />
-        </div>
+  <!-- Subdomain -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1">
+      <label for="subdomain" class="block text-sm font-semibold text-gray-900 dark:text-white">
+        Subdominio
+      </label>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Tu tienda será accesible a través de esta URL.
+      </p>
     </div>
-
-    <hr class="border-gray-100 dark:border-gray-800" />
-
-    <!-- Contact Information -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="md:col-span-1">
-            <label class="block text-sm font-semibold text-gray-900 dark:text-white">
-                Información de Contacto
-            </label>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Cómo los clientes y Venti pueden contactarte.
-            </p>
-        </div>
-        <div class="md:col-span-2 space-y-4">
-            <div>
-                <label for="contact_email" class="block text-xs font-medium text-gray-500 mb-1">Correo
-                    Electrónico</label>
-                <input id="contact_email" type="email" formControlName="contact_email"
-                    class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
-                    placeholder="hello@venticoffee.com" />
-                @if (form.controls.contact_email.touched && form.controls.contact_email.errors) {
-                <p class="mt-1 text-sm text-red-600">Se requiere un correo electrónico válido</p>
-                }
-            </div>
-            <div>
-                <label for="contact_phone" class="block text-xs font-medium text-gray-500 mb-1">Número de
-                    Teléfono</label>
-                <input id="contact_phone" type="tel" formControlName="contact_phone"
-                    class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
-                    placeholder="+1 (555) 000-1234" />
-            </div>
-        </div>
+    <div class="md:col-span-2">
+      <div
+        class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-sky-600 dark:ring-gray-700"
+      >
+        <input
+          type="text"
+          formControlName="subdomain"
+          id="subdomain"
+          class="block flex-1 border-0 bg-transparent py-2.5 px-4 text-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 dark:text-gray-400 cursor-not-allowed"
+          readonly
+        />
+        <span
+          class="flex select-none items-center pr-4 text-gray-500 sm:text-sm dark:bg-gray-800 dark:text-gray-400 bg-gray-50 rounded-r-md border-l border-gray-300 dark:border-gray-700 px-3"
+          >.venti.com</span
+        >
+      </div>
     </div>
+  </div>
 
-    <!-- Actions -->
-    <div class="flex justify-end gap-3 pt-6">
-        <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="!form.dirty || isSaving()"
-            (click)="cancel()">
-            Descartar
-        </button>
-        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 rounded-md shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            [disabled]="!form.dirty || form.invalid || isSaving()">
-            @if (isSaving()) {
-            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-            <span>Guardando...</span>
-            } @else {
-            <span>Guardar Cambios</span>
-            }
-        </button>
+  <hr class="border-gray-100 dark:border-gray-800" />
+
+  <!-- Custom Domain -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1">
+      <label for="custom_domain" class="block text-sm font-semibold text-gray-900 dark:text-white">
+        Dominio personalizado
+      </label>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Usa tu propio dominio para que tus clientes visiten la tienda.
+      </p>
     </div>
+    <div class="md:col-span-2">
+      <div class="flex items-center gap-3">
+        <input
+          id="custom_domain"
+          type="text"
+          formControlName="custom_domain"
+          class="block min-w-0 flex-1 rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+          placeholder="www.mitienda.com"
+        />
+        @if (form.controls.custom_domain.value) {
+          <span
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
+            [class.bg-amber-50]="domainStatus() === 'pending'"
+            [class.text-amber-700]="domainStatus() === 'pending'"
+            [class.dark:bg-amber-900/20]="domainStatus() === 'pending'"
+            [class.dark:text-amber-300]="domainStatus() === 'pending'"
+            [class.bg-sky-50]="domainStatus() === 'verified'"
+            [class.text-sky-700]="domainStatus() === 'verified'"
+            [class.dark:bg-sky-900/20]="domainStatus() === 'verified'"
+            [class.dark:text-sky-300]="domainStatus() === 'verified'"
+            [class.bg-red-50]="domainStatus() === 'error'"
+            [class.text-red-700]="domainStatus() === 'error'"
+            [class.dark:bg-red-900/20]="domainStatus() === 'error'"
+            [class.dark:text-red-300]="domainStatus() === 'error'"
+          >
+            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+            {{
+              domainStatus() === 'verified'
+                ? 'Conectado'
+                : domainStatus() === 'error'
+                  ? 'Error'
+                  : 'Pendiente'
+            }}
+          </span>
+        }
+      </div>
+      @if (form.controls.custom_domain.touched && form.controls.custom_domain.hasError('pattern')) {
+        <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">
+          Introduce un dominio válido, por ejemplo: www.mitienda.com
+        </p>
+      }
+      <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">
+        Configura el DNS con tu proveedor y luego verifica la conexión.
+      </p>
+      @if (form.controls.custom_domain.value) {
+        <div class="mt-3 flex items-center gap-3">
+          <button
+            type="button"
+            class="rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50"
+            [disabled]="isVerifyingDomain() || form.controls.custom_domain.invalid"
+            (click)="verifyDomain()"
+          >
+            {{ isVerifyingDomain() ? 'Verificando...' : 'Verificar dominio' }}
+          </button>
+          @if (domainStatus() === 'error' && domainError()) {
+            <span class="text-xs text-red-600 dark:text-red-400">{{ domainError() }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <hr class="border-gray-100 dark:border-gray-800" />
+
+  <!-- Regional Preferences -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1">
+      <label class="block text-sm font-semibold text-gray-900 dark:text-white">
+        Preferencias regionales
+      </label>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Define cómo se muestran precios y horarios en tu tienda.
+      </p>
+    </div>
+    <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <app-dropdown
+        label="Moneda"
+        placeholder="Seleccionar moneda"
+        [options]="currencyOptions"
+        [value]="form.controls.currency.value"
+        (valueChange)="form.controls.currency.setValue($event)"
+      />
+      <app-dropdown
+        label="Zona horaria"
+        placeholder="Seleccionar zona horaria"
+        [options]="timezoneOptions"
+        [value]="form.controls.timezone.value"
+        (valueChange)="form.controls.timezone.setValue($event)"
+      />
+    </div>
+  </div>
+
+  <hr class="border-gray-100 dark:border-gray-800" />
+
+  <!-- Contact Information -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1">
+      <label class="block text-sm font-semibold text-gray-900 dark:text-white">
+        Información de Contacto
+      </label>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Cómo los clientes y Venti pueden contactarte.
+      </p>
+    </div>
+    <div class="md:col-span-2 space-y-4">
+      <div>
+        <label for="contact_email" class="block text-xs font-medium text-gray-500 mb-1"
+          >Correo Electrónico</label
+        >
+        <input
+          id="contact_email"
+          type="email"
+          formControlName="contact_email"
+          class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+          placeholder="hello@venticoffee.com"
+        />
+        @if (form.controls.contact_email.touched && form.controls.contact_email.errors) {
+          <p class="mt-1 text-sm text-red-600">Se requiere un correo electrónico válido</p>
+        }
+      </div>
+      <div>
+        <label for="contact_phone" class="block text-xs font-medium text-gray-500 mb-1"
+          >Número de Teléfono</label
+        >
+        <input
+          id="contact_phone"
+          type="tel"
+          formControlName="contact_phone"
+          class="block w-full rounded-md border-0 py-2.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+          placeholder="+1 (555) 000-1234"
+        />
+      </div>
+    </div>
+  </div>
 </form>

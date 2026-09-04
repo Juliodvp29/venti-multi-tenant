@@ -170,37 +170,9 @@
         Debes mantener al menos un método de pago activo
       </p>
       <p class="mt-0.5 text-[11px] text-amber-700 dark:text-amber-300">
-        Los cambios se aplican cuando guardas. Solo los métodos activos se mostrarán a tus clientes
+        Los cambios se guardan automáticamente. Solo los métodos activos se mostrarán a tus clientes
         en el checkout.
       </p>
     </div>
   </div>
-
-  <!-- Save / Cancel buttons -->
-  @if (isDirty()) {
-    <div class="flex items-center justify-end gap-3 pt-2">
-      <button
-        type="button"
-        class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
-        (click)="cancel()"
-      >
-        Descartar
-      </button>
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-lg bg-sky-600 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-sky-700 disabled:opacity-50 transition-all"
-        [disabled]="isSaving()"
-        (click)="save()"
-      >
-        @if (isSaving()) {
-          <span
-            class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-          ></span>
-          Guardando...
-        } @else {
-          Guardar cambios
-        }
-      </button>
-    </div>
-  }
 </div>
