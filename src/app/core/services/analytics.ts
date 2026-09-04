@@ -9,6 +9,19 @@ export class AnalyticsService {
   private readonly supabase = inject(Supabase);
   private readonly tenantService = inject(TenantService);
 
+  /** Caché en memoria (60s) para evitar refetch del dashboard en cada navegación. */
+  private readonly cache = new Map<string, { ts: number; data: any }>();
+  private readonly CACHE_TTL = 60_000;
+
+  private cached<T>(key: string, loader: () => Promise<T>): Promise<T> {
+    const hit = this.cache.get(key);
+    if (hit && Date.now() - hit.ts < this.CACHE_TTL) return Promise.resolve(hit.data as T);
+    return loader().then((data) => {
+      this.cache.set(key, { ts: Date.now(), data });
+      return data;
+    });
+  }
+
   /**
    * Track a generic event in the analytics_events table
    */
@@ -68,7 +81,10 @@ export class AnalyticsService {
   async getDashboardStats() {
     const tenantId = this.tenantService.tenantId();
     if (!tenantId) return null;
+    return this.cached(`stats:${tenantId}`, () => this.fetchDashboardStats(tenantId));
+  }
 
+  private async fetchDashboardStats(tenantId: string) {
     try {
       const now = new Date();
       const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
@@ -157,8 +173,14 @@ export class AnalyticsService {
 
   async getMonthlyPerformance(): Promise<{ revenue: number[]; orders: number[] }> {
     const tenantId = this.tenantService.tenantId();
-    if (!tenantId) return { revenue: new Array(12).fill(0), orders: new Array(12).fill(0) };
+    const empty = { revenue: new Array(12).fill(0), orders: new Array(12).fill(0) };
+    if (!tenantId) return empty;
+    return this.cached(`monthly:${tenantId}`, () => this.fetchMonthlyPerformance(tenantId));
+  }
 
+  private async fetchMonthlyPerformance(
+    tenantId: string,
+  ): Promise<{ revenue: number[]; orders: number[] }> {
     const now = new Date();
     const startOfYear = new Date(now.getFullYear(), 0, 1).toISOString();
 
@@ -202,24 +224,30 @@ export class AnalyticsService {
     }));
   }
 
-  async getProductPerformance() {
+  async getProductPerformance(limit = 5) {
     const tenantId = this.tenantService.tenantId();
     if (!tenantId) return [];
+    return this.cached(`top-products:${tenantId}:${limit}`, async () => {
+      const { data } = await this.supabase.client
+        .from('vw_product_performance_realtime')
+        .select(
+          'product_id, revenue, purchases, product:products(name, product_images(url, is_primary))',
+        )
+        .eq('tenant_id', tenantId)
+        .order('revenue', { ascending: false })
+        .limit(limit);
 
-    const { data } = await this.supabase.client
-      .from('vw_product_performance_realtime')
-      .select('*, product:products(name, product_images(url, is_primary))')
-      .eq('tenant_id', tenantId)
-      .order('revenue', { ascending: false })
-      .limit(10);
-
-    return data || [];
+      return data || [];
+    });
   }
 
   async getSalesByCategoryBI() {
     const tenantId = this.tenantService.tenantId();
     if (!tenantId) return [];
+    return this.cached(`categories:${tenantId}`, () => this.fetchSalesByCategory(tenantId));
+  }
 
+  private async fetchSalesByCategory(tenantId: string) {
     const { data } = await this.supabase.client.rpc('get_sales_by_category', {
       p_tenant_id: tenantId,
     });

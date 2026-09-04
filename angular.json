@@ -41,10 +41,11 @@
               "optimization": {
                 "scripts": true,
                 "styles": {
-                  "minify": true
+                  "minify": true,
+                  "inlineCritical": true
                 },
                 "fonts": {
-                  "inline": false
+                  "inline": true
                 }
               },
               "budgets": [

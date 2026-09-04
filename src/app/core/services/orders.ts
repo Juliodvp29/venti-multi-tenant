@@ -39,13 +39,19 @@ export class OrdersService {
     page: number = 1,
     pageSize: number = 20,
     filters?: OrderFilters,
+    options?: { columns?: string; withCount?: boolean },
   ): Promise<{ data: Order[]; count: number }> {
     const tenantId = this.tenantService.tenantId();
     if (!tenantId) return { data: [], count: 0 };
 
+    const columns = options?.columns ?? '*';
+    const withCount = options?.withCount ?? true;
+
+    // Nota: se pasa siempre el objeto de opciones para no cambiar la sobrecarga
+    // de tipos de postgrest; `count: undefined` equivale a no pedir COUNT.
     let query = this.supabase.client
       .from('orders')
-      .select('*', { count: 'exact' })
+      .select(columns, { count: withCount ? 'exact' : undefined })
       .eq('tenant_id', tenantId);
 
     // Apply delivery person filter if the current user has the 'delivery' role
@@ -91,7 +97,7 @@ export class OrdersService {
     const { data, error, count } = await query;
 
     if (error) throw error;
-    return { data: data as Order[], count: count ?? 0 };
+    return { data: (data ?? []) as unknown as Order[], count: count ?? 0 };
   }
 
   async createOrder(
