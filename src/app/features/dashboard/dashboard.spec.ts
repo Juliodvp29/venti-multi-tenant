@@ -28,6 +28,18 @@ Object.defineProperty(window, 'matchMedia', {
   disconnect() {}
 };
 
+// Stub de localStorage: el entorno de tests no lo provee y OnboardingService lo lee al crear el Dashboard.
+const dashboardStorage = new Map<string, string>();
+Object.defineProperty(window, 'localStorage', {
+  writable: true,
+  value: {
+    getItem: (key: string) => dashboardStorage.get(key) ?? null,
+    setItem: (key: string, value: string) => void dashboardStorage.set(key, value),
+    removeItem: (key: string) => void dashboardStorage.delete(key),
+    clear: () => dashboardStorage.clear(),
+  },
+});
+
 const mockAnalyticsService = {
   getOverviewMetrics: vi.fn().mockResolvedValue({
     totalRevenue: 1000000,

@@ -60,6 +60,7 @@ import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
 
           <!-- Help & Support Button (Supabase Style) -->
           <button
+            #helpBtn
             type="button"
             aria-label="Centro de Ayuda y Soporte"
             title="Ayuda y Soporte"
@@ -71,22 +72,45 @@ import { HelpDrawer } from '@shared/components/help-drawer/help-drawer';
             </svg>
           </button>
 
-          <!-- Notifications Dropdown -->
-          <app-notifications-dropdown />
+          <!-- Notifications Dropdown: diferido fuera del bundle inicial,
+               la campana aparece tras el idle con placeholder del mismo tamaño -->
+          @defer (on idle) {
+            <app-notifications-dropdown />
+          } @placeholder {
+            <span class="h-10 w-10 rounded-full animate-pulse bg-gray-100 dark:bg-gray-800" aria-hidden="true"></span>
+          }
         </div>
       </div>
     </header>
 
-    <!-- Help & Support Drawer -->
-    <app-help-drawer />
+    <!-- Help & Support Drawer: diferido fuera del bundle inicial (43KB de contenido),
+         se precarga en idle y abre aunque el primer clic llegue antes de cargar -->
+    @defer (on interaction(helpBtn); prefetch on idle) {
+      <app-help-drawer #helpDrawerRef />
+    } @placeholder {
+      <span></span>
+    }
   `,
 })
 export class HeaderComponent {
   readonly toggleSidebar = output<void>();
   protected readonly tenantService = inject(TenantService);
-  private readonly helpDrawer = viewChild(HelpDrawer);
+  private readonly helpDrawer = viewChild<{ open: () => void }>('helpDrawerRef');
 
   openHelp(): void {
-    this.helpDrawer()?.open();
+    const drawer = this.helpDrawer();
+    if (drawer) {
+      drawer.open();
+      return;
+    }
+    // El chunk diferido aún no cargó: reintentar hasta que esté disponible
+    const startedAt = Date.now();
+    const timer = setInterval(() => {
+      const loaded = this.helpDrawer();
+      if (loaded || Date.now() - startedAt > 5000) {
+        clearInterval(timer);
+        loaded?.open();
+      }
+    }, 100);
   }
 }

@@ -925,6 +925,12 @@ export class AiAssistantService {
             timezone: settings['timezone'] || 'America/New_York',
             plan: tenant.plan,
             plan_status: tenant.plan_status,
+            seo: {
+                title: settings['seo_title'] || null,
+                description: settings['seo_description'] || null,
+                keywords: settings['seo_keywords'] || null,
+                og_image: settings['seo_og_image'] || null,
+            },
         };
     }
 

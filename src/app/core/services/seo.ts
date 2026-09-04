@@ -1,5 +1,5 @@
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
@@ -19,6 +19,7 @@ export interface SeoConfig {
     publishedTime?: string;
     /** Twitter handle e.g. '@mystore' */
     twitterHandle?: string;
+    robots?: string;
 }
 
 export interface ProductSeoData {
@@ -54,6 +55,7 @@ export class SeoService {
     private readonly titleService = inject(Title);
     private readonly router = inject(Router);
     private readonly platformId = inject(PLATFORM_ID);
+    private readonly document = inject(DOCUMENT);
     private readonly isBrowser = isPlatformBrowser(this.platformId);
 
     private readonly defaultSiteName = 'Venti Shop';
@@ -78,9 +80,7 @@ export class SeoService {
         const pageTitle = c.title ?? siteName;
         // Format: "Page | Site" — avoid duplication if same string
         const fullTitle = pageTitle === siteName ? pageTitle : `${pageTitle} | ${siteName}`;
-        const currentUrl = this.isBrowser
-            ? `${window.location.origin}${this.router.url}`
-            : (c.url ?? '/');
+        const currentUrl = c.url ?? this.getCurrentUrl();
 
         // ── Basic ──────────────────────────────────────────────
         this.titleService.setTitle(fullTitle);
@@ -89,7 +89,7 @@ export class SeoService {
         if (c.author) this.setName('author', c.author);
 
         // ── Robots (ensure indexable) ──────────────────────────
-        this.setName('robots', 'index, follow');
+        this.setName('robots', c.robots ?? 'index, follow');
 
         // ── Canonical ──────────────────────────────────────────
         this.setLinkTag('canonical', c.url ?? currentUrl);
@@ -106,6 +106,11 @@ export class SeoService {
             this.setProp('og:image:alt', pageTitle);
             this.setProp('og:image:width', '1200');
             this.setProp('og:image:height', '630');
+        } else {
+            this.removeProp('og:image');
+            this.removeProp('og:image:alt');
+            this.removeProp('og:image:width');
+            this.removeProp('og:image:height');
         }
         if (c.type === 'article' && c.publishedTime) {
             this.setProp('article:published_time', c.publishedTime);
@@ -117,6 +122,7 @@ export class SeoService {
         this.setName('twitter:title', fullTitle);
         this.setName('twitter:description', c.description ?? '');
         if (c.image) this.setName('twitter:image', c.image);
+        else this.meta.removeTag('name="twitter:image"');
         if (c.twitterHandle) this.setName('twitter:site', c.twitterHandle);
     }
 
@@ -124,12 +130,12 @@ export class SeoService {
      * Dynamically update browser tab favicon.
      */
     updateFavicon(url: string | null): void {
-        if (!this.isBrowser || !url) return;
-        let iconLink = document.querySelector<HTMLLinkElement>("link[rel*='icon']");
+        if (!url) return;
+        let iconLink = this.document.querySelector<HTMLLinkElement>("link[rel*='icon']");
         if (!iconLink) {
-            iconLink = document.createElement('link');
+            iconLink = this.document.createElement('link');
             iconLink.rel = 'shortcut icon';
-            document.head.appendChild(iconLink);
+            this.document.head.appendChild(iconLink);
         }
         iconLink.href = url;
     }
@@ -149,13 +155,13 @@ export class SeoService {
             sku: data.sku,
             brand: data.brand ? { '@type': 'Brand', name: data.brand } : undefined,
             category: data.category,
-            url: data.url ?? (this.isBrowser ? window.location.href : undefined),
+            url: data.url ?? this.getCurrentUrl(),
             offers: {
                 '@type': 'Offer',
                 price: data.price,
                 priceCurrency: data.currency ?? 'USD',
                 availability: `https://schema.org/${data.availability ?? 'InStock'}`,
-                url: data.url ?? (this.isBrowser ? window.location.href : undefined),
+                url: data.url ?? this.getCurrentUrl(),
             },
         };
         this.injectJsonLd('product-schema', schema);
@@ -169,7 +175,7 @@ export class SeoService {
             '@context': 'https://schema.org',
             '@type': 'Organization',
             name: data.name,
-            url: data.url ?? (this.isBrowser ? window.location.origin : undefined),
+            url: data.url ?? this.getCurrentUrl(),
             logo: data.logo
                 ? { '@type': 'ImageObject', url: data.logo }
                 : undefined,
@@ -199,8 +205,7 @@ export class SeoService {
      * Remove all JSON-LD scripts injected by this service.
      */
     clearSchemas(): void {
-        if (!this.isBrowser) return;
-        document.querySelectorAll('script[data-seo]').forEach(el => el.remove());
+        this.document.querySelectorAll('script[data-seo]').forEach((el) => el.remove());
     }
 
     /**
@@ -235,28 +240,35 @@ export class SeoService {
         this.meta.updateTag({ property, content });
     }
 
+    private getCurrentUrl(): string {
+        if (this.isBrowser) return `${window.location.origin}${this.router.url}`;
+        return this.router.url || '/';
+    }
+
+    private removeProp(property: string): void {
+        this.meta.removeTag(`property="${property}"`);
+    }
+
     private setLinkTag(rel: string, href: string): void {
-        if (!this.isBrowser) return;
-        let link = document.querySelector<HTMLLinkElement>(`link[rel='${rel}']`);
+        let link = this.document.querySelector<HTMLLinkElement>(`link[rel='${rel}']`);
         if (!link) {
-            link = document.createElement('link');
+            link = this.document.createElement('link');
             link.setAttribute('rel', rel);
-            document.head.appendChild(link);
+            this.document.head.appendChild(link);
         }
         link.setAttribute('href', href);
     }
 
     private injectJsonLd(id: string, schema: Record<string, any>): void {
-        if (!this.isBrowser) return;
         // Remove previous version of this schema if exists
-        document.querySelector(`script[data-seo="${id}"]`)?.remove();
+        this.document.querySelector(`script[data-seo="${id}"]`)?.remove();
 
-        const script = document.createElement('script');
+        const script = this.document.createElement('script');
         script.type = 'application/ld+json';
         script.setAttribute('data-seo', id);
         script.textContent = JSON.stringify(schema, (_key, value) =>
             value === undefined ? undefined : value
         );
-        document.head.appendChild(script);
+        this.document.head.appendChild(script);
     }
 }

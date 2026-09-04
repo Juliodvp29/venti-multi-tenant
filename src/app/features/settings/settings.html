@@ -329,6 +329,13 @@
               <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
             }
           }
+          @case ('seo') {
+            @defer {
+              <app-settings-seo (dirtyChange)="onDirtyChange($event)" />
+            } @placeholder {
+              <div class="animate-pulse h-64 bg-gray-100 dark:bg-gray-800 rounded-xl"></div>
+            }
+          }
         }
 
         <!-- Danger Zone -->

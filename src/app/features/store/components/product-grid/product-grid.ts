@@ -2,13 +2,16 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   signal,
   effect,
   input,
   output,
+  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductsService } from '@core/services/products';
 import { Product } from '@core/models/product';
 import { ProductCard } from '../product-card/product-card';
@@ -20,7 +23,7 @@ import { Category } from '@core/models/category';
 @Component({
   selector: 'app-product-grid',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ProductCard],
+  imports: [CommonModule, RouterModule, ProductCard],
   template: `
     <div class="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <!-- Catalog Page Configured Sections -->
@@ -141,7 +144,7 @@ import { Category } from '@core/models/category';
       <!-- Categories Navigation -->
       @if (categories().length > 0) {
         <div class="flex flex-wrap gap-2 px-1 pb-4 border-b border-slate-100 dark:border-gray-800">
-          <button
+          <a
             class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
             [class.bg-slate-900]="!selectedCategory()"
             [class.text-white]="!selectedCategory()"
@@ -149,13 +152,15 @@ import { Category } from '@core/models/category';
             [class.text-slate-600]="selectedCategory()"
             [class.border]="selectedCategory()"
             [class.border-slate-200]="selectedCategory()"
-            (click)="selectCategory(null)"
+            [routerLink]="categoryLink(null)"
+            queryParamsHandling="preserve"
+            (click)="onCategoryClick($event, null)"
           >
             Todo
-          </button>
+          </a>
 
           @for (cat of categories(); track cat.id) {
-            <button
+            <a
               class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
               [class.bg-slate-900]="isCategoryActive(cat)"
               [class.text-white]="isCategoryActive(cat)"
@@ -163,10 +168,12 @@ import { Category } from '@core/models/category';
               [class.text-slate-600]="!isCategoryActive(cat)"
               [class.border]="!isCategoryActive(cat)"
               [class.border-slate-200]="!isCategoryActive(cat)"
-              (click)="selectCategory(cat)"
+              [routerLink]="categoryLink(cat)"
+              queryParamsHandling="preserve"
+              (click)="onCategoryClick($event, cat)"
             >
               {{ cat.name }}
-            </button>
+            </a>
           }
         </div>
 
@@ -180,17 +187,19 @@ import { Category } from '@core/models/category';
             class="flex flex-wrap gap-1.5 px-4 py-3 bg-slate-50/70 dark:bg-gray-800/40 rounded-2xl border border-slate-100 dark:border-gray-800 animate-in fade-in slide-in-from-top-2 duration-500"
           >
             @for (sub of selectedCategory()!.children; track sub.id) {
-              <button
+              <a
                 class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:text-sky-600 cursor-pointer"
                 [class.bg-white]="selectedCategoryId() === sub.id"
                 [class.text-sky-600]="selectedCategoryId() === sub.id"
                 [class.font-bold]="selectedCategoryId() === sub.id"
                 [class.shadow-xs]="selectedCategoryId() === sub.id"
                 [class.text-slate-600]="selectedCategoryId() !== sub.id"
-                (click)="selectCategory(sub)"
+                [routerLink]="categoryLink(sub)"
+                queryParamsHandling="preserve"
+                (click)="onCategoryClick($event, sub)"
               >
                 {{ sub.name }}
-              </button>
+              </a>
             }
           </div>
         }
@@ -231,7 +240,7 @@ import { Category } from '@core/models/category';
     </div>
   `,
 })
-export class ProductGrid {
+export class ProductGrid implements OnInit {
   asAny(val: any): any {
     return val;
   }
@@ -239,6 +248,9 @@ export class ProductGrid {
   private readonly categoriesService = inject(CategoriesService);
   private readonly seo = inject(SeoService);
   private readonly tenantService = inject(TenantService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly catalogConfig = computed(() => this.tenantService.getPageLayout('catalog'));
   readonly catalogSections = computed(() => this.catalogConfig()?.sections || []);
@@ -254,6 +266,10 @@ export class ProductGrid {
   readonly hideHeaderContent = input(false);
   readonly isSortMenuOpen = signal(false);
   readonly hasProducts = output<boolean>();
+  /** Slug de categoría pendiente de resolver (llega por ruta antes de cargar categorías) */
+  readonly pendingSlug = signal<string | null>(null);
+  /** El grid está embebido (home) cuando recibe limit > 0: sin sincronización de URL */
+  readonly isEmbedded = computed(() => this.limit() > 0);
 
   readonly selectedCategory = computed(() => {
     const id = this.selectedCategoryId();
@@ -324,11 +340,13 @@ export class ProductGrid {
         search: this.search(),
         categoryId: categoryFilter,
       });
+      if (this.destroyRef.destroyed) return;
       this.products.set(data);
       this.hasProducts.emit(data.length > 0);
       this.updateSeo();
     } catch (error) {
       console.error('Error loading products:', error);
+      if (this.destroyRef.destroyed) return;
       this.products.set([]);
       this.hasProducts.emit(false);
     } finally {
@@ -356,13 +374,96 @@ export class ProductGrid {
       // Build tree for navigation (only roots)
       const tree = await this.categoriesService.getCategories(true);
       this.categories.set(tree);
+
+      // Resolver slug de ruta que llegó antes de tener categorías (ej. entrada directa)
+      this.resolvePendingSlug();
     } catch (error) {
       console.error('Error loading categories:', error);
     }
   }
 
+  ngOnInit() {
+    // URL canónica por slug: /store/categoria/:slug (igual que productos por slug)
+    this.route.paramMap.subscribe((params) => {
+      const slug = params.get('slug');
+      if (!slug) {
+        this.pendingSlug.set(null);
+        if (!this.isEmbedded()) {
+          this.selectedCategoryId.set(null);
+        }
+        return;
+      }
+      this.pendingSlug.set(slug);
+      this.resolvePendingSlug();
+    });
+  }
+
+  private resolvePendingSlug(): void {
+    const slug = this.pendingSlug();
+    if (!slug || this.allCategories().length === 0) return;
+
+    const flat = this.allCategories();
+    const found = flat.find((c) => c.slug === slug) ?? flat.find((c) => c.id === slug);
+    if (!found) {
+      this.pendingSlug.set(null);
+      if (!this.isEmbedded()) {
+        this.selectedCategoryId.set(null);
+      }
+      return;
+    }
+
+    this.pendingSlug.set(null);
+    this.selectedCategoryId.set(found.id);
+
+    // Si llegó por id, redirigir a la URL canónica por slug
+    if (found.slug && found.slug !== slug && !this.isEmbedded()) {
+      this.router.navigate(['/store/categoria', found.slug], {
+        replaceUrl: true,
+        queryParamsHandling: 'preserve',
+      });
+    }
+  }
+
   selectCategory(category: Category | null) {
-    this.selectedCategoryId.set(category?.id || null);
+    // Embebido (home): filtrado local sin tocar la URL
+    if (this.isEmbedded()) {
+      this.selectedCategoryId.set(category?.id || null);
+      return;
+    }
+    if (!category) {
+      this.router.navigate(['/store/productos'], { queryParamsHandling: 'preserve' });
+      return;
+    }
+    this.router.navigate(['/store/categoria', category.slug || category.id], {
+      queryParamsHandling: 'preserve',
+    });
+  }
+
+  /**
+   * Link rastreable para crawlers. En modo embebido (home) devuelve null
+   * y el filtrado es local vía onCategoryClick.
+   */
+  categoryLink(category: Category | null): string[] | null {
+    if (this.isEmbedded()) return null;
+    if (!category) return ['/store/productos'];
+    return ['/store/categoria', category.slug || category.id];
+  }
+
+  onCategoryClick(event: Event, category: Category | null): void {
+    if (this.isEmbedded()) {
+      event.preventDefault();
+      this.selectCategory(category);
+    }
+    // En modo ruteado navega el routerLink y el paramMap sincroniza el estado
+  }
+
+  private storeUrl(path: string): string {
+    const shop = this.route.snapshot.queryParamMap.get('s');
+    const suffix = shop ? `?s=${encodeURIComponent(shop)}` : '';
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}${path}${suffix}`;
+    }
+    return `${path}${suffix}`;
   }
 
   isCategoryActive(cat: Category): boolean {
@@ -387,12 +488,32 @@ export class ProductGrid {
 
   private updateSeo() {
     const businessName = this.tenantService.branding()?.business_name || 'Venti Store';
+    const category = this.selectedCategory();
     this.seo.updateTags({
-      title: 'Productos',
-      description: `Explora nuestra colección de productos en ${businessName}. Envío rápido y la mejor calidad.`,
+      title: category ? `${category.name} | ${businessName}` : 'Productos',
+      description:
+        category?.meta_description ||
+        category?.description ||
+        `Explora nuestra colección de productos en ${businessName}. Envío rápido y la mejor calidad.`,
       type: 'website',
       siteName: businessName,
     });
+
+    // Limpiar schemas de la página anterior (ej. Product al volver al catálogo)
+    this.seo.clearSchemas();
+
+    // Breadcrumb: Inicio > Productos (> Categoría)
+    const crumbs = [
+      { name: 'Inicio', url: this.storeUrl('/store') },
+      { name: 'Productos', url: this.storeUrl('/store/productos') },
+    ];
+    if (category) {
+      crumbs.push({
+        name: category.name,
+        url: this.storeUrl(`/store/categoria/${category.slug || category.id}`),
+      });
+    }
+    this.seo.setBreadcrumbSchema(crumbs);
 
     // Set Organization schema on main grid
     this.seo.setOrganizationSchema({

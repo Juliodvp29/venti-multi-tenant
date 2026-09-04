@@ -19,6 +19,7 @@ import { SettingsShippingTaxes } from './components/settings-shipping-taxes';
 import { SettingsStorefront } from './components/settings-storefront/settings-storefront';
 import { SettingsCommissions } from './components/settings-commissions/settings-commissions';
 import { SettingsPayments } from './components/settings-payments/settings-payments';
+import { SettingsSeo } from './components/settings-seo';
 import { SettingsTheme } from './components/settings-theme/settings-theme';
 import { SettingsDesignPresets } from './components/settings-design-presets/settings-design-presets';
 import { ToastService } from '@core/services/toast';
@@ -61,6 +62,7 @@ type Tab =
   | 'payments'
   | 'commissions'
   | 'storefront'
+  | 'seo'
   | 'advanced';
 
 @Component({
@@ -79,6 +81,7 @@ type Tab =
     SettingsCommissions,
     SettingsPayments,
     SettingsDesignPresets,
+    SettingsSeo,
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
@@ -119,6 +122,7 @@ export class Settings {
   readonly generalSection = viewChild(SettingsGeneral);
   readonly addressSection = viewChild(SettingsAddress);
   readonly paymentsSection = viewChild(SettingsPayments);
+  readonly seoSection = viewChild(SettingsSeo);
   readonly storefrontSection = viewChild(SettingsStorefront);
 
   readonly tabs: { id: Tab; label: string; icon: string }[] = [
@@ -162,6 +166,11 @@ export class Settings {
       label: 'Secciones de la Tienda',
       icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" /></svg>`,
     },
+    {
+      id: 'seo',
+      label: 'SEO',
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>`,
+    },
   ];
 
   readonly tabGroups: { label: string; tabs: { id: Tab; label: string; icon: string }[] }[] = [
@@ -175,6 +184,10 @@ export class Settings {
       tabs: this.tabs.filter((tab) =>
         ['payments', 'shipping-taxes', 'commissions'].includes(tab.id),
       ),
+    },
+    {
+      label: 'Marketing',
+      tabs: this.tabs.filter((tab) => ['seo'].includes(tab.id)),
     },
     {
       label: 'Avanzado',
@@ -468,6 +481,9 @@ export class Settings {
       case 'payments':
         await this.paymentsSection()?.save();
         break;
+      case 'seo':
+        await this.seoSection()?.save();
+        break;
       case 'storefront':
         await this.storefrontSection()?.saveLayout();
         break;
@@ -490,6 +506,9 @@ export class Settings {
         break;
       case 'payments':
         this.paymentsSection()?.cancel();
+        break;
+      case 'seo':
+        this.seoSection()?.cancel();
         break;
       case 'storefront':
         this.storefrontSection()?.discardLayout();

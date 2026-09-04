@@ -121,6 +121,27 @@ export class ProductsService {
         return (data as unknown as Product) || null;
     }
 
+    async getProductBySlug(slug: string): Promise<Product | null> {
+        const tenantId = this.tenantService.tenantId();
+        if (!tenantId) return null;
+
+        const { data, error } = await this.supabase.client
+            .from('products')
+            .select(`
+        *,
+        images:product_images(*),
+        categories:product_categories(category:categories(*)),
+        variants:product_variants(*)
+      `)
+            .eq('tenant_id', tenantId)
+            .eq('slug', slug)
+            .is('deleted_at', null)
+            .maybeSingle();
+
+        if (error) throw error;
+        return (data as unknown as Product) || null;
+    }
+
     async createProduct(product: CreateProductDto): Promise<Product> {
         const tenantId = this.tenantService.tenantId();
         if (!tenantId) throw new Error('Tenant not selected');
