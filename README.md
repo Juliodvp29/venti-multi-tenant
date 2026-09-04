@@ -115,7 +115,7 @@ La plataforma opera bajo un modelo dual:
 | **Diseño y Estilos**         | Tailwind CSS + PostCSS             | 4.x         | Motor CSS moderno basado en utilidades, temas dinámicos y modo oscuro             |
 | **Backend as a Service**     | Supabase (`@supabase/supabase-js`) | 2.x         | Base de datos PostgreSQL, Auth (GoTrue), Storage de archivos y canales Realtime   |
 | **Edge Compute**             | Supabase Edge Functions (Deno)     | -           | Verificación DNS/HTTPS de dominios personalizados y lógica serverless             |
-| **Inteligencia Artificial**  | `@google/generative-ai` (Gemini)   | 0.24.x      | Agente de IA con capacidades de invocación de herramientas (Function Calling)     |
+| **Inteligencia Artificial**  | Edge Function `ai-chat` + Gemini   | -           | Agente de IA con Function Calling; la API key vive como secreto del servidor      |
 | **Visualización de Datos**   | ApexCharts + `ng-apexcharts`       | 5.x / 2.x   | Gráficas interactivas de ventas, ingresos y distribución de categorías            |
 | **Formateo Markdown & XSS**  | `marked` + `dompurify`             | 17.x / 3.x  | Renderizado y sanitización estricta de respuestas del asistente de IA y notas     |
 | **Exportación de Datos**     | `xlsx` (SheetJS), `jspdf`, `jspdf-autotable` | 0.18.x / 4.x / 5.x | Generación y descarga de informes en Excel, CSV y PDF con tablas, branding y paginación |
@@ -477,7 +477,7 @@ La Edge Function `supabase/functions/verify-domain` valida que el dominio perten
 
 ### 🤖 Asistente de Inteligencia Artificial Gemini
 
-- **Modelo Google Gemini**: Integración mediante la librería oficial `@google/generative-ai`.
+- **Modelo Google Gemini**: Integración mediante la Edge Function `ai-chat` (la API key vive como secreto del servidor, nunca en el navegador).
 - **Invocación de Herramientas (Function/Tool Calling)**: El asistente no es un simple bot conversacional; cuenta con definiciones de funciones que le permiten consultar la base de datos de la tienda en tiempo real (consultar productos con stock bajo, resumir ventas del día, buscar órdenes por cliente).
 - **Formateo Seguro de Markdown**: Las respuestas complejas (tablas, listas, cifras destacadas) se procesan con `marked` y se sanitizan rigurosamente con `DOMPurify`.
 
@@ -509,11 +509,12 @@ Para cambiar estos valores, actualiza el `CASE` de `consume_ai_request` y aplica
 nueva migración. No dependas únicamente de límites del proveedor: las cuotas de
 Gemini se aplican por proyecto y pueden ser compartidas por todos los tenants.
 
-> **Estado de seguridad:** actualmente la llamada a Gemini se realiza desde el cliente
-> Angular, por lo que `GEMINI_API_KEY` queda expuesta al navegador. La cuota de Supabase
-> protege el flujo normal de la aplicación, pero no evita que una clave comprometida
-> sea utilizada directamente. Antes de ofrecer el chat en producción o usar un modelo
-> pagado, mueve la llamada al modelo y el consumo de cuota a una Supabase Edge Function.
+> **Estado de seguridad:** la llamada a Gemini se realiza desde la Edge Function
+> `ai-chat` (`supabase/functions/ai-chat`), que guarda `GEMINI_API_KEY` como secreto
+> del proyecto (`supabase secrets set GEMINI_API_KEY=...`). La clave nunca viaja al
+> navegador. La función verifica JWT + pertenencia al tenant y fija en servidor el
+> modelo, el system prompt y `maxOutputTokens`. La cuota diaria por plan se sigue
+> controlando con `consume_ai_request` antes de cada mensaje del usuario.
 
 ---
 
@@ -667,13 +668,15 @@ Configura las variables de conexión con Supabase en tu archivo de entorno o med
 ```env
 SUPABASE_URL=https://tu-proyecto.supabase.co
 SUPABASE_ANON_KEY=tu-anon-key-de-supabase
-GEMINI_API_KEY=tu-api-key-de-google-gemini
 ```
 
-`GEMINI_API_KEY` solo es necesaria para el asistente actual basado en cliente. No la
-incluyas en el repositorio ni la confundas con `SUPABASE_ANON_KEY`; para producción,
-la integración recomendada es guardar la clave únicamente como secreto de una Edge
-Function.
+La clave de Gemini **no** va en el frontend: configúrala solo como secreto de la
+Edge Function y despliega:
+
+```bash
+supabase secrets set GEMINI_API_KEY=tu-api-key-de-google-gemini
+supabase functions deploy ai-chat
+```
 
 ### 3. Scripts de Ejecución
 

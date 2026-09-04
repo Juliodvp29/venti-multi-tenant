@@ -15,18 +15,20 @@ vi.stubGlobal('localStorage', {
 describe('AiAssistantService', () => {
   let service: AiAssistantService;
   let rpc: ReturnType<typeof vi.fn>;
+  let invoke: ReturnType<typeof vi.fn>;
   const tenantId = vi.fn((): string | null => 'tenant-1');
 
   beforeEach(() => {
     localStorage.clear();
     rpc = vi.fn();
+    invoke = vi.fn();
     tenantId.mockReset();
     tenantId.mockReturnValue('tenant-1');
 
     TestBed.configureTestingModule({
       providers: [
         AiAssistantService,
-        { provide: Supabase, useValue: { client: { rpc } } },
+        { provide: Supabase, useValue: { client: { rpc, functions: { invoke } } } },
         { provide: TenantService, useValue: { tenantId } },
       ],
     });
@@ -51,9 +53,7 @@ describe('AiAssistantService', () => {
 
   it('handles /CLEAR locally without requiring a tenant or consuming quota', async () => {
     tenantId.mockReturnValueOnce(null);
-    service.messages.set([
-      { role: 'user', content: 'Consulta anterior', timestamp: new Date() },
-    ]);
+    service.messages.set([{ role: 'user', content: 'Consulta anterior', timestamp: new Date() }]);
 
     await service.sendMessage('  /CLEAR  ');
 
@@ -73,6 +73,25 @@ describe('AiAssistantService', () => {
     expect(rpc).toHaveBeenCalledWith('consume_ai_request', { p_tenant_id: 'tenant-1' });
     expect(service.messages()[service.messages().length - 1].content).toContain(
       'límite diario de Venti AI',
+    );
+    expect(service.isLoading()).toBe(false);
+  });
+
+  it('answers via the ai-chat Edge Function without touching the Gemini key', async () => {
+    rpc.mockResolvedValueOnce({ data: { allowed: true }, error: null });
+    invoke.mockResolvedValueOnce({
+      data: { candidates: [{ content: { parts: [{ text: 'Vendiste 10 órdenes hoy.' }] } }] },
+      error: null,
+    });
+
+    await service.sendMessage('¿Cómo fueron mis ventas?');
+
+    expect(invoke).toHaveBeenCalledWith(
+      'ai-chat',
+      expect.objectContaining({ body: expect.objectContaining({ tenant_id: 'tenant-1' }) }),
+    );
+    expect(service.messages()[service.messages().length - 1].content).toContain(
+      'Vendiste 10 órdenes hoy.',
     );
     expect(service.isLoading()).toBe(false);
   });

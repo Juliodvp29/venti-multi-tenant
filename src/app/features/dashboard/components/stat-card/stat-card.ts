@@ -61,6 +61,11 @@ import { CommonModule } from '@angular/common';
         <h3 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight font-sans">
           {{ value() }}
         </h3>
+        @if (caption()) {
+          <p class="text-[11px] font-medium text-slate-400 dark:text-slate-500">
+            {{ caption() }}
+          </p>
+        }
       </div>
     </div>
   `,
@@ -70,6 +75,7 @@ export class StatCard {
   label = input.required<string>();
   value = input.required<string | number | null>();
   trend = input<{ value: number } | null>(null);
+  caption = input<string>('');
   iconBgClass = input<string>('bg-sky-50 text-sky-600 dark:bg-gray-800 dark:text-sky-400');
 
   public roundValue(value: number | string | null): number | null {
