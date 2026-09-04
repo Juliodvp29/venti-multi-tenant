@@ -44,6 +44,7 @@
       iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
       [value]="formatCurrency(revenueTotal())"
       [trend]="{ value: revenueTrend() }"
+      caption="Hoy · excluye canceladas y reembolsos"
     >
       <svg
         icon
@@ -67,6 +68,7 @@
       iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
       [value]="ordersTotal() | number"
       [trend]="{ value: ordersTrend() }"
+      caption="Hoy · excluye canceladas y reembolsos"
     >
       <svg
         icon
@@ -90,6 +92,7 @@
       iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
       [value]="formatCurrency(avgOrderValue())"
       [trend]="{ value: avgOrderTrend() }"
+      caption="Hoy · por orden válida"
     >
       <svg
         icon
@@ -113,6 +116,7 @@
       iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
       [value]="customersTotal() | number"
       [trend]="{ value: customersTrend() }"
+      caption="Registrados hoy"
     >
       <svg
         icon

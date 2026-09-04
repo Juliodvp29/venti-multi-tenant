@@ -1,6 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgApexchartsModule } from 'ng-apexcharts';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { TenantService } from '@core/services/tenant';
 
 @Component({
@@ -20,32 +29,48 @@ import { TenantService } from '@core/services/tenant';
       </div>
 
       <div class="relative h-[220px] flex items-center justify-center">
-        <apx-chart
-          [series]="series()"
-          [chart]="options().chart!"
-          [labels]="labels()"
-          [colors]="options().colors!"
-          [legend]="options().legend!"
-          [dataLabels]="options().dataLabels!"
-          [plotOptions]="options().plotOptions!"
-          [stroke]="options().stroke!"
-          [tooltip]="options().tooltip!"
-        />
+        @if (hasData()) {
+          <apx-chart
+            #chart
+            [series]="series()"
+            [chart]="options().chart!"
+            [labels]="labels()"
+            [colors]="options().colors!"
+            [legend]="options().legend!"
+            [dataLabels]="options().dataLabels!"
+            [plotOptions]="options().plotOptions!"
+            [stroke]="options().stroke!"
+            [tooltip]="options().tooltip!"
+            [autoUpdateSeries]="true"
+          />
+        } @else {
+          <div
+            class="h-[180px] w-[180px] rounded-full border-[24px] border-slate-100 dark:border-slate-800/60 animate-pulse"
+            aria-hidden="true"
+          ></div>
+        }
       </div>
 
       <div class="mt-4 space-y-2.5">
-        @for (label of labels(); track $index) {
-          <div class="flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2">
-              <span
-                class="w-2.5 h-2.5 rounded-full border border-white/20 dark:border-slate-900/40"
-                [style.background-color]="options().colors![$index]"
-              ></span>
-              <span class="font-semibold text-slate-600 dark:text-slate-400">{{ label }}</span>
+        @if (labels().length > 0) {
+          @for (label of labels(); track $index) {
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <span
+                  class="w-2.5 h-2.5 rounded-full border border-white/20 dark:border-slate-900/40"
+                  [style.background-color]="options().colors![$index]"
+                ></span>
+                <span class="font-semibold text-slate-600 dark:text-slate-400">{{ label }}</span>
+              </div>
+              <span class="font-bold text-slate-900 dark:text-slate-200 font-mono">{{
+                currencyFormat(series()[$index])
+              }}</span>
             </div>
-            <span class="font-bold text-slate-900 dark:text-slate-200 font-mono">{{
-              currencyFormat(series()[$index])
-            }}</span>
+          }
+        } @else {
+          <div class="space-y-2.5 animate-pulse" aria-hidden="true">
+            <div class="h-3 rounded bg-slate-100 dark:bg-slate-800/60"></div>
+            <div class="h-3 rounded bg-slate-100 dark:bg-slate-800/60"></div>
           </div>
         }
       </div>
@@ -58,12 +83,29 @@ export class CategoryChart {
   series = input.required<number[]>();
   labels = input.required<string[]>();
 
+  chart = viewChild<ChartComponent>('chart');
+
+  /** Evita inicializar ApexCharts con serie vacía: ese es el estado que queda en blanco. */
+  readonly hasData = computed(
+    () => this.series().length > 0 && this.series().some((v) => (v ?? 0) > 0),
+  );
+
   private readonly isDark = signal(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   constructor() {
     window
       .matchMedia('(prefers-color-scheme: dark)')
       .addEventListener('change', (e) => this.isDark.set(e.matches));
+
+    // Si el chart ya existe y los datos llegan/después cambian, forzar redibujado.
+    // Cubre la carrera entre @defer(on viewport) y la carga async de categorías.
+    effect(() => {
+      const values = this.series();
+      const instance = this.chart();
+      if (instance && values.length > 0) {
+        instance.updateSeries(values, true);
+      }
+    });
   }
 
   readonly options = computed(() => {
