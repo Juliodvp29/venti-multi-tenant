@@ -37,104 +37,113 @@
 
   <app-onboarding-wizard />
 
-  <!-- Stats Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <app-stat-card
-      label="Ventas Totales"
-      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
-      [value]="formatCurrency(revenueTotal())"
-      [trend]="{ value: revenueTrend() }"
-      caption="Hoy · excluye canceladas y reembolsos"
-    >
-      <svg
-        icon
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2.5"
+  <!-- Stats Grid (skeletons por sección mientras carga) -->
+  @if (isLoadingStats()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" aria-busy="true">
+      <app-stat-card-skeleton />
+      <app-stat-card-skeleton />
+      <app-stat-card-skeleton />
+      <app-stat-card-skeleton />
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <app-stat-card
+        label="Ventas Totales"
+        iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
+        [value]="formatCurrency(revenueTotal())"
+        [trend]="{ value: revenueTrend() }"
+        caption="Hoy · excluye canceladas y reembolsos"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    </app-stat-card>
+        <svg
+          icon
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </app-stat-card>
 
-    <app-stat-card
-      label="Órdenes Totales"
-      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
-      [value]="ordersTotal() | number"
-      [trend]="{ value: ordersTrend() }"
-      caption="Hoy · excluye canceladas y reembolsos"
-    >
-      <svg
-        icon
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2.5"
+      <app-stat-card
+        label="Órdenes Totales"
+        iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
+        [value]="ordersTotal() | number"
+        [trend]="{ value: ordersTrend() }"
+        caption="Hoy · excluye canceladas y reembolsos"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-        />
-      </svg>
-    </app-stat-card>
+        <svg
+          icon
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+          />
+        </svg>
+      </app-stat-card>
 
-    <app-stat-card
-      label="Valor Promedio"
-      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
-      [value]="formatCurrency(avgOrderValue())"
-      [trend]="{ value: avgOrderTrend() }"
-      caption="Hoy · por orden válida"
-    >
-      <svg
-        icon
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2.5"
+      <app-stat-card
+        label="Valor Promedio"
+        iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
+        [value]="formatCurrency(avgOrderValue())"
+        [trend]="{ value: avgOrderTrend() }"
+        caption="Hoy · por orden válida"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-        />
-      </svg>
-    </app-stat-card>
+        <svg
+          icon
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
+        </svg>
+      </app-stat-card>
 
-    <app-stat-card
-      label="Nuevos Clientes"
-      iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
-      [value]="customersTotal() | number"
-      [trend]="{ value: customersTrend() }"
-      caption="Registrados hoy"
-    >
-      <svg
-        icon
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2.5"
+      <app-stat-card
+        label="Nuevos Clientes"
+        iconBgClass="bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 dark:border-sky-500/10"
+        [value]="customersTotal() | number"
+        [trend]="{ value: customersTrend() }"
+        caption="Registrados hoy"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-        />
-      </svg>
-    </app-stat-card>
-  </div>
+        <svg
+          icon
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          />
+        </svg>
+      </app-stat-card>
+    </div>
+  }
 
   <!-- Row 2: Charts (deferred: ApexCharts ~500KB fuera del LCP) -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">

@@ -1,76 +1,76 @@
 /* Custom Scrollbar for the table container */
 .scrollbar-thin::-webkit-scrollbar {
-    height: 6px;
-    width: 6px;
+  height: 6px;
+  width: 6px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #e5e7eb;
-    border-radius: 10px;
+  background: #e5e7eb;
+  border-radius: 10px;
 }
 
 .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #374151;
+  background: #374151;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #d1d5db;
+  background: #d1d5db;
 }
 
 .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #4b5563;
+  background: #4b5563;
 }
 
 /* Row hover highlight */
 tr:hover td {
-    border-color: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.1);
 }
 
 .actions-menu-button.is-open {
-    opacity: 1;
-    background-color: #f3f4f6;
-    color: #4b5563;
+  opacity: 1;
+  background-color: #f3f4f6;
+  color: #4b5563;
 }
 
 .dark .actions-menu-button.is-open {
-    background-color: #1f2937;
-    color: #9ca3af;
+  background-color: #1f2937;
+  color: #9ca3af;
 }
 
 /* Fade in for table rows */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(5px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 tbody tr {
-    animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 /* Dropdown menu animation */
 @keyframes dropdownIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-4px);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
 
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .animate-in {
-    animation: dropdownIn 0.15s ease-out forwards;
+  animation: dropdownIn 0.15s ease-out forwards;
 }

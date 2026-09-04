@@ -183,190 +183,202 @@
     </div>
   </div>
 
-  <!-- Table -->
-  <div class="overflow-x-auto">
-    <table class="min-w-full">
-      <!-- Head -->
-      <thead>
-        <tr class="border-y border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-900/40">
-          @for (col of columns(); track col.key) {
-            <th
-              scope="col"
-              class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
-              [class.cursor-pointer]="col.sortable"
-              [class.hover:text-gray-600]="col.sortable"
-              (click)="col.sortable && onSort(col.key)"
-            >
-              <div class="flex items-center gap-1.5">
-                {{ col.label }}
-                @if (col.sortable) {
-                  <div class="flex flex-col">
-                    @if (sortState()?.key === col.key && sortState()?.direction === 'asc') {
-                      <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 3l-7 7h14l-7-7z" />
-                      </svg>
-                    } @else if (sortState()?.key === col.key && sortState()?.direction === 'desc') {
-                      <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 17l7-7H3l7 7z" />
-                      </svg>
-                    } @else {
-                      <svg
-                        class="h-3 w-3 text-gray-300 dark:text-gray-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M10 3l-7 7h14l-7-7zM10 17l7-7H3l7 7z" />
-                      </svg>
-                    }
-                  </div>
-                }
-              </div>
-            </th>
-          }
-          @if (actions().length > 0) {
-            <th
-              scope="col"
-              class="py-3.5 pl-3 pr-6 text-right text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
-            >
-              Acciones
-            </th>
-          }
-        </tr>
-      </thead>
-
-      <!-- Body -->
-      <tbody class="divide-y divide-gray-50 dark:divide-gray-800/80 bg-white dark:bg-transparent">
-        @for (item of paginatedData(); track item['id']) {
+  <!-- Table / Skeleton -->
+  @if (isLoading()) {
+    <app-table-skeleton
+      [rows]="skeletonRows()"
+      [columns]="columns().length"
+      [showActions]="actions().length > 0"
+    />
+  } @else {
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <!-- Head -->
+        <thead>
           <tr
-            class="hover:bg-sky-50/30 dark:hover:bg-sky-900/10 transition-colors duration-150 cursor-pointer group"
-            (click)="rowClick.emit(item)"
+            class="border-y border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-900/40"
           >
             @for (col of columns(); track col.key) {
-              <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm">
-                @if (col.type === 'image') {
-                  <div
-                    class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-gray-700 bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center"
-                  >
-                    @if (formatValue(col, item)) {
-                      <img class="h-10 w-10 object-cover" alt="" [src]="formatValue(col, item)" />
-                    } @else {
-                      <svg
-                        class="w-5 h-5 text-sky-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                      >
+              <th
+                scope="col"
+                class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+                [class.cursor-pointer]="col.sortable"
+                [class.hover:text-gray-600]="col.sortable"
+                (click)="col.sortable && onSort(col.key)"
+              >
+                <div class="flex items-center gap-1.5">
+                  {{ col.label }}
+                  @if (col.sortable) {
+                    <div class="flex flex-col">
+                      @if (sortState()?.key === col.key && sortState()?.direction === 'asc') {
+                        <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 3l-7 7h14l-7-7z" />
+                        </svg>
+                      } @else if (
+                        sortState()?.key === col.key && sortState()?.direction === 'desc'
+                      ) {
+                        <svg class="h-3 w-3 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 17l7-7H3l7 7z" />
+                        </svg>
+                      } @else {
+                        <svg
+                          class="h-3 w-3 text-gray-300 dark:text-gray-600"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 3l-7 7h14l-7-7zM10 17l7-7H3l7 7z" />
+                        </svg>
+                      }
+                    </div>
+                  }
+                </div>
+              </th>
+            }
+            @if (actions().length > 0) {
+              <th
+                scope="col"
+                class="py-3.5 pl-3 pr-6 text-right text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+              >
+                Acciones
+              </th>
+            }
+          </tr>
+        </thead>
+
+        <!-- Body -->
+        <tbody class="divide-y divide-gray-50 dark:divide-gray-800/80 bg-white dark:bg-transparent">
+          @for (item of paginatedData(); track item['id']) {
+            <tr
+              class="hover:bg-sky-50/30 dark:hover:bg-sky-900/10 transition-colors duration-150 cursor-pointer group"
+              (click)="rowClick.emit(item)"
+            >
+              @for (col of columns(); track col.key) {
+                <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm">
+                  @if (col.type === 'image') {
+                    <div
+                      class="h-10 w-10 flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-gray-100 dark:ring-gray-700 bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center"
+                    >
+                      @if (formatValue(col, item)) {
+                        <img class="h-10 w-10 object-cover" alt="" [src]="formatValue(col, item)" />
+                      } @else {
+                        <svg
+                          class="w-5 h-5 text-sky-400"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                          />
+                        </svg>
+                      }
+                    </div>
+                  } @else if (col.type === 'status') {
+                    <!-- Status badge with toggle look -->
+                    <div class="flex items-center gap-2.5">
+                      @if (formatValue(col, item) === 'active') {
+                        <!-- Toggle ON -->
+                        <div
+                          class="relative flex-shrink-0 w-9 h-5 bg-sky-500 rounded-full transition-colors"
+                        >
+                          <div
+                            class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"
+                          ></div>
+                        </div>
+                        <span
+                          class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400"
+                        >
+                          Activo
+                        </span>
+                      } @else {
+                        <!-- Toggle OFF -->
+                        <div
+                          class="relative flex-shrink-0 w-9 h-5 bg-gray-200 dark:bg-gray-700 rounded-full transition-colors"
+                        >
+                          <div
+                            class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"
+                          ></div>
+                        </div>
+                        <span
+                          class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
+                        >
+                          Inactivo
+                        </span>
+                      }
+                    </div>
+                  } @else if (col.template) {
+                    <ng-container
+                      [ngTemplateOutlet]="col.template"
+                      [ngTemplateOutletContext]="{ $implicit: item[col.key], item: item }"
+                    />
+                  } @else if (col.formatter) {
+                    <span
+                      class="text-gray-700 dark:text-slate-200 font-medium"
+                      [innerHTML]="formatValue(col, item)"
+                    ></span>
+                  } @else {
+                    <span class="text-gray-700 dark:text-slate-200 font-medium">{{
+                      formatValue(col, item)
+                    }}</span>
+                  }
+                </td>
+              }
+
+              <!-- Actions cell -->
+              @if (actions().length > 0) {
+                <td class="whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm">
+                  <div class="relative inline-block">
+                    <button
+                      type="button"
+                      aria-label="Opciones de fila"
+                      class="actions-menu-button inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
+                      [class.is-open]="openMenuId() === item['id']"
+                      (click)="toggleMenu($event, item)"
+                    >
+                      <!-- Horizontal dots -->
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                          d="M5 12a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0z"
                         />
                       </svg>
-                    }
+                    </button>
                   </div>
-                } @else if (col.type === 'status') {
-                  <!-- Status badge with toggle look -->
-                  <div class="flex items-center gap-2.5">
-                    @if (formatValue(col, item) === 'active') {
-                      <!-- Toggle ON -->
-                      <div
-                        class="relative flex-shrink-0 w-9 h-5 bg-sky-500 rounded-full transition-colors"
-                      >
-                        <div
-                          class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"
-                        ></div>
-                      </div>
-                      <span
-                        class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400"
-                      >
-                        Activo
-                      </span>
-                    } @else {
-                      <!-- Toggle OFF -->
-                      <div
-                        class="relative flex-shrink-0 w-9 h-5 bg-gray-200 dark:bg-gray-700 rounded-full transition-colors"
-                      >
-                        <div
-                          class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow"
-                        ></div>
-                      </div>
-                      <span
-                        class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500"
-                      >
-                        Inactivo
-                      </span>
-                    }
-                  </div>
-                } @else if (col.template) {
-                  <ng-container
-                    [ngTemplateOutlet]="col.template"
-                    [ngTemplateOutletContext]="{ $implicit: item[col.key], item: item }"
-                  />
-                } @else if (col.formatter) {
-                  <span
-                    class="text-gray-700 dark:text-slate-200 font-medium"
-                    [innerHTML]="formatValue(col, item)"
-                  ></span>
-                } @else {
-                  <span class="text-gray-700 dark:text-slate-200 font-medium">{{
-                    formatValue(col, item)
-                  }}</span>
-                }
-              </td>
-            }
-
-            <!-- Actions cell -->
-            @if (actions().length > 0) {
-              <td class="whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm">
-                <div class="relative inline-block">
-                  <button
-                    type="button"
-                    aria-label="Opciones de fila"
-                    class="actions-menu-button inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-150 opacity-0 group-hover:opacity-100"
-                    [class.is-open]="openMenuId() === item['id']"
-                    (click)="toggleMenu($event, item)"
-                  >
-                    <!-- Horizontal dots -->
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path
-                        d="M5 12a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0zm6 0a1 1 0 102 0 1 1 0 00-2 0z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </td>
-            }
-          </tr>
-        } @empty {
-          <tr>
-            <td
-              class="py-16 text-center"
-              [attr.colspan]="columns().length + (actions().length > 0 ? 1 : 0)"
-            >
-              <svg
-                class="mx-auto h-10 w-10 text-gray-200 dark:text-gray-700"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td
+                class="py-16 text-center"
+                [attr.colspan]="columns().length + (actions().length > 0 ? 1 : 0)"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25-2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
-                />
-              </svg>
-              <h3 class="mt-3 text-sm font-semibold text-gray-900 dark:text-white">
-                Sin resultados
-              </h3>
-              <p class="mt-1 text-sm text-gray-400">Ajusta tu búsqueda o filtros.</p>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+                <svg
+                  class="mx-auto h-10 w-10 text-gray-200 dark:text-gray-700"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25-2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+                  />
+                </svg>
+                <h3 class="mt-3 text-sm font-semibold text-gray-900 dark:text-white">
+                  Sin resultados
+                </h3>
+                <p class="mt-1 text-sm text-gray-400">Ajusta tu búsqueda o filtros.</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <!-- Fixed-position dropdown (avoids overflow clipping) -->
   @if (openMenuId() !== null && menuPosition() && openMenuItem()) {
@@ -396,58 +408,60 @@
     </div>
   }
 
-  <!-- Pagination -->
-  <div
-    class="px-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between"
-  >
-    <p class="text-sm text-gray-400 dark:text-gray-500">
-      Mostrando
-      <span class="font-semibold text-gray-700 dark:text-gray-300">{{ startIndex() }}</span> a
-      <span class="font-semibold text-gray-700 dark:text-gray-300">{{ endIndex() }}</span> de
-      <span class="font-semibold text-gray-700 dark:text-gray-300">{{ totalItems() }}</span>
-      resultados
-    </p>
-    <nav
-      class="isolate inline-flex -space-x-px rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
-      aria-label="Pagination"
+  <!-- Pagination (oculta mientras carga para evitar salto de layout) -->
+  @if (!isLoading()) {
+    <div
+      class="px-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between"
     >
-      <button
-        type="button"
-        aria-label="Página anterior"
-        class="relative inline-flex items-center rounded-l-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all"
-        [disabled]="currentPage() === 1"
-        (click)="prevPage()"
+      <p class="text-sm text-gray-400 dark:text-gray-500">
+        Mostrando
+        <span class="font-semibold text-gray-700 dark:text-gray-300">{{ startIndex() }}</span> a
+        <span class="font-semibold text-gray-700 dark:text-gray-300">{{ endIndex() }}</span> de
+        <span class="font-semibold text-gray-700 dark:text-gray-300">{{ totalItems() }}</span>
+        resultados
+      </p>
+      <nav
+        class="isolate inline-flex -space-x-px rounded-xl shadow-sm ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
+        aria-label="Pagination"
       >
-        <span class="sr-only">Anterior</span>
-        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path
-            fill-rule="evenodd"
-            d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
-      <span
-        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
-      >
-        Página {{ currentPage() }} de {{ totalPages() || 1 }}
-      </span>
-      <button
-        type="button"
-        aria-label="Página siguiente"
-        class="relative inline-flex items-center rounded-r-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all"
-        [disabled]="currentPage() === totalPages()"
-        (click)="nextPage()"
-      >
-        <span class="sr-only">Siguiente</span>
-        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path
-            fill-rule="evenodd"
-            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
-    </nav>
-  </div>
+        <button
+          type="button"
+          aria-label="Página anterior"
+          class="relative inline-flex items-center rounded-l-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all"
+          [disabled]="currentPage() === 1"
+          (click)="prevPage()"
+        >
+          <span class="sr-only">Anterior</span>
+          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fill-rule="evenodd"
+              d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <span
+          class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-100 dark:ring-gray-800"
+        >
+          Página {{ currentPage() }} de {{ totalPages() || 1 }}
+        </span>
+        <button
+          type="button"
+          aria-label="Página siguiente"
+          class="relative inline-flex items-center rounded-r-xl px-2.5 py-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 disabled:opacity-40 transition-all"
+          [disabled]="currentPage() === totalPages()"
+          (click)="nextPage()"
+        >
+          <span class="sr-only">Siguiente</span>
+          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fill-rule="evenodd"
+              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </nav>
+    </div>
+  }
 </div>

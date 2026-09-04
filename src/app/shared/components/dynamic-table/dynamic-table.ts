@@ -17,10 +17,11 @@ import { ToastService } from '@core/services/toast';
 import { FileProcessorService } from '@core/services/file-processor';
 import { ReportPdfService } from '@core/services/report-pdf';
 import { TenantService } from '@core/services/tenant';
+import { TableSkeleton } from '@shared/components/skeleton/table-skeleton';
 
 @Component({
   selector: 'app-dynamic-table',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TableSkeleton],
   templateUrl: './dynamic-table.html',
   styleUrl: './dynamic-table.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,6 +48,8 @@ export class DynamicTable<T extends Record<string, any>> {
   allowImport = input<boolean>(false);
   totalItemsOverride = input<number | null>(null);
   hasActiveFilters = input<boolean>(false);
+  isLoading = input<boolean>(false);
+  skeletonRows = input<number>(8);
 
   // Outputs
   actionClick = output<{ actionId: string; item: T }>();

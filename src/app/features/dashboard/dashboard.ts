@@ -14,6 +14,7 @@ import { TenantService } from '@core/services/tenant';
 import { OnboardingService } from '@core/services/onboarding.service';
 import { OnboardingWizard } from './components/onboarding-wizard/onboarding-wizard';
 import { StatCard } from './components/stat-card/stat-card';
+import { StatCardSkeleton } from '@shared/components/skeleton/stat-card-skeleton';
 import { SalesChart } from './components/sales-chart/sales-chart';
 import { CategoryChart } from './components/category-chart/category-chart';
 import { TopProducts, DashboardProduct } from './components/top-products/top-products';
@@ -29,6 +30,7 @@ import {
     CommonModule,
     RouterLink,
     StatCard,
+    StatCardSkeleton,
     SalesChart,
     CategoryChart,
     TopProducts,
