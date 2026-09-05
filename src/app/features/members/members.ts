@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed, ChangeDetectionStrategy, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+  effect,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TenantService } from '@core/services/tenant';
 import { SubscriptionService } from '@core/services/subscription';
@@ -9,6 +16,7 @@ import { AuditLogsService } from '@core/services/audit-logs';
 import { MembersStatsComponent } from './components/members-stats';
 import { MembersListComponent } from './components/members-list';
 import { InviteMemberModalComponent } from './components/invite-member-modal';
+import { EditMemberRoleModalComponent } from './components/edit-member-role-modal';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +25,8 @@ import { InviteMemberModalComponent } from './components/invite-member-modal';
     CommonModule,
     MembersStatsComponent,
     MembersListComponent,
-    InviteMemberModalComponent
+    InviteMemberModalComponent,
+    EditMemberRoleModalComponent,
   ],
   templateUrl: './members.html',
   styleUrl: './members.css',
@@ -42,18 +51,27 @@ export class Members {
 
   members = signal<TenantMember[]>([]);
   showInviteModal = signal(false);
+  selectedMember = signal<TenantMember | null>(null);
+  showEditModal = signal(false);
   isLoading = signal(false);
   auditLogs = signal<AuditLog[]>([]);
   isAuditLoading = signal(false);
 
-  totalMembers = computed(() => this.members().filter(m => !m['is_invite']).length);
-  adminCount = computed(() => this.members().filter(m => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner)).length);
+  totalMembers = computed(() => this.members().filter((m) => !m['is_invite']).length);
+  adminCount = computed(
+    () =>
+      this.members().filter(
+        (m) => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner),
+      ).length,
+  );
   pendingInvites = signal(0);
 
   async openInviteModal() {
     const canAdd = await this.subscriptionService.canAddResource('members');
     if (!canAdd) {
-      this.toast.error('Has alcanzado el límite de miembros para tu plan. Por favor, actualiza tu plan para invitar a más personas.');
+      this.toast.error(
+        'Has alcanzado el límite de miembros para tu plan. Por favor, actualiza tu plan para invitar a más personas.',
+      );
       return;
     }
     this.showInviteModal.set(true);
@@ -69,28 +87,40 @@ export class Members {
       ]);
 
       const membersData: TenantMember[] =
-        membersResult.status === 'fulfilled' ? membersResult.value : this.members().filter(m => !m['is_invite']);
+        membersResult.status === 'fulfilled'
+          ? membersResult.value
+          : this.members().filter((m) => !m['is_invite']);
 
       const invitesData: TenantInvitation[] =
         invitesResult.status === 'fulfilled' ? invitesResult.value : [];
 
-      const formattedInvites: TenantMember[] = invitesData.map(invite => ({
-        id: invite.id,
-        tenant_id: invite.tenant_id,
-        user_id: `invite_${invite.id}`,
-        email: invite.email,
-        role: invite.role,
-        permissions: [],
-        is_active: false,
-        is_invite: true,
-        invited_by: invite.invited_by,
-        invited_at: invite.created_at,
-        created_at: invite.created_at,
-        updated_at: invite.created_at
-      } as any));
+      // Una invitación cuyo correo ya es miembro (aceptada pero con la fila
+      // en pendiente, o invitada por error) generaba un duplicado activo/inactivo.
+      const memberEmails = new Set(membersData.map((m) => (m.email ?? '').toLowerCase()));
+      const visibleInvites = invitesData.filter(
+        (invite) => !memberEmails.has((invite.email ?? '').toLowerCase()),
+      );
+
+      const formattedInvites: TenantMember[] = visibleInvites.map(
+        (invite) =>
+          ({
+            id: invite.id,
+            tenant_id: invite.tenant_id,
+            user_id: `invite_${invite.id}`,
+            email: invite.email,
+            role: invite.role,
+            permissions: [],
+            is_active: false,
+            is_invite: true,
+            invited_by: invite.invited_by,
+            invited_at: invite.created_at,
+            created_at: invite.created_at,
+            updated_at: invite.created_at,
+          }) as any,
+      );
 
       this.members.set([...membersData, ...formattedInvites]);
-      this.pendingInvites.set(invitesData.length);
+      this.pendingInvites.set(visibleInvites.length);
     } catch (error) {
       console.error('Error loading members:', error);
     } finally {
@@ -210,7 +240,10 @@ export class Members {
     };
     const ignored = new Set(['updated_at', 'created_at']);
     const changed = Object.keys(newValues)
-      .filter((key) => !ignored.has(key) && JSON.stringify(oldValues[key]) !== JSON.stringify(newValues[key]))
+      .filter(
+        (key) =>
+          !ignored.has(key) && JSON.stringify(oldValues[key]) !== JSON.stringify(newValues[key]),
+      )
       .slice(0, 3)
       .map(
         (key) =>
@@ -224,33 +257,39 @@ export class Members {
     if (typeof value === 'boolean') return value ? 'Sí' : 'No';
     if (value === null || value === undefined || value === '') return 'vacío';
     if (key === 'status') {
-      return {
-        pending: 'Pendiente',
-        processing: 'En proceso',
-        paid: 'Pagado',
-        shipped: 'Enviado',
-        delivered: 'Entregado',
-        cancelled: 'Cancelado',
-        refunded: 'Reembolsado',
-      }[String(value)] ?? String(value);
+      return (
+        {
+          pending: 'Pendiente',
+          processing: 'En proceso',
+          paid: 'Pagado',
+          shipped: 'Enviado',
+          delivered: 'Entregado',
+          cancelled: 'Cancelado',
+          refunded: 'Reembolsado',
+        }[String(value)] ?? String(value)
+      );
     }
     if (key === 'payment_status') {
-      return {
-        pending: 'Pendiente',
-        completed: 'Pagado',
-        failed: 'Fallido',
-        refunded: 'Reembolsado',
-        partially_refunded: 'Reembolso parcial',
-      }[String(value)] ?? String(value);
+      return (
+        {
+          pending: 'Pendiente',
+          completed: 'Pagado',
+          failed: 'Fallido',
+          refunded: 'Reembolsado',
+          partially_refunded: 'Reembolso parcial',
+        }[String(value)] ?? String(value)
+      );
     }
     if (key === 'role') {
-      return {
-        owner: 'Propietario',
-        admin: 'Administrador',
-        editor: 'Editor',
-        viewer: 'Visualizador',
-        delivery: 'Despacho',
-      }[String(value)] ?? String(value);
+      return (
+        {
+          owner: 'Propietario',
+          admin: 'Administrador',
+          editor: 'Editor',
+          viewer: 'Visualizador',
+          delivery: 'Despacho',
+        }[String(value)] ?? String(value)
+      );
     }
     return String(value);
   }
@@ -263,14 +302,12 @@ export class Members {
       customer_portal: 'portal del cliente',
     };
     return source.source
-      ? sourceLabels[source.source] ?? this.humanizeAuditKey(source.source)
+      ? (sourceLabels[source.source] ?? this.humanizeAuditKey(source.source))
       : `Registro de ${this.getAuditResourceLabel(log.resource_type)}`;
   }
 
   private humanizeAuditKey(key: string): string {
-    return key
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, (character) => character.toUpperCase());
+    return key.replace(/_/g, ' ').replace(/\b\w/g, (character) => character.toUpperCase());
   }
 
   getAuditActor(log: AuditLog): string {
@@ -301,34 +338,60 @@ export class Members {
   }
 
   async onMemberRemove(member: TenantMember) {
+    const isInvite = !!member['is_invite'];
     const confirmed = await this.toast.confirm(
-      '¿Estás seguro de que quieres eliminar a este miembro?',
-      'Eliminar miembro'
+      isInvite
+        ? `¿Quieres cancelar la invitación pendiente para ${member.email}?`
+        : '¿Estás seguro de que quieres eliminar a este miembro?',
+      isInvite ? 'Cancelar invitación' : 'Eliminar miembro',
     );
     if (confirmed) {
       try {
-        await this.tenantService.removeMember(member.id);
-        this.toast.success('Miembro eliminado');
+        if (isInvite) {
+          await this.tenantService.cancelInvitation(member.id);
+          this.toast.success('Invitación cancelada');
+        } else {
+          await this.tenantService.removeMember(member.id);
+          this.toast.success('Miembro eliminado');
+        }
         await this.loadMembers();
       } catch (error) {
-        this.toast.error('Error al eliminar el miembro');
+        this.toast.error(
+          isInvite ? 'Error al cancelar la invitación' : 'Error al eliminar el miembro',
+        );
       }
     }
   }
 
-  async onMemberRoleUpdate(member: TenantMember) {
-    // El cambio de rol se gestiona desde la UI del componente MembersListComponent.
-    // Si se llama directamente, se valida el rol recibido.
-    if (member.role && Object.values(TenantRole).includes(member.role as TenantRole)) {
-      try {
-        await this.tenantService.updateMemberRole(member.id, member.role as TenantRole);
-        this.toast.success('Rol actualizado');
-        await this.loadMembers();
-      } catch (error) {
-        this.toast.error('Error al actualizar el rol');
-      }
-    } else {
+  openEditModal(member: TenantMember) {
+    this.selectedMember.set(member);
+    this.showEditModal.set(true);
+  }
+
+  closeEditModal() {
+    this.showEditModal.set(false);
+    this.selectedMember.set(null);
+  }
+
+  async onEditRoleSave(event: { member: TenantMember; role: TenantRole }) {
+    const { member, role } = event;
+    if (!role || !Object.values(TenantRole).includes(role)) {
       this.toast.error('Rol inválido. Los roles disponibles son: viewer, editor, admin');
+      return;
+    }
+    const isInvite = !!member['is_invite'];
+    try {
+      if (isInvite) {
+        await this.tenantService.updateInvitationRole(member.id, role);
+        this.toast.success('Rol de la invitación actualizado');
+      } else {
+        await this.tenantService.updateMemberRole(member.id, role);
+        this.toast.success('Rol actualizado');
+      }
+      this.closeEditModal();
+      await this.loadMembers();
+    } catch (error) {
+      this.toast.error('Error al actualizar el rol');
     }
   }
 }

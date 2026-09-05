@@ -1,13 +1,21 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, viewChild, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+  viewChild,
+  TemplateRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DynamicTable } from '@shared/components/dynamic-table/dynamic-table';
 import { TenantMember } from '@core/models';
 import { ColumnDef, TableAction } from '@core/types/table';
 
 @Component({
-    selector: 'app-members-list',
-    imports: [CommonModule, DynamicTable],
-    template: `
+  selector: 'app-members-list',
+  imports: [CommonModule, DynamicTable],
+  template: `
     <app-dynamic-table
       title="Miembros de la Tienda"
       description="Gestiona los miembros de tu equipo y sus permisos de cuenta."
@@ -19,83 +27,111 @@ import { ColumnDef, TableAction } from '@core/types/table';
       <!-- Custom Template for Name with Avatar -->
       <ng-template #nameTemplate let-value let-item="item">
         <div class="flex items-center">
-            <div class="h-10 w-10 flex-shrink-0">
-                <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800" 
-                     alt="" 
-                     [src]="'https://ui-avatars.com/api/?name=' + (item.email || item.user_id) + '&background=random'">
+          <div class="h-10 w-10 flex-shrink-0">
+            <img
+              class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
+              alt=""
+              [src]="
+                'https://ui-avatars.com/api/?name=' +
+                (item.email || item.user_id) +
+                '&background=random'
+              "
+            />
+          </div>
+          <div class="ml-4">
+            <div class="font-semibold text-gray-900 dark:text-white capitalize">
+              {{ (item.email?.split('@')[0] || 'Miembro').replace('.', ' ') }}
             </div>
-            <div class="ml-4">
-                <div class="font-semibold text-gray-900 dark:text-white capitalize">{{ (item.email?.split('@')[0] || 'Miembro').replace('.', ' ') }}</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">{{ item.email || 'No hay correo disponible' }}</div>
+            <div class="text-xs text-gray-500 dark:text-gray-400">
+              {{ item.email || 'No hay correo disponible' }}
             </div>
+          </div>
         </div>
       </ng-template>
 
       <!-- Custom Template for Status -->
       <ng-template #statusTemplate let-value let-item="item">
-        <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
-              [ngClass]="item.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'">
-            <span class="h-1.5 w-1.5 rounded-full" [ngClass]="item.is_active ? 'bg-green-500' : 'bg-gray-400'"></span>
+        @if (item.is_invite) {
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+          >
+            <span class="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+            Invitación pendiente
+          </span>
+        } @else {
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
+            [ngClass]="
+              item.is_active
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+            "
+          >
+            <span
+              class="h-1.5 w-1.5 rounded-full"
+              [ngClass]="item.is_active ? 'bg-green-500' : 'bg-gray-400'"
+            ></span>
             {{ item.is_active ? 'Activo' : 'Inactivo' }}
-        </span>
+          </span>
+        }
       </ng-template>
     </app-dynamic-table>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MembersListComponent {
-    members = input.required<TenantMember[]>();
-    invite = output<void>();
-    edit = output<TenantMember>();
-    remove = output<TenantMember>();
+  members = input.required<TenantMember[]>();
+  invite = output<void>();
+  edit = output<TenantMember>();
+  remove = output<TenantMember>();
 
-    nameTemplate = viewChild<TemplateRef<any>>('nameTemplate');
-    statusTemplate = viewChild<TemplateRef<any>>('statusTemplate');
+  nameTemplate = viewChild<TemplateRef<any>>('nameTemplate');
+  statusTemplate = viewChild<TemplateRef<any>>('statusTemplate');
 
-    columns = computed<ColumnDef<TenantMember>[]>(() => {
-        const nameTpl = this.nameTemplate();
-        const statusTpl = this.statusTemplate();
+  columns = computed<ColumnDef<TenantMember>[]>(() => {
+    const nameTpl = this.nameTemplate();
+    const statusTpl = this.statusTemplate();
 
-        return [
-            {
-                key: 'email',
-                label: 'Nombre',
-                template: nameTpl
-            },
-            {
-                key: 'role',
-                label: 'Rol',
-                formatter: (val: string) => val ? val.charAt(0).toUpperCase() + val.slice(1) : ''
-            },
-            {
-                key: 'is_active',
-                label: 'Estado',
-                template: statusTpl
-            },
-            {
-                key: 'created_at',
-                label: 'Fecha de Ingreso',
-                type: 'date'
-            }
-        ];
-    });
-
-    actions: TableAction<TenantMember>[] = [
-        {
-            id: 'edit',
-            label: 'Editar',
-            callback: (item) => this.edit.emit(item)
-        },
-        {
-            id: 'remove',
-            label: 'Eliminar',
-            className: 'text-red-600 hover:text-red-900',
-            callback: (item) => this.remove.emit(item)
-        }
+    return [
+      {
+        key: 'email',
+        label: 'Nombre',
+        template: nameTpl,
+      },
+      {
+        key: 'role',
+        label: 'Rol',
+        formatter: (val: string) => (val ? val.charAt(0).toUpperCase() + val.slice(1) : ''),
+      },
+      {
+        key: 'is_active',
+        label: 'Estado',
+        template: statusTpl,
+      },
+      {
+        key: 'created_at',
+        label: 'Fecha de Ingreso',
+        type: 'date',
+      },
     ];
+  });
 
-    onAction(event: { actionId: string; item: TenantMember }) {
-        if (event.actionId === 'edit') this.edit.emit(event.item);
-        if (event.actionId === 'remove') this.remove.emit(event.item);
-    }
+  actions: TableAction<TenantMember>[] = [
+    {
+      id: 'edit',
+      label: 'Editar',
+      callback: (item) => this.edit.emit(item),
+    },
+    {
+      id: 'remove',
+      label: 'Eliminar',
+      className: 'text-red-600 hover:text-red-900',
+      callback: (item) => this.remove.emit(item),
+    },
+  ];
+
+  onAction(event: { actionId: string; item: TenantMember }) {
+    if (event.actionId === 'edit') this.edit.emit(event.item);
+    if (event.actionId === 'remove') this.remove.emit(event.item);
+  }
 }
