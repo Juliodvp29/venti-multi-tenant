@@ -74,6 +74,7 @@ La plataforma opera bajo un modelo dual:
 - 👥 **Gestión de Equipo, Auditoría & Control de Acceso Granular (`/members`)**: Invitaciones por correo electrónico con tokens de seguridad, roles estrictos y una vista de actividad reciente del equipo para seguimiento enterprise.
 - 📊 **Reportes Financieros y Exportación Multiformato (`/reports`)**: Análisis de ventas por periodos personalizables con exportación instantánea a `.xlsx` y PDF profesional con branding de la tienda, métricas, tablas estilizadas y paginación.
 - 💳 **Suscripciones y Cuotas del Tenant (`/subscription`)**: Monitoreo visual del plan contratado, límites de almacenamiento y productos mediante barras de progreso interactivas.
+- ✉️ **Gestor de Correos Transaccionales y Plantillas (`/integrations?tab=emails`)**: Personalización en vivo de plantillas de confirmación de compra, despachos con transportadora y rastreo, cancelaciones, reembolsos y membresías con 4 estilos prediseñados (_Venti Oficial, Minimalista, Pro Corporativo, Cálido_), preview aislado en `<iframe>`, variables dinámicas con copiado rápido y simulador de envío de prueba conectado a Resend.
 - 🎨 **Suite de Personalización de Tienda (`/settings`)**:
   - **General & Ubicación**: Nombre legal, moneda de operación predeterminada y zona horaria.
   - **Dirección Física**: Ubicación física del centro de despacho para el cálculo de fletes.
@@ -111,22 +112,23 @@ La plataforma opera bajo un modelo dual:
 
 ## 🛠 Stack Tecnológico
 
-| Capa                         | Tecnología / Paquete               | Versión     | Propósito en la Plataforma                                                        |
-| :--------------------------- | :--------------------------------- | :---------- | :-------------------------------------------------------------------------------- |
-| **Frontend Framework**       | Angular Standalone                 | 22.x        | Componentes independientes, Signals, `@if`/`@for`, nuevas APIs de Control Flow    |
-| **Server-Side Rendering**    | `@angular/ssr` + Express           | 22.x / 5.x  | Servidor Node.js para renderizado SSR en rutas públicas y motor de hidratación    |
-| **Lenguaje de Programación** | TypeScript                         | 6.x         | Tipado estricto, interfaces de dominio y verificación estática avanzada           |
-| **Diseño y Estilos**         | Tailwind CSS + PostCSS             | 4.x         | Motor CSS moderno basado en utilidades, temas dinámicos y modo oscuro             |
-| **Backend as a Service**     | Supabase (`@supabase/supabase-js`) | 2.x         | Base de datos PostgreSQL, Auth (GoTrue), Storage de archivos y canales Realtime   |
-| **Edge Compute**             | Supabase Edge Functions (Deno)     | -           | Verificación DNS/HTTPS de dominios personalizados y lógica serverless             |
-| **Inteligencia Artificial**  | Edge Function `ai-chat` + Gemini   | -           | Agente de IA con Function Calling; la API key vive como secreto del servidor      |
-| **Visualización de Datos**   | ApexCharts + `ng-apexcharts`       | 5.x / 2.x   | Gráficas interactivas de ventas, ingresos y distribución de categorías            |
-| **Formateo Markdown & XSS**  | `marked` + `dompurify`             | 17.x / 3.x  | Renderizado y sanitización estricta de respuestas del asistente de IA y notas     |
+| Capa                         | Tecnología / Paquete                         | Versión            | Propósito en la Plataforma                                                              |
+| :--------------------------- | :------------------------------------------- | :----------------- | :-------------------------------------------------------------------------------------- |
+| **Frontend Framework**       | Angular Standalone                           | 22.x               | Componentes independientes, Signals, `@if`/`@for`, nuevas APIs de Control Flow          |
+| **Server-Side Rendering**    | `@angular/ssr` + Express                     | 22.x / 5.x         | Servidor Node.js para renderizado SSR en rutas públicas y motor de hidratación          |
+| **Lenguaje de Programación** | TypeScript                                   | 6.x                | Tipado estricto, interfaces de dominio y verificación estática avanzada                 |
+| **Diseño y Estilos**         | Tailwind CSS + PostCSS                       | 4.x                | Motor CSS moderno basado en utilidades, temas dinámicos y modo oscuro                   |
+| **Backend as a Service**     | Supabase (`@supabase/supabase-js`)           | 2.x                | Base de datos PostgreSQL, Auth (GoTrue), Storage de archivos y canales Realtime         |
+| **Edge Compute**             | Supabase Edge Functions (Deno)               | -                  | Verificación DNS/HTTPS, webhooks salientes y servicio unificado de correos              |
+| **Emails Transaccionales**   | Resend API + Edge Fn `send-email`            | REST v2            | Despacho de notificaciones por email multi-tenant con plantillas HTML y auditoría       |
+| **Inteligencia Artificial**  | Edge Function `ai-chat` + Gemini             | -                  | Agente de IA con Function Calling; la API key vive como secreto del servidor            |
+| **Visualización de Datos**   | ApexCharts + `ng-apexcharts`                 | 5.x / 2.x          | Gráficas interactivas de ventas, ingresos y distribución de categorías                  |
+| **Formateo Markdown & XSS**  | `marked` + `dompurify`                       | 17.x / 3.x         | Renderizado y sanitización estricta de respuestas del asistente de IA y notas           |
 | **Exportación de Datos**     | `xlsx` (SheetJS), `jspdf`, `jspdf-autotable` | 0.18.x / 4.x / 5.x | Generación y descarga de informes en Excel, CSV y PDF con tablas, branding y paginación |
-| **Testing Unitario**         | Vitest + JSDOM                     | 4.x / 27.x  | Suite de pruebas unitarias ultrarrápidas para servicios y componentes             |
-| **Calidad de Código**        | ESLint + Angular-ESLint            | 10.x / 22.x | Linter con configuración plana (_Flat Config_) y reglas para Signals y TypeScript |
-| **Formateo de Código**       | Prettier                           | 3.x         | Formato uniforme en TypeScript, HTML de Angular y archivos de configuración       |
-| **CI / CD**                  | GitHub Actions                     | -           | Pipeline automatizado de linting, testing unitario y compilación de producción    |
+| **Testing Unitario**         | Vitest + JSDOM                               | 4.x / 27.x         | Suite de pruebas unitarias ultrarrápidas para servicios y componentes                   |
+| **Calidad de Código**        | ESLint + Angular-ESLint                      | 10.x / 22.x        | Linter con configuración plana (_Flat Config_) y reglas para Signals y TypeScript       |
+| **Formateo de Código**       | Prettier                                     | 3.x                | Formato uniforme en TypeScript, HTML de Angular y archivos de configuración             |
+| **CI / CD**                  | GitHub Actions                               | -                  | Pipeline automatizado de linting, testing unitario y compilación de producción          |
 
 ---
 
@@ -151,7 +153,7 @@ La plataforma opera bajo un modelo dual:
 │                                  │    Angular 22 Core  │                                         │
 │                                  │  • Zoneless Engine  │                                         │
 │                                  │  • Angular Signals  │                                         │
-│                                  │  • 32 Core Services │                                         │
+│                                  │  • 38 Core Services │                                         │
 │                                  └──────────┬──────────┘                                         │
 │                                             │                                                    │
 │                  ┌──────────────────────────┼──────────────────────────┐                         │
@@ -164,7 +166,7 @@ La plataforma opera bajo un modelo dual:
 │                  └──────────┬───────────────┘                                                    │
 │                             │                                                                    │
 │                     ┌───────▼────────┐                                                           │
-│                     │ Edge Functions │  (Deno: DNS / HTTPS verify-domain)                        │
+│                     │ Edge Functions │  (Deno: verify-domain, send-email [Resend], dispatch)     │
 │                     └────────────────┘                                                           │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -244,6 +246,7 @@ venti-multi-tenant/
 │   │   │   ├── coupons/           # Gestión de cupones de descuento y tarjetas de regalo
 │   │   │   ├── customers/         # CRM de compradores y libreta de direcciones
 │   │   │   ├── dashboard/         # Métricas KPI y gráficas interactivas con ApexCharts
+│   │   │   ├── integrations/      # Webhooks, API keys y gestor de plantillas de correos (Resend)
 │   │   │   ├── inventory-history/ # Auditoría histórica de entradas y salidas de stock
 │   │   │   ├── landing/           # Landing page institucional del SaaS Venti
 │   │   │   ├── members/           # Invitaciones de equipo y control de acceso RBAC
@@ -265,6 +268,10 @@ venti-multi-tenant/
 │
 ├── supabase/
 │   └── functions/
+│       ├── ai-chat/               # Edge Function para Copiloto Gemini con Function Calling
+│       ├── dispatch-webhook/      # Edge Function para despacho firmado HMAC de webhooks
+│       ├── retry-webhooks/        # Edge Function programada para reintentos de webhooks
+│       ├── send-email/            # Edge Function unificada para despacho vía Resend API
 │       └── verify-domain/         # Edge Function en Deno para verificación DNS y HTTPS
 │
 ├── eslint.config.js               # Configuración moderna de linter (ESLint Flat Config)
@@ -375,6 +382,32 @@ venti-multi-tenant/
 - **Simulador Multidispositivo**: Marco interactivo que permite previsualizar la tienda en resoluciones de Teléfono Móvil, Tablet y Monitor de Escritorio.
 - **Sincronización en Tiempo Real**: Recepción inmediata de cambios emitidos desde el panel de ajustes sin requerir refresco de página.
 
+### 15. Integraciones y Gestor de Correos Transaccionales (`/integrations`)
+
+- **Conectores y Webhooks Salientes (`/integrations?tab=explore` y `tab=deliveries`)**:
+  - Registro de endpoints HTTP para recepción de eventos en tiempo real (`order.created`, `order.status_changed`, `payment.confirmed`, `product.stock_low`, etc.).
+  - Firma criptográfica HMAC-SHA256 en el encabezado `X-Venti-Signature` con secreto por tienda para prevenir suplantaciones.
+  - Historial detallado de entregas con código de respuesta HTTP, payload JSON transmitido y reintentos automáticos en caso de fallo temporal.
+- **Gestor de Plantillas de Correo Transaccional (`/integrations?tab=emails`)**:
+  - **Catálogo de Plantillas del Sistema**:
+    1. _Confirmación de Pedido (`order_confirmation`)_: Se envía al comprador inmediatamente tras registrar una compra, con resumen de artículos, total formateado, dirección y enlace a la orden.
+    2. _Notificación de Despacho (`shipping_notification`)_: Notifica al comprador cuando se genera la guía logística, indicando la empresa transportadora, el número de tracking y un botón de rastreo directo.
+    3. _Cancelación de Pedido (`order_cancelled`)_: Aviso de cancelación informando el motivo y canales de contacto.
+    4. _Reembolso Procesado (`refund_processed`)_: Confirmación de devolución con monto retornado y tiempos estimados de acreditación bancaria.
+    5. _Bienvenida a Clientes (`customer_welcome`)_: Mensaje de bienvenida tras el registro en la tienda online.
+    6. _Invitación a Colaborador (`member_invitation`)_: Notificación a usuarios existentes invitados a colaborar en la administración de la tienda.
+    7. _Invitación a Nuevo Usuario (`member_invitation_new_user`)_: Enlace seguro de registro y aceptación directa para colaboradores nuevos.
+  - **4 Estilos Visuales Prediseñados (Themes)**:
+    - _Venti Oficial_: Diseño elegante y moderno alineado a la estética de Venti Shop, con contraste oscuro y acentos visuales pulidos.
+    - _Minimalista_: Estética monocromática limpia, sin ornamentos innecesarios, líneas sobrias y tipografía refinada.
+    - _Pro Corporativo_: Cabecera institucional azul, diseño estructurado en bloques y tablas de datos sombreadas.
+    - _Cálido & Cercano_: Paleta en tonos terracota/tierra, esquinas redondeadas y redacción acogedora, ideal para tiendas artesanales y de estilo de vida.
+    - Cualquier estilo se carga en el editor con un solo clic para la plantilla activa, preservando el mapeo de variables.
+  - **Previsualización Aislada en Tiempo Real**: Renderizado mediante un iframe seguro (`[srcdoc]`) que aísla por completo las reglas CSS del panel de control frente al HTML y CSS inline del correo, garantizando una vista idéntica a la que verá el cliente.
+  - **Variables Dinámicas con Copiado Rápido**: Chips interactivos para copiar al portapapeles marcadores como `{{customer_name}}`, `{{order_number}}`, `{{order_total}}`, `{{carrier}}`, `{{tracking_number}}`, `{{tracking_url}}`, `{{invite_link}}`, etc.
+  - **Simulador de Envíos de Prueba**: Envío de prueba instantáneo a cualquier dirección especificada mediante la Edge Function `send-email` conectada a la API de Resend, inyectando datos ficticios coherentes para verificar entregabilidad y formato en clientes de correo reales.
+  - **Despacho Automático en Segundo Plano**: Disparo reactivo desde `OrdersService` (al crear o mutar estados de órdenes) y `TenantService` (al invitar miembros), auditando cada entrega en la tabla `email_logs`.
+
 ---
 
 ## 🛒 Módulos del Storefront Público & Experiencia de Compra
@@ -475,12 +508,16 @@ La Edge Function `supabase/functions/verify-domain` valida que el dominio perten
   5. _Personalización Visual_ (Tema y secciones de portada).
   6. _Impuestos_ (Tasas fiscales configuradas).
      Cada área incluye accesos directos de navegación para completar la configuración pendiente.
-- **Base de Conocimientos de Resolución de Problemas**: Acordeón interactivo con soluciones detalladas para incidencias comunes (verificación DNS, visibilidad de borradores, cálculo de fletes, etc.).
-- **Creador de Tickets de Soporte**: Formulario modal para remitir incidencias con clasificación de severidad (_Baja, Media, Alta, Urgente_), categorización y subida de capturas de pantalla adjuntas a Supabase Storage.
+- **Acceso Rápido a Herramientas**: Tarjetas de navegación directa a secciones operativas, incluyendo el acceso directo a **Correos y Plantillas (Resend)** para personalizar los 4 estilos visuales.
+- **Base de Conocimientos de Resolución de Problemas**: Acordeón interactivo con soluciones detalladas para incidencias comunes:
+  - _Correos y Notificaciones_: Entregabilidad y bandeja de spam en Resend (remitente de prueba `onboarding@resend.dev`, agrupación por hilos en Gmail y verificación de dominios propios), aplicación de los 4 temas prediseñados y uso de variables dinámicas interpolables.
+  - _Operaciones y Tienda_: Verificación DNS/HTTPS de dominios, cálculo de fletes y tarifas, sincronización de borradores y publicación.
+- **Creador de Tickets de Soporte**: Formulario modal para remitir incidencias con clasificación de severidad (_Baja, Media, Alta, Urgente_), categorización (incluyendo la categoría dedicada _Correos y Notificaciones_) y subida de capturas de pantalla adjuntas a Supabase Storage.
 
 ### ⌨️ Paleta de Comandos Global (`Cmd+K` / `Ctrl+K`)
 
-- **Búsqueda Unificada**: Un solo input para saltar a módulos (respetando permisos por rol), productos, órdenes y clientes, con tolerancia a tildes y multi-palabra.
+- **Búsqueda Unificada**: Un solo input para saltar a módulos (respetando permisos por rol), productos, órdenes, clientes e integraciones profundas con soporte de parámetros de consulta (`queryParams`).
+- **Navegación Directa a Correos**: Indexa el destino **"Correos y Plantillas"** hacia `/integrations?tab=emails` con sinónimos enriquecidos (`correo`, `email`, `plantillas`, `resend`, `notificaciones`, `transaccionales`).
 - **Navegación por Teclado**: Flechas para moverse, `Enter` para abrir y `Esc` para cerrar; accesible con `role="dialog"` y `listbox/option`.
 - **Recientes**: Guarda las últimas 5 navegaciones en `localStorage` y las muestra al abrir sin consulta.
 - **Disparadores**: Atajo global `Cmd+K`/`Ctrl+K` y botón "Buscar o ir a…" en el header. Componente `app-command-palette` + `CommandPaletteService` (`src/app/core/services/command-palette.ts`).
@@ -496,15 +533,15 @@ La Edge Function `supabase/functions/verify-domain` valida que el dominio perten
 
 Motor (`src/app/core/services/insights.ts`) que se ejecuta una vez por sesión al resolver el tenant (desde `MainLayout`) y publica digest inteligentes con **dedup diario** por tienda (`venti:insights:{tenantId}` en `localStorage` + memoria):
 
-| Insight (`NotificationType`) | Disparador | Destino |
-| :--------------------------- | :--------- | :------ |
-| `morning_briefing` | Resumen al primer ingreso (envíos pendientes, ventas del día, stock en riesgo, reseñas, carritos). Saluda según la hora y solo interrumpe con toast; si la tienda está inactiva no se genera | `/dashboard` |
-| `stock_velocity` | Productos con cobertura ≤ 7 días según `days_of_stock_remaining` de `vw_low_stock_alerts` (top 3) | `/products` |
-| `review_digest` | Reseñas pendientes de moderación (`getReviewStats().pending`) | `/reviews` |
-| `cart_digest` | Carritos abandonados de 24h con potencial recuperable | `/abandoned-carts` |
-| `sales_record` | Ventas de hoy ≥ +50% vs promedio de 7 días (`vw_daily_sales_realtime`) | `/reports` |
-| `coupon_expiring` | Cupones activos que vencen en ≤ 3 días | `/coupons` |
-| `subscription_expiring` | Trial o membresía que vence en ≤ 7 días (planes `free` excluidos) | `/subscription` |
+| Insight (`NotificationType`) | Disparador                                                                                                                                                                                   | Destino            |
+| :--------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
+| `morning_briefing`           | Resumen al primer ingreso (envíos pendientes, ventas del día, stock en riesgo, reseñas, carritos). Saluda según la hora y solo interrumpe con toast; si la tienda está inactiva no se genera | `/dashboard`       |
+| `stock_velocity`             | Productos con cobertura ≤ 7 días según `days_of_stock_remaining` de `vw_low_stock_alerts` (top 3)                                                                                            | `/products`        |
+| `review_digest`              | Reseñas pendientes de moderación (`getReviewStats().pending`)                                                                                                                                | `/reviews`         |
+| `cart_digest`                | Carritos abandonados de 24h con potencial recuperable                                                                                                                                        | `/abandoned-carts` |
+| `sales_record`               | Ventas de hoy ≥ +50% vs promedio de 7 días (`vw_daily_sales_realtime`)                                                                                                                       | `/reports`         |
+| `coupon_expiring`            | Cupones activos que vencen en ≤ 3 días                                                                                                                                                       | `/coupons`         |
+| `subscription_expiring`      | Trial o membresía que vence en ≤ 7 días (planes `free` excluidos)                                                                                                                            | `/subscription`    |
 
 Los cálculos corren en paralelo con `Promise.allSettled` (un fallo no bloquea al resto) y los digest viven solo en la campana, sin toasts masivos.
 
@@ -519,12 +556,12 @@ Los cálculos corren en paralelo con `Promise.allSettled` (un fallo no bloquea a
 Cada tenant tiene una cuota diaria compartida entre todos sus miembros. Una solicitud
 del usuario consume una unidad y la cuota se reinicia a medianoche UTC:
 
-| Plan | Solicitudes diarias |
-| :--- | ------------------: |
-| `free` | 5 |
-| `basic` | 20 |
-| `professional` | 50 |
-| `enterprise` | 100 |
+| Plan           | Solicitudes diarias |
+| :------------- | ------------------: |
+| `free`         |                   5 |
+| `basic`        |                  20 |
+| `professional` |                  50 |
+| `enterprise`   |                 100 |
 
 El control se realiza mediante la función SQL `consume_ai_request`, definida en
 `supabase/migrations/20260903110000_ai_daily_request_limits.sql`. La función valida
@@ -557,46 +594,46 @@ Gemini se aplican por proyecto y pueden ser compartidas por todos los tenants.
 
 El núcleo de Venti Shop está compuesto por **38 servicios especializados** desacoplados:
 
-| Servicio                | Responsabilidad Principal                                                       |
-| :---------------------- | :------------------------------------------------------------------------------ |
-| `TenantService`         | Estado central del comercio activo, branding, subdominios y configuración       |
-| `AuthService`           | Autenticación administrativa de Supabase (GoTrue), control de sesiones y tokens |
-| `CustomerAuthService`   | Autenticación y gestión de sesiones para compradores del Storefront             |
-| `ProductsService`       | CRUD de productos, variantes, matrices de stock y asociación con categorías     |
-| `CategoriesService`     | Estructura jerárquica de categorías padre e hijas y slugs de navegación         |
-| `OrdersService`         | Consulta de pedidos, transiciones de estado, notas internas y snapshots         |
-| `CustomersService`      | CRM de clientes, cálculo de LTV, órdenes históricas y libreta de direcciones    |
-| `InventoryService`      | Registro de movimientos de inventario y auditoría de ajustes                    |
-| `CartService`           | Estado reactivo del carrito de compras del cliente con persistencia local       |
-| `AbandonedCartService`  | Seguimiento y métricas de carritos sin finalizar                                |
-| `DiscountsService`      | Creación, validación y cómputo de cupones de descuento                          |
-| `CommissionsService`    | Cálculo y liquidación de comisiones por pasarela y exportación a Excel          |
-| `ReportPdfService`      | Generación de reportes PDF con branding, métricas, tablas estilizadas y paginación |
-| `AuditLogsService`      | Consulta de actividad reciente del equipo filtrada por tenant desde `audit_logs` |
-| `ReviewsService`        | Moderación de opiniones y cálculo de promedios de calificación                  |
-| `AnalyticsService`      | Agregación de KPIs, series temporales y formateo para ApexCharts                |
-| `ShippingService`       | Zonas de envío, cálculo de fletes y tarifas por peso o precio                   |
-| `GeographyService`      | Carga de departamentos y municipios mediante la API de Colombia                 |
-| `SupportService`        | Diagnóstico de salud de tienda, base de conocimientos y tickets de soporte      |
-| `NotificationsService`  | Notificaciones en tiempo real vía Supabase Realtime y gestión de lectura        |
-| `InsightsService`       | Motor de notificaciones proactivas (briefing, stock y digest diarios)           |
-| `AiAssistantService`    | Integración con Gemini AI y ejecución de herramientas de consulta a BD          |
-| `PreviewSyncService`    | Puente de comunicación en tiempo real entre el panel de diseño y el preview     |
-| `SeoService`            | Gestión de etiquetas meta dinámicas, títulos y OpenGraph para SSR               |
-| `StructuredDataService` | Inyección de esquemas JSON-LD (Schema.org/Product y Store)                      |
-| `StorageService`        | Carga, borrado y obtención de URLs públicas en buckets de Supabase              |
-| `FileProcessorService`  | Validación de tipos MIME, compresión de imágenes y extracción de metadatos      |
-| `SubscriptionService`   | Monitoreo de planes SaaS, verificación de cuotas y facturación                  |
-| `PaymentsService`       | Registro de transacciones y estados de pago                                     |
-| `PermissionsService`    | Verificación de permisos y capacidades según el rol del usuario (RBAC)          |
-| `EmailService`          | Trazabilidad y auditoría de correos transaccionales enviados                    |
-| `LoggerService`         | Sistema de logging centralizado con niveles configurables por entorno           |
-| `ToastService`          | Cola reactiva de alertas y notificaciones emergentes                            |
-| `CommandPaletteService` | Estado, catálogo navegable y búsqueda de entidades para la paleta `Cmd+K`       |
-| `OnboardingService`     | Guía de inicio, pasos de configuración y progreso de la tienda                  |
-| `WebhooksService`       | Gestión de endpoints y reintentos de webhooks de salida                         |
-| `LoaderService`         | Señal global de carga para operaciones asíncronas                               |
-| `Supabase`              | Singleton de inicialización y configuración del cliente Supabase                |
+| Servicio                | Responsabilidad Principal                                                                                          |
+| :---------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| `TenantService`         | Estado central del comercio activo, branding, subdominios y configuración                                          |
+| `AuthService`           | Autenticación administrativa de Supabase (GoTrue), control de sesiones y tokens                                    |
+| `CustomerAuthService`   | Autenticación y gestión de sesiones para compradores del Storefront                                                |
+| `ProductsService`       | CRUD de productos, variantes, matrices de stock y asociación con categorías                                        |
+| `CategoriesService`     | Estructura jerárquica de categorías padre e hijas y slugs de navegación                                            |
+| `OrdersService`         | Consulta de pedidos, transiciones de estado, notas internas y snapshots                                            |
+| `CustomersService`      | CRM de clientes, cálculo de LTV, órdenes históricas y libreta de direcciones                                       |
+| `InventoryService`      | Registro de movimientos de inventario y auditoría de ajustes                                                       |
+| `CartService`           | Estado reactivo del carrito de compras del cliente con persistencia local                                          |
+| `AbandonedCartService`  | Seguimiento y métricas de carritos sin finalizar                                                                   |
+| `DiscountsService`      | Creación, validación y cómputo de cupones de descuento                                                             |
+| `CommissionsService`    | Cálculo y liquidación de comisiones por pasarela y exportación a Excel                                             |
+| `ReportPdfService`      | Generación de reportes PDF con branding, métricas, tablas estilizadas y paginación                                 |
+| `AuditLogsService`      | Consulta de actividad reciente del equipo filtrada por tenant desde `audit_logs`                                   |
+| `ReviewsService`        | Moderación de opiniones y cálculo de promedios de calificación                                                     |
+| `AnalyticsService`      | Agregación de KPIs, series temporales y formateo para ApexCharts                                                   |
+| `ShippingService`       | Zonas de envío, cálculo de fletes y tarifas por peso o precio                                                      |
+| `GeographyService`      | Carga de departamentos y municipios mediante la API de Colombia                                                    |
+| `SupportService`        | Diagnóstico de salud de tienda, base de conocimientos y tickets de soporte                                         |
+| `NotificationsService`  | Notificaciones en tiempo real vía Supabase Realtime y gestión de lectura                                           |
+| `InsightsService`       | Motor de notificaciones proactivas (briefing, stock y digest diarios)                                              |
+| `AiAssistantService`    | Integración con Gemini AI y ejecución de herramientas de consulta a BD                                             |
+| `PreviewSyncService`    | Puente de comunicación en tiempo real entre el panel de diseño y el preview                                        |
+| `SeoService`            | Gestión de etiquetas meta dinámicas, títulos y OpenGraph para SSR                                                  |
+| `StructuredDataService` | Inyección de esquemas JSON-LD (Schema.org/Product y Store)                                                         |
+| `StorageService`        | Carga, borrado y obtención de URLs públicas en buckets de Supabase                                                 |
+| `FileProcessorService`  | Validación de tipos MIME, compresión de imágenes y extracción de metadatos                                         |
+| `SubscriptionService`   | Monitoreo de planes SaaS, verificación de cuotas y facturación                                                     |
+| `PaymentsService`       | Registro de transacciones y estados de pago                                                                        |
+| `PermissionsService`    | Verificación de permisos y capacidades según el rol del usuario (RBAC)                                             |
+| `EmailService`          | Envío y auditoría de correos transaccionales (Resend / `send-email`), gestión de plantillas y logs en `email_logs` |
+| `LoggerService`         | Sistema de logging centralizado con niveles configurables por entorno                                              |
+| `ToastService`          | Cola reactiva de alertas y notificaciones emergentes                                                               |
+| `CommandPaletteService` | Estado, catálogo navegable y búsqueda de entidades para la paleta `Cmd+K`                                          |
+| `OnboardingService`     | Guía de inicio, pasos de configuración y progreso de la tienda                                                     |
+| `WebhooksService`       | Gestión de endpoints y reintentos de webhooks de salida                                                            |
+| `LoaderService`         | Señal global de carga para operaciones asíncronas                                                                  |
+| `Supabase`              | Singleton de inicialización y configuración del cliente Supabase                                                   |
 
 ### Guards de Enrutamiento (`src/app/core/guards`)
 
@@ -615,25 +652,25 @@ El núcleo de Venti Shop está compuesto por **38 servicios especializados** des
 
 ## 🧱 Componentes Compartidos Reutilizables
 
-| Componente              | Selector                     | Descripción                                                                          |
-| :---------------------- | :--------------------------- | :----------------------------------------------------------------------------------- |
-| `HelpDrawer`            | `app-help-drawer`            | Drawer lateral con diagnóstico de configuración de tienda y envío de tickets         |
-| `NotificationsDropdown` | `app-notifications-dropdown` | Desplegable de notificaciones Realtime con conteo de no leídas y navegación          |
-| `AiAssistant`           | `app-ai-assistant`           | Widget flotante de chat con Google Gemini y renderizado Markdown sanitizado          |
-| `DynamicTable`          | `app-dynamic-table`          | Tabla con sort, buscador, paginación y export; `isLoading` muestra skeleton          |
-| `MediaManagerModal`     | `app-media-manager-modal`    | Galería modal para explorar, subir y seleccionar imágenes desde Supabase Storage     |
-| `CustomerAuthModal`     | `app-customer-auth-modal`    | Modal emergente para login y registro de clientes finales en el Storefront           |
-| `DateRangePicker`       | `app-date-range-picker`      | Selector de rangos de fechas con atajos rápidos para reportes analíticos             |
-| `DatePicker`            | `app-date-picker`            | Selector accesible de fecha única                                                    |
-| `Dropdown`              | `app-dropdown`               | Menú con iconos; render fijo anti-recorte (abre arriba si no cabe)                   |
-| `OrderStatusBadge`      | `app-order-status-badge`     | Píldora visual con código de color según el estado del pedido                        |
-| `UsageProgress`         | `app-usage-progress`         | Medidor de cuota de recursos y límites de suscripción                                |
-| `Toast`                 | `app-toast`                  | Pila de notificaciones emergentes con animaciones fluidas                            |
-| `Skeleton`              | `app-skeleton`               | Bloque base de shimmer (`animate-pulse`) con ancho, alto y radio configurables       |
-| `TableSkeleton`         | `app-table-skeleton`         | Esqueleto de tabla (cabecera + filas) con filas, columnas y avatar configurables     |
-| `StatCardSkeleton`      | `app-stat-card-skeleton`     | Esqueleto de tarjeta de estadística que imita `StatCard` del dashboard               |
-| `CommandPalette`        | `app-command-palette`        | Paleta global (`Cmd+K`/`Ctrl+K`) con resultados agrupados y atajos de teclado        |
-| `NotFound`              | `app-not-found`              | Vista 404 estilizada tanto para rutas administrativas como de storefront             |
+| Componente              | Selector                     | Descripción                                                                      |
+| :---------------------- | :--------------------------- | :------------------------------------------------------------------------------- |
+| `HelpDrawer`            | `app-help-drawer`            | Drawer lateral con diagnóstico de configuración de tienda y envío de tickets     |
+| `NotificationsDropdown` | `app-notifications-dropdown` | Desplegable de notificaciones Realtime con conteo de no leídas y navegación      |
+| `AiAssistant`           | `app-ai-assistant`           | Widget flotante de chat con Google Gemini y renderizado Markdown sanitizado      |
+| `DynamicTable`          | `app-dynamic-table`          | Tabla con sort, buscador, paginación y export; `isLoading` muestra skeleton      |
+| `MediaManagerModal`     | `app-media-manager-modal`    | Galería modal para explorar, subir y seleccionar imágenes desde Supabase Storage |
+| `CustomerAuthModal`     | `app-customer-auth-modal`    | Modal emergente para login y registro de clientes finales en el Storefront       |
+| `DateRangePicker`       | `app-date-range-picker`      | Selector de rangos de fechas con atajos rápidos para reportes analíticos         |
+| `DatePicker`            | `app-date-picker`            | Selector accesible de fecha única                                                |
+| `Dropdown`              | `app-dropdown`               | Menú con iconos; render fijo anti-recorte (abre arriba si no cabe)               |
+| `OrderStatusBadge`      | `app-order-status-badge`     | Píldora visual con código de color según el estado del pedido                    |
+| `UsageProgress`         | `app-usage-progress`         | Medidor de cuota de recursos y límites de suscripción                            |
+| `Toast`                 | `app-toast`                  | Pila de notificaciones emergentes con animaciones fluidas                        |
+| `Skeleton`              | `app-skeleton`               | Bloque base de shimmer (`animate-pulse`) con ancho, alto y radio configurables   |
+| `TableSkeleton`         | `app-table-skeleton`         | Esqueleto de tabla (cabecera + filas) con filas, columnas y avatar configurables |
+| `StatCardSkeleton`      | `app-stat-card-skeleton`     | Esqueleto de tarjeta de estadística que imita `StatCard` del dashboard           |
+| `CommandPalette`        | `app-command-palette`        | Paleta global (`Cmd+K`/`Ctrl+K`) con resultados agrupados y atajos de teclado    |
+| `NotFound`              | `app-not-found`              | Vista 404 estilizada tanto para rutas administrativas como de storefront         |
 
 ---
 
@@ -717,12 +754,16 @@ SUPABASE_URL=https://tu-proyecto.supabase.co
 SUPABASE_ANON_KEY=tu-anon-key-de-supabase
 ```
 
-La clave de Gemini **no** va en el frontend: configúrala solo como secreto de la
-Edge Function y despliega:
+Las claves de proveedores externos (Gemini AI y Resend) **no** van en el frontend: configúralas únicamente como secretos de las Edge Functions en el servidor:
 
 ```bash
+# Secreto para el Asistente de IA
 supabase secrets set GEMINI_API_KEY=tu-api-key-de-google-gemini
 supabase functions deploy ai-chat
+
+# Secretos para el Despacho de Correos Transaccionales
+supabase secrets set RESEND_API_KEY=tu-api-key-de-resend
+supabase functions deploy send-email
 ```
 
 ### 3. Scripts de Ejecución
@@ -779,6 +820,56 @@ Para habilitar la verificación en vivo de dominios personalizados de los inquil
 ```bash
 supabase functions deploy verify-domain --no-verify-jwt
 ```
+
+### Edge Function: `send-email` (Resend)
+
+La Edge Function unificada `supabase/functions/send-email` gestiona el despacho de correos transaccionales multi-inquilino a través de la API v2 de Resend, aislando las credenciales del proveedor y persistiendo cada intento en la tabla `email_logs`.
+
+#### 1. Configuración de Secretos en Supabase
+
+Configura la API Key de Resend y el remitente predeterminado en los secretos del proyecto:
+
+```bash
+# Reemplaza con tu clave generada en https://resend.com/api-keys
+supabase secrets set RESEND_API_KEY=re_tu_api_key_de_resend
+
+# Remitente predeterminado (opcional; por defecto utiliza onboarding@resend.dev)
+supabase secrets set RESEND_FROM_EMAIL="Venti Shop <onboarding@resend.dev>"
+```
+
+#### 2. Despliegue de la Edge Function
+
+Despliega la función en tu proyecto Supabase:
+
+```bash
+supabase functions deploy send-email
+```
+
+#### 3. Modo de Pruebas vs Entorno de Producción
+
+- **Modo Sandbox / Pruebas (Gratuito)**:
+  - Cuando se utiliza el dominio de prueba provisto por Resend (`onboarding@resend.dev`), Resend **únicamente autoriza la entrega de correos a la dirección de correo con la que registraste tu cuenta en Resend**. Si intentas enviar a un destinatario no verificado, la API de Resend devolverá un error de restricción.
+  - **Agrupación de conversaciones en Gmail / Clientes de correo**: Cuando envías múltiples correos de prueba con el mismo asunto, clientes como Gmail los consolidan automáticamente dentro de un único hilo de conversación. Para verificar cada envío individual, expande el hilo en Gmail o revisa el estado en tiempo real en [resend.com/emails](https://resend.com/emails) o en la tabla `email_logs`.
+- **Modo Producción con Dominio Personalizado**:
+  - Para enviar correos a cualquier cliente o comprador desde el nombre y dominio propio de tu tienda (ej. `pedidos@tudominio.com`):
+    1. Dirígete a [Resend Domains](https://resend.com/domains) y añade tu dominio.
+    2. Registra en tu proveedor de DNS los registros correspondientes (`DKIM`, `SPF` y `MX/DMARC`).
+    3. Una vez verificado por Resend, actualiza el secreto:
+       ```bash
+       supabase secrets set RESEND_FROM_EMAIL="Tu Tienda <notificaciones@tudominio.com>"
+       ```
+
+#### 4. Disparo Automatizado desde el Sistema
+
+El servicio Angular `EmailService` (`src/app/core/services/email.ts`) invoca la Edge Function en los siguientes hitos operativos:
+
+- **Órdenes (`OrdersService`)**:
+  - Creación de nueva orden (`order_confirmation`).
+  - Despacho y generación de número de guía (`shipping_notification`).
+  - Cancelación de orden (`order_cancelled`).
+  - Procesamiento de devolución / reembolso (`refund_processed`).
+- **Miembros del Equipo (`TenantService`)**:
+  - Envío de invitaciones con enlace seguro y token de un solo uso (`member_invitation` o `member_invitation_new_user`).
 
 ### Edge Function: `dispatch-webhook`
 

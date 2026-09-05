@@ -13,6 +13,7 @@ export interface PaletteItem {
   title: string;
   subtitle: string;
   route: string[];
+  queryParams?: Record<string, string>;
   keywords: string;
 }
 
@@ -24,6 +25,7 @@ export interface PaletteGroup {
 interface NavEntry {
   label: string;
   route: string[];
+  queryParams?: Record<string, string>;
   module: AppModule;
   keywords: string;
 }
@@ -112,7 +114,14 @@ const NAV_ENTRIES: NavEntry[] = [
     label: 'Integraciones',
     route: ['/integrations'],
     module: 'integrations',
-    keywords: 'integraciones conexiones api webhooks',
+    keywords: 'integraciones conexiones api webhooks correos email plantillas resend',
+  },
+  {
+    label: 'Correos y Plantillas',
+    route: ['/integrations'],
+    queryParams: { tab: 'emails' },
+    module: 'integrations',
+    keywords: 'correos correo email emails plantillas plantilla transaccionales resend notificaciones mensajeria mensajes smtp disenos',
   },
 ];
 
@@ -162,11 +171,12 @@ export class CommandPaletteService {
   readonly allowedNav = computed<PaletteItem[]>(() =>
     NAV_ENTRIES.filter((entry) => this.permissions.canAccess(entry.module)).map(
       (entry): PaletteItem => ({
-        id: `nav:${entry.route.join('/')}`,
+        id: `nav:${entry.route.join('/')}${entry.queryParams ? '?' + new URLSearchParams(entry.queryParams).toString() : ''}`,
         kind: 'navigation',
         title: entry.label,
         subtitle: 'Ir a módulo',
         route: entry.route,
+        queryParams: entry.queryParams,
         keywords: `${entry.label} ${entry.keywords}`,
       }),
     ),
@@ -244,7 +254,7 @@ export class CommandPaletteService {
   async go(item: PaletteItem): Promise<void> {
     this.pushRecent(item);
     this.close();
-    await this.router.navigate(item.route);
+    await this.router.navigate(item.route, { queryParams: item.queryParams });
   }
 
   private async runEntitySearch(term: string): Promise<void> {

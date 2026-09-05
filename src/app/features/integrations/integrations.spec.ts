@@ -5,7 +5,12 @@ import { WebhookEvent } from '@core/enums';
 import { WebhooksService } from '@core/services/webhooks';
 import { ToastService } from '@core/services/toast';
 import { TenantService } from '@core/services/tenant';
+import { ActivatedRoute } from '@angular/router';
 import { Integrations } from './integrations';
+
+import { EmailService } from '@core/services/email';
+import { AuthService } from '@core/services/auth';
+import { Supabase } from '@core/services/supabase';
 
 describe('Integrations', () => {
   let component: Integrations;
@@ -29,7 +34,22 @@ describe('Integrations', () => {
     error: vi.fn(),
     confirm: vi.fn().mockResolvedValue(true),
   };
-  const tenantService = { tenantId: signal<string | null>(null) };
+  const tenantService = {
+    tenantId: signal<string | null>(null),
+    tenant: signal({ business_name: 'Test Store' }),
+  };
+  const emailService = {
+    getTemplates: vi.fn().mockResolvedValue([]),
+    updateTemplate: vi.fn().mockResolvedValue({ success: true }),
+    sendEmail: vi.fn().mockResolvedValue({ success: true }),
+    replacePlaceholders: vi.fn((str) => str),
+  };
+  const authService = {
+    user: signal({ email: 'test@example.com' }),
+  };
+  const supabase = {
+    client: { from: vi.fn() },
+  };
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -39,6 +59,16 @@ describe('Integrations', () => {
         { provide: WebhooksService, useValue: webhooksService },
         { provide: ToastService, useValue: toast },
         { provide: TenantService, useValue: tenantService },
+        { provide: EmailService, useValue: emailService },
+        { provide: AuthService, useValue: authService },
+        { provide: Supabase, useValue: supabase },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { queryParamMap: { get: vi.fn().mockReturnValue(null) } },
+            queryParamMap: { subscribe: vi.fn() },
+          },
+        },
       ],
     }).compileComponents();
 

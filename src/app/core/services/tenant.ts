@@ -1604,8 +1604,9 @@ export class TenantService {
       } = await this.supabase.client.auth.getSession();
       const supabaseUrl: string = environment.supabase.url;
       const supabaseKey: string = environment.supabase.anonKey;
+      const templateKey = userExists ? 'member_invitation' : 'member_invitation_new_user';
 
-      const res = await fetch(`${supabaseUrl}/functions/v1/send-invitation-email`, {
+      const res = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1613,13 +1614,16 @@ export class TenantService {
           apikey: supabaseKey,
         },
         body: JSON.stringify({
-          to_email: cleanEmail,
-          store_name: storeName,
-          invited_by_email: inviterEmail,
-          role: role,
-          invite_link: inviteLink,
-          user_exists: userExists,
           tenant_id: tenantId,
+          to_email: cleanEmail,
+          template_key: templateKey,
+          from_name: storeName,
+          variables: {
+            store_name: storeName,
+            invited_by_email: inviterEmail,
+            role: role,
+            invite_link: inviteLink,
+          },
         }),
       });
 

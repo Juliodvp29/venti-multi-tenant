@@ -8,18 +8,20 @@ import {
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { WebhookEvent, WebhookStatus } from '@core/enums';
 import { WebhookDelivery, WebhookEndpoint, WebhookEndpointSummary } from '@core/models';
 import { WebhooksService } from '@core/services/webhooks';
 import { ToastService } from '@core/services/toast';
 import { TenantService } from '@core/services/tenant';
+import { EmailTemplatesManager } from './components/email-templates/email-templates';
 
-type IntegrationTab = 'explore' | 'deliveries';
+type IntegrationTab = 'explore' | 'deliveries' | 'emails';
 
 @Component({
   selector: 'app-integrations',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe],
+  imports: [CommonModule, FormsModule, DatePipe, EmailTemplatesManager],
   templateUrl: './integrations.html',
   styleUrl: './integrations.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +30,7 @@ export class Integrations {
   private readonly webhooksService = inject(WebhooksService);
   private readonly toast = inject(ToastService);
   private readonly tenantService = inject(TenantService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly activeTab = signal<IntegrationTab>('explore');
   readonly endpoints = signal<WebhookEndpointSummary[]>([]);
@@ -53,6 +56,13 @@ export class Integrations {
   };
 
   constructor() {
+    this.route.queryParamMap.subscribe((params) => {
+      const tab = params.get('tab');
+      if (tab === 'emails' || tab === 'deliveries' || tab === 'explore') {
+        this.activeTab.set(tab);
+      }
+    });
+
     effect(() => {
       if (this.tenantService.tenantId()) void this.loadData();
     });

@@ -6,6 +6,7 @@ export type TicketCategory =
   | 'payments_commissions'
   | 'catalog_products'
   | 'billing'
+  | 'emails_notifications'
   | 'other';
 
 export type TicketSeverity = 'low' | 'medium' | 'high' | 'urgent';

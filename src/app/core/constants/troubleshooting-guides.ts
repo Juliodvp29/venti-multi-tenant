@@ -365,4 +365,66 @@ export const TROUBLESHOOTING_GUIDES: TroubleshootingGuide[] = [
     actionLabel: 'Revisar Reseñas',
     actionRoute: '/reviews',
   },
+  {
+    id: 'trouble-email-delivery-spam',
+    title: '¿Por qué los correos transaccionales caen en Spam o no se reciben?',
+    category: 'emails_notifications',
+    summary:
+      'Los correos de confirmación de pedido, despacho o bienvenida pueden llegar a la carpeta de Spam o no recibirse si el remitente o la plantilla no están configurados.',
+    commonCauses: [
+      'El remitente por defecto (onboarding@resend.dev) es una dirección de pruebas compartida, por lo que Gmail y Outlook suelen clasificarlo en Spam o Promociones.',
+      'En el modo de prueba gratuito de Resend sin dominio verificado, Resend restringe los envíos únicamente a la dirección de correo con la que te registraste en Resend.',
+      'La plantilla correspondiente fue desactivada en el panel de control.',
+    ],
+    solutionSteps: [
+      'Revisa tu carpeta de Spam o Correo no deseado y haz clic en "Marcar como correo seguro / No es spam".',
+      'Ve a Integraciones > Correos y Plantillas y verifica que la plantilla tenga el interruptor "Plantilla habilitada" activado.',
+      'Utiliza el botón "Enviar Prueba" en el editor para comprobar la entrega inmediata en tu bandeja.',
+      'Para envíos a clientes finales con máxima reputación de entrega, añade y verifica tu dominio en tu cuenta de Resend (registros DKIM y SPF).',
+    ],
+    actionLabel: 'Ver Plantillas de Correo',
+    actionRoute: '/integrations',
+    queryParams: { tab: 'emails' },
+  },
+  {
+    id: 'trouble-email-templates-styles',
+    title: '¿Cómo cambiar el diseño o estilo de los correos automáticos?',
+    category: 'emails_notifications',
+    summary:
+      'Venti incluye 4 estilos prediseñados listos para usar (Venti Oficial, Minimalista, Pro Corporativo y Cálido) sin necesidad de saber HTML.',
+    commonCauses: [
+      'La plantilla está usando el diseño básico predeterminado y deseas personalizarlo.',
+      'Deseas previsualizar cómo verá el comprador el correo antes de enviarlo a producción.',
+    ],
+    solutionSteps: [
+      'Entra a Integraciones > Correos y Plantillas.',
+      'Selecciona la plantilla que deseas editar en la columna izquierda (Confirmación de Pedido, Despacho, etc.).',
+      'En la sección "Estilos Prediseñados", haz clic en cualquiera de los 4 diseños (Venti, Minimalista, Pro, Cálido).',
+      'Pasa a la pestaña "Vista Previa en Vivo" para inspeccionar el resultado.',
+      'Haz clic en "Guardar Plantilla" para confirmar los cambios.',
+    ],
+    actionLabel: 'Personalizar Plantillas',
+    actionRoute: '/integrations',
+    queryParams: { tab: 'emails' },
+  },
+  {
+    id: 'trouble-email-dynamic-variables',
+    title: '¿Cómo funcionan las variables {{customer_name}}, {{order_number}} en los correos?',
+    category: 'emails_notifications',
+    summary:
+      'Las variables dinámicas son etiquetas que el sistema reemplaza automáticamente por la información real del comprador y del pedido al momento del envío.',
+    commonCauses: [
+      'Se escribió mal el nombre de la variable (debe incluir doble llave, ej: {{customer_name}}).',
+      'Se eliminó accidentalmente una variable requerida en el asunto o cuerpo del correo.',
+    ],
+    solutionSteps: [
+      'En el editor de plantillas, revisa la sección "Variables dinámicas".',
+      'Haz clic sobre cualquiera de los botones de variable para copiarla directamente al portapapeles.',
+      'Pégala en el Asunto o en el Cuerpo HTML donde quieras que aparezca el dato.',
+      'Prueba la vista previa para ver cómo se reemplaza con datos de ejemplo simulados.',
+    ],
+    actionLabel: 'Revisar Variables',
+    actionRoute: '/integrations',
+    queryParams: { tab: 'emails' },
+  },
 ];
