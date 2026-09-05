@@ -1534,7 +1534,24 @@ export class TenantService {
 
     const cleanEmail = (email ?? '').trim();
     if (!cleanEmail || !cleanEmail.includes('@')) {
-      throw new Error('Invalid email');
+      throw new Error('Correo inválido');
+    }
+
+    // Evita invitar a alguien que ya es miembro (generaba filas duplicadas
+    // activo/inactivo en la tabla del equipo).
+    try {
+      const { data: existingMember } = await this.supabase.client
+        .from('vw_tenant_members')
+        .select('id')
+        .eq('tenant_id', tenantId)
+        .ilike('email', cleanEmail)
+        .limit(1);
+      if (existingMember && existingMember.length > 0) {
+        throw new Error('Este correo ya es miembro de la tienda.');
+      }
+    } catch (e) {
+      if (e instanceof Error && e.message === 'Este correo ya es miembro de la tienda.') throw e;
+      console.warn('Could not verify existing members, continuing:', e);
     }
 
     const { data: existingInvite } = await this.supabase.client
@@ -1545,7 +1562,7 @@ export class TenantService {
       .eq('status', 'pending');
 
     if (existingInvite && existingInvite.length > 0) {
-      throw new Error('A pending invitation already exists for this email.');
+      throw new Error('Ya existe una invitación pendiente para este correo.');
     }
 
     const { data: insertedInvite, error: insertError } = await this.supabase.client
@@ -1651,6 +1668,33 @@ export class TenantService {
    */
   async removeMember(memberId: string): Promise<void> {
     const { error } = await this.supabase.client.from('tenant_members').delete().eq('id', memberId);
+
+    if (error) throw error;
+  }
+
+  /**
+   * Cancel a pending invitation (las invitaciones viven en tenant_invitations,
+   * no en tenant_members: borrarlas con removeMember no hacía nada).
+   */
+  async cancelInvitation(invitationId: string): Promise<void> {
+    const { error } = await this.supabase.client
+      .from('tenant_invitations')
+      .delete()
+      .eq('id', invitationId)
+      .eq('status', 'pending');
+
+    if (error) throw error;
+  }
+
+  /**
+   * Update the role of a pending invitation.
+   */
+  async updateInvitationRole(invitationId: string, role: TenantRole): Promise<void> {
+    const { error } = await this.supabase.client
+      .from('tenant_invitations')
+      .update({ role })
+      .eq('id', invitationId)
+      .eq('status', 'pending');
 
     if (error) throw error;
   }

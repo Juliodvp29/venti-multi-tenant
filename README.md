@@ -34,7 +34,7 @@
 6. [Módulos del Panel Administrativo (Guía por Vistas)](#-módulos-del-panel-administrativo-guía-por-vistas)
 7. [Módulos del Storefront Público & Experiencia de Compra](#-módulos-del-storefront-público--experiencia-de-compra)
 8. [SEO del Storefront (URLs, Sitemap y Metadatos)](#-seo-del-storefront-urls-sitemap-y-metadatos)
-9. [Herramientas del Header: Soporte, Notificaciones e IA](#-herramientas-del-header-soporte-notificaciones-e-ia)
+9. [Herramientas del Header: Soporte, Notificaciones, Paleta e IA](#-herramientas-del-header-soporte-notificaciones-paleta-e-ia)
 10. [Capa Core del Sistema (Servicios, Guards e Interceptores)](#️-capa-core-del-sistema-servicios-guards-e-interceptores)
 11. [Componentes Compartidos Reutilizables](#-componentes-compartidos-reutilizables)
 12. [Modelo de Base de Datos y Seguridad](#️-modelo-de-base-de-datos-y-seguridad)
@@ -62,6 +62,7 @@ La plataforma opera bajo un modelo dual:
 ### 🏢 Para Comerciantes y Administradores de Tienda
 
 - 📊 **Dashboard Ejecutivo en Tiempo Real**: Métricas financieras consolidadas (ingresos, pedidos, ticket promedio, clientes nuevos), gráficos dinámicos con ApexCharts (tendencias diarias/mensuales y distribución por categorías), listado de productos más vendidos y alertas de stock crítico.
+- ⌨️ **Paleta de Comandos Global (`Cmd+K` / `Ctrl+K`)**: Búsqueda instantánea estilo Linear/Notion sobre módulos, productos, órdenes y clientes, con navegación por teclado, resultados agrupados e historial de recientes.
 - 🛒 **Catálogo de Productos & Matriz de Variantes**: Creación exhaustiva de productos con control de SKU, código de barras, precios comparativos, costo unitario, control de inventario por variante (talla, color, material, etc.), árbol de categorías jerárquicas y optimización SEO.
 - 📜 **Auditoría y Trazabilidad de Stock (`/inventory-history`)**: Historial inmutable de cada entrada, salida, venta, devolución o ajuste manual de inventario, con motivos y referencia al pedido asociado.
 - 📦 **Gestión del Ciclo de Vida de Pedidos (`/orders`)**: Pipeline de estados (_Pendiente, Procesando, Pagado, Enviado, Entregado, Cancelado, Reembolsado_), timeline cronológico de auditoría, notas internas de equipo y snapshots JSON inmutables de productos y direcciones del cliente al momento de la compra.
@@ -82,6 +83,7 @@ La plataforma opera bajo un modelo dual:
   - **Envíos e Impuestos**: Zonas de envío geográficas (integradas con la API de departamentos y municipios de Colombia), tarifas fijas o por peso y tasas de impuestos.
   - **Pasarelas de Pago**: Activación y parametrización de métodos de pago (Tarjetas, Transferencia, Contra entrega, Wompi multi-tenant).
   - **SEO por Tienda (tab Marketing)**: Título, descripción, keywords e imagen OG editables con vista previa estilo Google, consumidos por el storefront.
+  - **Borrador con Autoguardado**: Los cambios se persisten automáticamente (debounce) sin alertas de guardado manual; el encabezado muestra el estado (`Guardando…` / `Guardado HH:MM` / error con reintento) y al final se decide publicar o volver al diseño publicado.
   - **Simulador de Tienda en Vivo (`/preview`)**: Previsualización sincronizada en tiempo real con alternador de vista Responsive (Escritorio, Tablet, Móvil).
 
 ### 🛍️ Para Compradores en el Storefront Público
@@ -100,6 +102,8 @@ La plataforma opera bajo un modelo dual:
 - 🌐 **Enrutamiento Flexible de Tiendas**: Soporte para subdominios (`mitienda.venti.com`), dominios personalizados (`mitienda.com`) validados mediante Supabase Edge Functions y DNS, y fallback por parámetro (`?s=slug`).
 - 🤖 **Asistente de IA Gemini con Function Calling**: Copiloto conversacional integrado en el panel capaz de ejecutar herramientas para consultar métricas, órdenes e inventario en tiempo real.
 - 🔔 **Notificaciones Push y WebSocket en Vivo**: Canal de Supabase Realtime para recibir alertas instantáneas de nuevas compras, inventario agotado o reseñas recibidas.
+- 🧠 **Notificaciones Proactivas (`InsightsService`)**: Motor que al iniciar sesión genera alertas inteligentes con dedup diario (resumen matutino, stock por agotarse según velocidad de venta, reseñas por moderar, carritos recuperables, día récord, cupón y membresía por vencer).
+- 🦴 **Skeleton Loaders por Sección**: `app-skeleton`, `app-table-skeleton` y `app-stat-card-skeleton` reemplazan los spinners globales en tablas y tarjetas del dashboard; `DynamicTable` acepta `isLoading` para mostrar esqueleto sin saltos de layout.
 - ❓ **Centro de Soporte Integrado (Help Drawer)**: Diagnóstico automatizado de salud de la tienda y sistema de tickets con subida de adjuntos a Supabase Storage.
 - 🚀 **Arquitectura 100% Zoneless**: Eliminación de `zone.js` en favor del planificador nativo de Angular y Signals para un rendimiento óptimo de memoria y CPU.
 
@@ -332,10 +336,13 @@ venti-multi-tenant/
 
 ### 11. Miembros, Roles y Auditoría (`/members`)
 
-- **Sistema de Invitaciones**: Envío de invitaciones por correo electrónico con tokens de un solo uso enlazados a la pantalla de aceptación (`/accept-invite`).
+- **Sistema de Invitaciones**: Envío de invitaciones por correo electrónico con tokens de un solo uso enlazados a la pantalla de aceptación (`/accept-invite`). No se puede invitar a un correo que ya es miembro y las invitaciones de correos ya registrados se ocultan de la lista para evitar duplicados activo/inactivo.
+- **Cancelación y Edición de Invitaciones**: Las invitaciones pendientes se cancelan con `cancelInvitation` (antes `removeMember` no las borraba) y su rol se edita con `updateInvitationRole` desde el modal de edición.
+- **Modal de Edición de Rol**: Cambio de rol con selector para miembros e invitaciones, con validación de `TenantRole` y cierre automático al guardar.
 - **Actividad Reciente del Equipo**: Timeline visible con los últimos cambios y accesos registrados en `audit_logs`, filtrados por el tenant activo y ordenados cronológicamente.
-- **Detalle de Actividad**: Cada evento identifica al usuario, la acción y el objeto afectado, utilizando `new_values` y `old_values` para mostrar nombres, números de orden, SKU y campos modificados.
-- **Localización de Eventos**: Acciones, estados, roles, fuentes operativas y nombres de campos técnicos se presentan en español, con fallback para eventos incompletos o valores nulos.
+- **Detalle de Actividad**: Cada evento identifica al usuario, la acción y el objeto afectado, utilizando `new_values` y `old_values` para mostrar nombres, números de orden, SKU y campos modificados. Los valores objeto (ej. `settings`) se resumen con los sub-campos cambiados en español en lugar de `[object Object]`.
+- **Localización de Eventos**: Acciones, estados, roles, recursos (`tenants` → _tienda_), fuentes operativas y nombres de campos técnicos se presentan en español, con fallback para eventos incompletos o valores nulos.
+- **Fecha y Hora Exacta**: Cada evento muestra día y hora en la zona horaria de la tienda en vez de tiempo relativo.
 - **Actualización Manual**: La actividad puede refrescarse desde la propia vista y dispone de estados de carga y vacío.
 - **Control de Roles (RBAC)**:
   - `Owner`: Propietario con control total y facturación.
@@ -352,6 +359,8 @@ venti-multi-tenant/
 
 ### 13. Suite de Configuración de Tienda (`/settings`)
 
+- **Borrador con Autoguardado**: Cada pestaña persiste sola ~1.2s después del último cambio (`save(silent)` por sección + `saveDraft` del snapshot); el pill de estado muestra `Guardando…`, `Guardado HH:MM` o error con reintento. Cambiar de pestaña hace flush automático y solo pregunta si el guardado falló.
+- **Publicación Versionada**: El modal de publicar crea el punto de restauración en el historial y permite volver al diseño publicado (`Volver al publicado`) en cualquier momento.
 - **Ajustes Generales**: Nombre legal, moneda de operación predeterminada y zona horaria.
 - **Dirección Física**: Ubicación física del centro de despacho para el cálculo de fletes.
 - **Branding & Identidad**: Logotipo principal, favicon, banner de encabezado y paleta de colores de marca reflejada dinámicamente mediante variables CSS.
@@ -454,7 +463,7 @@ La Edge Function `supabase/functions/verify-domain` valida que el dominio perten
 
 ---
 
-## 🔔 Herramientas del Header: Soporte, Notificaciones e IA
+## 🔔 Herramientas del Header: Soporte, Notificaciones, Paleta e IA
 
 ### ❓ Centro de Ayuda & Diagnóstico (Drawer Interactivo)
 
@@ -469,11 +478,35 @@ La Edge Function `supabase/functions/verify-domain` valida que el dominio perten
 - **Base de Conocimientos de Resolución de Problemas**: Acordeón interactivo con soluciones detalladas para incidencias comunes (verificación DNS, visibilidad de borradores, cálculo de fletes, etc.).
 - **Creador de Tickets de Soporte**: Formulario modal para remitir incidencias con clasificación de severidad (_Baja, Media, Alta, Urgente_), categorización y subida de capturas de pantalla adjuntas a Supabase Storage.
 
+### ⌨️ Paleta de Comandos Global (`Cmd+K` / `Ctrl+K`)
+
+- **Búsqueda Unificada**: Un solo input para saltar a módulos (respetando permisos por rol), productos, órdenes y clientes, con tolerancia a tildes y multi-palabra.
+- **Navegación por Teclado**: Flechas para moverse, `Enter` para abrir y `Esc` para cerrar; accesible con `role="dialog"` y `listbox/option`.
+- **Recientes**: Guarda las últimas 5 navegaciones en `localStorage` y las muestra al abrir sin consulta.
+- **Disparadores**: Atajo global `Cmd+K`/`Ctrl+K` y botón "Buscar o ir a…" en el header. Componente `app-command-palette` + `CommandPaletteService` (`src/app/core/services/command-palette.ts`).
+
 ### 🔔 Centro de Notificaciones en Tiempo Real
 
 - **Canal WebSocket de Supabase**: Escucha eventos `INSERT` en la tabla `notifications` filtrados por el inquilino activo.
 - **Contador con Badge Dinámico**: Indicador numérico animado de notificaciones pendientes de lectura en el encabezado.
-- **Bandeja Interactiva**: Pestañas para filtrar entre _Todas_ y _No leídas_, opciones para marcar individualmente o en bloque como leídas y redirección contextual (al pulsar sobre un nuevo pedido abre directamente `/orders/:id`).
+- **Bandeja Interactiva**: Pestañas para filtrar entre _Todas_ y _No leídas_, opciones para marcar individualmente o en bloque como leídas y redirección contextual (al pulsar sobre un nuevo pedido abre directamente `/orders/:id`). Cada aviso con destino muestra un enlace visible "Ver sección".
+- **Iconografía por Tipo**: Insignia y color propios por `NotificationType` (pedido, stock, reseña, comisión, miembro, carrito e insights).
+
+#### 🧠 Notificaciones Proactivas (`InsightsService`)
+
+Motor (`src/app/core/services/insights.ts`) que se ejecuta una vez por sesión al resolver el tenant (desde `MainLayout`) y publica digest inteligentes con **dedup diario** por tienda (`venti:insights:{tenantId}` en `localStorage` + memoria):
+
+| Insight (`NotificationType`) | Disparador | Destino |
+| :--------------------------- | :--------- | :------ |
+| `morning_briefing` | Resumen al primer ingreso (envíos pendientes, ventas del día, stock en riesgo, reseñas, carritos). Saluda según la hora y solo interrumpe con toast; si la tienda está inactiva no se genera | `/dashboard` |
+| `stock_velocity` | Productos con cobertura ≤ 7 días según `days_of_stock_remaining` de `vw_low_stock_alerts` (top 3) | `/products` |
+| `review_digest` | Reseñas pendientes de moderación (`getReviewStats().pending`) | `/reviews` |
+| `cart_digest` | Carritos abandonados de 24h con potencial recuperable | `/abandoned-carts` |
+| `sales_record` | Ventas de hoy ≥ +50% vs promedio de 7 días (`vw_daily_sales_realtime`) | `/reports` |
+| `coupon_expiring` | Cupones activos que vencen en ≤ 3 días | `/coupons` |
+| `subscription_expiring` | Trial o membresía que vence en ≤ 7 días (planes `free` excluidos) | `/subscription` |
+
+Los cálculos corren en paralelo con `Promise.allSettled` (un fallo no bloquea al resto) y los digest viven solo en la campana, sin toasts masivos.
 
 ### 🤖 Asistente de Inteligencia Artificial Gemini
 
@@ -522,7 +555,7 @@ Gemini se aplican por proyecto y pueden ser compartidas por todos los tenants.
 
 ### Directorio de Servicios de Negocio (`src/app/core/services`)
 
-El núcleo de Venti Shop está compuesto por **34 servicios especializados** desacoplados:
+El núcleo de Venti Shop está compuesto por **38 servicios especializados** desacoplados:
 
 | Servicio                | Responsabilidad Principal                                                       |
 | :---------------------- | :------------------------------------------------------------------------------ |
@@ -546,6 +579,7 @@ El núcleo de Venti Shop está compuesto por **34 servicios especializados** des
 | `GeographyService`      | Carga de departamentos y municipios mediante la API de Colombia                 |
 | `SupportService`        | Diagnóstico de salud de tienda, base de conocimientos y tickets de soporte      |
 | `NotificationsService`  | Notificaciones en tiempo real vía Supabase Realtime y gestión de lectura        |
+| `InsightsService`       | Motor de notificaciones proactivas (briefing, stock y digest diarios)           |
 | `AiAssistantService`    | Integración con Gemini AI y ejecución de herramientas de consulta a BD          |
 | `PreviewSyncService`    | Puente de comunicación en tiempo real entre el panel de diseño y el preview     |
 | `SeoService`            | Gestión de etiquetas meta dinámicas, títulos y OpenGraph para SSR               |
@@ -558,6 +592,9 @@ El núcleo de Venti Shop está compuesto por **34 servicios especializados** des
 | `EmailService`          | Trazabilidad y auditoría de correos transaccionales enviados                    |
 | `LoggerService`         | Sistema de logging centralizado con niveles configurables por entorno           |
 | `ToastService`          | Cola reactiva de alertas y notificaciones emergentes                            |
+| `CommandPaletteService` | Estado, catálogo navegable y búsqueda de entidades para la paleta `Cmd+K`       |
+| `OnboardingService`     | Guía de inicio, pasos de configuración y progreso de la tienda                  |
+| `WebhooksService`       | Gestión de endpoints y reintentos de webhooks de salida                         |
 | `LoaderService`         | Señal global de carga para operaciones asíncronas                               |
 | `Supabase`              | Singleton de inicialización y configuración del cliente Supabase                |
 
@@ -583,15 +620,19 @@ El núcleo de Venti Shop está compuesto por **34 servicios especializados** des
 | `HelpDrawer`            | `app-help-drawer`            | Drawer lateral con diagnóstico de configuración de tienda y envío de tickets         |
 | `NotificationsDropdown` | `app-notifications-dropdown` | Desplegable de notificaciones Realtime con conteo de no leídas y navegación          |
 | `AiAssistant`           | `app-ai-assistant`           | Widget flotante de chat con Google Gemini y renderizado Markdown sanitizado          |
-| `DynamicTable`          | `app-dynamic-table`          | Tabla avanzada con ordenamiento, buscador, paginación, acciones y exportación CSV, Excel y PDF |
+| `DynamicTable`          | `app-dynamic-table`          | Tabla con sort, buscador, paginación y export; `isLoading` muestra skeleton          |
 | `MediaManagerModal`     | `app-media-manager-modal`    | Galería modal para explorar, subir y seleccionar imágenes desde Supabase Storage     |
 | `CustomerAuthModal`     | `app-customer-auth-modal`    | Modal emergente para login y registro de clientes finales en el Storefront           |
 | `DateRangePicker`       | `app-date-range-picker`      | Selector de rangos de fechas con atajos rápidos para reportes analíticos             |
 | `DatePicker`            | `app-date-picker`            | Selector accesible de fecha única                                                    |
-| `Dropdown`              | `app-dropdown`               | Menú desplegable estilizado con soporte de iconos y estados activos                  |
+| `Dropdown`              | `app-dropdown`               | Menú con iconos; render fijo anti-recorte (abre arriba si no cabe)                   |
 | `OrderStatusBadge`      | `app-order-status-badge`     | Píldora visual con código de color según el estado del pedido                        |
 | `UsageProgress`         | `app-usage-progress`         | Medidor de cuota de recursos y límites de suscripción                                |
 | `Toast`                 | `app-toast`                  | Pila de notificaciones emergentes con animaciones fluidas                            |
+| `Skeleton`              | `app-skeleton`               | Bloque base de shimmer (`animate-pulse`) con ancho, alto y radio configurables       |
+| `TableSkeleton`         | `app-table-skeleton`         | Esqueleto de tabla (cabecera + filas) con filas, columnas y avatar configurables     |
+| `StatCardSkeleton`      | `app-stat-card-skeleton`     | Esqueleto de tarjeta de estadística que imita `StatCard` del dashboard               |
+| `CommandPalette`        | `app-command-palette`        | Paleta global (`Cmd+K`/`Ctrl+K`) con resultados agrupados y atajos de teclado        |
 | `NotFound`              | `app-not-found`              | Vista 404 estilizada tanto para rutas administrativas como de storefront             |
 
 ---
@@ -627,6 +668,12 @@ El esquema relacional en PostgreSQL está diseñado para operar con aislamiento 
 │                      │ tax_rates, webhook_endpoints, webhook_deliveries      │
 └──────────────────────┴───────────────────────────────────────────────────────┘
 ```
+
+> **Alta de tienda y rol owner:** al registrarse, `handle_new_user`
+> (`supabase/migrations/20260903100000_fix_new_user_subscription_status.sql`)
+> crea el tenant y su fila en `tenant_members` con rol `owner`. Como respaldo,
+> el frontend trata como owner a quien coincida con `tenants.owner_id` aunque
+> la membresía falte.
 
 ---
 

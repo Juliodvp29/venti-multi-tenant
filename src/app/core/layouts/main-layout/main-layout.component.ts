@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AiAssistantComponent } from '@shared/components/ai-assistant/ai-assistant';
+import { InsightsService } from '@core/services/insights';
+import { TenantService } from '@core/services/tenant';
 import { CommandPalette } from '@shared/components/command-palette/command-palette';
 
 @Component({
@@ -45,8 +47,21 @@ import { CommandPalette } from '@shared/components/command-palette/command-palet
   `,
 })
 export class MainLayoutComponent {
+  private readonly tenantService = inject(TenantService);
+  private readonly insights = inject(InsightsService);
+
   readonly isSidebarOpen = signal(false);
   readonly isSidebarCollapsed = signal(false);
+
+  constructor() {
+    // Notificaciones proactivas al primer ingreso de la sesión (una vez por tenant).
+    effect(() => {
+      const tenantId = this.tenantService.tenantId();
+      if (tenantId) {
+        void this.insights.refreshInsights();
+      }
+    });
+  }
 
   toggleSidebar() {
     this.isSidebarOpen.update((v) => !v);

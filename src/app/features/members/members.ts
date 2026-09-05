@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed, ChangeDetectionStrategy, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+  effect,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TenantService } from '@core/services/tenant';
 import { SubscriptionService } from '@core/services/subscription';
@@ -9,6 +16,7 @@ import { AuditLogsService } from '@core/services/audit-logs';
 import { MembersStatsComponent } from './components/members-stats';
 import { MembersListComponent } from './components/members-list';
 import { InviteMemberModalComponent } from './components/invite-member-modal';
+import { EditMemberRoleModalComponent } from './components/edit-member-role-modal';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +25,8 @@ import { InviteMemberModalComponent } from './components/invite-member-modal';
     CommonModule,
     MembersStatsComponent,
     MembersListComponent,
-    InviteMemberModalComponent
+    InviteMemberModalComponent,
+    EditMemberRoleModalComponent,
   ],
   templateUrl: './members.html',
   styleUrl: './members.css',
@@ -42,18 +51,27 @@ export class Members {
 
   members = signal<TenantMember[]>([]);
   showInviteModal = signal(false);
+  selectedMember = signal<TenantMember | null>(null);
+  showEditModal = signal(false);
   isLoading = signal(false);
   auditLogs = signal<AuditLog[]>([]);
   isAuditLoading = signal(false);
 
-  totalMembers = computed(() => this.members().filter(m => !m['is_invite']).length);
-  adminCount = computed(() => this.members().filter(m => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner)).length);
+  totalMembers = computed(() => this.members().filter((m) => !m['is_invite']).length);
+  adminCount = computed(
+    () =>
+      this.members().filter(
+        (m) => !m['is_invite'] && (m.role === TenantRole.Admin || m.role === TenantRole.Owner),
+      ).length,
+  );
   pendingInvites = signal(0);
 
   async openInviteModal() {
     const canAdd = await this.subscriptionService.canAddResource('members');
     if (!canAdd) {
-      this.toast.error('Has alcanzado el límite de miembros para tu plan. Por favor, actualiza tu plan para invitar a más personas.');
+      this.toast.error(
+        'Has alcanzado el límite de miembros para tu plan. Por favor, actualiza tu plan para invitar a más personas.',
+      );
       return;
     }
     this.showInviteModal.set(true);
@@ -69,28 +87,40 @@ export class Members {
       ]);
 
       const membersData: TenantMember[] =
-        membersResult.status === 'fulfilled' ? membersResult.value : this.members().filter(m => !m['is_invite']);
+        membersResult.status === 'fulfilled'
+          ? membersResult.value
+          : this.members().filter((m) => !m['is_invite']);
 
       const invitesData: TenantInvitation[] =
         invitesResult.status === 'fulfilled' ? invitesResult.value : [];
 
-      const formattedInvites: TenantMember[] = invitesData.map(invite => ({
-        id: invite.id,
-        tenant_id: invite.tenant_id,
-        user_id: `invite_${invite.id}`,
-        email: invite.email,
-        role: invite.role,
-        permissions: [],
-        is_active: false,
-        is_invite: true,
-        invited_by: invite.invited_by,
-        invited_at: invite.created_at,
-        created_at: invite.created_at,
-        updated_at: invite.created_at
-      } as any));
+      // Una invitación cuyo correo ya es miembro (aceptada pero con la fila
+      // en pendiente, o invitada por error) generaba un duplicado activo/inactivo.
+      const memberEmails = new Set(membersData.map((m) => (m.email ?? '').toLowerCase()));
+      const visibleInvites = invitesData.filter(
+        (invite) => !memberEmails.has((invite.email ?? '').toLowerCase()),
+      );
+
+      const formattedInvites: TenantMember[] = visibleInvites.map(
+        (invite) =>
+          ({
+            id: invite.id,
+            tenant_id: invite.tenant_id,
+            user_id: `invite_${invite.id}`,
+            email: invite.email,
+            role: invite.role,
+            permissions: [],
+            is_active: false,
+            is_invite: true,
+            invited_by: invite.invited_by,
+            invited_at: invite.created_at,
+            created_at: invite.created_at,
+            updated_at: invite.created_at,
+          }) as any,
+      );
 
       this.members.set([...membersData, ...formattedInvites]);
-      this.pendingInvites.set(invitesData.length);
+      this.pendingInvites.set(visibleInvites.length);
     } catch (error) {
       console.error('Error loading members:', error);
     } finally {
@@ -131,11 +161,15 @@ export class Members {
       orders: 'orden',
       customers: 'cliente',
       members: 'miembro',
+      tenant_members: 'miembro del equipo',
+      tenant_invitations: 'invitación',
+      tenants: 'tienda',
       coupons: 'cupón',
       commissions: 'comisión',
       payments: 'pago',
+      settings: 'configuración',
     };
-    return labels[resourceType] ?? resourceType.replace(/_/g, ' ');
+    return labels[resourceType] ?? this.humanizeAuditKey(resourceType);
   }
 
   getAuditMessage(log: AuditLog): string {
@@ -207,50 +241,105 @@ export class Members {
       role: 'rol',
       is_active: 'estado activo',
       is_verified: 'verificación',
+      settings: 'configuración',
+      theme_config: 'tema visual',
+      store_design_state: 'diseño de tienda',
+      storefront_layout: 'secciones de tienda',
     };
     const ignored = new Set(['updated_at', 'created_at']);
     const changed = Object.keys(newValues)
-      .filter((key) => !ignored.has(key) && JSON.stringify(oldValues[key]) !== JSON.stringify(newValues[key]))
+      .filter(
+        (key) =>
+          !ignored.has(key) && JSON.stringify(oldValues[key]) !== JSON.stringify(newValues[key]),
+      )
       .slice(0, 3)
       .map(
         (key) =>
-          `${labels[key] ?? this.humanizeAuditKey(key)}: ${this.formatAuditValue(newValues[key], key)}`,
+          `${labels[key] ?? this.humanizeAuditKey(key)}: ${this.formatAuditValue(newValues[key], key, oldValues[key])}`,
       );
 
     return changed.length ? `Cambios: ${changed.join(' · ')}` : '';
   }
 
-  private formatAuditValue(value: unknown, key?: string): string {
+  private formatAuditValue(value: unknown, key?: string, oldValue?: unknown): string {
     if (typeof value === 'boolean') return value ? 'Sí' : 'No';
+    if (Array.isArray(value)) {
+      return value.length === 0 ? 'vacía' : `${value.length} elementos`;
+    }
+    if (typeof value === 'object' && value !== null) {
+      // Antes mostraba "[object Object]" (p. ej. el JSON de settings).
+      // Resume con los sub-campos que cambiaron, en español.
+      const record = value as Record<string, unknown>;
+      const oldRecord =
+        typeof oldValue === 'object' && oldValue !== null && !Array.isArray(oldValue)
+          ? (oldValue as Record<string, unknown>)
+          : {};
+      const subLabels: Record<string, string> = {
+        theme_config: 'tema visual',
+        store_design_state: 'diseño de tienda',
+        storefront_layout: 'secciones de tienda',
+        payment_methods: 'métodos de pago',
+        currency: 'moneda',
+        timezone: 'zona horaria',
+        custom_domain: 'dominio propio',
+        business_name: 'nombre de tienda',
+        contact_email: 'correo de contacto',
+        seo_title: 'título SEO',
+        seo_description: 'descripción SEO',
+        seo_keywords: 'palabras clave SEO',
+        seo_og_image: 'imagen social',
+        logo_url: 'logo',
+        main_banner_url: 'banner principal',
+        brand_gallery: 'galería de marca',
+        social_links: 'redes sociales',
+      };
+      const changedSubs = Object.keys(record)
+        .filter((sub) => JSON.stringify(oldRecord[sub]) !== JSON.stringify(record[sub]))
+        .slice(0, 3)
+        .map((sub) => subLabels[sub] ?? this.humanizeAuditKey(sub).toLowerCase());
+      if (changedSubs.length > 0) return changedSubs.join(', ');
+      const keys = Object.keys(record);
+      if (keys.length === 0) return 'vacío';
+      return keys
+        .slice(0, 3)
+        .map((sub) => subLabels[sub] ?? this.humanizeAuditKey(sub).toLowerCase())
+        .join(', ');
+    }
     if (value === null || value === undefined || value === '') return 'vacío';
     if (key === 'status') {
-      return {
-        pending: 'Pendiente',
-        processing: 'En proceso',
-        paid: 'Pagado',
-        shipped: 'Enviado',
-        delivered: 'Entregado',
-        cancelled: 'Cancelado',
-        refunded: 'Reembolsado',
-      }[String(value)] ?? String(value);
+      return (
+        {
+          pending: 'Pendiente',
+          processing: 'En proceso',
+          paid: 'Pagado',
+          shipped: 'Enviado',
+          delivered: 'Entregado',
+          cancelled: 'Cancelado',
+          refunded: 'Reembolsado',
+        }[String(value)] ?? String(value)
+      );
     }
     if (key === 'payment_status') {
-      return {
-        pending: 'Pendiente',
-        completed: 'Pagado',
-        failed: 'Fallido',
-        refunded: 'Reembolsado',
-        partially_refunded: 'Reembolso parcial',
-      }[String(value)] ?? String(value);
+      return (
+        {
+          pending: 'Pendiente',
+          completed: 'Pagado',
+          failed: 'Fallido',
+          refunded: 'Reembolsado',
+          partially_refunded: 'Reembolso parcial',
+        }[String(value)] ?? String(value)
+      );
     }
     if (key === 'role') {
-      return {
-        owner: 'Propietario',
-        admin: 'Administrador',
-        editor: 'Editor',
-        viewer: 'Visualizador',
-        delivery: 'Despacho',
-      }[String(value)] ?? String(value);
+      return (
+        {
+          owner: 'Propietario',
+          admin: 'Administrador',
+          editor: 'Editor',
+          viewer: 'Visualizador',
+          delivery: 'Despacho',
+        }[String(value)] ?? String(value)
+      );
     }
     return String(value);
   }
@@ -263,14 +352,12 @@ export class Members {
       customer_portal: 'portal del cliente',
     };
     return source.source
-      ? sourceLabels[source.source] ?? this.humanizeAuditKey(source.source)
+      ? (sourceLabels[source.source] ?? this.humanizeAuditKey(source.source))
       : `Registro de ${this.getAuditResourceLabel(log.resource_type)}`;
   }
 
   private humanizeAuditKey(key: string): string {
-    return key
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, (character) => character.toUpperCase());
+    return key.replace(/_/g, ' ').replace(/\b\w/g, (character) => character.toUpperCase());
   }
 
   getAuditActor(log: AuditLog): string {
@@ -278,14 +365,16 @@ export class Members {
   }
 
   getAuditTime(createdAt: string): string {
-    const elapsed = Date.now() - new Date(createdAt).getTime();
-    const minutes = Math.floor(elapsed / 60000);
-    if (minutes < 1) return 'Ahora';
-    if (minutes < 60) return `Hace ${minutes} min`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `Hace ${hours} h`;
-    const days = Math.floor(hours / 24);
-    return `Hace ${days} d`;
+    const date = new Date(createdAt);
+    if (isNaN(date.getTime())) return '';
+    return date.toLocaleString('es', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: this.tenantService.timezone(),
+    });
   }
 
   async onInviteSubmit(event: { email: string; role: TenantRole }) {
@@ -301,34 +390,60 @@ export class Members {
   }
 
   async onMemberRemove(member: TenantMember) {
+    const isInvite = !!member['is_invite'];
     const confirmed = await this.toast.confirm(
-      '¿Estás seguro de que quieres eliminar a este miembro?',
-      'Eliminar miembro'
+      isInvite
+        ? `¿Quieres cancelar la invitación pendiente para ${member.email}?`
+        : '¿Estás seguro de que quieres eliminar a este miembro?',
+      isInvite ? 'Cancelar invitación' : 'Eliminar miembro',
     );
     if (confirmed) {
       try {
-        await this.tenantService.removeMember(member.id);
-        this.toast.success('Miembro eliminado');
+        if (isInvite) {
+          await this.tenantService.cancelInvitation(member.id);
+          this.toast.success('Invitación cancelada');
+        } else {
+          await this.tenantService.removeMember(member.id);
+          this.toast.success('Miembro eliminado');
+        }
         await this.loadMembers();
       } catch (error) {
-        this.toast.error('Error al eliminar el miembro');
+        this.toast.error(
+          isInvite ? 'Error al cancelar la invitación' : 'Error al eliminar el miembro',
+        );
       }
     }
   }
 
-  async onMemberRoleUpdate(member: TenantMember) {
-    // El cambio de rol se gestiona desde la UI del componente MembersListComponent.
-    // Si se llama directamente, se valida el rol recibido.
-    if (member.role && Object.values(TenantRole).includes(member.role as TenantRole)) {
-      try {
-        await this.tenantService.updateMemberRole(member.id, member.role as TenantRole);
-        this.toast.success('Rol actualizado');
-        await this.loadMembers();
-      } catch (error) {
-        this.toast.error('Error al actualizar el rol');
-      }
-    } else {
+  openEditModal(member: TenantMember) {
+    this.selectedMember.set(member);
+    this.showEditModal.set(true);
+  }
+
+  closeEditModal() {
+    this.showEditModal.set(false);
+    this.selectedMember.set(null);
+  }
+
+  async onEditRoleSave(event: { member: TenantMember; role: TenantRole }) {
+    const { member, role } = event;
+    if (!role || !Object.values(TenantRole).includes(role)) {
       this.toast.error('Rol inválido. Los roles disponibles son: viewer, editor, admin');
+      return;
+    }
+    const isInvite = !!member['is_invite'];
+    try {
+      if (isInvite) {
+        await this.tenantService.updateInvitationRole(member.id, role);
+        this.toast.success('Rol de la invitación actualizado');
+      } else {
+        await this.tenantService.updateMemberRole(member.id, role);
+        this.toast.success('Rol actualizado');
+      }
+      this.closeEditModal();
+      await this.loadMembers();
+    } catch (error) {
+      this.toast.error('Error al actualizar el rol');
     }
   }
 }

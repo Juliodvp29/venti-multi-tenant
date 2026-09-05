@@ -108,7 +108,20 @@ export class NotificationsDropdown {
       case 'member_joined':
         return 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400';
       case 'cart_abandoned':
+      case 'cart_digest':
         return 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400';
+      case 'morning_briefing':
+        return 'bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400';
+      case 'stock_velocity':
+        return 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400';
+      case 'review_digest':
+        return 'bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400';
+      case 'sales_record':
+        return 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400';
+      case 'coupon_expiring':
+        return 'bg-teal-100 text-teal-600 dark:bg-teal-500/20 dark:text-teal-400';
+      case 'subscription_expiring':
+        return 'bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400';
       default:
         return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400';
     }
