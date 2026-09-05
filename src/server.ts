@@ -22,7 +22,11 @@ type PublicTenant = {
 };
 
 function requestHost(req: express.Request): string {
-  return (req.headers['x-forwarded-host'] || req.headers.host || '').toString().split(',')[0].split(':')[0].toLowerCase();
+  return (req.headers['x-forwarded-host'] || req.headers.host || '')
+    .toString()
+    .split(',')[0]
+    .split(':')[0]
+    .toLowerCase();
 }
 
 async function resolvePublicTenant(req: express.Request): Promise<PublicTenant | null> {
@@ -61,34 +65,41 @@ function publicOrigin(req: express.Request): string {
 app.get('/robots.txt', async (req, res) => {
   const tenant = await resolvePublicTenant(req);
   const sitemapUrl = `${publicOrigin(req)}/sitemap.xml`;
-  res.type('text/plain').send([
-    'User-agent: *',
-    tenant ? 'Allow: /' : 'Disallow: /',
-    'Disallow: /auth/',
-    'Disallow: /dashboard',
-    'Disallow: /products',
-    'Disallow: /settings',
-    'Disallow: /members',
-    'Disallow: /orders',
-    'Disallow: /customers',
-    'Disallow: /store/checkout',
-    'Disallow: /store/carrito',
-    'Disallow: /store/success',
-    'Disallow: /store/account',
-    '',
-    'User-agent: GPTBot',
-    'Disallow: /',
-    '',
-    'User-agent: CCBot',
-    'Disallow: /',
-    `Sitemap: ${sitemapUrl}`,
-  ].join('\n'));
+  res
+    .type('text/plain')
+    .send(
+      [
+        'User-agent: *',
+        tenant ? 'Allow: /' : 'Disallow: /',
+        'Disallow: /auth/',
+        'Disallow: /dashboard',
+        'Disallow: /products',
+        'Disallow: /settings',
+        'Disallow: /members',
+        'Disallow: /orders',
+        'Disallow: /customers',
+        'Disallow: /store/checkout',
+        'Disallow: /store/carrito',
+        'Disallow: /store/success',
+        'Disallow: /store/account',
+        '',
+        'User-agent: GPTBot',
+        'Disallow: /',
+        '',
+        'User-agent: CCBot',
+        'Disallow: /',
+        `Sitemap: ${sitemapUrl}`,
+      ].join('\n'),
+    );
 });
 
 app.get('/sitemap.xml', async (req, res) => {
   const tenant = await resolvePublicTenant(req);
   if (!tenant) {
-    res.status(404).type('application/xml').send('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"/>');
+    res
+      .status(404)
+      .type('application/xml')
+      .send('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"/>');
     return;
   }
 
@@ -109,7 +120,10 @@ app.get('/sitemap.xml', async (req, res) => {
 
   if (productsRes.error) {
     console.error('[SEO] Could not load sitemap products:', productsRes.error);
-    res.status(500).type('application/xml').send('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"/>');
+    res
+      .status(500)
+      .type('application/xml')
+      .send('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"/>');
     return;
   }
   if (categoriesRes.error) {
@@ -131,13 +145,14 @@ app.get('/sitemap.xml', async (req, res) => {
         (category) =>
           `<url><loc>${origin}/store/categoria/${encodeURIComponent(category.slug)}</loc>${lastmod(category.updated_at)}</url>`,
       ),
-    ...(products || []).map((product) =>
-      `<url><loc>${origin}/store/product/${encodeURIComponent(product.slug)}</loc>${lastmod(product.updated_at)}</url>`,
+    ...(products || []).map(
+      (product) =>
+        `<url><loc>${origin}/store/product/${encodeURIComponent(product.slug)}</loc>${lastmod(product.updated_at)}</url>`,
     ),
   ];
-  res.type('application/xml').send(
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join('')}</urlset>`,
-  );
+  res
+    .type('application/xml')
+    .send(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join('')}</urlset>`);
 });
 
 /**
@@ -158,7 +173,13 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
   angularApp
     .handle(req)
     .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
-    .catch(next);
+    .catch((err: unknown) => {
+      // El navegador canceló la petición (navegación rápida, recarga, HMR):
+      // no hay a quién responderle, así que no es un error real.
+      if (err instanceof DOMException && err.name === 'AbortError') return;
+      if (err instanceof Error && err.name === 'AbortError') return;
+      next(err);
+    });
 });
 
 /**
