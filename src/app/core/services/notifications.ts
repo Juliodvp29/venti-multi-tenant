@@ -2,7 +2,7 @@ import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angula
 import { Supabase } from './supabase';
 import { TenantService } from './tenant';
 import { ToastService } from './toast';
-import { AppNotification } from '@core/models/notification';
+import { AppNotification, SILENT_INSIGHT_TYPES } from '@core/models/notification';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
 @Injectable({
@@ -15,9 +15,7 @@ export class NotificationsService implements OnDestroy {
 
   readonly notifications = signal<AppNotification[]>([]);
   readonly isLoading = signal<boolean>(false);
-  readonly unreadCount = computed(() =>
-    this.notifications().filter((n) => !n.is_read).length
-  );
+  readonly unreadCount = computed(() => this.notifications().filter((n) => !n.is_read).length);
 
   private realtimeChannel: RealtimeChannel | null = null;
   private currentTenantId: string | null = null;
@@ -68,7 +66,7 @@ export class NotificationsService implements OnDestroy {
 
     // Actualización optimista
     this.notifications.update((list) =>
-      list.map((n) => (n.id === notificationId ? { ...n, is_read: true } : n))
+      list.map((n) => (n.id === notificationId ? { ...n, is_read: true } : n)),
     );
 
     try {
@@ -96,9 +94,7 @@ export class NotificationsService implements OnDestroy {
     if (unreadIds.length === 0) return;
 
     // Actualización optimista
-    this.notifications.update((list) =>
-      list.map((n) => ({ ...n, is_read: true }))
-    );
+    this.notifications.update((list) => list.map((n) => ({ ...n, is_read: true })));
 
     try {
       const { error } = await (this.supabase.client.from as any)('notifications')
@@ -109,7 +105,10 @@ export class NotificationsService implements OnDestroy {
       if (error) {
         console.error('Error marking all notifications as read:', error);
       } else {
-        this.toast.success('Notificaciones al día', 'Todas las notificaciones fueron marcadas como leídas');
+        this.toast.success(
+          'Notificaciones al día',
+          'Todas las notificaciones fueron marcadas como leídas',
+        );
       }
     } catch (err) {
       console.error('Unexpected error marking all notifications as read:', err);
@@ -136,7 +135,9 @@ export class NotificationsService implements OnDestroy {
     }
   }
 
-  async createNotification(notification: Omit<AppNotification, 'id' | 'created_at' | 'is_read'>): Promise<void> {
+  async createNotification(
+    notification: Omit<AppNotification, 'id' | 'created_at' | 'is_read'>,
+  ): Promise<void> {
     const tenantId = this.tenantService.tenantId();
     if (!tenantId) return;
 
@@ -172,9 +173,13 @@ export class NotificationsService implements OnDestroy {
           const newNotification = payload.new as AppNotification;
           if (newNotification) {
             this.notifications.update((current) => [newNotification, ...current]);
-            this.toast.info(newNotification.title, newNotification.message);
+            // Los digest proactivos viven en la campana sin interrumpir; solo el
+            // resumen matutino saluda con toast al primer ingreso del día.
+            if (!SILENT_INSIGHT_TYPES.has(newNotification.type)) {
+              this.toast.info(newNotification.title, newNotification.message);
+            }
           }
-        }
+        },
       )
       .subscribe();
   }
