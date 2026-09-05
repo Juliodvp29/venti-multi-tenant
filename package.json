@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js serve",
+    "start": "node --max-old-space-size=4096 --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js serve",
     "prebuild": "node scripts/set-env.js",
-    "build": "node --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js build",
-    "watch": "node --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js build --watch --configuration development",
-    "test": "node --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js test",
+    "build": "node --max-old-space-size=4096 --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js build",
+    "watch": "node --max-old-space-size=4096 --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js build --watch --configuration development",
+    "test": "node --max-old-space-size=4096 --disable-warning=DEP0205 node_modules/@angular/cli/bin/ng.js test",
     "lint": "eslint .",
     "serve:ssr": "node dist/venti-multi-tenant/server/server.mjs"
   },

@@ -5,6 +5,7 @@ import { Supabase } from './supabase';
 import { TenantService } from './tenant';
 import { AuthService } from './auth';
 import { NotificationsService } from './notifications';
+import { EmailService } from './email';
 
 function createQuery(result: unknown) {
   const query: any = {
@@ -26,6 +27,7 @@ describe('OrdersService', () => {
   let from: ReturnType<typeof vi.fn>;
   const tenantService = {
     tenantId: vi.fn((): string | null => 'tenant-1'),
+    tenant: vi.fn(() => ({ business_name: 'Test Store', slug: 'test-store' })),
     memberRole: vi.fn(() => 'admin'),
   };
   const authService = {
@@ -43,6 +45,15 @@ describe('OrdersService', () => {
         { provide: TenantService, useValue: tenantService },
         { provide: AuthService, useValue: authService },
         { provide: NotificationsService, useValue: { createNotification: vi.fn() } },
+        {
+          provide: EmailService,
+          useValue: {
+            sendEmail: vi.fn().mockResolvedValue({ success: true }),
+            sendOrderConfirmation: vi.fn().mockResolvedValue({ success: true }),
+            sendShippingNotification: vi.fn().mockResolvedValue({ success: true }),
+            sendCustomerWelcome: vi.fn().mockResolvedValue({ success: true }),
+          },
+        },
       ],
     });
     service = TestBed.inject(OrdersService);

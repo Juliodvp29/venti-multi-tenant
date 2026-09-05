@@ -6,6 +6,7 @@ import { OrderStatus, PaymentMethod, PaymentStatus } from '@core/enums';
 import { TenantService } from './tenant';
 import { AuthService } from './auth';
 import { NotificationsService } from './notifications';
+import { EmailService } from './email';
 import { Database } from '../types/database.types';
 
 export interface OrderStats {
@@ -34,6 +35,7 @@ export class OrdersService {
   private readonly tenantService = inject(TenantService);
   private readonly authService = inject(AuthService);
   private readonly notificationsService = inject(NotificationsService);
+  private readonly emailService = inject(EmailService);
 
   async getOrders(
     page: number = 1,
@@ -292,6 +294,35 @@ export class OrdersService {
         console.warn('[OrdersService] Could not create order notification:', notifErr);
       }
 
+      // Send order confirmation email to customer (non-blocking)
+      try {
+        const customerEmail = orderData.customer_email;
+        if (customerEmail) {
+          const orderNumber = (order as any).order_number || `#${order.id.slice(-6).toUpperCase()}`;
+          const totalAmount = orderData.total_amount ?? 0;
+          const currency = orderData.currency || 'COP';
+          const formattedTotal = new Intl.NumberFormat('es-CO', { style: 'currency', currency }).format(totalAmount);
+          const customerName = `${orderData.customer_first_name || orderData.shipping_first_name || ''} ${orderData.customer_last_name || orderData.shipping_last_name || ''}`.trim() || 'Cliente';
+          const tenant = this.tenantService.tenant();
+          const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+
+          void this.emailService.sendOrderConfirmation({
+            to: customerEmail,
+            orderId: order.id,
+            orderNumber,
+            customerName,
+            totalFormatted: formattedTotal,
+            storeName: tenant?.business_name || 'Venti Shop',
+            extraVariables: {
+              order_total: formattedTotal,
+              order_url: `${baseUrl}/store/${tenant?.slug || ''}/orders/${order.id}`,
+            },
+          }).catch(err => console.warn('[OrdersService] Could not send order confirmation email:', err));
+        }
+      } catch (emailErr) {
+        console.warn('[OrdersService] Could not dispatch order confirmation email:', emailErr);
+      }
+
       return order as unknown as Order;
     } catch (error) {
       console.error('[OrdersService] Error creating order:', error);
@@ -464,6 +495,34 @@ export class OrdersService {
       .eq('id', id);
 
     if (error) throw error;
+
+    // Send shipping notification email (non-blocking)
+    try {
+      const { data: order } = await this.supabase.client
+        .from('orders')
+        .select('id, order_number, customer_email, customer_first_name, customer_last_name, shipping_first_name, shipping_last_name')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (order?.customer_email) {
+        const tenant = this.tenantService.tenant();
+        const customerName = `${order.customer_first_name || order.shipping_first_name || ''} ${order.customer_last_name || order.shipping_last_name || ''}`.trim() || 'Cliente';
+        const orderNumber = order.order_number || `#${id.slice(-6).toUpperCase()}`;
+
+        void this.emailService.sendShippingNotification({
+          to: order.customer_email,
+          orderId: id,
+          orderNumber,
+          customerName,
+          carrier: info.shipping_method ?? '',
+          trackingNumber: info.tracking_number ?? '',
+          trackingUrl: info.tracking_url ?? '',
+          storeName: tenant?.business_name || 'Venti Shop',
+        }).catch(err => console.warn('[OrdersService] Shipping email notification error:', err));
+      }
+    } catch (notifErr) {
+      console.warn('[OrdersService] Could not dispatch shipping notification email:', notifErr);
+    }
   }
 
   async assignDeliveryPerson(id: string, delivery_person_id: string | null): Promise<void> {
@@ -490,6 +549,35 @@ export class OrdersService {
       .eq('id', id);
 
     if (error) throw error;
+
+    // Send cancellation notification email (non-blocking)
+    try {
+      const { data: order } = await this.supabase.client
+        .from('orders')
+        .select('id, order_number, customer_email, customer_first_name, customer_last_name, shipping_first_name, shipping_last_name')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (order?.customer_email) {
+        const tenant = this.tenantService.tenant();
+        const customerName = `${order.customer_first_name || order.shipping_first_name || ''} ${order.customer_last_name || order.shipping_last_name || ''}`.trim() || 'Cliente';
+        const orderNumber = order.order_number || `#${id.slice(-6).toUpperCase()}`;
+
+        void this.emailService.sendEmail({
+          to: order.customer_email,
+          templateKey: 'order_cancelled',
+          orderId: id,
+          variables: {
+            order_number: orderNumber,
+            customer_name: customerName,
+            cancel_reason: reason,
+            store_name: tenant?.business_name || 'Venti Shop',
+          },
+        }).catch(err => console.warn('[OrdersService] Order cancelled email error:', err));
+      }
+    } catch (notifErr) {
+      console.warn('[OrdersService] Could not dispatch order cancelled email:', notifErr);
+    }
   }
 
   async processRefund(
@@ -575,5 +663,31 @@ export class OrdersService {
       new_status: totalRefundedSoFar >= order.total_amount ? OrderStatus.Refunded : order.status,
       note: `Refund of $${amount} processed for reason: ${reason}`,
     });
+
+    // 5. Send refund notification email (non-blocking)
+    try {
+      if (order.customer_email) {
+        const tenant = this.tenantService.tenant();
+        const customerName = `${order.customer_first_name || order.shipping_first_name || ''} ${order.customer_last_name || order.shipping_last_name || ''}`.trim() || 'Cliente';
+        const orderNumber = order.order_number || `#${order.id.slice(-6).toUpperCase()}`;
+        const currency = order.currency || 'COP';
+        const formattedAmount = new Intl.NumberFormat('es-CO', { style: 'currency', currency }).format(amount);
+
+        void this.emailService.sendEmail({
+          to: order.customer_email,
+          templateKey: 'refund_processed',
+          orderId: order.id,
+          variables: {
+            order_number: orderNumber,
+            customer_name: customerName,
+            refund_amount: formattedAmount,
+            refund_reason: reason,
+            store_name: tenant?.business_name || 'Venti Shop',
+          },
+        }).catch(err => console.warn('[OrdersService] Refund email error:', err));
+      }
+    } catch (notifErr) {
+      console.warn('[OrdersService] Could not dispatch refund email:', notifErr);
+    }
   }
 }

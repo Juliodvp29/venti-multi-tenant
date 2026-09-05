@@ -48,6 +48,16 @@
         deliveries().length
       }}</span>
     </button>
+    <button
+      type="button"
+      (click)="activeTab.set('emails')"
+      [class.bg-white]="activeTab() === 'emails'"
+      [class.dark:bg-gray-800]="activeTab() === 'emails'"
+      class="flex-1 rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 shadow-sm transition dark:text-gray-300 sm:flex-none"
+    >
+      Correos y Plantillas
+      <span class="ml-1 rounded-full bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-400">Resend</span>
+    </button>
   </div>
 
   @if (isLoading()) {
@@ -205,7 +215,7 @@
         }
       </div>
     </section>
-  } @else {
+  } @else if (activeTab() === 'deliveries') {
     <section>
       <div class="mb-5">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Registro de entregas</h2>
@@ -283,6 +293,10 @@
           </div>
         }
       </div>
+    </section>
+  } @else if (activeTab() === 'emails') {
+    <section class="space-y-5">
+      <app-email-templates />
     </section>
   }
 </main>

@@ -223,7 +223,7 @@
             </svg>
           </div>
 
-          <!-- Card 2: Troubleshooting -->
+          <!-- Card 2: Conectar Webhooks -->
           <div
             class="group p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 hover:border-sky-500 dark:hover:border-sky-500 transition-all cursor-pointer shadow-sm hover:shadow-md flex items-center justify-between"
             (click)="setView('webhooks')"
@@ -249,6 +249,57 @@
                 </h4>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                   Conecta Zapier, Make, n8n o tu propio backend y verifica cada evento.
+                </p>
+              </div>
+            </div>
+            <svg
+              class="w-5 h-5 text-gray-400 group-hover:text-sky-500 group-hover:translate-x-1 transition-all shrink-0 ml-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+
+          <!-- Card 3: Correos y Plantillas Transaccionales -->
+          <div
+            class="group p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-800/80 hover:border-sky-500 dark:hover:border-sky-500 transition-all cursor-pointer shadow-sm hover:shadow-md flex items-center justify-between"
+            (click)="navigateTo('/integrations', { tab: 'emails' })"
+          >
+            <div class="flex items-start gap-4">
+              <div
+                class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4
+                    class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-sky-500 transition-colors"
+                  >
+                    Correos y Plantillas (Resend)
+                  </h4>
+                  <span
+                    class="rounded-full bg-sky-100 dark:bg-sky-950 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300"
+                  >
+                    4 Estilos
+                  </span>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Gestiona notificaciones de compras, despachos, cancelaciones y selecciona estilos prediseñados.
                 </p>
               </div>
             </div>
@@ -764,6 +815,7 @@ if not hmac.compare_digest(expected, request.headers['X-Venti-Signature']):
               <option value="payments_commissions">Pagos y Comisiones</option>
               <option value="catalog_products">Catálogo e Inventario de Productos</option>
               <option value="billing">Facturación y Planes</option>
+              <option value="emails_notifications">Correos y Notificaciones (Plantillas / Resend)</option>
               <option value="other">Otro problema o consulta</option>
             </select>
           </div>
