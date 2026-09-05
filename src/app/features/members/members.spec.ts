@@ -62,6 +62,7 @@ describe('Members', () => {
 
   const tenantServiceMock = {
     tenantId: signal('tenant-123'),
+    timezone: signal('America/Bogota'),
     getMembers: vi.fn().mockResolvedValue(mockMembers),
     getInvitations: vi.fn().mockResolvedValue(mockInvitations),
     inviteMember: vi.fn().mockResolvedValue({}),
@@ -208,6 +209,42 @@ describe('Members', () => {
     expect(tenantServiceMock.cancelInvitation).toHaveBeenCalledWith('inv1');
     expect(tenantServiceMock.removeMember).not.toHaveBeenCalled();
     expect(toastServiceMock.success).toHaveBeenCalledWith('Invitación cancelada');
+  });
+
+  it('should map resource types to Spanish', () => {
+    expect(component.getAuditResourceLabel('tenants')).toBe('tienda');
+    expect(component.getAuditResourceLabel('tenant_members')).toBe('miembro del equipo');
+    expect(component.getAuditResourceLabel('orders')).toBe('orden');
+  });
+
+  it('should summarize object values in Spanish instead of [object Object]', () => {
+    const log = {
+      action: 'update',
+      resource_type: 'tenants',
+      resource_id: 'eec67d81-0000-0000-0000-000000000000',
+      new_values: {
+        settings: { theme_config: { a: 1 }, currency: 'COP', untouched: true },
+      },
+      old_values: {
+        settings: { theme_config: { a: 0 }, currency: 'USD', untouched: true },
+      },
+    } as never;
+
+    const detail = component.getAuditDetail(log);
+
+    expect(detail).not.toContain('[object Object]');
+    expect(detail).not.toContain('Settings');
+    expect(detail).toContain('tema visual');
+    expect(detail).toContain('moneda');
+    expect(detail).not.toContain('untouched');
+  });
+
+  it('should show exact date and time instead of relative time', () => {
+    const label = component.getAuditTime('2026-08-23T14:32:00.000Z');
+
+    expect(label).not.toContain('Hace');
+    expect(label).toContain('2026');
+    expect(label).toMatch(/\d{1,2}:\d{2}/);
   });
 
   it('should filter out invitations whose email is already a member', async () => {

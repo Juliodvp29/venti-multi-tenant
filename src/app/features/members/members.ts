@@ -161,11 +161,15 @@ export class Members {
       orders: 'orden',
       customers: 'cliente',
       members: 'miembro',
+      tenant_members: 'miembro del equipo',
+      tenant_invitations: 'invitación',
+      tenants: 'tienda',
       coupons: 'cupón',
       commissions: 'comisión',
       payments: 'pago',
+      settings: 'configuración',
     };
-    return labels[resourceType] ?? resourceType.replace(/_/g, ' ');
+    return labels[resourceType] ?? this.humanizeAuditKey(resourceType);
   }
 
   getAuditMessage(log: AuditLog): string {
@@ -237,6 +241,10 @@ export class Members {
       role: 'rol',
       is_active: 'estado activo',
       is_verified: 'verificación',
+      settings: 'configuración',
+      theme_config: 'tema visual',
+      store_design_state: 'diseño de tienda',
+      storefront_layout: 'secciones de tienda',
     };
     const ignored = new Set(['updated_at', 'created_at']);
     const changed = Object.keys(newValues)
@@ -247,14 +255,56 @@ export class Members {
       .slice(0, 3)
       .map(
         (key) =>
-          `${labels[key] ?? this.humanizeAuditKey(key)}: ${this.formatAuditValue(newValues[key], key)}`,
+          `${labels[key] ?? this.humanizeAuditKey(key)}: ${this.formatAuditValue(newValues[key], key, oldValues[key])}`,
       );
 
     return changed.length ? `Cambios: ${changed.join(' · ')}` : '';
   }
 
-  private formatAuditValue(value: unknown, key?: string): string {
+  private formatAuditValue(value: unknown, key?: string, oldValue?: unknown): string {
     if (typeof value === 'boolean') return value ? 'Sí' : 'No';
+    if (Array.isArray(value)) {
+      return value.length === 0 ? 'vacía' : `${value.length} elementos`;
+    }
+    if (typeof value === 'object' && value !== null) {
+      // Antes mostraba "[object Object]" (p. ej. el JSON de settings).
+      // Resume con los sub-campos que cambiaron, en español.
+      const record = value as Record<string, unknown>;
+      const oldRecord =
+        typeof oldValue === 'object' && oldValue !== null && !Array.isArray(oldValue)
+          ? (oldValue as Record<string, unknown>)
+          : {};
+      const subLabels: Record<string, string> = {
+        theme_config: 'tema visual',
+        store_design_state: 'diseño de tienda',
+        storefront_layout: 'secciones de tienda',
+        payment_methods: 'métodos de pago',
+        currency: 'moneda',
+        timezone: 'zona horaria',
+        custom_domain: 'dominio propio',
+        business_name: 'nombre de tienda',
+        contact_email: 'correo de contacto',
+        seo_title: 'título SEO',
+        seo_description: 'descripción SEO',
+        seo_keywords: 'palabras clave SEO',
+        seo_og_image: 'imagen social',
+        logo_url: 'logo',
+        main_banner_url: 'banner principal',
+        brand_gallery: 'galería de marca',
+        social_links: 'redes sociales',
+      };
+      const changedSubs = Object.keys(record)
+        .filter((sub) => JSON.stringify(oldRecord[sub]) !== JSON.stringify(record[sub]))
+        .slice(0, 3)
+        .map((sub) => subLabels[sub] ?? this.humanizeAuditKey(sub).toLowerCase());
+      if (changedSubs.length > 0) return changedSubs.join(', ');
+      const keys = Object.keys(record);
+      if (keys.length === 0) return 'vacío';
+      return keys
+        .slice(0, 3)
+        .map((sub) => subLabels[sub] ?? this.humanizeAuditKey(sub).toLowerCase())
+        .join(', ');
+    }
     if (value === null || value === undefined || value === '') return 'vacío';
     if (key === 'status') {
       return (
@@ -315,14 +365,16 @@ export class Members {
   }
 
   getAuditTime(createdAt: string): string {
-    const elapsed = Date.now() - new Date(createdAt).getTime();
-    const minutes = Math.floor(elapsed / 60000);
-    if (minutes < 1) return 'Ahora';
-    if (minutes < 60) return `Hace ${minutes} min`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `Hace ${hours} h`;
-    const days = Math.floor(hours / 24);
-    return `Hace ${days} d`;
+    const date = new Date(createdAt);
+    if (isNaN(date.getTime())) return '';
+    return date.toLocaleString('es', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: this.tenantService.timezone(),
+    });
   }
 
   async onInviteSubmit(event: { email: string; role: TenantRole }) {
