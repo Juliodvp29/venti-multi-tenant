@@ -46,6 +46,7 @@ export enum PaymentMethod {
   BankTransfer = 'bank_transfer',
   CashOnDelivery = 'cash_on_delivery',
   PSE = 'pse',
+  OnlinePayment = 'online_payment',
 }
 
 export enum ProductStatus {

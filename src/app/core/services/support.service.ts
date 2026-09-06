@@ -99,7 +99,7 @@ export class SupportService {
         {
           id: 'step-payments',
           title: 'Activa tus métodos de pago',
-          description: 'Activa tarjetas, PSE, contra entrega o transferencia.',
+          description: 'Activa pago en línea (Bold o Wompi), contra entrega o transferencia.',
           completed: hasPaymentMethod,
           actionLabel: hasPaymentMethod ? 'Revisar Pagos' : 'Activar Pagos',
           actionRoute: '/settings',

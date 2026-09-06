@@ -173,9 +173,12 @@ export class NotificationsService implements OnDestroy {
           const newNotification = payload.new as AppNotification;
           if (newNotification) {
             this.notifications.update((current) => [newNotification, ...current]);
-            // Los digest proactivos viven en la campana sin interrumpir; solo el
-            // resumen matutino saluda con toast al primer ingreso del día.
-            if (!SILENT_INSIGHT_TYPES.has(newNotification.type)) {
+            // Do not display merchant/admin toast notifications to shoppers on the storefront (/store)
+            const isStorefront =
+              typeof window !== 'undefined' &&
+              (window.location.pathname.startsWith('/store') || window.location.pathname.includes('/store'));
+
+            if (!isStorefront && !SILENT_INSIGHT_TYPES.has(newNotification.type)) {
               this.toast.info(newNotification.title, newNotification.message);
             }
           }

@@ -148,9 +148,41 @@ export interface Tenant {
   deleted_at: string | null;
 }
 
+export interface BoldPaymentConfig {
+  api_key?: string; // Llave de integración (Identificador público)
+  secret_key?: string; // Llave secreta de integración (legacy/admin)
+  has_secret_key?: boolean; // Indicador de secreto configurado en servidor seguro
+  merchant_id?: string;
+  is_sandbox?: boolean;
+}
+
+export interface WompiPaymentConfig {
+  public_key?: string; // Llave pública
+  webhook_secret?: string; // Event Secret (legacy/admin)
+  has_webhook_secret?: boolean; // Indicador de secreto configurado en servidor seguro
+  integrity_secret?: string; // Integrity secret
+  has_integrity_secret?: boolean; // Indicador de firma de integridad en servidor seguro
+  is_sandbox?: boolean;
+}
+
+export interface TenantPaymentSecrets {
+  tenant_id: string;
+  bold_secret_key?: string | null;
+  wompi_webhook_secret?: string | null;
+  wompi_integrity_secret?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface OnlinePaymentConfig {
+  provider: 'bold' | 'wompi';
+  bold?: BoldPaymentConfig;
+  wompi?: WompiPaymentConfig;
+}
+
 export interface PaymentMethodItemConfig {
   enabled: boolean;
-  config?: Record<string, unknown>;
+  config?: Record<string, unknown> | OnlinePaymentConfig;
 }
 
 export type TenantPaymentSettings = Record<string, PaymentMethodItemConfig>;

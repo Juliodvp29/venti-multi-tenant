@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { Settings } from './settings';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
@@ -78,6 +79,7 @@ describe('Settings', () => {
     await TestBed.configureTestingModule({
       imports: [Settings],
       providers: [
+        provideRouter([]),
         { provide: TenantService, useValue: tenantServiceMock },
         { provide: ToastService, useValue: toastServiceMock },
         { provide: PreviewSyncService, useValue: previewSyncServiceMock },

@@ -8,6 +8,8 @@ import {
   viewChild,
   DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SettingsGeneral } from './components/settings-general';
@@ -98,6 +100,8 @@ export class Settings {
   private readonly toastService = inject(ToastService);
   private readonly previewSyncService = inject(PreviewSyncService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   readonly isPopoutOpen = this.previewSyncService.isPopoutOpen;
 
@@ -251,6 +255,14 @@ export class Settings {
   constructor() {
     this.destroyRef.onDestroy(() => this.cancelPendingAutosave());
 
+    // Listen to ?tab= query parameter to open the requested tab directly
+    this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+      const tabParam = params.get('tab') as Tab | null;
+      if (tabParam && this.isValidTab(tabParam) && tabParam !== this.activeTab()) {
+        this.activeTab.set(tabParam);
+      }
+    });
+
     // Sync preview data when tenant or layout changes
     effect(() => {
       const t = this.tenantService.tenant();
@@ -343,6 +355,10 @@ export class Settings {
     };
   });
 
+  private isValidTab(tab: string): tab is Tab {
+    return this.tabs.some((t) => t.id === tab) || tab === 'advanced';
+  }
+
   async setActiveTab(tab: Tab) {
     if (tab === this.activeTab()) return;
     if (this.hasUnsavedChanges()) {
@@ -359,6 +375,11 @@ export class Settings {
     }
     this.hasUnsavedChanges.set(false);
     this.activeTab.set(tab);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge',
+    });
   }
 
   onDirtyChange(isDirty: boolean) {
