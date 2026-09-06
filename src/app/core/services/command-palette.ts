@@ -108,7 +108,56 @@ const NAV_ENTRIES: NavEntry[] = [
     label: 'Configuración',
     route: ['/settings'],
     module: 'settings',
-    keywords: 'configuracion ajustes settings tienda',
+    keywords: 'configuracion ajustes settings tienda general direccion pagos envios marca diseno temas',
+  },
+  {
+    label: 'Métodos de Pago',
+    route: ['/settings'],
+    queryParams: { tab: 'payments' },
+    module: 'settings',
+    keywords: 'metodos de pago metodo pago pagos pasarelas pasarela bold wompi tarjeta tarjetas credito debito pse bancolombia nequi transferencias transferencia contraentrega contra entrega efectivo dinero checkout cobro cobros',
+  },
+  {
+    label: 'Envíos e Impuestos',
+    route: ['/settings'],
+    queryParams: { tab: 'shipping-taxes' },
+    module: 'settings',
+    keywords: 'envios envio fletes tarifas transporte transportadora departamentos municipios ciudades impuestos iva tasas shipping taxes zonas',
+  },
+  {
+    label: 'Temas y Estilo Visual',
+    route: ['/settings'],
+    queryParams: { tab: 'theme' },
+    module: 'settings',
+    keywords: 'temas tema estilo diseno diseño visual apariencia colores fuentes tipografia preset presets personalizacion',
+  },
+  {
+    label: 'Marca y Logotipos',
+    route: ['/settings'],
+    queryParams: { tab: 'branding' },
+    module: 'settings',
+    keywords: 'marca logo logotipo favicon banner imagen identidad corporativa',
+  },
+  {
+    label: 'Dirección de la Tienda',
+    route: ['/settings'],
+    queryParams: { tab: 'address' },
+    module: 'settings',
+    keywords: 'direccion ubicacion despacho ciudad pais sede bodega local',
+  },
+  {
+    label: 'Secciones de la Tienda',
+    route: ['/settings'],
+    queryParams: { tab: 'storefront' },
+    module: 'settings',
+    keywords: 'secciones storefront constructor bloques hero banners catalogo testimonios diseno pagina',
+  },
+  {
+    label: 'SEO y Marketing',
+    route: ['/settings'],
+    queryParams: { tab: 'seo' },
+    module: 'settings',
+    keywords: 'seo google marketing metadatos meta tags posicionamiento buscador redes sociales share keywords',
   },
   {
     label: 'Integraciones',
@@ -130,6 +179,8 @@ const MAX_RECENT = 5;
 const SEARCH_LIMIT = 5;
 const DEBOUNCE_MS = 220;
 
+const STOP_WORDS = new Set(['de', 'la', 'el', 'en', 'y', 'a', 'o', 'un', 'una', 'del', 'al', 'los', 'las']);
+
 /** Normaliza para búsqueda insensible a tildes/mayúsculas. */
 export function normalizePaletteText(value: string): string {
   return value
@@ -138,12 +189,20 @@ export function normalizePaletteText(value: string): string {
     .replace(/[\u0300-\u036f]/g, '');
 }
 
-function matchesQuery(haystack: string, query: string): boolean {
+export function matchesQuery(haystack: string, query: string): boolean {
   const q = normalizePaletteText(query.trim());
   if (!q) return true;
-  const words = q.split(/\s+/);
   const target = normalizePaletteText(haystack);
-  return words.every((w) => target.includes(w));
+
+  // Coincidencia exacta directa de subcadena
+  if (target.includes(q)) return true;
+
+  const rawWords = q.split(/\s+/).filter(Boolean);
+  // Filtrar palabras vacías/stop words si hay otras palabras de búsqueda significativas
+  const significantWords = rawWords.filter((w) => !STOP_WORDS.has(w));
+  const wordsToMatch = significantWords.length > 0 ? significantWords : rawWords;
+
+  return wordsToMatch.every((w) => target.includes(w));
 }
 
 @Injectable({

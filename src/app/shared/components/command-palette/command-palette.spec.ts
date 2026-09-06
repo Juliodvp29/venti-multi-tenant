@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { CommandPalette } from './command-palette';
-import { CommandPaletteService, normalizePaletteText } from '@core/services/command-palette';
+import { CommandPaletteService, matchesQuery, normalizePaletteText } from '@core/services/command-palette';
 
 function stubPaletteService() {
   return {
@@ -17,9 +17,19 @@ function stubPaletteService() {
   };
 }
 
-describe('normalizePaletteText', () => {
+describe('normalizePaletteText & matchesQuery', () => {
   it('ignora mayúsculas y tildes', () => {
     expect(normalizePaletteText('Configuración ÓRDENES')).toBe('configuracion ordenes');
+  });
+
+  it('encuentra coincidencias exactas y con stop words como "metodos de pago" y "pagos"', () => {
+    const haystack = 'Métodos de Pago metodos de pago metodo pago pagos pasarelas pasarela bold wompi tarjeta tarjetas credito debito pse bancolombia nequi transferencias transferencia contraentrega contra entrega efectivo dinero checkout cobro cobros';
+    expect(matchesQuery(haystack, 'pagos')).toBe(true);
+    expect(matchesQuery(haystack, 'pago')).toBe(true);
+    expect(matchesQuery(haystack, 'metodos de pago')).toBe(true);
+    expect(matchesQuery(haystack, 'bold')).toBe(true);
+    expect(matchesQuery(haystack, 'wompi')).toBe(true);
+    expect(matchesQuery(haystack, 'tarjetas')).toBe(true);
   });
 });
 

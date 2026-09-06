@@ -427,4 +427,70 @@ export const TROUBLESHOOTING_GUIDES: TroubleshootingGuide[] = [
     actionRoute: '/integrations',
     queryParams: { tab: 'emails' },
   },
+  {
+    id: 'trouble-bold-integration',
+    title: '¿Cómo integrar Bold para recibir pagos con Tarjetas, PSE y Nequi?',
+    category: 'payments_commissions',
+    summary:
+      'Bold permite recaudar ventas directamente en tu cuenta bancaria en Colombia admitiendo tarjetas Visa, Mastercard, Amex, transferencias PSE y pagos por Nequi.',
+    commonCauses: [
+      'No se han copiado correctamente las llaves de integración (API Key o Llave Secreta).',
+      'No se configuró la URL del Webhook en el panel de Bold, impidiendo que los pedidos se marquen como pagados automáticamente.',
+      'El método "Pago en línea" está desactivado en la configuración de la tienda.',
+    ],
+    solutionSteps: [
+      'Inicia sesión en tu cuenta de Bold (panel de comercios).',
+      'Dirígete al menú "Integraciones" y haz clic en "Llaves de integración".',
+      'Copia tu "Llave de integración" (API Key) y tu "Llave secreta de integración".',
+      'En Venti Shop, ve a Configuración > Métodos de Pago > Pago en línea y selecciona Bold.',
+      'Pega tus llaves en los campos correspondientes.',
+      'Copia la "URL de Webhook" que te proporciona Venti Shop y agrégala en la sección "Webhooks" de tu panel de Bold.',
+      'Guarda los cambios en Venti Shop.',
+    ],
+    actionLabel: 'Configurar Bold',
+    actionRoute: '/settings',
+    queryParams: { tab: 'payments' },
+  },
+  {
+    id: 'trouble-wompi-integration',
+    title: '¿Cómo conectar Wompi (Bancolombia) a tu tienda?',
+    category: 'payments_commissions',
+    summary:
+      'Wompi es la pasarela oficial de Bancolombia que permite recibir tarjetas y transferencias Bancolombia / PSE.',
+    commonCauses: [
+      'Se ingresó una llave de pruebas (pub_test_) en lugar de la llave de producción (pub_prod_).',
+      'Falta ingresar el "Event Secret" para validar la autenticidad de las notificaciones de pago.',
+      'La URL de eventos de Wompi no se guardó en la sección de Desarrolladores de Wompi.',
+    ],
+    solutionSteps: [
+      'Ingresa al dashboard de Wompi y ve a "Desarrolladores".',
+      'Copia tu Llave Pública (ej. pub_prod_...) y tu Event Secret.',
+      'En Venti Shop > Configuración > Métodos de Pago > Pago en línea, selecciona Wompi.',
+      'Pega tus credenciales y copia la URL de Webhook generada.',
+      'Pega la URL de Webhook en el campo "URL de eventos" en tu panel de Wompi y guarda.',
+    ],
+    actionLabel: 'Configurar Wompi',
+    actionRoute: '/settings',
+    queryParams: { tab: 'payments' },
+  },
+  {
+    id: 'trouble-webhook-payment-status',
+    title: '¿Por qué un pago exitoso no cambia el estado del pedido a "Pagado"?',
+    category: 'payments_commissions',
+    summary:
+      'Cuando un comprador finaliza su transacción en Bold o Wompi, la pasarela envía una notificación webhook a Venti para actualizar automáticamente la orden.',
+    commonCauses: [
+      'La URL del webhook no está registrada en el panel de Bold o Wompi.',
+      'La llave secreta o Event Secret configurado en Venti no coincide con el de la pasarela, fallando la firma de seguridad.',
+      'La transacción fue rechazada, abandonada o aún está pendiente por aprobación del banco emisor.',
+    ],
+    solutionSteps: [
+      'Ve a Configuración > Métodos de Pago > Pago en línea y verifica que tu Llave Secreta coincida exactamente.',
+      'Comprueba que la URL del Webhook esté registrada en tu panel de la pasarela (Bold o Wompi).',
+      'Revisa en el historial de ventas de Bold o Wompi el estado final de la transacción (Aprobada, Rechazada o Pendiente).',
+    ],
+    actionLabel: 'Revisar Pasarelas de Pago',
+    actionRoute: '/settings',
+    queryParams: { tab: 'payments' },
+  },
 ];

@@ -41,6 +41,8 @@
 13. [DevOps, Pruebas y Calidad de Código](#-devops-pruebas-y-calidad-de-código)
 14. [Guía de Instalación y Ejecución](#-guía-de-instalación-y-ejecución)
 15. [Configuración de Servicios Externos](#️-configuración-de-servicios-externos)
+    - [Pasarelas de Pago Multi-Tenant (BYOK: Bold & Wompi)](#-pasarelas-de-pago-multi-tenant-byok-bold--wompi)
+    - [Edge Function: `dispatch-webhook`](#edge-function-dispatch-webhook)
 16. [Roadmap](#-roadmap)
 17. [Licencia](#-licencia)
 
@@ -82,7 +84,7 @@ La plataforma opera bajo un modelo dual:
   - **Presets de Diseño**: Aplicación inmediata de identidades preconfiguradas con un solo clic.
   - **Constructor de Secciones (Storefront Builder)**: Activación, reordenamiento y configuración de bloques modulares (Hero, Productos Destacados, Categorías, Banners, Testimonios, Newsletter, FAQ).
   - **Envíos e Impuestos**: Zonas de envío geográficas (integradas con la API de departamentos y municipios de Colombia), tarifas fijas o por peso y tasas de impuestos.
-  - **Pasarelas de Pago**: Activación y parametrización de métodos de pago (Tarjetas, Transferencia, Contra entrega, Wompi multi-tenant).
+  - **Pasarelas de Pago Multi-Tenant (BYOK)**: Activación y parametrización de métodos de pago unificados (Pago en línea con Bold o Wompi donde cada tienda conecta sus propias llaves, Transferencia Bancaria Directa y Pago contra entrega).
   - **SEO por Tienda (tab Marketing)**: Título, descripción, keywords e imagen OG editables con vista previa estilo Google, consumidos por el storefront.
   - **Borrador con Autoguardado**: Los cambios se persisten automáticamente (debounce) sin alertas de guardado manual; el encabezado muestra el estado (`Guardando…` / `Guardado HH:MM` / error con reintento) y al final se decide publicar o volver al diseño publicado.
   - **Simulador de Tienda en Vivo (`/preview`)**: Previsualización sincronizada en tiempo real con alternador de vista Responsive (Escritorio, Tablet, Móvil).
@@ -374,7 +376,7 @@ venti-multi-tenant/
 - **Presets de Diseño**: Catálogo de estilos visuales prediseñados (_Moderno, Minimalista, Neón, Elegante_) aplicables al instante.
 - **Constructor de Secciones (Storefront Builder)**: Personalización modular de la página de inicio (activar, ocultar, configurar y reordenar bloques).
 - **Envíos e Impuestos**: Creación de zonas de transporte con tarifas fijas o por peso y configuración de tasas impositivas.
-- **Pasarelas de Pago**: Activación de métodos de pago soportados (transferencia bancaria, pago contra entrega y pasarela Wompi multi-tenant).
+- **Pasarelas de Pago (Multi-Tenant BYOK)**: Consolidación en 3 métodos limpios: _Pago en línea_, _Pago contra entrega_ y _Transferencia Bancaria Directa_. Modal guiado para alternar entre **Bold** y **Wompi**, con copia rápida de webhook, guías paso a paso e independencia de autoguardado para evitar cierres accidentales.
 - **Zona de Peligro**: Opciones de archivado o eliminación irreversible del tenant.
 
 ### 14. Previsualizador de Tienda en Vivo (`/preview`)
@@ -442,7 +444,8 @@ venti-multi-tenant/
 
 - **Integración Geográfica de Colombia**: Conexión con la API oficial de geografía colombiana para desplegar departamentos y municipios en cascada sin errores tipográficos.
 - **Cálculo de Envío e Impuestos**: Determinación automática de la tarifa de transporte aplicable según la zona geográfica seleccionada.
-- **Selección de Método de Pago**: Soporte para transferencias, efectivo contra entrega y pasarelas de pago digitales.
+- **Selección de Métodos Dinámica**: El checkout evalúa en tiempo real las pasarelas configuradas por la tienda. El método "Pago en línea" solo se muestra si el comerciante configuró sus llaves de integración (Bold o Wompi) y muestra distintivos visuales del proveedor activo.
+- **Integración Embebida con Bold**: Apertura modal programática oficial (`BoldCheckout.open()`) con firma criptográfica SHA-256 (`orderId + amount + currency + secretKey`), preloading sin botones secundarios residuales, y captura de eventos `BOLD_CHECKOUT_EVENT` vía `postMessage` para una navegación fluida a `/store/success`.
 
 ### 6. Confirmación de Compra (`/store/success`)
 
@@ -870,6 +873,140 @@ El servicio Angular `EmailService` (`src/app/core/services/email.ts`) invoca la 
   - Procesamiento de devolución / reembolso (`refund_processed`).
 - **Miembros del Equipo (`TenantService`)**:
   - Envío de invitaciones con enlace seguro y token de un solo uso (`member_invitation` o `member_invitation_new_user`).
+
+---
+
+### 💳 Pasarelas de Pago Multi-Tenant (BYOK: Bold & Wompi)
+
+Venti Shop implementa un modelo **BYOK (Bring Your Own Keys)** estricto para el procesamiento de pagos. La plataforma no retiene fondos de los comerciantes: cada dueño de tienda configura sus propias credenciales de pasarela directamente en su panel de administración (**Ajustes > Pagos**), y los ingresos de cada venta se acreditan de forma inmediata en la cuenta bancaria del comerciante.
+
+#### 1. Arquitectura y Flujo de Pago Completo
+
+```
+Cliente en Checkout (/store/checkout)
+       │
+       ▼ [Confirmar y Pagar Pedido]
+Crea Orden & Pago en Supabase (status: 'pending')
+       │
+       ▼
+Calcula Firma Criptográfica SHA-256 (orderId + amount + currency + secretKey)
+       │
+       ▼
+Abre Pasarela Embebida Oficial (Bold / Wompi)
+       │
+       ▼
+Cliente completa el pago (Tarjetas / PSE / Nequi / Bancolombia)
+       │
+       ├── Redirección inmediata del cliente a /store/success
+       │
+       ▼ Notificación HTTP POST asíncrona
+Edge Function Webhook (bold-webhook / wompi-webhook)
+       │
+       ├── Valida firma criptográfica (BYOK por tenant_id)
+       ├── Resuelve orden por UUID o número ORD-XXXX
+       └── Actualiza tabla payments: status = 'completed'
+              │
+              ▼ [PostgreSQL Trigger: trg_sync_order_on_payment_status]
+       Actualiza tabla orders atómicamente:
+              ├── orders.status = 'paid'
+              └── orders.payment_status = 'completed'
+              │
+              ▼ [PostgreSQL Trigger: comisiones]
+       Calcula comisiones según plan de suscripción de la tienda
+```
+
+#### 2. Integración con Bold (Tarjetas Débito/Crédito y PSE)
+
+[Bold](https://bold.co) es la pasarela de pagos líder en Colombia para cobros con tarjetas nacionales e internacionales y PSE.
+
+##### Credenciales requeridas por tienda (BYOK):
+
+- **Llave de Identidad (API Key)**: Llave pública provista en el panel de Bold (`panel.bold.co` > Integraciones > Llaves de integración). Visible en la configuración de la tienda.
+- **Llave Secreta (Secret Key)**: Llave privada usada para calcular la firma criptográfica de integridad SHA-256 de cada venta y validar las notificaciones entrantes. **Protegida en bóveda de seguridad**.
+- **Merchant ID (Identificador de Comercio)**: Identificador alfanumérico único de la cuenta comercial en Bold.
+
+##### Endpoint del Webhook:
+
+```
+https://<PROJECT_REF>.supabase.co/functions/v1/bold-webhook
+```
+
+_Configúralo en **panel.bold.co > Integraciones > Webhooks**._
+
+##### Arquitectura de Seguridad y Generación de Firma en Servidor (RPC):
+
+Para cumplir con los estándares de seguridad bancaria y prevenir la exposición de credenciales privadas al cliente:
+
+1. **Bóveda de Secretos Aislada (`tenant_payment_secrets`)**: Las llaves secretas (`secret_key`, `webhook_secret`, `integrity_secret`) residen en una tabla protegida con Row Level Security (RLS) estricto. El rol público (`anon`) tiene **0 acceso** a esta tabla.
+2. **Generación de Firma en Backend (RPC `SECURITY DEFINER`)**: La firma requerida por Bold (`integritySignature`) se calcula en el servidor mediante la función:
+   ```sql
+   SELECT public.get_bold_checkout_signature(
+     p_tenant_id => 'UUID',
+     p_order_id  => 'UUID',
+     p_amount    => 319900,
+     p_currency  => 'COP'
+   );
+   ```
+3. **Flujo Cero-Fugas en Checkout**: El frontend de la tienda (`checkout.ts`) solicita la firma pasando únicamente el `order_id`. El cliente **jamás** recibe ni almacena la `secret_key` en memoria ni en `localStorage`.
+
+##### Eventos Procesados por la Edge Function `bold-webhook`:
+
+- `SALE_APPROVED` / `status = 'APPROVED'`: Actualiza el pago a `completed` y la orden a `paid`.
+- `SALE_REJECTED` / `status = 'REJECTED'`: Actualiza el pago a `failed` y la orden a `cancelled`.
+- Resolución segura de órdenes: Permite identificar la orden tanto por `UUID` como por código legible (`ORD-XXXX`), evitando errores de casteo en PostgreSQL.
+- Verificación criptográfica con la llave secreta alojada en `tenant_payment_secrets`.
+
+##### Pruebas en Sandbox vs Producción con Bold:
+
+| Ambiente              | Llaves a Usar                             | Tarjetas de Prueba Oficiales                                                                                                                                                                               | Comportamiento del Webhook                                                                                                                       |
+| :-------------------- | :---------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Sandbox (Pruebas)** | Llaves de la pestaña _Pruebas_ en Bold    | • **VISA Aprobada:** `4111 1111 1111 1111`<br>• **MasterCard Aprobada:** `5100 0100 0000 0015`<br>• **Rechazo Simulado:** `4970 1100 0000 0062`<br>_(Cualquier vencimiento futuro, CVV `123`, cuotas `1`)_ | En pruebas, Bold muestra un botón `[ Probar el webhook ]` en la pantalla final para simular el evento sin generar tráfico innecesario en la red. |
+| **Producción (Real)** | Llaves de la pestaña _Producción_ en Bold | Tarjetas reales del cliente                                                                                                                                                                                | Bold despacha la notificación HTTP POST del webhook automáticamente en milisegundos tras la aprobación bancaria.                                 |
+
+#### 3. Integración con Wompi (Bancolombia)
+
+[Wompi](https://wompi.co) permite cobros mediante Transferencia Bancaria Directa (Botón Bancolombia), Nequi, PSE y Tarjetas.
+
+##### Credenciales requeridas por tienda (BYOK):
+
+- **Llave Pública (`pub_...`)**: Identificador público de la cuenta Wompi para inicializar el checkout.
+- **Event Secret (`prv_...` o Event Secret)**: Secreto para validar el checksum SHA-256 del webhook (`X-Event-Checksum`). Almacenado de forma segura en `tenant_payment_secrets`.
+- **Firma de Integridad**: Secreto opcional para validar transacciones de forma segura.
+
+##### Endpoint del Webhook:
+
+```
+https://<PROJECT_REF>.supabase.co/functions/v1/wompi-webhook
+```
+
+#### 4. Sincronización a Nivel de Base de Datos (Trigger PostgreSQL)
+
+Para garantizar la integridad y evitar discrepancias entre el pago y el pedido, la base de datos cuenta con un trigger que sincroniza ambos estados de forma atómica:
+
+```sql
+CREATE OR REPLACE FUNCTION public.fn_sync_order_on_payment_status()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status <> 'completed') THEN
+    UPDATE public.orders
+    SET
+      status = 'paid',
+      payment_status = 'completed',
+      updated_at = NOW()
+    WHERE id = NEW.order_id
+      AND status NOT IN ('delivered', 'cancelled', 'refunded');
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER trg_sync_order_on_payment_status
+AFTER INSERT OR UPDATE OF status ON public.payments
+FOR EACH ROW
+EXECUTE FUNCTION public.fn_sync_order_on_payment_status();
+```
+
+---
 
 ### Edge Function: `dispatch-webhook`
 

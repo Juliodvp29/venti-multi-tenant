@@ -21,9 +21,8 @@ describe('Checkout Component - Payment Methods', () => {
     settings: {
       currency: 'COP',
       payment_methods: {
-        [PaymentMethod.CreditCard]: { enabled: false, config: {} },
+        [PaymentMethod.OnlinePayment]: { enabled: false, config: {} },
         [PaymentMethod.CashOnDelivery]: { enabled: true, config: {} },
-        [PaymentMethod.PSE]: { enabled: false, config: {} },
         [PaymentMethod.BankTransfer]: { enabled: true, config: {} },
       },
     },
@@ -98,19 +97,18 @@ describe('Checkout Component - Payment Methods', () => {
     const ids = available.map((m) => m.id);
     expect(ids).toContain(PaymentMethod.CashOnDelivery);
     expect(ids).toContain(PaymentMethod.BankTransfer);
-    expect(ids).not.toContain(PaymentMethod.CreditCard);
-    expect(ids).not.toContain(PaymentMethod.PSE);
+    expect(ids).not.toContain(PaymentMethod.OnlinePayment);
   });
 
   it('should automatically select the first enabled payment method if default is disabled', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    // Since CreditCard is disabled in currentTenantMock, it should automatically fallback to CashOnDelivery
+    // Since OnlinePayment is disabled in currentTenantMock, it should automatically fallback to CashOnDelivery
     expect(component.selectedPaymentMethod()).toBe(PaymentMethod.CashOnDelivery);
   });
 
-  it('should show all payment methods when payment_methods setting is not defined (backward compatibility)', () => {
+  it('should show all 3 payment methods when payment_methods setting is not defined (backward compatibility)', () => {
     currentTenantMock.set({
       id: 'tenant-123',
       business_name: 'Test Store',
@@ -121,6 +119,6 @@ describe('Checkout Component - Payment Methods', () => {
 
     fixture.detectChanges();
 
-    expect(component.paymentMethods().length).toBe(4);
+    expect(component.paymentMethods().length).toBe(3);
   });
 });

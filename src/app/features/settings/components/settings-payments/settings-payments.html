@@ -3,7 +3,7 @@
   <div>
     <h2 class="text-lg font-bold text-gray-900 dark:text-white">Métodos de Pago</h2>
     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-      Habilita o deshabilita los métodos de pago que tus clientes verán en el checkout.
+      Habilita los medios de pago para tus compradores y conecta tus pasarelas para recibir el dinero directamente en tu cuenta.
     </p>
   </div>
 
@@ -121,58 +121,412 @@
           </div>
         </div>
 
-        <!-- Future config hint -->
-        @if (method.enabled) {
+        <!-- Details / Gateway Configuration Bar for Online Payment -->
+        @if (method.id === 'online_payment' && method.enabled) {
           <div
-            class="border-t border-sky-100 bg-sky-50/40 px-4 py-2 dark:border-sky-900/30 dark:bg-sky-950/20"
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-sky-100 bg-sky-50/40 px-4 py-2.5 dark:border-sky-900/30 dark:bg-sky-950/20"
           >
-            <p class="flex items-center gap-1.5 text-[11px] text-sky-600 dark:text-sky-400">
-              <svg
-                class="h-3.5 w-3.5 shrink-0"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
+            <div class="flex items-center gap-2">
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                [class.bg-emerald-100]="activeOnlineConfigStatus().configured"
+                [class.text-emerald-800]="activeOnlineConfigStatus().configured"
+                [class.dark:bg-emerald-900/40]="activeOnlineConfigStatus().configured"
+                [class.dark:text-emerald-300]="activeOnlineConfigStatus().configured"
+                [class.bg-amber-100]="!activeOnlineConfigStatus().configured"
+                [class.text-amber-800]="!activeOnlineConfigStatus().configured"
+                [class.dark:bg-amber-900/40]="!activeOnlineConfigStatus().configured"
+                [class.dark:text-amber-300]="!activeOnlineConfigStatus().configured"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
+                <span
+                  class="h-1.5 w-1.5 rounded-full"
+                  [class.bg-emerald-500]="activeOnlineConfigStatus().configured"
+                  [class.bg-amber-500]="!activeOnlineConfigStatus().configured"
+                ></span>
+                {{ activeOnlineConfigStatus().text }} ({{ selectedProvider() | uppercase }})
+              </span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">
+                — Recaudo directo en tu cuenta
+              </span>
+            </div>
+
+            <button
+              type="button"
+              (click)="openConfigModal()"
+              class="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-3 py-1 text-xs font-semibold text-white shadow-xs hover:bg-sky-700 transition-colors"
+            >
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              Configuración detallada de este método próximamente
-            </p>
+              Configurar pasarela
+            </button>
           </div>
         }
       </div>
     }
   </div>
 
-  <!-- Info alert -->
-  <div
-    class="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/40 dark:bg-amber-950/30"
-  >
-    <svg
-      class="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      stroke-width="1.5"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-      />
-    </svg>
-    <div>
-      <p class="text-xs font-semibold text-amber-800 dark:text-amber-200">
-        Debes mantener al menos un método de pago activo
-      </p>
-      <p class="mt-0.5 text-[11px] text-amber-700 dark:text-amber-300">
-        Los cambios se guardan automáticamente. Solo los métodos activos se mostrarán a tus clientes
-        en el checkout.
-      </p>
+  <!-- MODAL DE CONFIGURACIÓN DE PAGO EN LÍNEA -->
+  @if (isConfigModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+      <div
+        class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6"
+      >
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <svg class="h-5 w-5 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Configuración de Pago en Línea (Multi-Tenant)
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Conecta tu propia cuenta para que el dinero de tus ventas ingrese directamente a tu banco.
+            </p>
+          </div>
+          <button
+            type="button"
+            (click)="closeConfigModal()"
+            class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Selector de Pasarela (Bold vs Wompi) -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            Selecciona tu Pasarela de Pagos
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Bold Option -->
+            <div
+              (click)="selectProvider('bold')"
+              class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all"
+              [class.border-sky-600]="selectedProvider() === 'bold'"
+              [class.bg-sky-50/40]="selectedProvider() === 'bold'"
+              [class.dark:bg-sky-950/20]="selectedProvider() === 'bold'"
+              [class.border-slate-200]="selectedProvider() !== 'bold'"
+              [class.dark:border-slate-800]="selectedProvider() !== 'bold'"
+            >
+              <div class="flex items-center justify-between">
+                <span class="font-black text-sm tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                  Bold
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">
+                  Recomendado
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                Tarjetas, PSE, Nequi y transferencias. Integración con Checkout directo.
+              </p>
+            </div>
+
+            <!-- Wompi Option -->
+            <div
+              (click)="selectProvider('wompi')"
+              class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all"
+              [class.border-sky-600]="selectedProvider() === 'wompi'"
+              [class.bg-sky-50/40]="selectedProvider() === 'wompi'"
+              [class.dark:bg-sky-950/20]="selectedProvider() === 'wompi'"
+              [class.border-slate-200]="selectedProvider() !== 'wompi'"
+              [class.dark:border-slate-800]="selectedProvider() !== 'wompi'"
+            >
+              <div class="flex items-center justify-between">
+                <span class="font-black text-sm tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span class="inline-block w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                  Wompi
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  Bancolombia
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                Pasarela oficial de Bancolombia para pagos locales en Colombia.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORMULARIO GUÍA PARA BOLD -->
+        @if (selectedProvider() === 'bold') {
+          <div class="space-y-4 rounded-xl border border-blue-100 bg-blue-50/30 p-4 dark:border-blue-900/30 dark:bg-blue-950/10">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-blue-950 dark:text-blue-200">
+                Paso a paso para integrar Bold
+              </h4>
+              <a
+                href="https://panel.bold.co"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400"
+              >
+                Abrir Panel de Bold
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+
+            <!-- Paso 1 & 2: Llaves de integración -->
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  1. Llave de integración (API Key / Identificador público) <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  [value]="boldApiKey()"
+                  (input)="boldApiKey.set($any($event.target).value); onFieldChange()"
+                  placeholder="Ej. BOLD_PUB_..."
+                  class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                />
+                <p class="text-[11px] text-slate-500 mt-1">
+                  Encuéntrala en tu panel de Bold > <strong>Integraciones > Llaves de integración</strong>.
+                </p>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    2. Llave secreta de integración (Secret Key) <span class="text-red-500">*</span>
+                  </label>
+                  @if (hasExistingBoldSecret() && !boldSecretKey()) {
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
+                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                      Guardada en bóveda segura
+                    </span>
+                  }
+                </div>
+                <div class="relative">
+                  <input
+                    [type]="showBoldSecret() ? 'text' : 'password'"
+                    [value]="boldSecretKey()"
+                    (input)="boldSecretKey.set($any($event.target).value); onFieldChange()"
+                    [placeholder]="hasExistingBoldSecret() ? '•••••••••••••••• (Configurada. Escribe para reemplazar)' : 'Pega tu llave secreta de Bold'"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-xs text-slate-900 focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  />
+                  <button
+                    type="button"
+                    (click)="showBoldSecret.set(!showBoldSecret())"
+                    class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-600"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      @if (showBoldSecret()) {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                      } @else {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      }
+                    </svg>
+                  </button>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">
+                  Aislada en base de datos segura (RLS). Nunca se envía al navegador ni a la tienda pública.
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Merchant ID (Opcional)
+                </label>
+                <input
+                  type="text"
+                  [value]="boldMerchantId()"
+                  (input)="boldMerchantId.set($any($event.target).value); onFieldChange()"
+                  placeholder="Ej. P4F0JC5QAI"
+                  class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                />
+              </div>
+
+              <!-- Paso 3: Webhook de Bold -->
+              <div class="pt-2 border-t border-blue-100 dark:border-blue-900/30">
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  3. URL de Webhook para Bold (Notificaciones automáticas)
+                </label>
+                <div class="flex items-center gap-2">
+                  <input
+                    type="text"
+                    readonly
+                    [value]="boldWebhookUrl"
+                    class="w-full rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-xs text-slate-600 select-all dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300"
+                  />
+                  <button
+                    type="button"
+                    (click)="copyText(boldWebhookUrl, 'URL de Webhook')"
+                    class="shrink-0 inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-colors"
+                  >
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copiar
+                  </button>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">
+                  Pega esta URL en Bold > <strong>Integraciones > Webhooks</strong> para que tus órdenes pasen automáticamente a <strong>Pagado</strong> en tiempo real.
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- FORMULARIO GUÍA PARA WOMPI -->
+        @if (selectedProvider() === 'wompi') {
+          <div class="space-y-4 rounded-xl border border-yellow-100 bg-yellow-50/30 p-4 dark:border-yellow-900/30 dark:bg-yellow-950/10">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-yellow-950 dark:text-yellow-200">
+                Paso a paso para integrar Wompi
+              </h4>
+              <a
+                href="https://wompi.co"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 text-xs font-semibold text-yellow-600 hover:text-yellow-700 dark:text-yellow-400"
+              >
+                Abrir Panel de Wompi
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  1. Llave pública (Public Key) <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  [value]="wompiPublicKey()"
+                  (input)="wompiPublicKey.set($any($event.target).value); onFieldChange()"
+                  placeholder="pub_prod_... o pub_test_..."
+                  class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    2. Event Secret (Webhook Secret) <span class="text-red-500">*</span>
+                  </label>
+                  @if (hasExistingWompiSecret() && !wompiWebhookSecret()) {
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
+                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                      Guardada en bóveda segura
+                    </span>
+                  }
+                </div>
+                <div class="relative">
+                  <input
+                    [type]="showWompiSecret() ? 'text' : 'password'"
+                    [value]="wompiWebhookSecret()"
+                    (input)="wompiWebhookSecret.set($any($event.target).value); onFieldChange()"
+                    [placeholder]="hasExistingWompiSecret() ? '•••••••••••••••• (Configurada. Escribe para reemplazar)' : 'prod_events_... o test_events_...'"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-xs text-slate-900 focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  />
+                  <button
+                    type="button"
+                    (click)="showWompiSecret.set(!showWompiSecret())"
+                    class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-600"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">
+                  Aislada en base de datos segura (RLS). Usada exclusivamente por la función de webhook para verificar eventos.
+                </p>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    3. Integrity Secret (Firma de Integridad - Opcional)
+                  </label>
+                  @if (hasExistingWompiIntegrity() && !wompiIntegritySecret()) {
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
+                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                      Guardada en bóveda segura
+                    </span>
+                  }
+                </div>
+                <input
+                  type="text"
+                  [value]="wompiIntegritySecret()"
+                  (input)="wompiIntegritySecret.set($any($event.target).value); onFieldChange()"
+                  [placeholder]="hasExistingWompiIntegrity() ? '•••••••••••••••• (Configurada. Escribe para reemplazar)' : 'prod_integrity_... o test_integrity_...'"
+                  class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                />
+              </div>
+
+              <!-- Webhook de Wompi -->
+              <div class="pt-2 border-t border-yellow-100 dark:border-yellow-900/30">
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  4. URL de Eventos para Wompi
+                </label>
+                <div class="flex items-center gap-2">
+                  <input
+                    type="text"
+                    readonly
+                    [value]="wompiWebhookUrl"
+                    class="w-full rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-xs text-slate-600 select-all dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300"
+                  />
+                  <button
+                    type="button"
+                    (click)="copyText(wompiWebhookUrl, 'URL de Webhook')"
+                    class="shrink-0 inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-yellow-600 text-white text-xs font-bold hover:bg-yellow-700 transition-colors"
+                  >
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copiar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Modal Footer Actions -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button
+            type="button"
+            (click)="closeConfigModal()"
+            class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+          >
+            Cerrar
+          </button>
+          <button
+            type="button"
+            (click)="saveModalConfig()"
+            [disabled]="isSaving()"
+            class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50 transition-colors shadow-sm"
+          >
+            @if (isSaving()) {
+              <svg class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Guardando...
+            } @else {
+              Guardar Configuración
+            }
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
+  }
 </div>

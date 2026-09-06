@@ -6,6 +6,7 @@ import {
   OnInit,
   effect,
   computed,
+  DOCUMENT,
 } from '@angular/core';
 import { CartItem } from '@core/models/cart';
 import { CommonModule, CurrencyPipe } from '@angular/common';
@@ -19,6 +20,8 @@ import { CustomersService } from '@core/services/customers';
 import { ToastService } from '@core/services/toast';
 import { OrderStatus, PaymentStatus, PaymentMethod } from '@core/enums';
 import { CustomerAddress } from '@core/models/customer';
+import { OnlinePaymentConfig } from '@core/models';
+import { Supabase } from '@core/services/supabase';
 import { AddressForm } from '../account/address-form/address-form';
 
 export interface SavedCard {
@@ -233,19 +236,34 @@ export interface SavedCard {
 
                       <!-- Icons badge -->
                       <div class="flex items-center gap-1.5 shrink-0">
-                        @if (method.id === PaymentMethod.CreditCard) {
-                          <span
-                            class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
-                            >Visa</span
-                          >
-                          <span
-                            class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
-                            >Mastercard</span
-                          >
-                          <span
-                            class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
-                            >Amex</span
-                          >
+                        @if (method.id === PaymentMethod.OnlinePayment) {
+                          @if (activeOnlineProvider() === 'bold') {
+                            <span
+                              class="px-2 py-0.5 rounded bg-orange-100 text-[10px] font-bold text-orange-700 uppercase tracking-tight"
+                              >Bold</span
+                            >
+                            <span
+                              class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-tight"
+                              >Tarjetas</span
+                            >
+                            <span
+                              class="px-2 py-0.5 rounded bg-blue-100 text-[10px] font-bold text-blue-700 uppercase tracking-tight"
+                              >PSE</span
+                            >
+                          } @else if (activeOnlineProvider() === 'wompi') {
+                            <span
+                              class="px-2 py-0.5 rounded bg-emerald-100 text-[10px] font-bold text-emerald-700 uppercase tracking-tight"
+                              >Wompi</span
+                            >
+                            <span
+                              class="px-2 py-0.5 rounded bg-blue-100 text-[10px] font-bold text-blue-700 uppercase tracking-tight"
+                              >PSE</span
+                            >
+                            <span
+                              class="px-2 py-0.5 rounded bg-purple-100 text-[10px] font-bold text-purple-700 uppercase tracking-tight"
+                              >Nequi</span
+                            >
+                          }
                         } @else {
                           <div
                             class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"
@@ -468,14 +486,14 @@ export interface SavedCard {
                     }
 
                     @if (
-                      selectedPaymentMethod() === PaymentMethod.PSE &&
-                      method.id === PaymentMethod.PSE
+                      selectedPaymentMethod() === PaymentMethod.OnlinePayment &&
+                      method.id === PaymentMethod.OnlinePayment
                     ) {
                       <div
-                        class="px-4 pb-3.5 pt-1 text-xs text-sky-800 bg-sky-50/60 border-t border-sky-100 flex items-center gap-2"
+                        class="px-4 pb-3.5 pt-2 text-xs text-sky-900 bg-sky-50/60 border-t border-sky-100 flex items-start gap-2.5"
                       >
                         <svg
-                          class="w-4 h-4 shrink-0 text-sky-600"
+                          class="w-4 h-4 shrink-0 text-sky-600 mt-0.5"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -487,10 +505,26 @@ export interface SavedCard {
                             d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                           />
                         </svg>
-                        <span
-                          >Serás redirigido a la pasarela segura de tu banco para debitar
-                          directamente de tus fondos.</span
-                        >
+                        @if (activeOnlineProvider() === 'bold') {
+                          <span>
+                            Al confirmar tu pedido, serás redirigido al pago seguro de
+                            <strong>Bold</strong>. Podrás pagar con
+                            <strong>Tarjetas Débito/Crédito o PSE</strong>. La confirmación es en
+                            tiempo real.
+                          </span>
+                        } @else if (activeOnlineProvider() === 'wompi') {
+                          <span>
+                            Al confirmar tu pedido, pagarás de forma segura mediante
+                            <strong>Wompi</strong> con
+                            <strong>Tarjetas Débito/Crédito, PSE o Nequi</strong>. Recibirás
+                            confirmación automática en tiempo real.
+                          </span>
+                        } @else {
+                          <span>
+                            Al confirmar tu pedido, pagarás de forma segura en línea. Recibirás
+                            confirmación automática en tiempo real.
+                          </span>
+                        }
                       </div>
                     }
                   </div>
@@ -848,6 +882,8 @@ export class Checkout implements OnInit {
   private readonly customerAuth = inject(CustomerAuthService);
   private readonly customersService = inject(CustomersService);
   private readonly toast = inject(ToastService);
+  private readonly document = inject(DOCUMENT);
+  private readonly supabase = inject(Supabase);
 
   readonly PaymentMethod = PaymentMethod;
 
@@ -859,7 +895,7 @@ export class Checkout implements OnInit {
 
   readonly isSubmitting = signal(false);
   readonly isLoadingAddresses = signal(true);
-  readonly selectedPaymentMethod = signal<PaymentMethod>(PaymentMethod.CreditCard);
+  readonly selectedPaymentMethod = signal<PaymentMethod>(PaymentMethod.OnlinePayment);
 
   // Credit Card Form State
   readonly cardForm = {
@@ -895,44 +931,75 @@ export class Checkout implements OnInit {
     return 'Tarjeta';
   });
 
-  readonly allPaymentMethods = [
-    {
-      id: PaymentMethod.CreditCard,
-      label: 'Tarjeta débito y crédito',
-      description: 'Paga al instante con Visa, Mastercard o American Express.',
-      icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
-    },
-    {
-      id: PaymentMethod.CashOnDelivery,
-      label: 'Pago contra entrega',
-      description: 'Paga en efectivo o datáfono al recibir tu pedido en tu puerta.',
-      icon: 'M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-    },
-    {
-      id: PaymentMethod.PSE,
-      label: 'PSE (Transferencia en línea)',
-      description: 'Débito seguro desde tu cuenta de ahorros o corriente.',
-      icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
-    },
-    {
-      id: PaymentMethod.BankTransfer,
-      label: 'Transferencia Bancaria Directa',
-      description: 'Realiza tu pago vía Bancolombia, Nequi o Daviplata.',
-      icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4',
-    },
-  ];
+  /** Resolves the active online payment provider from tenant settings. */
+  readonly activeOnlineProvider = computed((): 'bold' | 'wompi' | null => {
+    const tenant = this.tenantService.currentTenant();
+    const paymentSettings = tenant?.settings?.['payment_methods'] as Record<string, any> | undefined;
+    const onlineConfig: OnlinePaymentConfig | undefined =
+      paymentSettings?.[PaymentMethod.OnlinePayment]?.config ??
+      paymentSettings?.[PaymentMethod.CreditCard]?.config;
+    if (!onlineConfig) return null;
+    if (onlineConfig.provider === 'bold' && onlineConfig.bold?.api_key) return 'bold';
+    if (onlineConfig.provider === 'wompi' && onlineConfig.wompi?.public_key) return 'wompi';
+    return null;
+  });
+
+  readonly allPaymentMethods = computed(() => {
+    const provider = this.activeOnlineProvider();
+    const onlineLabel =
+      provider === 'bold'
+        ? 'Pago en línea con Bold'
+        : provider === 'wompi'
+          ? 'Pago en línea con Wompi'
+          : 'Pago en línea';
+    const onlineDesc =
+      provider === 'bold'
+        ? 'Paga con Tarjetas Débito/Crédito o PSE a través de Bold. Seguro y en tiempo real.'
+        : provider === 'wompi'
+          ? 'Paga con Tarjetas Débito/Crédito, PSE o Nequi a través de Wompi. Seguro y en tiempo real.'
+          : 'Paga de forma segura con Tarjetas Débito/Crédito, PSE o Nequi.';
+    return [
+      {
+        id: PaymentMethod.OnlinePayment,
+        label: onlineLabel,
+        description: onlineDesc,
+        icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+      },
+      {
+        id: PaymentMethod.CashOnDelivery,
+        label: 'Pago contra entrega',
+        description: 'Paga en efectivo o datáfono al recibir tu pedido en tu puerta.',
+        icon: 'M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+      },
+      {
+        id: PaymentMethod.BankTransfer,
+        label: 'Transferencia Bancaria Directa',
+        description: 'Realiza tu pago vía Bancolombia, Nequi o Daviplata.',
+        icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4',
+      },
+    ];
+  });
+
 
   readonly paymentMethods = computed(() => {
+    const all = this.allPaymentMethods();
     const tenant = this.tenantService.currentTenant();
     const settings = tenant?.settings?.['payment_methods'] as
       Record<string, { enabled?: boolean }> | undefined;
-    if (!settings) {
-      return this.allPaymentMethods;
-    }
-    return this.allPaymentMethods.filter((method) => {
-      const config = settings[method.id];
+
+    // If payment settings are defined but no online provider is configured with keys, exclude OnlinePayment
+    const provider = this.activeOnlineProvider();
+    const filtered = all.filter((method) => {
+      if (settings && method.id === PaymentMethod.OnlinePayment && provider === null) return false;
+      if (!settings) return true;
+      let config = settings[method.id];
+      // Backwards compatibility: fallback to credit_card if online_payment is undefined
+      if (method.id === PaymentMethod.OnlinePayment && config === undefined) {
+        config = settings[PaymentMethod.CreditCard];
+      }
       return config === undefined ? true : !!config.enabled;
     });
+    return filtered;
   });
 
   private customerId = signal<string | null>(null);
@@ -960,6 +1027,14 @@ export class Checkout implements OnInit {
   }
 
   async ngOnInit() {
+    // Clean up any residual buttons created by legacy script
+    const residual = this.document.querySelectorAll('#bold-checkout-script, [data-bold-button]');
+    residual.forEach((el) => el.remove());
+
+    if (this.activeOnlineProvider() === 'bold') {
+      this.loadBoldScript().catch((err) => console.warn('Could not preload Bold script:', err));
+    }
+
     await this.loadCustomerAndAddresses();
     this.loadSavedCards();
   }
@@ -1158,13 +1233,23 @@ export class Checkout implements OnInit {
         throw new Error('Dirección seleccionada no encontrada');
       }
 
-      const isCreditCard = this.selectedPaymentMethod() === PaymentMethod.CreditCard;
-      const isPaidInstantly = isCreditCard;
+      const isOnline =
+        this.selectedPaymentMethod() === PaymentMethod.OnlinePayment ||
+        this.selectedPaymentMethod() === PaymentMethod.CreditCard;
+
+      const activeGateway = this.activeOnlineProvider() ?? 'bold';
+
+      // Resolve raw online payment config for Bold credentials
+      const tenant = this.tenantService.currentTenant();
+      const paymentSettings = tenant?.settings?.['payment_methods'] as Record<string, any> | undefined;
+      const onlineConfig: OnlinePaymentConfig | undefined =
+        paymentSettings?.[PaymentMethod.OnlinePayment]?.config ??
+        paymentSettings?.[PaymentMethod.CreditCard]?.config;
 
       const orderData = {
         customer_id: customer.id,
-        status: isPaidInstantly ? OrderStatus.Paid : OrderStatus.Pending,
-        payment_status: isPaidInstantly ? PaymentStatus.Completed : PaymentStatus.Pending,
+        status: OrderStatus.Pending,
+        payment_status: PaymentStatus.Pending,
         subtotal: this.cartService.subtotal(),
         discount_amount: this.cartService.discountAmount(),
         tax_amount: this.cartService.tax(),
@@ -1234,41 +1319,105 @@ export class Checkout implements OnInit {
           }
         : undefined;
 
-      // Prepare Payment Data for card or instant payment
+      // Prepare Payment Data for online payment or gateway
       let paymentPayload: any = undefined;
-      if (isCreditCard) {
-        let last4 = '4242';
-        let brand = this.detectedCardBrand();
-        let cardholder = this.cardForm.name || 'Cliente Venti';
-
-        if (this.selectedSavedCardId()) {
-          const saved = this.savedCards().find((c) => c.id === this.selectedSavedCardId());
-          if (saved) {
-            last4 = saved.last4;
-            brand = saved.brand;
-            cardholder = saved.cardholderName;
-          }
-        } else {
-          last4 = this.cardForm.number.replace(/\s+/g, '').slice(-4);
-          this.saveCardIfRequested(brand, last4, cardholder, this.cardForm.expiry);
-        }
-
+      if (isOnline) {
         paymentPayload = {
-          payment_method: PaymentMethod.CreditCard,
+          payment_method: this.selectedPaymentMethod(),
           amount: this.cartService.total(),
           currency: this.currency(),
-          status: PaymentStatus.Completed,
-          gateway: 'credit_card_checkout',
+          status: PaymentStatus.Pending,
+          gateway: activeGateway,
           payment_details: {
-            card_brand: brand,
-            last4,
-            cardholder_name: cardholder,
+            gateway: activeGateway,
           },
         };
       }
 
-      await this.ordersService.createOrder(orderData, orderItems, paymentPayload, discountData);
+      const order = await this.ordersService.createOrder(
+        orderData,
+        orderItems,
+        paymentPayload,
+        discountData,
+      );
 
+      // --- Bold Checkout Integration ---
+      if (isOnline && activeGateway === 'bold' && onlineConfig?.bold?.api_key && order?.id) {
+        const boldApiKey = onlineConfig.bold.api_key;
+        const amountInt = Math.round(Number(order.total_amount || this.cartService.total()));
+        const currency = this.currency() || 'COP';
+        const orderId = order.id;
+        const tenantSlug = tenant?.slug ?? '';
+        const tenantId = tenant?.id ?? '';
+
+        // Request securely generated integrity signature from backend RPC
+        // The private secret_key is NEVER loaded in frontend or sent to browser
+        const { data: sigResult, error: sigError } = await (this.supabase.client.rpc as any)(
+          'get_bold_checkout_signature',
+          {
+            p_tenant_id: tenantId,
+            p_order_id: orderId,
+            p_amount: amountInt,
+            p_currency: currency,
+          },
+        );
+
+        if (sigError || !sigResult?.success || !sigResult?.signature) {
+          console.error('Error getting Bold checkout signature from backend:', sigError || sigResult?.error);
+          this.toast.error('No se pudo generar la firma de pago seguro. Por favor intenta nuevamente.');
+          this.isSubmitting.set(false);
+          return;
+        }
+
+        const integritySignature = sigResult.signature;
+
+        // Ensure Bold script is loaded
+        await this.loadBoldScript();
+
+        const BoldCheckoutClass = (window as any).BoldCheckout;
+        if (typeof BoldCheckoutClass === 'function') {
+          const successUrl = `${window.location.origin}/store/success?order=${orderId}&tenant=${tenantSlug}`;
+          const boldConfig: Record<string, string> = {
+            orderId,
+            currency,
+            amount: String(amountInt),
+            apiKey: boldApiKey,
+            integritySignature,
+            description: `Pedido ${order.order_number || orderId.slice(0, 8).toUpperCase()}`,
+            renderMode: 'embedded',
+            redirectionUrl: successUrl,
+            originUrl: successUrl,
+          };
+
+          // Listen for Bold checkout completion/close events to smoothly route back to store success
+          const handleBoldEvent = (event: MessageEvent) => {
+            if (event.data?.type === 'BOLD_CHECKOUT_EVENT') {
+              window.removeEventListener('message', handleBoldEvent);
+              const modal = this.document.getElementById('boldEmbeddedCheckout');
+              if (modal) modal.remove();
+              void this.router.navigate(['/store/success'], {
+                queryParams: { order: orderId, tenant: tenantSlug },
+              });
+            }
+          };
+          window.addEventListener('message', handleBoldEvent);
+
+          console.log('[BoldCheckout] Opening modal with config:', {
+            ...boldConfig,
+            apiKey: boldConfig['apiKey']?.slice(0, 8) + '...',
+          });
+
+          const checkout = new BoldCheckoutClass(boldConfig);
+
+          this.cartService.clearCart();
+          checkout.open();
+          return;
+        } else {
+          throw new Error('No se pudo inicializar la pasarela de pagos de Bold');
+        }
+      }
+
+      // --- Non-Bold flow (Wompi / cash / bank transfer) ---
       this.cartService.clearCart();
       this.toast.success('¡Pedido recibido y confirmado exitosamente!');
       await this.router.navigate(['/store/success'], { queryParamsHandling: 'preserve' });
@@ -1278,6 +1427,63 @@ export class Checkout implements OnInit {
     } finally {
       this.isSubmitting.set(false);
     }
+  }
+
+  /**
+   * Loads the Bold checkout JS library dynamically into <head> without rendering any button.
+   * This provides the global window.BoldCheckout constructor for custom integration.
+   */
+  private loadBoldScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Remove any residual buttons/scripts from previous attempts
+      const residual = this.document.querySelectorAll('#bold-checkout-script, [data-bold-button]');
+      residual.forEach((el) => el.remove());
+
+      if (typeof (window as any).BoldCheckout === 'function') {
+        resolve();
+        return;
+      }
+
+      const onLoaded = () => {
+        window.removeEventListener('boldCheckoutLoaded', onLoaded);
+        resolve();
+      };
+      window.addEventListener('boldCheckoutLoaded', onLoaded);
+
+      const existingScript = this.document.getElementById('bold-library-script');
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve(), { once: true });
+        existingScript.addEventListener('error', () => reject(new Error('Error cargando Bold')), {
+          once: true,
+        });
+        return;
+      }
+
+      const script = this.document.createElement('script');
+      script.id = 'bold-library-script';
+      script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
+      script.async = true;
+      script.onload = () => {
+        // Fallback check if boldCheckoutLoaded event was already fired
+        if (typeof (window as any).BoldCheckout === 'function') {
+          resolve();
+        }
+      };
+      script.onerror = () =>
+        reject(new Error('No se pudo cargar la librería de pagos de Bold desde el servidor'));
+      this.document.head.appendChild(script);
+    });
+  }
+
+  /**
+   * Computes a SHA-256 hex digest using the Web Crypto API.
+   */
+  private async computeSha256(input: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(input);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
   }
 
   getItemImage(item: CartItem): string | null {

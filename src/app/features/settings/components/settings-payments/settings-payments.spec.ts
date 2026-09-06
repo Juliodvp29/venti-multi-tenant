@@ -4,6 +4,7 @@ import { SettingsPayments } from './settings-payments';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
 import { PaymentMethod } from '@core/enums';
+import { Supabase } from '@core/services/supabase';
 import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 describe('SettingsPayments', () => {
@@ -15,9 +16,19 @@ describe('SettingsPayments', () => {
     business_name: 'Tienda Test',
     settings: {
       payment_methods: {
-        [PaymentMethod.CreditCard]: { enabled: true, config: {} },
+        [PaymentMethod.OnlinePayment]: {
+          enabled: true,
+          config: {
+            provider: 'bold' as const,
+            bold: {
+              api_key: 'BOLD_API_123',
+              has_secret_key: true,
+              merchant_id: 'P4F0JC5QAI',
+            },
+            wompi: {},
+          },
+        },
         [PaymentMethod.CashOnDelivery]: { enabled: true, config: {} },
-        [PaymentMethod.PSE]: { enabled: true, config: {} },
         [PaymentMethod.BankTransfer]: { enabled: false, config: {} },
       },
     },
@@ -36,6 +47,17 @@ describe('SettingsPayments', () => {
     warning: vi.fn(),
   };
 
+  const supabaseMock = {
+    client: {
+      from: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+        upsert: vi.fn().mockResolvedValue({ data: null, error: null }),
+      }),
+    },
+  };
+
   beforeEach(async () => {
     vi.clearAllMocks();
 
@@ -44,6 +66,7 @@ describe('SettingsPayments', () => {
       providers: [
         { provide: TenantService, useValue: tenantServiceMock },
         { provide: ToastService, useValue: toastServiceMock },
+        { provide: Supabase, useValue: supabaseMock },
       ],
     }).compileComponents();
 
@@ -53,16 +76,19 @@ describe('SettingsPayments', () => {
     await fixture.whenStable();
   });
 
-  it('should initialize with payment methods from tenant settings', () => {
+  it('should initialize with 3 unified payment methods from tenant settings', () => {
     const methods = component.methods();
-    expect(methods.length).toBe(4);
+    expect(methods.length).toBe(3);
 
-    const creditCard = methods.find((m) => m.id === PaymentMethod.CreditCard);
+    const onlinePayment = methods.find((m) => m.id === PaymentMethod.OnlinePayment);
     const bankTransfer = methods.find((m) => m.id === PaymentMethod.BankTransfer);
 
-    expect(creditCard?.enabled).toBe(true);
+    expect(onlinePayment?.enabled).toBe(true);
     expect(bankTransfer?.enabled).toBe(false);
-    expect(component.enabledCount).toBe(3);
+    expect(component.enabledCount).toBe(2);
+    expect(component.selectedProvider()).toBe('bold');
+    expect(component.boldApiKey()).toBe('BOLD_API_123');
+    expect(component.isBoldConfigured()).toBe(true);
   });
 
   it('should toggle payment method and mark as dirty', () => {
@@ -85,7 +111,6 @@ describe('SettingsPayments', () => {
       { ...component.methods()[0], enabled: true },
       { ...component.methods()[1], enabled: false },
       { ...component.methods()[2], enabled: false },
-      { ...component.methods()[3], enabled: false },
     ]);
 
     component.toggleMethod(component.methods()[0].id);
@@ -96,8 +121,23 @@ describe('SettingsPayments', () => {
     expect(component.methods()[0].enabled).toBe(true);
   });
 
-  it('should save payment methods via TenantService and show success toast', async () => {
-    component.toggleMethod(PaymentMethod.CreditCard);
+  it('should toggle configuration modal for online payment gateways', () => {
+    expect(component.isConfigModalOpen()).toBe(false);
+
+    component.openConfigModal();
+    expect(component.isConfigModalOpen()).toBe(true);
+
+    component.selectProvider('wompi');
+    expect(component.selectedProvider()).toBe('wompi');
+
+    component.closeConfigModal();
+    expect(component.isConfigModalOpen()).toBe(false);
+  });
+
+  it('should save payment methods and gateway settings via TenantService', async () => {
+    component.boldApiKey.set('NEW_BOLD_KEY');
+    component.boldSecretKey.set('NEW_BOLD_SECRET');
+    component.onFieldChange();
 
     await component.save();
 
@@ -105,21 +145,37 @@ describe('SettingsPayments', () => {
       'tenant-123',
       expect.objectContaining({
         settings: expect.objectContaining({
-          payment_methods: expect.any(Object),
+          payment_methods: expect.objectContaining({
+            [PaymentMethod.OnlinePayment]: expect.objectContaining({
+              enabled: true,
+              config: expect.objectContaining({
+                provider: 'bold',
+                bold: expect.objectContaining({
+                  api_key: 'NEW_BOLD_KEY',
+                  has_secret_key: true,
+                }),
+              }),
+            }),
+          }),
         }),
       }),
     );
-    expect(toastServiceMock.success).toHaveBeenCalledWith('Métodos de pago actualizados');
+    expect(supabaseMock.client.from).toHaveBeenCalledWith('tenant_payment_secrets');
+    expect(toastServiceMock.success).toHaveBeenCalledWith(
+      'Métodos de pago y pasarelas actualizados de forma segura',
+    );
     expect(component.isDirty()).toBe(false);
   });
 
   it('should revert changes when cancel is called', () => {
     component.toggleMethod(PaymentMethod.BankTransfer);
+    component.boldApiKey.set('TEMPORARY_MODIFIED_KEY');
     expect(component.isDirty()).toBe(true);
 
     component.cancel();
 
     expect(component.isDirty()).toBe(false);
+    expect(component.boldApiKey()).toBe('BOLD_API_123');
     expect(toastServiceMock.info).toHaveBeenCalledWith('Cambios descartados');
   });
 });
