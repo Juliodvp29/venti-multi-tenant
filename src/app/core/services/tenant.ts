@@ -273,7 +273,11 @@ export class TenantService {
       promo_video_url: t.promo_video_url || (t.settings?.['promo_video_url'] as string) || null,
       brand_gallery: t.brand_gallery || (t.settings?.['brand_gallery'] as BrandGalleryItem[]) || [],
       business_name: t.business_name,
-      description: t.description ?? null,
+      description:
+        (t.settings?.['seo_description'] as string) ||
+        (t.settings?.['business_description'] as string) ||
+        t.description ||
+        null,
       primary_color: t.primary_color,
       secondary_color: t.secondary_color,
       accent_color: t.accent_color,
@@ -788,10 +792,11 @@ export class TenantService {
   }
 
   async updateTenant(tenantId: string, updates: Partial<Tenant>): Promise<Tenant> {
+    const { description, ...payload } = updates as Record<string, unknown>;
     const { data, error } = await this.supabase.client
       .from('tenants')
       .update({
-        ...updates,
+        ...payload,
         updated_at: new Date().toISOString(),
       } as unknown as Database['public']['Tables']['tenants']['Update'])
       .eq('id', tenantId)
