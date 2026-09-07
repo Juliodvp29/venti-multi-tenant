@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { OnboardingService } from '@core/services/onboarding.service';
 import { TenantService } from '@core/services/tenant';
@@ -21,11 +28,11 @@ export class OnboardingWizard {
   private readonly router = inject(Router);
   protected readonly storeUrl = inject(TenantService).storeUrl;
 
+  readonly openAiWizard = output<void>();
+
   readonly showCompleted = signal<boolean>(true);
 
-  readonly pendingSteps = computed(() =>
-    this.onboarding.steps().filter((step) => !step.completed),
-  );
+  readonly pendingSteps = computed(() => this.onboarding.steps().filter((step) => !step.completed));
 
   readonly completedSteps = computed(() =>
     this.onboarding.steps().filter((step) => step.completed),

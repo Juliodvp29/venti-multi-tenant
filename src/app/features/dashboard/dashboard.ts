@@ -14,7 +14,6 @@ import { TenantService } from '@core/services/tenant';
 import { OnboardingService } from '@core/services/onboarding.service';
 import { OnboardingWizard } from './components/onboarding-wizard/onboarding-wizard';
 import { StatCard } from './components/stat-card/stat-card';
-import { StatCardSkeleton } from '@shared/components/skeleton/stat-card-skeleton';
 import { SalesChart } from './components/sales-chart/sales-chart';
 import { CategoryChart } from './components/category-chart/category-chart';
 import { TopProducts, DashboardProduct } from './components/top-products/top-products';
@@ -22,6 +21,8 @@ import {
   RecentTransactions,
   DashboardTransaction,
 } from './components/recent-transactions/recent-transactions';
+import { AiStoreWizardModal } from '@features/ai-store-wizard/ai-store-wizard-modal';
+import { AiStoreWizardService } from '@core/services/ai-store-wizard.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,12 +31,12 @@ import {
     CommonModule,
     RouterLink,
     StatCard,
-    StatCardSkeleton,
     SalesChart,
     CategoryChart,
     TopProducts,
     RecentTransactions,
     OnboardingWizard,
+    AiStoreWizardModal,
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
@@ -43,8 +44,31 @@ import {
 export class Dashboard {
   private readonly analytics = inject(AnalyticsService);
   private readonly ordersService = inject(OrdersService);
+  private readonly aiWizardService = inject(AiStoreWizardService);
   protected readonly tenantService = inject(TenantService);
   protected readonly onboarding = inject(OnboardingService);
+
+  readonly showAiWizard = signal<boolean>(false);
+  readonly aiWizardDismissedOrCompleted = signal<boolean>(false);
+
+  readonly isAiSetupCompleted = computed(() => {
+    if (this.aiWizardDismissedOrCompleted()) return true;
+    const currentTenant = this.tenantService.currentTenant();
+    if (!currentTenant) return true;
+    const settings = (currentTenant.settings || {}) as Record<string, unknown>;
+    if (settings['ai_wizard_completed'] === true) return true;
+    const storeDesignState = settings['store_design_state'] as Record<string, unknown> | undefined;
+    if (storeDesignState?.['published']) return true;
+    if (typeof window !== 'undefined') {
+      if (window.localStorage.getItem(`venti_ai_wizard_dismissed_${currentTenant.id}`) === 'true') {
+        return true;
+      }
+      if (window.localStorage.getItem(`venti_ai_wizard_completed_${currentTenant.id}`) === 'true') {
+        return true;
+      }
+    }
+    return this.aiWizardService.isWizardCompleted(currentTenant.id);
+  });
 
   readonly currentPlan = computed(() => this.tenantService.currentTenant()?.plan || 'free');
   readonly isFreePlan = computed(() => this.currentPlan() === 'free');
@@ -60,6 +84,28 @@ export class Dashboard {
         return 'Gratuito';
     }
   });
+
+  openAiWizard(): void {
+    this.showAiWizard.set(true);
+  }
+
+  onAiWizardClosed(): void {
+    this.showAiWizard.set(false);
+  }
+
+  onAiWizardApplied(): void {
+    this.aiWizardDismissedOrCompleted.set(true);
+    this.showAiWizard.set(false);
+    void this.onboarding.refresh();
+  }
+
+  dismissAiBanner(): void {
+    this.aiWizardDismissedOrCompleted.set(true);
+    const tenantId = this.tenantService.tenantId();
+    if (tenantId && typeof window !== 'undefined') {
+      window.localStorage.setItem(`venti_ai_wizard_dismissed_${tenantId}`, 'true');
+    }
+  }
 
   // Stats Signals
   readonly revenueTotal = signal<number>(0);
@@ -86,11 +132,6 @@ export class Dashboard {
   readonly topProducts = signal<DashboardProduct[]>([]);
 
   readonly recentTransactions = signal<DashboardTransaction[]>([]);
-
-  // Carga por fases: pinta stats primero (LCP), resto en background
-  readonly isLoadingStats = signal(true);
-  readonly isLoadingDetails = signal(true);
-  private refreshInFlight = false;
 
   formatCurrency(value: number): string {
     const currency = this.tenantService.currentTenant()?.settings?.['currency'];
@@ -123,23 +164,13 @@ export class Dashboard {
   }
 
   private async refreshData() {
-    if (this.refreshInFlight) return;
-    this.refreshInFlight = true;
-    try {
-      // Fase 1 (crítica, bloquea LCP): solo stats
-      await this.loadStats();
-      this.isLoadingStats.set(false);
-      // Fase 2 ( diferida, no bloquea): charts + listas en paralelo
-      await Promise.allSettled([
-        this.loadSalesChart(),
-        this.loadCategories(),
-        this.loadTopProducts(),
-        this.loadRecentOrders(),
-      ]);
-    } finally {
-      this.isLoadingDetails.set(false);
-      this.refreshInFlight = false;
-    }
+    await Promise.all([
+      this.loadStats(),
+      this.loadSalesChart(),
+      this.loadCategories(),
+      this.loadTopProducts(),
+      this.loadRecentOrders(),
+    ]);
   }
 
   private async loadStats() {
@@ -207,11 +238,7 @@ export class Dashboard {
   }
 
   private async loadRecentOrders() {
-    // Query liviana: solo columnas usadas + sin count exact (evita el planificador COUNT)
-    const { data } = await this.ordersService.getOrders(1, 5, undefined, {
-      columns: 'order_number,customer_first_name,customer_last_name,created_at,total_amount,status',
-      withCount: false,
-    });
+    const { data } = await this.ordersService.getOrders(1, 5);
     this.recentTransactions.set(
       (data as any[]).map((o) => {
         const first = o.customer_first_name || 'Invitado';

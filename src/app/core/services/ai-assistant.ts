@@ -2,8 +2,11 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Supabase } from './supabase';
 import { TenantService } from './tenant';
+import { ToastService } from './toast';
 import { Order } from '@core/models/order';
 import { Product } from '@core/models/product';
+import { StorefrontSection, ThemePresetId, ThemeTokens, ThemeDesignSnapshot } from '@core/models';
+import { THEME_PRESETS, AVAILABLE_FONTS } from '@core/constants/theme-presets';
 
 export interface Message {
   role: 'user' | 'model';
@@ -33,12 +36,34 @@ interface AiGenerateResponse {
   candidates?: Array<{ content?: { parts?: AiContentPart[] } }>;
 }
 
+export interface UpdateStoreDesignArgs {
+  primaryColor?: string;
+  secondaryColor?: string;
+  accentColor?: string;
+  backgroundColor?: string;
+  headerColor?: string;
+  footerColor?: string;
+  fontFamily?: string;
+  themePreset?: string;
+  tagline?: string;
+  businessName?: string;
+}
+
+export interface UpdateStorefrontSectionsArgs {
+  action?: string;
+  sectionType?: string;
+  title?: string;
+  subtitle?: string;
+  buttonText?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AiAssistantService {
   private readonly supabase = inject(Supabase);
   private readonly tenantService = inject(TenantService);
+  private readonly toast = inject(ToastService);
 
   // Esquemas de herramientas (públicos, sin secretos): el modelo, el system
   // prompt y los límites se fijan en la Edge Function ai-chat, que guarda la
@@ -386,6 +411,89 @@ export class AiAssistantService {
             properties: {},
           },
         },
+        {
+          name: 'update_store_design',
+          description:
+            'Updates the store visual branding and design tokens in real time. Use this when the user asks to change font, change colors (primary, background, header, accent, etc.), change theme preset, or change store tagline/slogan.',
+          parameters: {
+            type: 'OBJECT',
+            properties: {
+              primaryColor: {
+                type: 'STRING',
+                description:
+                  'Primary brand color (hex code like #2563eb or color name in Spanish like azul, rojo, verde, negro)',
+              },
+              secondaryColor: {
+                type: 'STRING',
+                description: 'Secondary brand color (hex code or color name)',
+              },
+              accentColor: {
+                type: 'STRING',
+                description: 'Accent / highlight color (hex code or color name)',
+              },
+              backgroundColor: {
+                type: 'STRING',
+                description:
+                  'Main background color (hex code like #ffffff or #0f172a, or color name like blanco, crema, oscuro)',
+              },
+              headerColor: {
+                type: 'STRING',
+                description: 'Header / navbar background color (hex code or color name)',
+              },
+              footerColor: {
+                type: 'STRING',
+                description: 'Footer background color (hex code or color name)',
+              },
+              fontFamily: {
+                type: 'STRING',
+                description:
+                  'Font family name: Outfit, Inter, Poppins, Playfair Display, Space Grotesk, Montserrat, Cinzel, Roboto, Plus Jakarta Sans, Merriweather',
+              },
+              themePreset: {
+                type: 'STRING',
+                description:
+                  'Theme preset ID if changing whole theme: minimalist, modern, brutalist, luxury, warm, vibrant',
+              },
+              tagline: {
+                type: 'STRING',
+                description: 'Store slogan or tagline',
+              },
+            },
+          },
+        },
+        {
+          name: 'update_storefront_sections',
+          description:
+            'Adds, removes, toggles or modifies sections on the storefront homepage (hero banner, benefits, products, categories, testimonials, offers, faq, newsletter).',
+          parameters: {
+            type: 'OBJECT',
+            properties: {
+              action: {
+                type: 'STRING',
+                description:
+                  'Action to perform: add_section, remove_section, toggle_section, update_hero',
+              },
+              sectionType: {
+                type: 'STRING',
+                description:
+                  'Section type: hero, benefits, categories, product_grid, testimonials, offers, faq, newsletter, about_us',
+              },
+              title: {
+                type: 'STRING',
+                description: 'Title for the section or hero banner',
+              },
+              subtitle: {
+                type: 'STRING',
+                description: 'Subtitle, story, or description for the section or hero banner',
+              },
+              buttonText: {
+                type: 'STRING',
+                description: 'Call-to-action button text (e.g., Ver Productos, Comprar Ahora)',
+              },
+            },
+            required: ['action'],
+          },
+        },
       ],
     },
   ];
@@ -416,7 +524,7 @@ export class AiAssistantService {
     return {
       role: 'model',
       content:
-        '¡Hola! Soy tu asistente Venti. Puedo ayudarte con información sobre tus ventas, pedidos y productos. ¿En qué puedo ayudarte hoy?',
+        '¡Hola! Soy tu asistente Venti. Puedo ayudarte a consultar ventas, pedidos y productos, o personalizar el diseño de tu tienda en tiempo real (cambiar colores, fuentes, temas o agregar secciones como testimonios, FAQ y ofertas). ¿En qué puedo ayudarte hoy?',
       timestamp: new Date(),
     };
   }
@@ -547,6 +655,52 @@ export class AiAssistantService {
     }
   }
 
+  /**
+   * Invoca el modelo Gemini a través de la Edge Function 'ai-chat' enviando la estructura
+   * completa requerida (tenant_id, contents y tools), procesando function calls si ocurren,
+   * y retornando el texto generado. Permite reutilizar de forma segura el proxy de IA en otros módulos.
+   */
+  async generateCompletion(prompt: string): Promise<string> {
+    const tenantId = this.tenantService.tenantId();
+    if (!tenantId) throw new Error('Tenant not selected');
+
+    const contents: AiContent[] = [
+      {
+        role: 'user',
+        parts: [{ text: prompt }],
+      },
+    ];
+
+    let response = await this.generateContent(tenantId, contents);
+
+    let toolCalls = response.candidates?.[0]?.content?.parts?.filter((p) => p.functionCall);
+    let toolTurns = 0;
+    while (toolCalls && toolCalls.length > 0) {
+      if (toolTurns++ >= 5) break;
+      const modelParts = response.candidates?.[0]?.content?.parts ?? [];
+      const toolResults: AiContentPart[] = [];
+
+      for (const call of toolCalls) {
+        if (call.functionCall) {
+          const { name, args } = call.functionCall;
+          const data = await this.executeTool(name, args || {});
+          toolResults.push({
+            functionResponse: {
+              name,
+              response: { content: data },
+            },
+          });
+        }
+      }
+
+      contents.push({ role: 'model', parts: modelParts }, { role: 'user', parts: toolResults });
+      response = await this.generateContent(tenantId, contents);
+      toolCalls = response.candidates?.[0]?.content?.parts?.filter((p) => p.functionCall);
+    }
+
+    return response.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';
+  }
+
   private async generateContent(
     tenantId: string,
     contents: AiContent[],
@@ -638,6 +792,10 @@ export class AiAssistantService {
         return this.handleGetTaxConfig(tenantId!);
       case 'get_payment_methods':
         return this.handleGetPaymentMethods(tenantId!);
+      case 'update_store_design':
+        return this.handleUpdateStoreDesign(tenantId!, args);
+      case 'update_storefront_sections':
+        return this.handleUpdateStorefrontSections(tenantId!, args);
       default:
         return { error: 'Unknown tool' };
     }
@@ -1192,5 +1350,410 @@ export class AiAssistantService {
       return { success: true, message: `Navigating to the ${args.page} section...` };
     }
     return { success: false, error: 'Invalid page' };
+  }
+
+  private resolveColor(input?: string): string | undefined {
+    if (!input) return undefined;
+    const trimmed = input.trim().toLowerCase();
+    if (trimmed.startsWith('#')) {
+      return trimmed;
+    }
+    const colorMap: Record<string, string> = {
+      azul: '#2563eb',
+      'azul oscuro': '#1e3a8a',
+      'azul marino': '#0f172a',
+      celeste: '#0ea5e9',
+      sky: '#0284c7',
+      rojo: '#dc2626',
+      carmesi: '#b91c1c',
+      verde: '#16a34a',
+      esmeralda: '#059669',
+      oliva: '#65a30d',
+      negro: '#09090b',
+      oscuro: '#09090b',
+      blanco: '#ffffff',
+      claro: '#ffffff',
+      gris: '#64748b',
+      'gris oscuro': '#334155',
+      'gris claro': '#f1f5f9',
+      amarillo: '#eab308',
+      dorado: '#d97706',
+      naranja: '#ea580c',
+      morado: '#9333ea',
+      purpura: '#7c3aed',
+      violeta: '#8b5cf6',
+      rosa: '#ec4899',
+      rosado: '#f43f5e',
+      marron: '#78350f',
+      cafe: '#78350f',
+      beige: '#f5f5dc',
+      crema: '#fefce8',
+    };
+    if (colorMap[trimmed]) return colorMap[trimmed];
+    if (trimmed.length === 6 && /^[0-9a-f]{6}$/i.test(trimmed)) return `#${trimmed}`;
+    return undefined;
+  }
+
+  private resolveFont(input?: string): string | undefined {
+    if (!input) return undefined;
+    const trimmed = input.trim();
+    const match = AVAILABLE_FONTS.find(
+      (f) =>
+        f.name.toLowerCase() === trimmed.toLowerCase() ||
+        f.family.toLowerCase().includes(trimmed.toLowerCase()),
+    );
+    if (match) return match.family;
+    if (trimmed.includes('sans-serif') || trimmed.includes('serif')) return trimmed;
+    return `"${trimmed}", sans-serif`;
+  }
+
+  private async handleUpdateStoreDesign(
+    tenantId: string,
+    args: UpdateStoreDesignArgs,
+  ): Promise<unknown> {
+    try {
+      const currentTenant = this.tenantService.currentTenant();
+      const currentSettings = (currentTenant?.settings || {}) as Record<string, unknown>;
+
+      let primaryColor = this.resolveColor(args.primaryColor);
+      let secondaryColor = this.resolveColor(args.secondaryColor);
+      let accentColor = this.resolveColor(args.accentColor);
+      let backgroundColor = this.resolveColor(args.backgroundColor);
+      let headerColor = this.resolveColor(args.headerColor);
+      let footerColor = this.resolveColor(args.footerColor);
+      let fontFamily = this.resolveFont(args.fontFamily);
+
+      // Si se pasa un preset temático completo
+      if (args.themePreset && THEME_PRESETS[args.themePreset as ThemePresetId]) {
+        const preset = THEME_PRESETS[args.themePreset as ThemePresetId];
+        primaryColor = primaryColor || preset.tokens.colors.primary;
+        secondaryColor = secondaryColor || preset.tokens.colors.secondary;
+        accentColor = accentColor || preset.tokens.colors.accent;
+        backgroundColor = backgroundColor || preset.tokens.colors.background;
+        headerColor = headerColor || preset.tokens.colors.header;
+        footerColor = footerColor || preset.tokens.colors.footer;
+        fontFamily = fontFamily || preset.tokens.font_heading;
+      }
+
+      const updates: Partial<Record<string, unknown>> = {};
+      if (primaryColor) updates['primary_color'] = primaryColor;
+      if (secondaryColor) updates['secondary_color'] = secondaryColor;
+      if (accentColor) updates['accent_color'] = accentColor;
+      if (backgroundColor) updates['background_color'] = backgroundColor;
+      if (headerColor) updates['header_color'] = headerColor;
+      if (footerColor) updates['footer_color'] = footerColor;
+      if (fontFamily) updates['font_family'] = fontFamily;
+
+      const updatedSettings: Record<string, unknown> = { ...currentSettings };
+      if (args.tagline) {
+        updatedSettings['tagline'] = args.tagline;
+        updatedSettings['seo_title'] =
+          `${args.tagline} | ${currentTenant?.business_name || 'Tienda'}`;
+      }
+      if (args.themePreset) {
+        updatedSettings['theme_id'] = args.themePreset;
+      }
+      updates['settings'] = updatedSettings;
+
+      if (args.businessName) {
+        updates['business_name'] = args.businessName;
+      }
+
+      await this.tenantService.updateTenant(tenantId, updates as any);
+
+      // Sincronizar themeTokens en store_design_state si existe borrador/publicado
+      const designState = this.tenantService.storeDesignState();
+      if (designState && designState.draft) {
+        const updatedTokens: ThemeTokens = {
+          ...designState.draft.theme_tokens,
+          colors: {
+            ...designState.draft.theme_tokens?.colors,
+            ...(primaryColor ? { primary: primaryColor } : {}),
+            ...(secondaryColor ? { secondary: secondaryColor } : {}),
+            ...(accentColor ? { accent: accentColor } : {}),
+            ...(backgroundColor ? { background: backgroundColor } : {}),
+            ...(headerColor ? { header: headerColor } : {}),
+            ...(footerColor ? { footer: footerColor } : {}),
+          },
+          ...(fontFamily ? { font_heading: fontFamily, font_body: fontFamily } : {}),
+        };
+
+        const updatedSnapshot: ThemeDesignSnapshot = {
+          ...designState.draft,
+          theme_tokens: updatedTokens,
+        };
+        await this.tenantService.saveDraft(updatedSnapshot);
+        await this.tenantService.publishDesign('Ajuste de diseño aplicado con Venti AI');
+      }
+
+      this.toast.success('Diseño de tienda actualizado por Venti AI');
+      return {
+        success: true,
+        message: 'El diseño de la tienda fue actualizado exitosamente.',
+        updatedFields: updates,
+      };
+    } catch (err: any) {
+      console.error('Error in handleUpdateStoreDesign:', err);
+      return { success: false, error: err?.message || 'Error al actualizar el diseño' };
+    }
+  }
+
+  private async handleUpdateStorefrontSections(
+    tenantId: string,
+    args: UpdateStorefrontSectionsArgs,
+  ): Promise<unknown> {
+    try {
+      const currentLayout = this.tenantService.storefrontLayout() || { sections: [] };
+      let sections: StorefrontSection[] = [...(currentLayout.sections || [])];
+      const action = args.action || 'add_section';
+      const sectionType = args.sectionType || 'testimonials';
+
+      if (action === 'update_hero') {
+        let hero = sections.find((s) => s.type === 'hero');
+        if (!hero) {
+          hero = {
+            id: 'hero-main',
+            type: 'hero',
+            isActive: true,
+            content: {
+              title: args.title || 'Bienvenidos a nuestra tienda',
+              subtitle: args.subtitle || 'Encuentra productos exclusivos con calidad garantizada.',
+              buttonText: args.buttonText || 'Ver Catálogo',
+              buttonLink: '/store/productos',
+              alignment: 'center',
+              compositionStyle: 'minimal-centered',
+            },
+          };
+          sections.unshift(hero);
+        } else {
+          hero.content = {
+            ...hero.content,
+            ...(args.title ? { title: args.title } : {}),
+            ...(args.subtitle ? { subtitle: args.subtitle } : {}),
+            ...(args.buttonText ? { buttonText: args.buttonText } : {}),
+          };
+        }
+      } else if (action === 'add_section') {
+        const existingIdx = sections.findIndex((s) => s.type === sectionType);
+        if (existingIdx >= 0) {
+          sections[existingIdx].isActive = true;
+          if (args.title) (sections[existingIdx].content as any).title = args.title;
+          if (args.subtitle) (sections[existingIdx].content as any).subtitle = args.subtitle;
+        } else {
+          let newSection: StorefrontSection;
+          const sectionId = `${sectionType}-${Date.now()}`;
+
+          switch (sectionType) {
+            case 'testimonials':
+              newSection = {
+                id: sectionId,
+                type: 'testimonials',
+                isActive: true,
+                content: {
+                  title: args.title || 'Lo que dicen nuestros clientes',
+                  subtitle: args.subtitle || 'Historias reales de personas que confían en nosotros',
+                  items: [
+                    {
+                      id: 'test-1',
+                      author: 'Valentina Restrepo',
+                      role: 'Cliente verificada',
+                      content:
+                        'Excelente atención y los productos superaron mis expectativas. 100% recomendado.',
+                      rating: 5,
+                      avatar:
+                        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200',
+                    },
+                    {
+                      id: 'test-2',
+                      author: 'Andrés Gómez',
+                      role: 'Comprador frecuente',
+                      content:
+                        'El pedido llegó en tiempo récord y el empaque impecable. Volveré a comprar seguro.',
+                      rating: 5,
+                      avatar:
+                        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+                    },
+                    {
+                      id: 'test-3',
+                      author: 'Mariana Silva',
+                      role: 'Cliente satisfecha',
+                      content:
+                        'La calidad es increíble y la experiencia de compra fue muy fluida y rápida.',
+                      rating: 5,
+                      avatar:
+                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+                    },
+                  ],
+                },
+              };
+              break;
+
+            case 'faq':
+              newSection = {
+                id: sectionId,
+                type: 'faq',
+                isActive: true,
+                content: {
+                  title: args.title || 'Preguntas Frecuentes',
+                  subtitle:
+                    args.subtitle || 'Resolvemos tus dudas habituales sobre compras y entregas',
+                  items: [
+                    {
+                      id: 'faq-1',
+                      question: '¿Cuánto tiempo tarda en llegar mi pedido?',
+                      answer:
+                        'Despachamos en menos de 24 horas y las entregas toman entre 1 a 3 días hábiles según tu ubicación.',
+                    },
+                    {
+                      id: 'faq-2',
+                      question: '¿Qué medios de pago aceptan?',
+                      answer:
+                        'Aceptamos tarjetas de crédito, débito, transferencias y pagos contra entrega según tu ciudad.',
+                    },
+                    {
+                      id: 'faq-3',
+                      question: '¿Puedo solicitar cambios o devoluciones?',
+                      answer:
+                        'Sí, tienes hasta 30 días calendario tras recibir tu producto para solicitar un cambio sin complicaciones.',
+                    },
+                  ],
+                },
+              };
+              break;
+
+            case 'offers':
+              newSection = {
+                id: sectionId,
+                type: 'offers',
+                isActive: true,
+                content: {
+                  title: args.title || 'Ofertas Flash de Temporada',
+                  description:
+                    args.subtitle ||
+                    'Aprovecha descuentos de hasta el 40% en artículos seleccionados',
+                  badge: 'TIEMPO LIMITADO',
+                  discountBadge: 'HASTA -40%',
+                  buttonText: args.buttonText || 'Ver Ofertas',
+                  buttonLink: '/store/productos',
+                },
+              };
+              break;
+
+            case 'newsletter':
+              newSection = {
+                id: sectionId,
+                type: 'newsletter',
+                isActive: true,
+                content: {
+                  title: args.title || 'Únete a nuestra comunidad exclusiva',
+                  description:
+                    args.subtitle ||
+                    'Recibe ofertas relámpago, cupones de bienvenida y nuevos lanzamientos.',
+                  buttonText: args.buttonText || 'Suscribirme',
+                  disclaimer: 'Cero spam. Puedes cancelar tu suscripción en cualquier momento.',
+                },
+              };
+              break;
+
+            case 'about_us':
+              newSection = {
+                id: sectionId,
+                type: 'about_us',
+                isActive: true,
+                content: {
+                  badge: 'Nuestra Historia',
+                  title: args.title || `Conoce nuestra marca`,
+                  story:
+                    args.subtitle ||
+                    'Nos apasiona ofrecer productos innovadores de la más alta calidad para enriquecer tu día a día.',
+                  highlightText:
+                    'Calidad superior, compromiso con el cliente y entrega garantizada.',
+                  layout: 'split',
+                },
+              };
+              break;
+
+            case 'benefits':
+              newSection = {
+                id: sectionId,
+                type: 'benefits',
+                isActive: true,
+                content: {
+                  title: args.title || '¿Por qué elegirnos?',
+                  subtitle: args.subtitle || 'Comprometidos con tu tranquilidad',
+                  columns: 3,
+                  items: [
+                    {
+                      id: 'b-1',
+                      icon: 'truck',
+                      title: 'Envíos Rápidos',
+                      description: 'Despacho seguro en 24-48h',
+                    },
+                    {
+                      id: 'b-2',
+                      icon: 'shield',
+                      title: 'Garantía Total',
+                      description: 'Productos 100% originales',
+                    },
+                    {
+                      id: 'b-3',
+                      icon: 'heartHandshake',
+                      title: 'Soporte Dedicado',
+                      description: 'Atención personalizada vía chat',
+                    },
+                  ],
+                },
+              };
+              break;
+
+            default:
+              newSection = {
+                id: sectionId,
+                type: sectionType as any,
+                isActive: true,
+                content: {
+                  title: args.title || `Sección ${sectionType}`,
+                  subtitle: args.subtitle || '',
+                },
+              };
+              break;
+          }
+
+          sections.push(newSection);
+        }
+      } else if (action === 'remove_section') {
+        sections = sections.filter((s) => s.type !== sectionType && s.id !== sectionType);
+      } else if (action === 'toggle_section') {
+        const target = sections.find((s) => s.type === sectionType || s.id === sectionType);
+        if (target) {
+          target.isActive = !target.isActive;
+        }
+      }
+
+      await this.tenantService.updateStorefrontLayout({ ...currentLayout, sections });
+
+      // Guardar también en borrador y publicar si existe storeDesignState
+      const designState = this.tenantService.storeDesignState();
+      if (designState && designState.draft) {
+        const updatedSnapshot: ThemeDesignSnapshot = {
+          ...designState.draft,
+          storefront_layout: { sections },
+        };
+        await this.tenantService.saveDraft(updatedSnapshot);
+        await this.tenantService.publishDesign('Estructura de tienda actualizada con Venti AI');
+      }
+
+      this.toast.success('Estructura de tienda actualizada por Venti AI');
+      return {
+        success: true,
+        action,
+        sectionType,
+        totalSections: sections.length,
+        message: 'La estructura y secciones de la tienda fueron actualizadas.',
+      };
+    } catch (err: any) {
+      console.error('Error in handleUpdateStorefrontSections:', err);
+      return { success: false, error: err?.message || 'Error al actualizar las secciones' };
+    }
   }
 }

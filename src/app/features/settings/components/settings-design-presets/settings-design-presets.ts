@@ -1,13 +1,28 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  output,
+  signal,
+  computed,
+  input,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TenantService } from '@core/services/tenant';
 import { ToastService } from '@core/services/toast';
-import { CustomThemePreset, ThemeDesignVersion, ThemeDesignSnapshot, ThemeTokens, StorefrontLayout } from '@core/models';
+import {
+  CustomThemePreset,
+  ThemeDesignVersion,
+  ThemeDesignSnapshot,
+  ThemeTokens,
+  StorefrontLayout,
+} from '@core/models';
+import { AiStoreWizardModal } from '@features/ai-store-wizard/ai-store-wizard-modal';
 
 @Component({
   selector: 'app-settings-design-presets',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AiStoreWizardModal],
   templateUrl: './settings-design-presets.html',
   styleUrl: './settings-design-presets.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +36,7 @@ export class SettingsDesignPresets {
   readonly close = output<void>();
   readonly applyPresetSnapshot = output<ThemeDesignSnapshot>();
 
+  readonly showAiWizard = signal(false);
   readonly activeTab = signal<'presets' | 'versions'>('presets');
 
   // New Preset Modal / Form
@@ -62,7 +78,11 @@ export class SettingsDesignPresets {
     this.isSavingPreset.set(true);
     try {
       const snapshot = this.currentDraftSnapshot() || this.tenantService.storeDesignState().draft;
-      const result = await this.tenantService.saveCurrentAsPreset(name, this.newPresetDescription().trim(), snapshot);
+      const result = await this.tenantService.saveCurrentAsPreset(
+        name,
+        this.newPresetDescription().trim(),
+        snapshot,
+      );
 
       if (result.success) {
         this.toast.success(`Preset "${name}" guardado exitosamente.`);
@@ -93,7 +113,7 @@ export class SettingsDesignPresets {
   async deletePreset(preset: CustomThemePreset): Promise<void> {
     const confirmed = await this.toast.confirm(
       `¿Estás seguro de que deseas eliminar el preset "${preset.name}"? Esta acción no se puede deshacer.`,
-      'Eliminar Preset'
+      'Eliminar Preset',
     );
     if (!confirmed) return;
 
@@ -119,7 +139,7 @@ export class SettingsDesignPresets {
     const actionText = autoPublish ? 'restaurar y publicar en vivo' : 'cargar en el borrador';
     const confirmed = await this.toast.confirm(
       `¿Deseas ${actionText} la versión #${version.version_number} (${version.name})?`,
-      'Restaurar Versión'
+      'Restaurar Versión',
     );
     if (!confirmed) return;
 
@@ -149,7 +169,8 @@ export class SettingsDesignPresets {
     if (!published || !version.snapshot) return false;
     return (
       JSON.stringify(published.theme_tokens) === JSON.stringify(version.snapshot.theme_tokens) &&
-      JSON.stringify(published.storefront_layout) === JSON.stringify(version.snapshot.storefront_layout)
+      JSON.stringify(published.storefront_layout) ===
+        JSON.stringify(version.snapshot.storefront_layout)
     );
   }
 }

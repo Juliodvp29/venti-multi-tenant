@@ -235,3 +235,4 @@ export interface FilterParams {
   endDate?: string;
   [key: string]: unknown;
 }
+export * from './ai-store-wizard.model';

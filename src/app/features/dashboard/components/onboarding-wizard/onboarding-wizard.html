@@ -5,21 +5,38 @@
       class="w-full flex items-center justify-between gap-4 rounded-2xl border border-gray-200/90 dark:border-gray-800 bg-white dark:bg-gray-900 px-5 py-3.5 shadow-xs transition hover:border-sky-300 dark:hover:border-sky-800/80 mb-6"
     >
       <div class="flex min-w-0 items-center gap-3.5">
-        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <div
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20"
+        >
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+            />
           </svg>
         </div>
         <div class="min-w-0">
           <div class="flex items-center gap-2">
-            <span class="text-sm font-bold text-gray-900 dark:text-white">Guía de configuración</span>
-            <span class="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300">
+            <span class="text-sm font-bold text-gray-900 dark:text-white"
+              >Guía de configuración</span
+            >
+            <span
+              class="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300"
+            >
               {{ onboarding.completedCount() }} de {{ onboarding.steps().length }} completadas
             </span>
           </div>
           @if (nextPendingStep(); as next) {
             <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
-              <span class="font-medium text-gray-700 dark:text-gray-300">Siguiente:</span> {{ next.title }}
+              <span class="font-medium text-gray-700 dark:text-gray-300">Siguiente:</span>
+              {{ next.title }}
             </p>
           }
         </div>
@@ -33,7 +50,9 @@
               [style.width.%]="onboarding.completionPercentage()"
             ></div>
           </div>
-          <span class="text-xs font-extrabold text-sky-600 dark:text-sky-400">{{ onboarding.completionPercentage() }}%</span>
+          <span class="text-xs font-extrabold text-sky-600 dark:text-sky-400"
+            >{{ onboarding.completionPercentage() }}%</span
+          >
         </div>
 
         <button
@@ -43,7 +62,12 @@
         >
           <span>Ver tareas</span>
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
@@ -54,7 +78,12 @@
           (click)="onboarding.dismiss()"
         >
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -66,13 +95,20 @@
       aria-labelledby="onboarding-title"
     >
       <!-- Header -->
-      <div class="border-b border-gray-100 dark:border-gray-800/80 bg-linear-to-r from-sky-50/70 via-white to-white dark:from-sky-950/20 dark:via-gray-900 dark:to-gray-900 px-5 py-4 sm:px-6 sm:py-5">
+      <div
+        class="border-b border-gray-100 dark:border-gray-800/80 bg-linear-to-r from-sky-50/70 via-white to-white dark:from-sky-950/20 dark:via-gray-900 dark:to-gray-900 px-5 py-4 sm:px-6 sm:py-5"
+      >
         <div class="flex items-start justify-between gap-4">
           <div>
-            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            <span
+              class="inline-block text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400"
+            >
               Tu tienda, paso a paso
             </span>
-            <h2 id="onboarding-title" class="text-lg font-extrabold text-gray-900 dark:text-white mt-0.5">
+            <h2
+              id="onboarding-title"
+              class="text-lg font-extrabold text-gray-900 dark:text-white mt-0.5"
+            >
               Pon tu tienda a punto para vender
             </h2>
             <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -89,7 +125,12 @@
             >
               <span>Minimizar</span>
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 15l7-7 7 7"
+                />
               </svg>
             </button>
             <button
@@ -99,7 +140,12 @@
               (click)="onboarding.dismiss()"
             >
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -109,7 +155,8 @@
         <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800/60">
           <div class="flex items-center justify-between text-xs mb-2">
             <span class="font-semibold text-gray-700 dark:text-gray-300">
-              {{ onboarding.completedCount() }} de {{ onboarding.steps().length }} tareas completadas
+              {{ onboarding.completedCount() }} de {{ onboarding.steps().length }} tareas
+              completadas
             </span>
             <span class="font-extrabold text-sky-600 dark:text-sky-400">
               {{ onboarding.completionPercentage() }}%
@@ -121,14 +168,58 @@
               [style.width.%]="onboarding.completionPercentage()"
             ></div>
           </div>
+
+          <!-- AI Setup Accelerator Callout -->
+          <div
+            class="mt-4 p-3.5 rounded-xl bg-linear-to-r from-sky-50 via-indigo-50/50 to-purple-50 dark:from-sky-950/30 dark:via-indigo-950/20 dark:to-purple-950/20 border border-sky-200/70 dark:border-sky-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+          >
+            <div class="flex items-center gap-2.5">
+              <span
+                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-linear-to-tr from-sky-500 to-indigo-600 text-white text-xs font-black shadow-xs"
+              >
+                ✨
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-900 dark:text-white">
+                  Acelera la configuración de tu tienda con IA
+                </p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  Genera el tema, banners, beneficios y categorías automáticamente en 1 minuto.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black text-white bg-linear-to-r from-sky-500 to-indigo-600 hover:opacity-95 shadow-xs transition cursor-pointer shrink-0"
+              (click)="openAiWizard.emit()"
+            >
+              <span>Configurar con IA</span>
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- 100% Celebration Banner -->
       @if (onboarding.completionPercentage() === 100) {
         <div class="px-6 py-8 text-center bg-emerald-50/30 dark:bg-emerald-950/10">
-          <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 shadow-xs">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <div
+            class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 shadow-xs"
+          >
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -136,7 +227,8 @@
             ¡Tu tienda está 100% lista para vender!
           </h3>
           <p class="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-            Completaste todas las tareas de configuración esenciales. Ya puedes compartir tu enlace y empezar a recibir clientes.
+            Completaste todas las tareas de configuración esenciales. Ya puedes compartir tu enlace
+            y empezar a recibir clientes.
           </p>
           <div class="mt-4 flex items-center justify-center gap-3">
             <a
@@ -161,7 +253,11 @@
         <!-- Steps Accordion List -->
         <div class="divide-y divide-gray-100 dark:divide-gray-800/80">
           @for (step of onboarding.steps(); track step.id) {
-            <div class="transition-colors" [class.bg-sky-50/20]="onboarding.activeStepId() === step.id" [class.dark:bg-sky-950/10]="onboarding.activeStepId() === step.id">
+            <div
+              class="transition-colors"
+              [class.bg-sky-50/20]="onboarding.activeStepId() === step.id"
+              [class.dark:bg-sky-950/10]="onboarding.activeStepId() === step.id"
+            >
               <!-- Step Header Row -->
               <button
                 type="button"
@@ -181,7 +277,13 @@
                   [class.dark:text-gray-400]="!step.completed"
                 >
                   @if (step.completed) {
-                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <svg
+                      class="h-3.5 w-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="3"
+                    >
                       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   } @else {
@@ -201,7 +303,10 @@
                   >
                     {{ step.title }}
                   </span>
-                  <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold shrink-0" [class]="categoryClass(step.category)">
+                  <span
+                    class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold shrink-0"
+                    [class]="categoryClass(step.category)"
+                  >
                     {{ categoryLabel(step.category) }}
                   </span>
                 </span>
@@ -214,14 +319,21 @@
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
               <!-- Expanded Step Content -->
               @if (onboarding.activeStepId() === step.id) {
                 <div class="px-5 pb-4 pt-1 sm:px-6">
-                  <div class="rounded-xl bg-gray-50/80 dark:bg-gray-800/50 border border-gray-200/60 dark:border-gray-700/60 p-4">
+                  <div
+                    class="rounded-xl bg-gray-50/80 dark:bg-gray-800/50 border border-gray-200/60 dark:border-gray-700/60 p-4"
+                  >
                     <p class="text-xs sm:text-sm leading-relaxed text-gray-600 dark:text-gray-300">
                       {{ step.description }}
                     </p>

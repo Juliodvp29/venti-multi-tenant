@@ -1,0 +1,782 @@
+<!-- Backdrop Overlay -->
+<div
+  class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in"
+  (click)="step() !== 4 && close.emit()"
+>
+  <!-- Modal Container -->
+  <div
+    class="relative w-full max-w-5xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col my-auto transition-all animate-scale-up text-slate-900 dark:text-slate-100"
+    [class.max-w-6xl]="step() === 5"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Top Header Bar -->
+    <div
+      class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/80 backdrop-blur-sm"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-2xl bg-linear-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+              Diseñador de Tienda con
+            </h2>
+            <span
+              class="text-[10px] uppercase font-extrabold tracking-wider bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 px-2 py-0.5 rounded-full border border-sky-200/60 dark:border-sky-800/60"
+            >
+              Venti IA
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400">
+            Crea tu tienda lista para vender en menos de 1 minuto
+          </p>
+        </div>
+      </div>
+
+      <!-- Steps Indicator (when in steps 1-3) -->
+      @if (step() <= 3) {
+        <div class="hidden sm:flex items-center gap-2">
+          <div
+            class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all"
+            [class.bg-sky-50]="step() === 1"
+            [class.text-sky-600]="step() === 1"
+            [class.dark:bg-sky-950]="step() === 1"
+            [class.dark:text-sky-400]="step() === 1"
+            [class.text-slate-500]="step() !== 1"
+            [class.dark:text-slate-400]="step() !== 1"
+          >
+            <span
+              class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
+              [class.bg-sky-600]="step() === 1"
+              [class.text-white]="step() === 1"
+              [class.bg-slate-200]="step() !== 1"
+              [class.text-slate-600]="step() !== 1"
+              [class.dark:bg-slate-800]="step() !== 1"
+              [class.dark:text-slate-300]="step() !== 1"
+            >
+              1
+            </span>
+            <span>Nicho</span>
+          </div>
+          <div class="w-4 h-0.5 bg-slate-200 dark:bg-slate-800"></div>
+          <div
+            class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all"
+            [class.bg-sky-50]="step() === 2"
+            [class.text-sky-600]="step() === 2"
+            [class.dark:bg-sky-950]="step() === 2"
+            [class.dark:text-sky-400]="step() === 2"
+            [class.text-slate-500]="step() !== 2"
+            [class.dark:text-slate-400]="step() !== 2"
+          >
+            <span
+              class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
+              [class.bg-sky-600]="step() === 2"
+              [class.text-white]="step() === 2"
+              [class.bg-slate-200]="step() !== 2"
+              [class.text-slate-600]="step() !== 2"
+              [class.dark:bg-slate-800]="step() !== 2"
+              [class.dark:text-slate-300]="step() !== 2"
+            >
+              2
+            </span>
+            <span>Audiencia</span>
+          </div>
+          <div class="w-4 h-0.5 bg-slate-200 dark:bg-slate-800"></div>
+          <div
+            class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all"
+            [class.bg-sky-50]="step() === 3"
+            [class.text-sky-600]="step() === 3"
+            [class.dark:bg-sky-950]="step() === 3"
+            [class.dark:text-sky-400]="step() === 3"
+            [class.text-slate-500]="step() !== 3"
+            [class.dark:text-slate-400]="step() !== 3"
+          >
+            <span
+              class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
+              [class.bg-sky-600]="step() === 3"
+              [class.text-white]="step() === 3"
+              [class.bg-slate-200]="step() !== 3"
+              [class.text-slate-600]="step() !== 3"
+              [class.dark:bg-slate-800]="step() !== 3"
+              [class.dark:text-slate-300]="step() !== 3"
+            >
+              3
+            </span>
+            <span>Estilo</span>
+          </div>
+        </div>
+      }
+
+      @if (step() !== 4) {
+        <button
+          type="button"
+          class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+          (click)="close.emit()"
+          title="Cerrar asistente"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 sm:p-8 max-h-[75vh] overflow-y-auto">
+      <!-- PASO 1: NICHO E INDUSTRIA -->
+      @if (step() === 1) {
+        <div class="space-y-6 animate-fade-in">
+          <div>
+            <span
+              class="text-xs font-extrabold uppercase tracking-wider text-sky-600 dark:text-sky-400"
+            >
+              Paso 1 de 3
+            </span>
+            <h3
+              class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-1"
+            >
+              ¿Qué tipo de productos vas a vender?
+            </h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Selecciona la categoría más cercana a tu negocio para que Gemini redacte textos
+              comerciales precisos.
+            </p>
+          </div>
+
+          <!-- Nombre de la tienda -->
+          <div class="space-y-1.5">
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400"
+            >
+              Nombre de tu Tienda o Marca
+            </label>
+            <input
+              type="text"
+              [ngModel]="businessName()"
+              (ngModelChange)="businessName.set($event)"
+              placeholder="Ej. UrbanKicks, Café Don Tomás, NovaStore..."
+              class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm font-semibold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white dark:focus:bg-slate-800 transition shadow-xs"
+            />
+          </div>
+
+          <!-- Grid de chips de industria -->
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400"
+            >
+              Categoría Principal
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              @for (item of industries; track item.id) {
+                <button
+                  type="button"
+                  class="flex items-center gap-2.5 p-3.5 rounded-2xl border text-left font-bold text-xs transition cursor-pointer"
+                  [class.border-sky-500]="industry() === item.id"
+                  [class.bg-sky-50]="industry() === item.id"
+                  [class.text-sky-900]="industry() === item.id"
+                  [class.dark:bg-sky-950/60]="industry() === item.id"
+                  [class.dark:text-sky-200]="industry() === item.id"
+                  [class.dark:border-sky-400]="industry() === item.id"
+                  [class.ring-2]="industry() === item.id"
+                  [class.ring-sky-500/20]="industry() === item.id"
+                  [class.shadow-xs]="industry() === item.id"
+                  [class.border-slate-200]="industry() !== item.id"
+                  [class.dark:border-slate-700/60]="industry() !== item.id"
+                  [class.bg-slate-50/70]="industry() !== item.id"
+                  [class.hover:bg-slate-100/80]="industry() !== item.id"
+                  [class.dark:bg-slate-800/40]="industry() !== item.id"
+                  [class.dark:hover:bg-slate-800/70]="industry() !== item.id"
+                  [class.text-slate-700]="industry() !== item.id"
+                  [class.dark:text-slate-200]="industry() !== item.id"
+                  [class.hover:border-slate-300]="industry() !== item.id"
+                  [class.dark:hover:border-slate-600]="industry() !== item.id"
+                  (click)="selectIndustry(item.id)"
+                >
+                  <span class="text-xl shrink-0">{{ item.icon }}</span>
+                  <span class="truncate">{{ item.label }}</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Detalle adicional opcional -->
+          <div class="space-y-1.5">
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400"
+            >
+              Detalle opcional sobre tus productos
+            </label>
+            <input
+              type="text"
+              [ngModel]="customDetail()"
+              (ngModelChange)="customDetail.set($event)"
+              placeholder="Ej: Ropa deportiva oversize de algodón premium, Joyería hecha a mano en plata..."
+              class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white dark:focus:bg-slate-800 transition shadow-xs"
+            />
+          </div>
+        </div>
+      }
+
+      <!-- PASO 2: AUDIENCIA Y PROPUESTA DE VALOR -->
+      @if (step() === 2) {
+        <div class="space-y-6 animate-fade-in">
+          <div>
+            <span
+              class="text-xs font-extrabold uppercase tracking-wider text-sky-600 dark:text-sky-400"
+            >
+              Paso 2 de 3
+            </span>
+            <h3
+              class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-1"
+            >
+              ¿Para quién es tu tienda y qué te hace único?
+            </h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Esto le permite a la IA redactar los beneficios de compra y la propuesta de valor en
+              el Hero.
+            </p>
+          </div>
+
+          <!-- Público objetivo -->
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400"
+            >
+              ¿Quién es tu cliente ideal?
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              @for (aud of audiences; track aud.id) {
+                <button
+                  type="button"
+                  class="flex items-center gap-3 p-3.5 rounded-2xl border text-left font-bold text-xs transition cursor-pointer"
+                  [class.border-sky-500]="targetAudience() === aud.id"
+                  [class.bg-sky-50]="targetAudience() === aud.id"
+                  [class.text-sky-900]="targetAudience() === aud.id"
+                  [class.dark:bg-sky-950/60]="targetAudience() === aud.id"
+                  [class.dark:text-sky-200]="targetAudience() === aud.id"
+                  [class.dark:border-sky-400]="targetAudience() === aud.id"
+                  [class.ring-2]="targetAudience() === aud.id"
+                  [class.ring-sky-500/20]="targetAudience() === aud.id"
+                  [class.border-slate-200]="targetAudience() !== aud.id"
+                  [class.dark:border-slate-700/60]="targetAudience() !== aud.id"
+                  [class.bg-slate-50/70]="targetAudience() !== aud.id"
+                  [class.hover:bg-slate-100/80]="targetAudience() !== aud.id"
+                  [class.dark:bg-slate-800/40]="targetAudience() !== aud.id"
+                  [class.dark:hover:bg-slate-800/70]="targetAudience() !== aud.id"
+                  [class.text-slate-700]="targetAudience() !== aud.id"
+                  [class.dark:text-slate-200]="targetAudience() !== aud.id"
+                  [class.hover:border-slate-300]="targetAudience() !== aud.id"
+                  [class.dark:hover:border-slate-600]="targetAudience() !== aud.id"
+                  (click)="selectAudience(aud.id)"
+                >
+                  <span class="text-xl shrink-0">{{ aud.icon }}</span>
+                  <span class="truncate">{{ aud.label }}</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Propuesta de valor -->
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400"
+            >
+              ¿Cuál es tu mayor ventaja competitiva?
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              @for (prop of valueProps; track prop.id) {
+                <button
+                  type="button"
+                  class="flex items-center gap-3 p-3.5 rounded-2xl border text-left font-bold text-xs transition cursor-pointer"
+                  [class.border-sky-500]="valueProposition() === prop.id"
+                  [class.bg-sky-50]="valueProposition() === prop.id"
+                  [class.dark:bg-sky-950/60]="valueProposition() === prop.id"
+                  [class.dark:border-sky-400]="valueProposition() === prop.id"
+                  [class.ring-2]="valueProposition() === prop.id"
+                  [class.ring-sky-500/20]="valueProposition() === prop.id"
+                  [class.border-slate-200]="valueProposition() !== prop.id"
+                  [class.dark:border-slate-700/60]="valueProposition() !== prop.id"
+                  [class.bg-slate-50/70]="valueProposition() !== prop.id"
+                  [class.hover:bg-slate-100/80]="valueProposition() !== prop.id"
+                  [class.dark:bg-slate-800/40]="valueProposition() !== prop.id"
+                  [class.dark:hover:bg-slate-800/70]="valueProposition() !== prop.id"
+                  [class.hover:border-slate-300]="valueProposition() !== prop.id"
+                  [class.dark:hover:border-slate-600]="valueProposition() !== prop.id"
+                  (click)="selectValueProp(prop.id)"
+                >
+                  <span class="text-xl shrink-0">{{ prop.icon }}</span>
+                  <div class="min-w-0">
+                    <p
+                      class="font-bold text-xs"
+                      [class.text-sky-900]="valueProposition() === prop.id"
+                      [class.dark:text-sky-200]="valueProposition() === prop.id"
+                      [class.text-slate-800]="valueProposition() !== prop.id"
+                      [class.dark:text-slate-200]="valueProposition() !== prop.id"
+                    >
+                      {{ prop.label }}
+                    </p>
+                    <p
+                      class="text-[11px] font-normal truncate mt-0.5"
+                      [class.text-sky-700/80]="valueProposition() === prop.id"
+                      [class.dark:text-sky-300/80]="valueProposition() === prop.id"
+                      [class.text-slate-500]="valueProposition() !== prop.id"
+                      [class.dark:text-slate-400]="valueProposition() !== prop.id"
+                    >
+                      {{ prop.id }}
+                    </p>
+                  </div>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- PASO 3: ESTILO VISUAL Y TONO -->
+      @if (step() === 3) {
+        <div class="space-y-6 animate-fade-in">
+          <div>
+            <span
+              class="text-xs font-extrabold uppercase tracking-wider text-sky-600 dark:text-sky-400"
+            >
+              Paso 3 de 3
+            </span>
+            <h3
+              class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-1"
+            >
+              ¿Cómo quieres que se sienta tu tienda?
+            </h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Elegiremos los tokens de diseño, contrastes cromáticos y tipografías que mejor
+              transmitan la personalidad de tu marca.
+            </p>
+          </div>
+
+          <!-- Estilos visuales -->
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400"
+            >
+              Estilo Visual de Diseño
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              @for (st of styles; track st.id) {
+                <button
+                  type="button"
+                  class="p-4 rounded-2xl border text-left transition cursor-pointer relative flex flex-col justify-between"
+                  [class.border-sky-500]="stylePreference() === st.id"
+                  [class.bg-sky-50/60]="stylePreference() === st.id"
+                  [class.dark:bg-sky-950/50]="stylePreference() === st.id"
+                  [class.dark:border-sky-400]="stylePreference() === st.id"
+                  [class.ring-2]="stylePreference() === st.id"
+                  [class.ring-sky-500/20]="stylePreference() === st.id"
+                  [class.border-slate-200]="stylePreference() !== st.id"
+                  [class.dark:border-slate-700/60]="stylePreference() !== st.id"
+                  [class.bg-slate-50/70]="stylePreference() !== st.id"
+                  [class.hover:bg-slate-100/80]="stylePreference() !== st.id"
+                  [class.dark:bg-slate-800/40]="stylePreference() !== st.id"
+                  [class.dark:hover:bg-slate-800/70]="stylePreference() !== st.id"
+                  [class.hover:border-slate-300]="stylePreference() !== st.id"
+                  [class.dark:hover:border-slate-600]="stylePreference() !== st.id"
+                  (click)="selectStyle(st.id)"
+                >
+                  <div>
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                      <h4
+                        class="font-extrabold text-sm"
+                        [class.text-sky-950]="stylePreference() === st.id"
+                        [class.dark:text-sky-200]="stylePreference() === st.id"
+                        [class.text-slate-900]="stylePreference() !== st.id"
+                        [class.dark:text-white]="stylePreference() !== st.id"
+                      >
+                        {{ st.name }}
+                      </h4>
+                      <div class="flex items-center gap-1 shrink-0">
+                        @for (c of st.colors; track c) {
+                          <span
+                            class="w-3.5 h-3.5 rounded-full border border-black/10 dark:border-white/20 shadow-xs"
+                            [style.backgroundColor]="c"
+                          ></span>
+                        }
+                      </div>
+                    </div>
+                    <p
+                      class="text-[11px] leading-relaxed"
+                      [class.text-sky-800/80]="stylePreference() === st.id"
+                      [class.dark:text-sky-300/80]="stylePreference() === st.id"
+                      [class.text-slate-500]="stylePreference() !== st.id"
+                      [class.dark:text-slate-400]="stylePreference() !== st.id"
+                    >
+                      {{ st.desc }}
+                    </p>
+                  </div>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Tono de comunicación -->
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400"
+            >
+              Tono de Comunicación
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              @for (t of tones; track t.id) {
+                <button
+                  type="button"
+                  class="p-3.5 rounded-2xl border text-left transition cursor-pointer"
+                  [class.border-sky-500]="tone() === t.id"
+                  [class.bg-sky-50]="tone() === t.id"
+                  [class.dark:bg-sky-950/50]="tone() === t.id"
+                  [class.dark:border-sky-400]="tone() === t.id"
+                  [class.ring-2]="tone() === t.id"
+                  [class.ring-sky-500/20]="tone() === t.id"
+                  [class.border-slate-200]="tone() !== t.id"
+                  [class.dark:border-slate-700/60]="tone() !== t.id"
+                  [class.bg-slate-50/70]="tone() !== t.id"
+                  [class.hover:bg-slate-100/80]="tone() !== t.id"
+                  [class.dark:bg-slate-800/40]="tone() !== t.id"
+                  [class.dark:hover:bg-slate-800/70]="tone() !== t.id"
+                  [class.hover:border-slate-300]="tone() !== t.id"
+                  [class.dark:hover:border-slate-600]="tone() !== t.id"
+                  (click)="selectTone(t.id)"
+                >
+                  <p
+                    class="font-bold text-xs"
+                    [class.text-sky-900]="tone() === t.id"
+                    [class.dark:text-sky-200]="tone() === t.id"
+                    [class.text-slate-800]="tone() !== t.id"
+                    [class.dark:text-slate-200]="tone() !== t.id"
+                  >
+                    {{ t.label }}
+                  </p>
+                  <p
+                    class="text-[10px] mt-0.5"
+                    [class.text-sky-700/80]="tone() === t.id"
+                    [class.dark:text-sky-300/80]="tone() === t.id"
+                    [class.text-slate-500]="tone() !== t.id"
+                    [class.dark:text-slate-400]="tone() !== t.id"
+                  >
+                    {{ t.desc }}
+                  </p>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- PASO 4: GENERANDO CON IA -->
+      @if (step() === 4) {
+        <div
+          class="py-16 sm:py-24 flex flex-col items-center justify-center text-center space-y-6 animate-fade-in"
+        >
+          <div class="relative flex items-center justify-center">
+            <!-- Pulsing outer ring -->
+            <div class="absolute w-28 h-28 rounded-full bg-sky-500/20 animate-ping"></div>
+            <div
+              class="w-20 h-20 rounded-3xl bg-linear-to-tr from-sky-500 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-xl shadow-sky-500/30 animate-pulse"
+            >
+              <svg class="w-10 h-10 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="max-w-md space-y-2">
+            <h3
+              class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight"
+            >
+              Diseñando tu tienda en tiempo real
+            </h3>
+            <p
+              class="text-sm font-medium text-sky-600 dark:text-sky-400 min-h-[1.5rem] transition-all"
+            >
+              {{ loadingMessage() }}
+            </p>
+          </div>
+
+          <div class="w-64 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div
+              class="h-full bg-linear-to-r from-sky-500 via-indigo-500 to-purple-600 rounded-full animate-progress-indeterminate"
+            ></div>
+          </div>
+        </div>
+      }
+
+      <!-- PASO 5: PREVISUALIZACIÓN Y ACTIVACIÓN -->
+      @if (step() === 5 && generatedStore(); as gen) {
+        <div class="space-y-6 animate-fade-in">
+          <!-- Top summary banner -->
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-sky-50 dark:bg-sky-950/50 border border-sky-200/80 dark:border-sky-800/80"
+          >
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-base">✨</span>
+                <h3 class="text-base font-extrabold text-slate-900 dark:text-white">
+                  ¡Diseño generado con éxito!
+                </h3>
+              </div>
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
+                "{{ gen.tagline }}" &bull; {{ gen.business_description }}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <!-- View mode toggle -->
+              <div
+                class="flex items-center p-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs"
+              >
+                <button
+                  type="button"
+                  class="px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer"
+                  [class.bg-sky-500]="previewMode() === 'desktop'"
+                  [class.text-white]="previewMode() === 'desktop'"
+                  [class.text-slate-600]="previewMode() !== 'desktop'"
+                  [class.dark:text-slate-400]="previewMode() !== 'desktop'"
+                  (click)="previewMode.set('desktop')"
+                >
+                  Desktop
+                </button>
+                <button
+                  type="button"
+                  class="px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer"
+                  [class.bg-sky-500]="previewMode() === 'mobile'"
+                  [class.text-white]="previewMode() === 'mobile'"
+                  [class.text-slate-600]="previewMode() !== 'mobile'"
+                  [class.dark:text-slate-400]="previewMode() !== 'mobile'"
+                  (click)="previewMode.set('mobile')"
+                >
+                  Móvil
+                </button>
+              </div>
+
+              <button
+                type="button"
+                class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer"
+                (click)="step.set(3)"
+              >
+                Ajustar opciones
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Preview Canvas -->
+          <div
+            class="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 overflow-hidden shadow-inner"
+            [class.max-w-sm]="previewMode() === 'mobile'"
+            [class.mx-auto]="previewMode() === 'mobile'"
+            style="height: 520px"
+          >
+            <app-store-preview [data]="previewData()" />
+          </div>
+
+          <!-- Generated Highlights Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Categorías -->
+            <div
+              class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-800/40"
+            >
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Categorías que se crearán
+              </span>
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                @for (cat of gen.suggested_categories; track cat.name) {
+                  <span
+                    class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
+                  >
+                    <span>{{ cat.icon }}</span>
+                    <span>{{ cat.name }}</span>
+                  </span>
+                }
+              </div>
+            </div>
+
+            <!-- Paleta de color -->
+            <div
+              class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-800/40"
+            >
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Paleta de Color sugerida
+              </span>
+              <div class="flex items-center gap-2 mt-2">
+                <div class="flex items-center gap-1.5">
+                  <span
+                    class="w-6 h-6 rounded-full border border-black/10 dark:border-white/20 shadow-xs"
+                    [style.backgroundColor]="gen.branding_colors.primary"
+                    title="Color Principal"
+                  ></span>
+                  <span
+                    class="w-6 h-6 rounded-full border border-black/10 dark:border-white/20 shadow-xs"
+                    [style.backgroundColor]="gen.branding_colors.secondary"
+                    title="Color Secundario"
+                  ></span>
+                  <span
+                    class="w-6 h-6 rounded-full border border-black/10 dark:border-white/20 shadow-xs"
+                    [style.backgroundColor]="gen.branding_colors.accent"
+                    title="Color de Acento"
+                  ></span>
+                </div>
+                <span class="text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate">
+                  Estilo: {{ gen.suggested_theme_id }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Secciones activas -->
+            <div
+              class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-800/40"
+            >
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Estructura del Storefront
+              </span>
+              <p class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-2">
+                {{ gen.storefront_sections.length }} Secciones configuradas
+              </p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                Hero banner, Beneficios, Categorías, Catálogo, Historia y Newsletter
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div
+      class="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/90 backdrop-blur-sm"
+    >
+      <!-- Left button -->
+      <div>
+        @if (step() > 1 && step() <= 3) {
+          <button
+            type="button"
+            class="px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
+            (click)="prevStep()"
+          >
+            Atrás
+          </button>
+        } @else if (step() === 1) {
+          <button
+            type="button"
+            class="px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition cursor-pointer"
+            (click)="close.emit()"
+          >
+            Configurar manualmente después
+          </button>
+        }
+      </div>
+
+      <!-- Right button -->
+      <div class="flex items-center gap-3">
+        @if (step() === 1) {
+          <button
+            type="button"
+            class="px-6 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold shadow-md shadow-sky-600/20 transition cursor-pointer"
+            (click)="goToStep(2)"
+          >
+            Continuar
+          </button>
+        } @else if (step() === 2) {
+          <button
+            type="button"
+            class="px-6 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold shadow-md shadow-sky-600/20 transition cursor-pointer"
+            (click)="goToStep(3)"
+          >
+            Continuar
+          </button>
+        } @else if (step() === 3) {
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-linear-to-r from-sky-500 via-indigo-600 to-purple-600 hover:opacity-95 text-white text-xs font-black shadow-lg shadow-indigo-500/25 transition cursor-pointer active:scale-[0.98]"
+            (click)="startGeneration()"
+          >
+            <span>Generar Tienda con Venti IA</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+          </button>
+        } @else if (step() === 5) {
+          <button
+            type="button"
+            class="px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
+            (click)="startGeneration()"
+            [disabled]="isApplying()"
+          >
+            Regenerar otra versión
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-lg shadow-emerald-600/25 transition cursor-pointer active:scale-[0.98] disabled:opacity-50"
+            (click)="applyAndPublish()"
+            [disabled]="isApplying()"
+          >
+            @if (isApplying()) {
+              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              <span>Publicando tu tienda...</span>
+            } @else {
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              <span>¡Me encanta, activar mi tienda!</span>
+            }
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
