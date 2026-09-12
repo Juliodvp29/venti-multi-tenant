@@ -10,6 +10,7 @@ import {
   SupportTicket,
   TroubleshootingGuide,
 } from '@core/models/support';
+import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -60,8 +61,12 @@ export class SupportService {
       const hasBranding = Boolean(tenant.logo_url && tenant.favicon_url);
       const hasActiveProducts = (productsRes.count ?? 0) > 0;
       const hasShippingZones = (shippingRes.count ?? 0) > 0;
-      const paymentMethods = settings['payment_methods'] as Record<string, { enabled?: boolean }> | undefined;
-      const hasPaymentMethod = Object.values(paymentMethods ?? {}).some((method) => method?.enabled === true);
+      const paymentMethods = settings['payment_methods'] as
+        | Record<string, { enabled?: boolean }>
+        | undefined;
+      const hasPaymentMethod = Object.values(paymentMethods ?? {}).some(
+        (method) => method?.enabled === true,
+      );
       const hasCustomizedTheme = Boolean(
         settings['theme_id'] || settings['theme_config'] || settings['theme'],
       );
@@ -188,7 +193,7 @@ export class SupportService {
       const fileName = `${tenantId}/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
 
       const { error: uploadError } = await this.supabase.storage
-        .from('support-attachments')
+        .from(environment.storage.buckets.support)
         .upload(fileName, file, {
           cacheControl: '3600',
           upsert: false,
@@ -198,7 +203,9 @@ export class SupportService {
         return { url: null, error: uploadError.message };
       }
 
-      const { data } = this.supabase.storage.from('support-attachments').getPublicUrl(fileName);
+      const { data } = this.supabase.storage
+        .from(environment.storage.buckets.support)
+        .getPublicUrl(fileName);
       return { url: data.publicUrl, error: null };
     } catch (err: any) {
       return { url: null, error: err?.message || 'Error al subir archivo adjunto' };
