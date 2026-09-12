@@ -10,6 +10,7 @@ export const environment = {
       logos: 'tenant-logos',
       media: 'media-library',
       banners: 'tenant-banners',
+      support: 'support-attachments',
     },
     maxFileSizeMb: 5,
     allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
