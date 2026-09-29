@@ -166,7 +166,7 @@ export class McpManager implements OnInit {
 
   readonly codexConfigJson = computed(() => {
     const token = this.createdKeySecret() || 'TU_CLAVE_MCP';
-    return this.mcpService.generateCursorConfig(token);
+    return this.mcpService.generateCodexConfig(token);
   });
 
   ngOnInit(): void {

@@ -119,6 +119,18 @@ export class McpService {
     const config = {
       mcpServers: {
         venti: {
+          type: 'sse',
+          url: `${this.getMcpEndpointUrl()}?key=${token}`,
+        },
+      },
+    };
+    return JSON.stringify(config, null, 2);
+  }
+
+  generateCodexConfig(token: string): string {
+    const config = {
+      mcpServers: {
+        venti: {
           command: 'node',
           args: [
             'C:\\Users\\julio\\Documents\\Dev\\Angular\\venti-multi-tenant\\scripts\\venti-mcp-cli.js',
