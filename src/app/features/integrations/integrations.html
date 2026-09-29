@@ -56,7 +56,23 @@
       class="flex-1 rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 shadow-sm transition dark:text-gray-300 sm:flex-none"
     >
       Correos y Plantillas
-      <span class="ml-1 rounded-full bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-400">Resend</span>
+      <span
+        class="ml-1 rounded-full bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-400"
+        >Resend</span
+      >
+    </button>
+    <button
+      type="button"
+      (click)="activeTab.set('mcp')"
+      [class.bg-white]="activeTab() === 'mcp'"
+      [class.dark:bg-gray-800]="activeTab() === 'mcp'"
+      class="flex-1 rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 shadow-sm transition dark:text-gray-300 sm:flex-none"
+    >
+      Agentes IA (MCP)
+      <span
+        class="ml-1 rounded-full bg-violet-100 px-1.5 py-0.5 text-[10px] font-bold text-violet-700 dark:bg-violet-950/60 dark:text-violet-400"
+        >Nuevo</span
+      >
     </button>
   </div>
 
@@ -93,23 +109,28 @@
           </div>
           <span class="text-gray-400 transition group-hover:translate-x-1">→</span>
         </button>
-        <div class="integration-card bg-white opacity-75 dark:bg-gray-900">
+        <button
+          type="button"
+          (click)="activeTab.set('mcp')"
+          class="integration-card group bg-white text-left dark:bg-gray-900"
+        >
           <div
             class="integration-icon bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300"
           >
             M
           </div>
           <div class="min-w-0 flex-1">
-            <h3 class="font-bold text-gray-900 dark:text-white">MCP</h3>
+            <h3 class="font-bold text-gray-900 dark:text-white">MCP (Model Context Protocol)</h3>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Conecta agentes de IA con tu operación.
+              Conecta Claude Desktop, ChatGPT o Cursor con tu tienda.
             </p>
             <span
-              class="mt-2 inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-              >Próximamente</span
+              class="mt-2 inline-flex rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-700 dark:bg-violet-950/60 dark:text-violet-300"
+              >Disponible</span
             >
           </div>
-        </div>
+          <span class="text-gray-400 transition group-hover:translate-x-1">→</span>
+        </button>
       </div>
 
       <div class="pt-4">
@@ -297,6 +318,10 @@
   } @else if (activeTab() === 'emails') {
     <section class="space-y-5">
       <app-email-templates />
+    </section>
+  } @else if (activeTab() === 'mcp') {
+    <section class="space-y-5">
+      <app-mcp-manager />
     </section>
   }
 </main>

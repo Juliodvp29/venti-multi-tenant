@@ -1,0 +1,611 @@
+<div class="space-y-8">
+  <!-- Top Banner / Explainer -->
+  <div
+    class="relative overflow-hidden rounded-2xl border border-violet-100 bg-gradient-to-r from-violet-500/10 via-purple-500/5 to-transparent p-6 dark:border-violet-900/40 dark:from-violet-950/30"
+  >
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span
+            class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600 font-bold text-white shadow-sm"
+          >
+            M
+          </span>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+            Model Context Protocol (MCP)
+          </h2>
+          <span
+            class="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700 dark:bg-violet-950/60 dark:text-violet-300"
+          >
+            Activo
+          </span>
+        </div>
+        <p class="max-w-2xl text-sm text-gray-600 dark:text-gray-400">
+          Conecta agentes de IA como <strong>Claude Desktop</strong>, <strong>ChatGPT</strong>,
+          <strong>Gemini</strong> o <strong>Cursor</strong> directamente a tu tienda. Haz preguntas
+          en lenguaje natural sobre tus ventas, pedidos, stock y clientes en tiempo real.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        (click)="openCreate()"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
+      >
+        <span class="text-base leading-none">+</span> Conectar nuevo agente
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="space-y-4">
+      <div class="h-28 animate-pulse rounded-2xl bg-gray-100 dark:bg-gray-900"></div>
+      <div class="h-44 animate-pulse rounded-2xl bg-gray-100 dark:bg-gray-900"></div>
+    </div>
+  } @else {
+    <!-- Active Connections / API Keys Section -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-gray-900 dark:text-white">Agentes conectados</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            Claves de acceso activas para tus aplicaciones de inteligencia artificial.
+          </p>
+        </div>
+      </div>
+
+      @if (keys().length === 0) {
+        <div
+          class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 p-8 text-center dark:border-gray-800"
+        >
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400"
+          >
+            <span class="text-xl font-bold">M</span>
+          </div>
+          <h4 class="mt-3 text-sm font-semibold text-gray-900 dark:text-white">
+            Aún no has conectado ningún agente
+          </h4>
+          <p class="mt-1 max-w-sm text-xs text-gray-500 dark:text-gray-400">
+            Genera tu primera clave MCP para configurar Claude Desktop o Cursor y empezar a hacerle
+            consultas a tu tienda.
+          </p>
+          <button
+            type="button"
+            (click)="openCreate()"
+            class="mt-4 rounded-xl bg-violet-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-violet-700"
+          >
+            Crear primera conexión
+          </button>
+        </div>
+      } @else {
+        <div
+          class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+        >
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead
+                class="border-b border-gray-100 bg-gray-50/50 text-xs font-semibold text-gray-500 dark:border-gray-800 dark:bg-gray-950/50 dark:text-gray-400"
+              >
+                <tr>
+                  <th class="px-5 py-3.5">Nombre / Agente</th>
+                  <th class="px-5 py-3.5">Identificador</th>
+                  <th class="px-5 py-3.5">Permisos</th>
+                  <th class="px-5 py-3.5">Último uso</th>
+                  <th class="px-5 py-3.5 text-center">Estado</th>
+                  <th class="px-5 py-3.5 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody
+                class="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300"
+              >
+                @for (key of keys(); track key.id) {
+                  <tr class="transition hover:bg-gray-50/40 dark:hover:bg-gray-800/30">
+                    <td class="px-5 py-4 font-semibold text-gray-900 dark:text-white">
+                      <div class="flex items-center gap-2">
+                        <span
+                          class="flex h-6 w-6 items-center justify-center rounded-md bg-violet-100 text-xs font-bold text-violet-700 dark:bg-violet-950 dark:text-violet-300"
+                        >
+                          AI
+                        </span>
+                        {{ key.name }}
+                      </div>
+                    </td>
+                    <td class="px-5 py-4">
+                      <code
+                        class="rounded bg-gray-100 px-2 py-1 font-mono text-xs dark:bg-gray-800"
+                      >
+                        {{ key.key_prefix }}
+                      </code>
+                    </td>
+                    <td class="px-5 py-4">
+                      <div class="flex flex-wrap gap-1">
+                        @for (scope of key.scopes; track scope) {
+                          <span
+                            class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                          >
+                            {{ scope.replace('read:', '') }}
+                          </span>
+                        }
+                      </div>
+                    </td>
+                    <td class="px-5 py-4 text-xs text-gray-500 dark:text-gray-400">
+                      @if (key.last_used_at) {
+                        {{ key.last_used_at | date: 'dd/MM/yyyy HH:mm' }}
+                      } @else {
+                        <span class="text-gray-400">Sin uso registrado</span>
+                      }
+                    </td>
+                    <td class="px-5 py-4 text-center">
+                      <button
+                        type="button"
+                        (click)="toggleKey(key)"
+                        [disabled]="actionId() === key.id"
+                        class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition"
+                        [class.bg-emerald-50]="key.is_active"
+                        [class.text-emerald-700]="key.is_active"
+                        [class.dark:bg-emerald-950/40]="key.is_active"
+                        [class.dark:text-emerald-400]="key.is_active"
+                        [class.bg-gray-100]="!key.is_active"
+                        [class.text-gray-600]="!key.is_active"
+                        [class.dark:bg-gray-800]="!key.is_active"
+                        [class.dark:text-gray-400]="!key.is_active"
+                      >
+                        <span
+                          class="h-1.5 w-1.5 rounded-full"
+                          [class.bg-emerald-500]="key.is_active"
+                          [class.bg-gray-400]="!key.is_active"
+                        ></span>
+                        {{ key.is_active ? 'Activo' : 'Pausado' }}
+                      </button>
+                    </td>
+                    <td class="px-5 py-4 text-right">
+                      <button
+                        type="button"
+                        (click)="deleteKey(key)"
+                        [disabled]="actionId() === key.id"
+                        class="text-xs font-medium text-rose-600 transition hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
+                      >
+                        Revocar
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Available MCP Tools Catalog -->
+    <div class="space-y-4 pt-4">
+      <div>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white">
+          Capacidades disponibles para tu agente
+        </h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          Estas son las herramientas que tu agente de IA utilizará automáticamente para responder
+          preguntas.
+        </p>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        @for (tool of catalogTools; track tool.name) {
+          <div
+            class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+          >
+            <div class="flex items-center justify-between">
+              <span
+                class="rounded bg-violet-100 px-2 py-0.5 font-mono text-[11px] font-bold text-violet-700 dark:bg-violet-950 dark:text-violet-300"
+              >
+                {{ tool.name }}
+              </span>
+              <span class="text-[10px] uppercase tracking-wider text-gray-400">
+                {{ tool.scope.replace('read:', '') }}
+              </span>
+            </div>
+            <p class="mt-2 text-xs text-gray-600 dark:text-gray-300">
+              {{ tool.description }}
+            </p>
+            <div class="mt-3 rounded-lg bg-gray-50 p-2.5 dark:bg-gray-800/60">
+              <span class="text-[10px] font-semibold text-gray-500 dark:text-gray-400"
+                >Ejemplo de consulta:</span
+              >
+              <p class="mt-1 text-xs italic text-gray-700 dark:text-gray-300">
+                "{{ tool.exampleQueries[0] }}"
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Audit Logs Section -->
+    @if (logs().length > 0) {
+      <div class="space-y-4 pt-4">
+        <div>
+          <h3 class="text-base font-bold text-gray-900 dark:text-white">
+            Registro de actividad reciente
+          </h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            Consultas ejecutadas por tus agentes a través del servidor MCP.
+          </p>
+        </div>
+
+        <div
+          class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+        >
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead
+                class="border-b border-gray-100 bg-gray-50/50 text-gray-500 dark:border-gray-800 dark:bg-gray-950/50"
+              >
+                <tr>
+                  <th class="px-4 py-3">Herramienta</th>
+                  <th class="px-4 py-3">Estado</th>
+                  <th class="px-4 py-3">Tiempo de respuesta</th>
+                  <th class="px-4 py-3 text-right">Fecha y hora</th>
+                </tr>
+              </thead>
+              <tbody
+                class="divide-y divide-gray-100 dark:divide-gray-800 text-gray-600 dark:text-gray-300"
+              >
+                @for (log of logs(); track log.id) {
+                  <tr>
+                    <td class="px-4 py-3 font-mono font-medium text-gray-900 dark:text-white">
+                      {{ log.tool_name }}
+                    </td>
+                    <td class="px-4 py-3">
+                      <span
+                        class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                        [class.bg-emerald-100]="log.status === 'success'"
+                        [class.text-emerald-800]="log.status === 'success'"
+                        [class.dark:bg-emerald-950/60]="log.status === 'success'"
+                        [class.dark:text-emerald-300]="log.status === 'success'"
+                        [class.bg-rose-100]="log.status !== 'success'"
+                        [class.text-rose-800]="log.status !== 'success'"
+                      >
+                        {{ log.status === 'success' ? 'Éxito' : 'Error' }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-500">
+                      {{ log.execution_time_ms ? log.execution_time_ms + ' ms' : '-' }}
+                    </td>
+                    <td class="px-4 py-3 text-right text-gray-400">
+                      {{ log.created_at | date: 'dd/MM/yyyy HH:mm:ss' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Creation / Config Modal -->
+  @if (isCreateOpen()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/60 backdrop-blur-xs"
+    >
+      <div
+        class="relative w-full max-w-xl rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
+      >
+        <!-- Step 1: Form to Generate Key -->
+        @if (!createdKeySecret()) {
+          <div class="space-y-5">
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                Conectar nuevo agente de IA
+              </h3>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Crea una clave API segura para autorizar a tu asistente (Claude, ChatGPT, Cursor,
+                etc.).
+              </p>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Nombre del agente o dispositivo
+                </label>
+                <input
+                  type="text"
+                  [ngModel]="newKeyName()"
+                  (ngModelChange)="newKeyName.set($event)"
+                  placeholder="ej. Claude Desktop - Mi Mac"
+                  class="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-violet-500 focus:ring-1 focus:ring-violet-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Permisos de lectura (Scopes)
+                </label>
+                <div class="mt-2 space-y-2">
+                  @for (scope of availableScopes; track scope.id) {
+                    <label
+                      class="flex items-start gap-2.5 rounded-xl border border-gray-200 p-2.5 text-xs transition cursor-pointer hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/40"
+                    >
+                      <input
+                        type="checkbox"
+                        [checked]="selectedScopes().includes(scope.id)"
+                        (change)="toggleScope(scope.id)"
+                        class="mt-0.5 rounded border-gray-300 text-violet-600 focus:ring-violet-500 dark:border-gray-700 dark:bg-gray-800"
+                      />
+                      <div>
+                        <span class="font-semibold text-gray-900 dark:text-white">{{
+                          scope.label
+                        }}</span>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400">{{ scope.desc }}</p>
+                      </div>
+                    </label>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                (click)="closeCreate()"
+                [disabled]="isSaving()"
+                class="rounded-xl px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                (click)="createKey()"
+                [disabled]="isSaving()"
+                class="rounded-xl bg-violet-600 px-5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-violet-700 disabled:opacity-50"
+              >
+                {{ isSaving() ? 'Generando...' : 'Generar clave MCP' }}
+              </button>
+            </div>
+          </div>
+        } @else {
+          <!-- Step 2: Show Secret Key & Ready-to-use Configurations -->
+          <div class="space-y-5">
+            <div class="flex items-center gap-2">
+              <span
+                class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 text-sm font-bold"
+              >
+                ✓
+              </span>
+              <div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">
+                  ¡Conexión creada con éxito!
+                </h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  Copia tu clave secreta ahora. Por seguridad, no volverá a mostrarse.
+                </p>
+              </div>
+            </div>
+
+            <!-- Key display alert -->
+            <div
+              class="rounded-xl border border-amber-200 bg-amber-50/70 p-3.5 dark:border-amber-900/40 dark:bg-amber-950/20"
+            >
+              <label
+                class="block text-[11px] font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300"
+              >
+                Tu Clave MCP Secreta
+              </label>
+              <div class="mt-1 flex items-center gap-2">
+                <input
+                  type="text"
+                  readonly
+                  [value]="createdKeySecret()"
+                  class="w-full rounded-lg border border-amber-300 bg-white px-2.5 py-1.5 font-mono text-xs text-gray-900 outline-none dark:border-amber-800 dark:bg-gray-950 dark:text-amber-100"
+                />
+                <button
+                  type="button"
+                  (click)="copyText(createdKeySecret() || '', 'Clave MCP copiada al portapapeles')"
+                  class="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-700 shrink-0"
+                >
+                  Copiar
+                </button>
+              </div>
+            </div>
+
+            <!-- Configuration Snippet Tabs -->
+            <div class="space-y-2">
+              <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300">
+                Configuración lista para usar
+              </label>
+
+              <div class="flex flex-wrap gap-1 rounded-xl bg-gray-100 p-1 dark:bg-gray-800">
+                <button
+                  type="button"
+                  (click)="activeConfigTab.set('claude')"
+                  [class.bg-white]="activeConfigTab() === 'claude'"
+                  [class.dark:bg-gray-900]="activeConfigTab() === 'claude'"
+                  class="flex-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 transition dark:text-gray-300"
+                >
+                  Claude Desktop
+                </button>
+                <button
+                  type="button"
+                  (click)="activeConfigTab.set('gemini')"
+                  [class.bg-white]="activeConfigTab() === 'gemini'"
+                  [class.dark:bg-gray-900]="activeConfigTab() === 'gemini'"
+                  class="flex-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 transition dark:text-gray-300"
+                >
+                  Gemini
+                </button>
+                <button
+                  type="button"
+                  (click)="activeConfigTab.set('codex')"
+                  [class.bg-white]="activeConfigTab() === 'codex'"
+                  [class.dark:bg-gray-900]="activeConfigTab() === 'codex'"
+                  class="flex-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 transition dark:text-gray-300"
+                >
+                  Codex / VS Code
+                </button>
+                <button
+                  type="button"
+                  (click)="activeConfigTab.set('chatgpt')"
+                  [class.bg-white]="activeConfigTab() === 'chatgpt'"
+                  [class.dark:bg-gray-900]="activeConfigTab() === 'chatgpt'"
+                  class="flex-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 transition dark:text-gray-300"
+                >
+                  ChatGPT / OpenAPI
+                </button>
+              </div>
+
+              <!-- Claude Desktop Tab -->
+              @if (activeConfigTab() === 'claude') {
+                <div class="space-y-2">
+                  <p class="text-[11px] text-gray-500 dark:text-gray-400">
+                    Pega esto en tu archivo
+                    <code class="font-mono text-gray-700 dark:text-gray-300"
+                      >claude_desktop_config.json</code
+                    >:
+                  </p>
+                  <div class="relative">
+                    <pre
+                      class="max-h-48 overflow-x-auto rounded-xl bg-gray-950 p-3 font-mono text-[11px] text-emerald-400"
+                      >{{ claudeConfigJson() }}</pre>
+                    <button
+                      type="button"
+                      (click)="copyText(claudeConfigJson(), 'Configuración de Claude copiada')"
+                      class="absolute top-2 right-2 rounded bg-gray-800 px-2 py-1 text-[10px] font-semibold text-white hover:bg-gray-700"
+                    >
+                      Copiar JSON
+                    </button>
+                  </div>
+                </div>
+              }
+
+              <!-- Gemini Tab -->
+              @if (activeConfigTab() === 'gemini') {
+                <div class="space-y-3">
+                  <div class="space-y-1">
+                    <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+                      1. Para Gemini CLI / Antigravity (MCP Server Config):
+                    </p>
+                    <div class="relative">
+                      <pre
+                        class="max-h-40 overflow-x-auto rounded-xl bg-gray-950 p-3 font-mono text-[11px] text-amber-300"
+                        >{{ geminiConfigJson() }}</pre>
+                      <button
+                        type="button"
+                        (click)="copyText(geminiConfigJson(), 'Configuración de Gemini copiada')"
+                        class="absolute top-2 right-2 rounded bg-gray-800 px-2 py-1 text-[10px] font-semibold text-white hover:bg-gray-700"
+                      >
+                        Copiar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="space-y-1">
+                    <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+                      2. Para Python / Node SDK con Gemini (@google/genai):
+                    </p>
+                    <div class="relative">
+                      <pre
+                        class="max-h-36 overflow-x-auto rounded-xl bg-gray-950 p-3 font-mono text-[11px] text-blue-300"
+                        >{{ geminiSnippet() }}</pre>
+                      <button
+                        type="button"
+                        (click)="copyText(geminiSnippet(), 'Código para Gemini copiado')"
+                        class="absolute top-2 right-2 rounded bg-gray-800 px-2 py-1 text-[10px] font-semibold text-white hover:bg-gray-700"
+                      >
+                        Copiar Python
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <!-- Codex & VS Code Tab -->
+              @if (activeConfigTab() === 'codex') {
+                <div class="space-y-2">
+                  <p class="text-[11px] text-gray-500 dark:text-gray-400">
+                    Configuración para <strong>OpenAI Codex</strong>, <strong>Cursor</strong>,
+                    <strong>Cline</strong> o <strong>Continue.dev</strong> en VS Code (<code
+                      class="font-mono text-gray-700 dark:text-gray-300"
+                      >.cursor/mcp.json</code
+                    >
+                    o
+                    <code class="font-mono text-gray-700 dark:text-gray-300"
+                      >cline_mcp_settings.json</code
+                    >):
+                  </p>
+                  <div class="relative">
+                    <pre
+                      class="max-h-48 overflow-x-auto rounded-xl bg-gray-950 p-3 font-mono text-[11px] text-sky-400"
+                      >{{ codexConfigJson() }}</pre>
+                    <button
+                      type="button"
+                      (click)="
+                        copyText(codexConfigJson(), 'Configuración de Codex/VS Code copiada')
+                      "
+                      class="absolute top-2 right-2 rounded bg-gray-800 px-2 py-1 text-[10px] font-semibold text-white hover:bg-gray-700"
+                    >
+                      Copiar JSON
+                    </button>
+                  </div>
+                </div>
+              }
+
+              <!-- ChatGPT / OpenAPI Tab -->
+              @if (activeConfigTab() === 'chatgpt') {
+                <div class="space-y-3 text-xs">
+                  <p class="text-gray-600 dark:text-gray-300">
+                    Conecta directamente un <strong>Custom GPT</strong> en ChatGPT usando OpenAI
+                    Actions:
+                  </p>
+                  <div
+                    class="space-y-2 rounded-xl bg-gray-50 p-3 dark:bg-gray-800/60 font-mono text-[11px]"
+                  >
+                    <div>
+                      <span class="text-gray-400">1. URL del esquema OpenAPI 3.1:</span>
+                      <div class="mt-1 flex items-center justify-between gap-2">
+                        <p class="text-gray-800 dark:text-gray-200 truncate select-all">
+                          {{ openApiUrl() }}
+                        </p>
+                        <button
+                          type="button"
+                          (click)="copyText(openApiUrl(), 'URL de OpenAPI copiada')"
+                          class="rounded bg-gray-200 px-2 py-1 text-[10px] font-semibold text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 shrink-0"
+                        >
+                          Copiar URL
+                        </button>
+                      </div>
+                    </div>
+                    <div class="pt-1 border-t border-gray-200 dark:border-gray-700">
+                      <span class="text-gray-400">2. Autenticación en ChatGPT:</span>
+                      <p class="text-gray-700 dark:text-gray-300 mt-0.5">
+                        Tipo: <strong>API Key</strong> | Auth Type: <strong>Bearer</strong>
+                      </p>
+                    </div>
+                    <div class="pt-1 border-t border-gray-200 dark:border-gray-700">
+                      <span class="text-gray-400">3. Tu clave Bearer:</span>
+                      <p class="text-violet-600 dark:text-violet-400 font-bold select-all">
+                        {{ createdKeySecret() }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="flex justify-end pt-2">
+              <button
+                type="button"
+                (click)="closeCreate()"
+                class="rounded-xl bg-violet-600 px-5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-violet-700"
+              >
+                He guardado mi clave y configuración
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

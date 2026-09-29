@@ -15,13 +15,14 @@ import { WebhooksService } from '@core/services/webhooks';
 import { ToastService } from '@core/services/toast';
 import { TenantService } from '@core/services/tenant';
 import { EmailTemplatesManager } from './components/email-templates/email-templates';
+import { McpManager } from './components/mcp-manager/mcp-manager';
 
-type IntegrationTab = 'explore' | 'deliveries' | 'emails';
+type IntegrationTab = 'explore' | 'deliveries' | 'emails' | 'mcp';
 
 @Component({
   selector: 'app-integrations',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, EmailTemplatesManager],
+  imports: [CommonModule, FormsModule, DatePipe, EmailTemplatesManager, McpManager],
   templateUrl: './integrations.html',
   styleUrl: './integrations.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,7 +59,7 @@ export class Integrations {
   constructor() {
     this.route.queryParamMap.subscribe((params) => {
       const tab = params.get('tab');
-      if (tab === 'emails' || tab === 'deliveries' || tab === 'explore') {
+      if (tab === 'emails' || tab === 'deliveries' || tab === 'explore' || tab === 'mcp') {
         this.activeTab.set(tab);
       }
     });
