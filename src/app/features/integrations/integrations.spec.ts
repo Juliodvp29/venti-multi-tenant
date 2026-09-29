@@ -11,6 +11,7 @@ import { Integrations } from './integrations';
 import { EmailService } from '@core/services/email';
 import { AuthService } from '@core/services/auth';
 import { Supabase } from '@core/services/supabase';
+import { McpService } from '@core/services/mcp';
 
 describe('Integrations', () => {
   let component: Integrations;
@@ -50,6 +51,13 @@ describe('Integrations', () => {
   const supabase = {
     client: { from: vi.fn() },
   };
+  const mcpService = {
+    listKeys: vi.fn().mockResolvedValue([]),
+    listAuditLogs: vi.fn().mockResolvedValue([]),
+    getMcpEndpointUrl: vi.fn().mockReturnValue('https://example.com/functions/v1/mcp'),
+    generateClaudeConfig: vi.fn().mockReturnValue('{}'),
+    generateCursorConfig: vi.fn().mockReturnValue('{}'),
+  };
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -62,6 +70,7 @@ describe('Integrations', () => {
         { provide: EmailService, useValue: emailService },
         { provide: AuthService, useValue: authService },
         { provide: Supabase, useValue: supabase },
+        { provide: McpService, useValue: mcpService },
         {
           provide: ActivatedRoute,
           useValue: {
