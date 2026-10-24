@@ -8,93 +8,191 @@ import express from 'express';
 import { join } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from './environments/environment';
+import {
+  requestHost,
+  publicOrigin,
+  resolvePublicTenant,
+  escapeXml,
+  formatLastMod,
+} from './server.security';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
-const angularApp = new AngularNodeAppEngine();
 const supabase = createClient(environment.supabase.url, environment.supabase.anonKey);
 
-type PublicTenant = {
-  id: string;
-  subdomain: string;
-  custom_domain: string | null;
-};
+// ── Environment & Proxy Hardening ──────────────────────────────────────────
+const isVercel = process.env['VERCEL'] === '1' || Boolean(process.env['VERCEL_ENV']);
+const trustProxyEnv = process.env['TRUST_PROXY'];
 
-function requestHost(req: express.Request): string {
-  return (req.headers['x-forwarded-host'] || req.headers.host || '')
-    .toString()
-    .split(',')[0]
-    .split(':')[0]
-    .toLowerCase();
-}
-
-async function resolvePublicTenant(req: express.Request): Promise<PublicTenant | null> {
-  const host = requestHost(req);
-  const querySubdomain = typeof req.query['s'] === 'string' ? req.query['s'] : null;
-
-  let query = supabase
-    .from('tenants')
-    .select('id, subdomain, custom_domain')
-    .is('deleted_at', null);
-
-  if (querySubdomain) {
-    query = query.eq('subdomain', querySubdomain.trim());
-  } else if (host === 'localhost' || host === '127.0.0.1') {
-    query = query.eq('subdomain', 'jd-store');
+if (trustProxyEnv !== undefined) {
+  if (trustProxyEnv === 'true') {
+    app.set('trust proxy', true);
+  } else if (trustProxyEnv === 'false') {
+    app.set('trust proxy', false);
+  } else if (!isNaN(Number(trustProxyEnv))) {
+    app.set('trust proxy', Number(trustProxyEnv));
   } else {
-    const parts = host.split('.');
-    const subdomain = parts.length >= 3 && !['www', 'venti'].includes(parts[0]) ? parts[0] : null;
-    query = subdomain ? query.eq('subdomain', subdomain) : query.eq('custom_domain', host);
+    app.set('trust proxy', trustProxyEnv);
   }
-
-  const { data, error } = await query.maybeSingle();
-  if (error) {
-    console.error('[SEO] Could not resolve public tenant:', error);
-    return null;
-  }
-  return data as PublicTenant | null;
+} else if (isVercel) {
+  // On Vercel, requests are routed through 1 layer of edge proxy
+  app.set('trust proxy', 1);
+} else {
+  // Default to false for standalone Node / local development
+  app.set('trust proxy', false);
 }
 
-function publicOrigin(req: express.Request): string {
-  const protocol = (req.headers['x-forwarded-proto'] || req.protocol).toString().split(',')[0];
-  const host = (req.headers['x-forwarded-host'] || req.headers.host || '').toString().split(',')[0];
-  return `${protocol}://${host}`;
+// ── Allowed Hosts Setup ────────────────────────────────────────────────────
+const platformDomain = (process.env['PLATFORM_DOMAIN'] || '').trim().toLowerCase();
+const allowedHostsSet = new Set<string>(['localhost', '127.0.0.1']);
+
+if (platformDomain) {
+  allowedHostsSet.add(platformDomain);
+  allowedHostsSet.add(`*.${platformDomain}`);
 }
 
+// Add Vercel project deployment domains (specific to this deployment, never wildcard *.vercel.app)
+if (process.env['VERCEL_URL']) {
+  allowedHostsSet.add(process.env['VERCEL_URL'].trim().toLowerCase());
+}
+if (process.env['VERCEL_PROJECT_PRODUCTION_URL']) {
+  allowedHostsSet.add(process.env['VERCEL_PROJECT_PRODUCTION_URL'].trim().toLowerCase());
+}
+if (process.env['VERCEL_BRANCH_URL']) {
+  allowedHostsSet.add(process.env['VERCEL_BRANCH_URL'].trim().toLowerCase());
+}
+
+// Add any explicitly defined allowed hosts from environment
+const envAllowedHosts = process.env['ALLOWED_HOSTS'] || process.env['NG_ALLOWED_HOSTS'];
+if (envAllowedHosts) {
+  for (const host of envAllowedHosts.split(',')) {
+    const trimmed = host.trim().toLowerCase();
+    if (trimmed && trimmed !== '*') {
+      allowedHostsSet.add(trimmed);
+    }
+  }
+}
+
+const isProxyTrustedApp = Boolean(app.get('trust proxy'));
+const angularApp = new AngularNodeAppEngine({
+  allowedHosts: Array.from(allowedHostsSet),
+  trustProxyHeaders: isProxyTrustedApp ? ['x-forwarded-host', 'x-forwarded-proto'] : false,
+});
+
+function isHostAllowed(hostname: string): boolean {
+  if (allowedHostsSet.has(hostname)) return true;
+  for (const allowedHost of allowedHostsSet) {
+    if (allowedHost.startsWith('*.')) {
+      const domain = allowedHost.slice(1);
+      if (hostname.endsWith(domain)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function registerAllowedHost(hostname: string): void {
+  allowedHostsSet.add(hostname);
+  const engine = (angularApp as unknown as { angularAppEngine?: { allowedHosts?: Set<string> } })
+    ?.angularAppEngine;
+  if (engine?.allowedHosts && typeof engine.allowedHosts.add === 'function') {
+    engine.allowedHosts.add(hostname);
+  }
+}
+
+// ── Host Authorization & Custom Domain Verification Middleware ─────────────
+app.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const host = requestHost(req);
+  if (!host) {
+    res.status(400).type('text/plain').send('Bad Request: Invalid or missing Host header');
+    return;
+  }
+
+  if (!isHostAllowed(host)) {
+    // Check if it is an active registered custom domain in Supabase
+    try {
+      const { data, error } = await supabase
+        .from('tenants')
+        .select('id, custom_domain')
+        .eq('custom_domain', host)
+        .is('deleted_at', null)
+        .maybeSingle();
+
+      if (!error && data) {
+        registerAllowedHost(host);
+        return next();
+      }
+
+      if (host.startsWith('www.')) {
+        const apex = host.slice(4);
+        const { data: apexData, error: apexError } = await supabase
+          .from('tenants')
+          .select('id, custom_domain')
+          .eq('custom_domain', apex)
+          .is('deleted_at', null)
+          .maybeSingle();
+
+        if (!apexError && apexData) {
+          registerAllowedHost(host);
+          return next();
+        }
+      }
+    } catch (err) {
+      console.error('[Security] Failed to verify custom domain:', err);
+    }
+  }
+
+  next();
+});
+
+// ── SEO & Public Routes ───────────────────────────────────────────────────
 app.get('/robots.txt', async (req, res) => {
-  const tenant = await resolvePublicTenant(req);
-  const sitemapUrl = `${publicOrigin(req)}/sitemap.xml`;
-  res
-    .type('text/plain')
-    .send(
-      [
-        'User-agent: *',
-        tenant ? 'Allow: /' : 'Disallow: /',
-        'Disallow: /auth/',
-        'Disallow: /dashboard',
-        'Disallow: /products',
-        'Disallow: /settings',
-        'Disallow: /members',
-        'Disallow: /orders',
-        'Disallow: /customers',
-        'Disallow: /store/checkout',
-        'Disallow: /store/carrito',
-        'Disallow: /store/success',
-        'Disallow: /store/account',
-        '',
-        'User-agent: GPTBot',
-        'Disallow: /',
-        '',
-        'User-agent: CCBot',
-        'Disallow: /',
-        `Sitemap: ${sitemapUrl}`,
-      ].join('\n'),
-    );
+  const origin = publicOrigin(req);
+  if (!origin) {
+    res.status(400).type('text/plain').send('Bad Request: Invalid host header');
+    return;
+  }
+
+  const tenant = await resolvePublicTenant(req, supabase, platformDomain);
+  const lines = [
+    'User-agent: *',
+    tenant ? 'Allow: /' : 'Disallow: /',
+    'Disallow: /auth/',
+    'Disallow: /dashboard',
+    'Disallow: /products',
+    'Disallow: /settings',
+    'Disallow: /members',
+    'Disallow: /orders',
+    'Disallow: /customers',
+    'Disallow: /store/checkout',
+    'Disallow: /store/carrito',
+    'Disallow: /store/success',
+    'Disallow: /store/account',
+    '',
+    'User-agent: GPTBot',
+    'Disallow: /',
+    '',
+    'User-agent: CCBot',
+    'Disallow: /',
+  ];
+
+  if (tenant) {
+    lines.push(`Sitemap: ${origin}/sitemap.xml`);
+  }
+
+  res.type('text/plain').send(lines.join('\n'));
 });
 
 app.get('/sitemap.xml', async (req, res) => {
-  const tenant = await resolvePublicTenant(req);
+  const origin = publicOrigin(req);
+  if (!origin) {
+    res.status(400).type('text/plain').send('Bad Request: Invalid host header');
+    return;
+  }
+
+  const tenant = await resolvePublicTenant(req, supabase, platformDomain);
   if (!tenant) {
     res
       .status(404)
@@ -103,7 +201,6 @@ app.get('/sitemap.xml', async (req, res) => {
     return;
   }
 
-  const origin = publicOrigin(req);
   const [productsRes, categoriesRes] = await Promise.all([
     supabase
       .from('products')
@@ -119,7 +216,7 @@ app.get('/sitemap.xml', async (req, res) => {
   ]);
 
   if (productsRes.error) {
-    console.error('[SEO] Could not load sitemap products:', productsRes.error);
+    console.error('[SEO] Could not load sitemap products:', productsRes.error.message);
     res
       .status(500)
       .type('application/xml')
@@ -127,29 +224,32 @@ app.get('/sitemap.xml', async (req, res) => {
     return;
   }
   if (categoriesRes.error) {
-    console.error('[SEO] Could not load sitemap categories:', categoriesRes.error);
+    console.error('[SEO] Could not load sitemap categories:', categoriesRes.error.message);
   }
 
   const products = productsRes.data || [];
   const categories = categoriesRes.error ? [] : categoriesRes.data || [];
 
-  const lastmod = (value: string | null) => (value ? `<lastmod>${value}</lastmod>` : '');
+  const escapedOrigin = escapeXml(origin);
   const urls = [
-    `<url><loc>${origin}/store</loc></url>`,
-    `<url><loc>${origin}/store/productos</loc></url>`,
-    `<url><loc>${origin}/store/contacto</loc></url>`,
-    `<url><loc>${origin}/store/nosotros</loc></url>`,
+    `<url><loc>${escapedOrigin}/store</loc></url>`,
+    `<url><loc>${escapedOrigin}/store/productos</loc></url>`,
+    `<url><loc>${escapedOrigin}/store/contacto</loc></url>`,
+    `<url><loc>${escapedOrigin}/store/nosotros</loc></url>`,
     ...categories
       .filter((category) => category.slug)
       .map(
         (category) =>
-          `<url><loc>${origin}/store/categoria/${encodeURIComponent(category.slug)}</loc>${lastmod(category.updated_at)}</url>`,
+          `<url><loc>${escapedOrigin}/store/categoria/${encodeURIComponent(category.slug)}</loc>${formatLastMod(category.updated_at)}</url>`,
       ),
-    ...(products || []).map(
-      (product) =>
-        `<url><loc>${origin}/store/product/${encodeURIComponent(product.slug)}</loc>${lastmod(product.updated_at)}</url>`,
-    ),
+    ...products
+      .filter((product) => product.slug)
+      .map(
+        (product) =>
+          `<url><loc>${escapedOrigin}/store/product/${encodeURIComponent(product.slug)}</loc>${formatLastMod(product.updated_at)}</url>`,
+      ),
   ];
+
   res
     .type('application/xml')
     .send(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join('')}</urlset>`);
